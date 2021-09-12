@@ -18,9 +18,9 @@ import net.kyori.adventure.text.minimessage.Template;
 
 public class CommandListener {
     private final ProxyServer server;
-    private Logger logger;
+    private final Logger logger;
 
-    public CommandListener(ProxyServer server, Logger logger) {
+    public CommandListener(final ProxyServer server, final Logger logger) {
         this.server = server;
         this.logger = logger;
     }

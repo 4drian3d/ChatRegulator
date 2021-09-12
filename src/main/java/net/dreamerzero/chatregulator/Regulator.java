@@ -1,8 +1,5 @@
 package net.dreamerzero.chatregulator;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
@@ -14,7 +11,6 @@ import de.leonhard.storage.Yaml;
 import net.dreamerzero.chatregulator.config.Configuration;
 import net.dreamerzero.chatregulator.listener.ChatListener;
 import net.dreamerzero.chatregulator.listener.CommandListener;
-import net.kyori.adventure.audience.Audience;
 
 public class Regulator {
     private final ProxyServer server;

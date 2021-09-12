@@ -17,9 +17,9 @@ import net.kyori.adventure.text.minimessage.Template;
 
 public class ChatListener {
     private final ProxyServer server;
-    private Logger logger;
+    private final Logger logger;
 
-    public ChatListener(final ProxyServer server, Logger logger) {
+    public ChatListener(final ProxyServer server, final Logger logger) {
         this.server = server;
         this.logger = logger;
     }
@@ -27,11 +27,12 @@ public class ChatListener {
     @Subscribe
     public void onChat(final PlayerChatEvent event) {
         String message = event.getMessage();
+        var player = event.getPlayer();
 
         List<Template> TEMPLATES = List.of(
-            Template.of("player", event.getPlayer().getUsername()),
-            Template.of("message", event.getMessage()),
-            Template.of("server", event.getPlayer().getCurrentServer().get().getServerInfo().getName()));
+            Template.of("player", player.getUsername()),
+            Template.of("message", message),
+            Template.of("server", player.getCurrentServer().get().getServerInfo().getName()));
 
         List<String> blockedWords = Regulator.getBlackList().getStringList("blocked-words");
         String floodRegexPattern = "(\\w)\\1{<l>,}|(\\w{28,})|([^\\wñ]{20,})|(^.{220,}$)".replace("<l>", Regulator.getConfig().getString("flood.limit"));
@@ -39,7 +40,7 @@ public class ChatListener {
         Matcher floodMatch = Pattern.compile(floodRegexPattern).matcher(message);
         if(floodMatch.find()) {
             event.setResult(ChatResult.denied());
-                event.getPlayer().sendMessage(
+                player.sendMessage(
                     MiniMessage.get().parse(
                         Regulator.getConfig().getString("messages.flood-message"), TEMPLATES));
                 server.getAllPlayers().stream().filter(
@@ -55,7 +56,7 @@ public class ChatListener {
 
             if(match.find()) {
                 event.setResult(ChatResult.denied());
-                event.getPlayer().sendMessage(
+                player.sendMessage(
                     MiniMessage.get().parse(
                         Regulator.getConfig().getString("messages.blocked-message"), TEMPLATES));
                 server.getAllPlayers().stream().filter(
@@ -65,7 +66,7 @@ public class ChatListener {
                                 Regulator.getConfig().getString("messages.infraction-detected"), TEMPLATES));
                     });
                 if (Regulator.getConfig().getBoolean("debug")){
-                    logger.info("User Detected: " + event.getPlayer().getUsername());
+                    logger.info("User Detected: " + player.getUsername());
                     logger.info("Message: " + message);
                     logger.info("Pattern: " + floodMatch.pattern());
                     logger.info("Results: " + floodMatch.results().toList().toString());
