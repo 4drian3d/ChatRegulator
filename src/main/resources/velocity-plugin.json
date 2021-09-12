@@ -1,0 +1,11 @@
+{
+    "id": "chatregulator",
+    "name": "${project.artifactId}",
+    "version": "${project.version}",
+    "description": "A Chat regulator for you Velocity network",
+    "authors": [
+      "4drian3d"
+    ],
+    "dependencies": [],
+    "main": "net.dreamerzero.chatregulator.Regulator"
+  }
