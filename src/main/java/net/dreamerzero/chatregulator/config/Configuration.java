@@ -6,7 +6,10 @@ import java.util.List;
 
 public class Configuration {
     public static void setDefaultConfig(){
-        Regulator.getBlackList().setDefault(
+        var config = Regulator.getConfig();
+        var blacklist = Regulator.getBlackList();
+
+        blacklist.setDefault(
             "blocked-words",
             List.of(
                 "f(u|v|4)ck",
@@ -14,18 +17,18 @@ public class Configuration {
                 "d(i|1)c(k)?",
                 "b(i|1)tch",
                 "(a|4|@)w(e|3|@)b(o|@|0)n(a|4|@)d(o|@|0)"));
-        Regulator.getConfig().setDefault(
+        config.setDefault(
             "messages.blocked-message",
             "<red>Hello, it is not allowed to use dirty words on this server.");
-        Regulator.getConfig().setDefault(
+        config.setDefault(
             "messages.flood-message",
             "<red>Hello, it is not allowed to make flood on this server.");
-        Regulator.getConfig().setDefault(
+        config.setDefault(
             "messages.infraction-detected",
             "<red>The player <aqua><player></aqua> <red>has said forbidden words in <aqua><server></aqua> server.");
-        Regulator.getConfig().setDefault("flood.limit", "5");
-        Regulator.getConfig().setDefault("debug", false);
-        Regulator.getConfig().setDefault(
+        config.setDefault("flood.limit", "5");
+        config.setDefault("debug", false);
+        config.setDefault(
             "commands-checked",
             List.of("tell", "etell", "msg", "emsg", "chat", "global", "reply"));
     }

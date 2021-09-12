@@ -35,20 +35,26 @@ public class ChatListener {
             Template.of("server", player.getCurrentServer().get().getServerInfo().getName()));
 
         List<String> blockedWords = Regulator.getBlackList().getStringList("blocked-words");
-        String floodRegexPattern = "(\\w)\\1{<l>,}|(\\w{28,})|([^\\wñ]{20,})|(^.{220,}$)".replace("<l>", Regulator.getConfig().getString("flood.limit"));
+        String floodPattern = "(\\w)\\1{<l>,}|(\\w{28,})|([^\\wñ]{20,})|(^.{220,}$)".replace("<l>", Regulator.getConfig().getString("flood.limit"));
 
-        Matcher floodMatch = Pattern.compile(floodRegexPattern).matcher(message);
+        Matcher floodMatch = Pattern.compile(floodPattern).matcher(message);
         if(floodMatch.find()) {
             event.setResult(ChatResult.denied());
-                player.sendMessage(
-                    MiniMessage.get().parse(
-                        Regulator.getConfig().getString("messages.flood-message"), TEMPLATES));
-                server.getAllPlayers().stream().filter(
-                    op -> op.hasPermission("regulator.notifications")).forEach(op -> {
-                        op.sendMessage(
-                            MiniMessage.get().parse(
-                                Regulator.getConfig().getString("messages.flood-detected"), TEMPLATES));
-                    });
+            player.sendMessage(
+                MiniMessage.get().parse(
+                    Regulator.getConfig().getString("messages.flood-message"), TEMPLATES));
+            server.getAllPlayers().stream().filter(
+                op -> op.hasPermission("regulator.notifications")).forEach(op -> {
+                    op.sendMessage(
+                        MiniMessage.get().parse(
+                            Regulator.getConfig().getString("messages.flood-detected"), TEMPLATES));
+                });
+            if (Regulator.getConfig().getBoolean("debug")){
+                logger.info("User Detected: " + player.getUsername());
+                logger.info("Detection: Flood");
+                logger.info("Message: " + message);
+                logger.info("Results: " + floodMatch.results().toList().toString());
+            }
         }
 
         for (String blockedWord : blockedWords){
@@ -67,9 +73,10 @@ public class ChatListener {
                     });
                 if (Regulator.getConfig().getBoolean("debug")){
                     logger.info("User Detected: " + player.getUsername());
+                    logger.info("Detection: Regular infraction");
                     logger.info("Message: " + message);
-                    logger.info("Pattern: " + floodMatch.pattern());
-                    logger.info("Results: " + floodMatch.results().toList().toString());
+                    logger.info("Pattern: " + blockedWord);
+                    logger.info("Results: " + match.results().toList().toString());
                 }
                 break;
             }

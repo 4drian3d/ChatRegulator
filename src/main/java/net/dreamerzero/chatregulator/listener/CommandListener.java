@@ -66,8 +66,9 @@ public class CommandListener {
                     });
                 if (Regulator.getConfig().getBoolean("debug")){
                     logger.info("User Detected: " + player.getUsername());
+                    logger.info("Detection: Regular infraction");
                     logger.info("Command: " + command);
-                    logger.info("Pattern:" + match.pattern());
+                    logger.info("Pattern: " + blockedWord);
                     logger.info("Results: " + match.results().toList().toString());
                 }
                 break;
