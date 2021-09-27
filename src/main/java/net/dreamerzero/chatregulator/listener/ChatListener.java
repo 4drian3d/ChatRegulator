@@ -41,12 +41,12 @@ public class ChatListener {
         if(floodMatch.find()) {
             event.setResult(ChatResult.denied());
             player.sendMessage(
-                MiniMessage.get().parse(
+                MiniMessage.miniMessage().parse(
                     Regulator.getConfig().getString("messages.flood-message"), TEMPLATES));
             server.getAllPlayers().stream().filter(
                 op -> op.hasPermission("regulator.notifications")).forEach(op -> {
                     op.sendMessage(
-                        MiniMessage.get().parse(
+                        MiniMessage.miniMessage().parse(
                             Regulator.getConfig().getString("messages.flood-detected"), TEMPLATES));
                 });
             if (Regulator.getConfig().getBoolean("debug")){
@@ -63,12 +63,12 @@ public class ChatListener {
             if(match.find()) {
                 event.setResult(ChatResult.denied());
                 player.sendMessage(
-                    MiniMessage.get().parse(
+                    MiniMessage.miniMessage().parse(
                         Regulator.getConfig().getString("messages.blocked-message"), TEMPLATES));
                 server.getAllPlayers().stream().filter(
                     op -> op.hasPermission("regulator.notifications")).forEach(op -> {
                         op.sendMessage(
-                            MiniMessage.get().parse(
+                            MiniMessage.miniMessage().parse(
                                 Regulator.getConfig().getString("messages.infraction-detected"), TEMPLATES));
                     });
                 if (Regulator.getConfig().getBoolean("debug")){

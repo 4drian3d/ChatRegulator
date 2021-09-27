@@ -27,10 +27,13 @@ public class CommandListener {
 
     @Subscribe
     public void onCommand(CommandExecuteEvent event){
-        if (!(event.getCommandSource() instanceof Player player)) {
+        if (!(event.getCommandSource() instanceof Player)) {
             return;
         }
-        var command = event.getCommand();
+
+        Player player = (Player)event.getCommandSource();
+
+        String command = event.getCommand();
 
         List<String> commandsChecked = Regulator.getConfig().getStringList("commands-checked");
         boolean isCommand = false;
@@ -56,12 +59,12 @@ public class CommandListener {
             if (match.find()) {
                 event.setResult(CommandResult.denied());
                 player.sendMessage(
-                    MiniMessage.get().parse(
+                    MiniMessage.miniMessage().parse(
                         Regulator.getConfig().getString("messages.blocked-message"), TEMPLATES));
                 server.getAllPlayers().stream().filter(
                     op -> op.hasPermission("regulator.notifications")).forEach(op -> {
                         op.sendMessage(
-                            MiniMessage.get().parse(
+                            MiniMessage.miniMessage().parse(
                                 Regulator.getConfig().getString("messages.infraction-detected"), TEMPLATES));
                     });
                 if (Regulator.getConfig().getBoolean("debug")){
