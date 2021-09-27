@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.player.PlayerChatEvent;
 import com.velocitypowered.api.event.player.PlayerChatEvent.ChatResult;
+import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 
 import org.slf4j.Logger;
@@ -27,7 +28,10 @@ public class ChatListener {
     @Subscribe
     public void onChat(final PlayerChatEvent event) {
         String message = event.getMessage();
-        var player = event.getPlayer();
+        Player player = event.getPlayer();
+        String patternDetected = "";
+        String detection = "";
+        boolean detected = false;
 
         List<Template> TEMPLATES = List.of(
             Template.of("player", player.getUsername()),
@@ -49,12 +53,9 @@ public class ChatListener {
                         MiniMessage.miniMessage().parse(
                             Regulator.getConfig().getString("messages.flood-detected"), TEMPLATES));
                 });
-            if (Regulator.getConfig().getBoolean("debug")){
-                logger.info("User Detected: " + player.getUsername());
-                logger.info("Detection: Flood");
-                logger.info("Message: " + message);
-                logger.info("Results: " + floodMatch.results().toList().toString());
-            }
+            patternDetected = floodPattern;
+            detection = "Flood";
+            detected = true;
         }
 
         for (String blockedWord : blockedWords){
@@ -71,15 +72,18 @@ public class ChatListener {
                             MiniMessage.miniMessage().parse(
                                 Regulator.getConfig().getString("messages.infraction-detected"), TEMPLATES));
                     });
-                if (Regulator.getConfig().getBoolean("debug")){
-                    logger.info("User Detected: " + player.getUsername());
-                    logger.info("Detection: Regular infraction");
-                    logger.info("Message: " + message);
-                    logger.info("Pattern: " + blockedWord);
-                    logger.info("Results: " + match.results().toList().toString());
-                }
+                patternDetected = blockedWord;
+                detection = "Regular infraction";
+                detected = true;
                 break;
             }
+        }
+
+        if (Regulator.getConfig().getBoolean("debug") && detected){
+            logger.info("User Detected: {}", player.getUsername());
+            logger.info("Detection: {}", detection);
+            logger.info("Message: {}", message);
+            logger.info("Pattern: {}", patternDetected);
         }
     }
 }
