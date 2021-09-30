@@ -63,10 +63,10 @@ public class ConfigManager {
 
     public static void sendAlertMessage(Audience staff, Player infractor, TypeUtils.InfractionType type){
         String message;
-        if(type.equals(TypeUtils.InfractionType.FLOOD)){
-            message = Regulator.getConfig().getString("flood.alert-message");
-        } else {
-            message = Regulator.getConfig().getString("infractions.alert-message");
+        switch(type){
+            case FLOOD: message = Regulator.getConfig().getString("flood.alert-message");
+            case REGULAR: message = Regulator.getConfig().getString("infractions.alert-message");
+            default: message = "";
         }
 
         staff.sendMessage(
