@@ -1,9 +1,5 @@
 package net.dreamerzero.chatregulator.listener;
 
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.command.CommandExecuteEvent;
 import com.velocitypowered.api.event.command.CommandExecuteEvent.CommandResult;
@@ -13,8 +9,12 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import org.slf4j.Logger;
 
 import net.dreamerzero.chatregulator.Regulator;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.Template;
+import net.dreamerzero.chatregulator.config.ConfigManager;
+import net.dreamerzero.chatregulator.utils.FloodUtils;
+import net.dreamerzero.chatregulator.utils.InfractionUtils;
+import net.dreamerzero.chatregulator.utils.TypeUtils;
+import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
+import net.kyori.adventure.audience.Audience;
 
 public class CommandListener {
     private final ProxyServer server;
@@ -32,50 +32,35 @@ public class CommandListener {
         }
 
         Player player = (Player)event.getCommandSource();
-
         String command = event.getCommand();
+        TypeUtils.InfractionType detection = InfractionType.NONE;
+        boolean detected = false;
 
-        List<String> commandsChecked = Regulator.getConfig().getStringList("commands-checked");
-        boolean isCommand = false;
+        if(!TypeUtils.isCommand(command)) return;
 
-        for (String commandChecked : commandsChecked) {
-            if (command.startsWith(commandChecked)) {
-                isCommand = true;
-                break;
-            }
+        if(FloodUtils.isFlood(command)){
+            event.setResult(CommandResult.denied());
+            ConfigManager.sendWarningMessage(player, InfractionType.FLOOD);
+            ConfigManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(
+                op -> op.hasPermission("regulator.notifications")).toList()), player, InfractionType.FLOOD);
+            detection = InfractionType.FLOOD;
+            detected = true;
         }
-        if (!isCommand) return;
 
-        List<String> blockedWords = Regulator.getBlackList().getStringList("blocked-words");
+        if (InfractionUtils.isInfraction(command)) {
+            event.setResult(CommandResult.denied());
+            ConfigManager.sendWarningMessage(player, InfractionType.REGULAR);
+            ConfigManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(
+                op -> op.hasPermission("regulator.notifications")).toList()), player, InfractionType.REGULAR);
+            detection = InfractionType.REGULAR;
+            detected = true;
+        }
 
-        List<Template> TEMPLATES = List.of(
-            Template.of("player", player.getUsername()),
-            Template.of("message", command),
-            Template.of("server", player.getCurrentServer().get().getServerInfo().getName()));
-
-        for (String blockedWord : blockedWords) {
-            Matcher match = Pattern.compile(blockedWord).matcher(command);
-
-            if (match.find()) {
-                event.setResult(CommandResult.denied());
-                player.sendMessage(
-                    MiniMessage.miniMessage().parse(
-                        Regulator.getConfig().getString("messages.blocked-message"), TEMPLATES));
-                server.getAllPlayers().stream().filter(
-                    op -> op.hasPermission("regulator.notifications")).forEach(op -> {
-                        op.sendMessage(
-                            MiniMessage.miniMessage().parse(
-                                Regulator.getConfig().getString("messages.infraction-detected"), TEMPLATES));
-                    });
-                if (Regulator.getConfig().getBoolean("debug")){
-                    logger.info("User Detected: " + player.getUsername());
-                    logger.info("Detection: Regular infraction");
-                    logger.info("Command: " + command);
-                    logger.info("Pattern: " + blockedWord);
-                    logger.info("Results: " + match.results().toList().toString());
-                }
-                break;
-            }
+        if (detected && Regulator.getConfig().getBoolean("debug")){
+            logger.info("User Detected: {}", player.getUsername());
+            logger.info("Detection: {}", detection.toString());
+            logger.info("Command: {}", command);
+            logger.info("Pattern: {}", detection == InfractionType.REGULAR ? FloodUtils.getFloodPattern() : InfractionUtils.getPattern(command));
         }
     }
 }
