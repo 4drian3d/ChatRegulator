@@ -13,6 +13,8 @@ import de.leonhard.storage.Yaml;
 import net.dreamerzero.chatregulator.config.Configuration;
 import net.dreamerzero.chatregulator.listener.ChatListener;
 import net.dreamerzero.chatregulator.listener.CommandListener;
+import net.dreamerzero.chatregulator.listener.JoinListener;
+import net.dreamerzero.chatregulator.listener.LeaveListenet;
 import net.dreamerzero.chatregulator.utils.InfractionPlayer;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
@@ -21,12 +23,13 @@ public class Regulator {
     private static ProxyServer proxy;
     static Yaml config = new Yaml("config", "plugins/chatregulator");
     static Yaml blacklist = new Yaml("blacklist", "plugins/chatregulator");
-    private static Map<UUID, InfractionPlayer> players = new HashMap<>();
+    private static Map<UUID, InfractionPlayer> players;
 
     @Inject
     public Regulator(final ProxyServer server) {
         this.server = server;
         proxy = server;
+        players = new HashMap<>();
     }
 
     @Subscribe
@@ -39,6 +42,8 @@ public class Regulator {
         // Register the PostLogin listener
         server.getEventManager().register(this, new ChatListener(server));
         server.getEventManager().register(this, new CommandListener(server));
+        server.getEventManager().register(this, new JoinListener());
+        server.getEventManager().register(this, new LeaveListenet());
     }
     public static Yaml getConfig(){
         return config;
@@ -52,7 +57,6 @@ public class Regulator {
     public static Map<UUID, InfractionPlayer> getInfractionPlayers(){
         return players;
     }
-
     public static InfractionPlayer getInfractionPlayer(UUID uuid){
         return players.containsKey(uuid) ? players.get(uuid) : null;
     }
