@@ -13,6 +13,10 @@ public class TypeUtils {
         REGULAR(), FLOOD(), SPAM(), NONE();
     }
 
+    public enum SourceType{
+        COMMAND(), CHAT();
+    }
+
     public static boolean isCommand(String command){
         List<String> commandsChecked = Regulator.getConfig().getStringList("commands-checked");
         String commandParts[] = command.split(" ");
