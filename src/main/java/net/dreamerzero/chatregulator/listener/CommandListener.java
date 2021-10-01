@@ -1,6 +1,7 @@
 package net.dreamerzero.chatregulator.listener;
 
 import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.event.ResultedEvent.GenericResult;
 import com.velocitypowered.api.event.command.CommandExecuteEvent;
 import com.velocitypowered.api.event.command.CommandExecuteEvent.CommandResult;
 import com.velocitypowered.api.proxy.Player;
@@ -10,9 +11,11 @@ import org.slf4j.Logger;
 
 import net.dreamerzero.chatregulator.Regulator;
 import net.dreamerzero.chatregulator.config.ConfigManager;
+import net.dreamerzero.chatregulator.events.CommandViolationEvent;
 import net.dreamerzero.chatregulator.modules.FloodUtils;
 import net.dreamerzero.chatregulator.modules.InfractionUtils;
 import net.dreamerzero.chatregulator.utils.CommandUtils;
+import net.dreamerzero.chatregulator.utils.InfractionPlayer;
 import net.dreamerzero.chatregulator.utils.TypeUtils;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 import net.kyori.adventure.audience.Audience;
@@ -33,13 +36,18 @@ public class CommandListener {
         }
 
         Player player = (Player)event.getCommandSource();
+        InfractionPlayer infractionPlayer = Regulator.getInfractionPlayers().get(player.getUniqueId());
         String command = event.getCommand();
         TypeUtils.InfractionType detection = InfractionType.NONE;
         boolean detected = false;
+        var proxy = Regulator.getProxyServer();
 
         if(!TypeUtils.isCommand(command)) return;
 
         if(FloodUtils.isFlood(command)){
+            proxy.getEventManager().fire(new CommandViolationEvent(infractionPlayer, InfractionType.FLOOD, command)).thenAccept(violationEvent -> {
+                if(violationEvent.getResult() == GenericResult.denied()) return;
+            });
             event.setResult(CommandResult.denied());
             ConfigManager.sendWarningMessage(player, InfractionType.FLOOD);
             ConfigManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(
@@ -50,6 +58,9 @@ public class CommandListener {
         }
 
         if (InfractionUtils.isInfraction(command)) {
+            proxy.getEventManager().fire(new CommandViolationEvent(infractionPlayer, InfractionType.REGULAR, command)).thenAccept(violationEvent -> {
+                if(violationEvent.getResult() == GenericResult.denied()) return;
+            });
             event.setResult(CommandResult.denied());
             ConfigManager.sendWarningMessage(player, InfractionType.REGULAR);
             ConfigManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(

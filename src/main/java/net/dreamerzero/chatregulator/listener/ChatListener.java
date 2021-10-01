@@ -1,6 +1,7 @@
 package net.dreamerzero.chatregulator.listener;
 
 import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.event.ResultedEvent.GenericResult;
 import com.velocitypowered.api.event.player.PlayerChatEvent;
 import com.velocitypowered.api.event.player.PlayerChatEvent.ChatResult;
 import com.velocitypowered.api.proxy.Player;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 
 import net.dreamerzero.chatregulator.Regulator;
 import net.dreamerzero.chatregulator.config.ConfigManager;
+import net.dreamerzero.chatregulator.events.ChatViolationEvent;
 import net.dreamerzero.chatregulator.modules.FloodUtils;
 import net.dreamerzero.chatregulator.modules.InfractionUtils;
 import net.dreamerzero.chatregulator.utils.CommandUtils;
@@ -34,8 +36,12 @@ public class ChatListener {
         TypeUtils.InfractionType detection = InfractionType.NONE;
         boolean detected = false;
         InfractionPlayer infractionPlayer = Regulator.getInfractionPlayers().get(player.getUniqueId());
+        var proxy = Regulator.getProxyServer();
 
         if(!player.hasPermission("chatregulator.bypass.flood") && FloodUtils.isFlood(message)) {
+            proxy.getEventManager().fire(new ChatViolationEvent(infractionPlayer, InfractionType.FLOOD, message)).thenAccept(violationEvent -> {
+                if(violationEvent.getResult() == GenericResult.denied()) return;
+            });
             event.setResult(ChatResult.denied());
             ConfigManager.sendWarningMessage(player, InfractionType.FLOOD);
             ConfigManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(
@@ -50,6 +56,9 @@ public class ChatListener {
         }
 
         if(!player.hasPermission("chatregulator.bypass.infractions") && InfractionUtils.isInfraction(message)) {
+            proxy.getEventManager().fire(new ChatViolationEvent(infractionPlayer, InfractionType.REGULAR, message)).thenAccept(violationEvent -> {
+                if(violationEvent.getResult() == GenericResult.denied()) return;
+            });
             event.setResult(ChatResult.denied());
             ConfigManager.sendWarningMessage(player, InfractionType.REGULAR);
             ConfigManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(
@@ -64,6 +73,9 @@ public class ChatListener {
 
         if(!player.hasPermission("chatregulator.bypass.spam") && infractionPlayer.getLastMessage().equalsIgnoreCase(message)) {
             event.setResult(ChatResult.denied());
+            proxy.getEventManager().fire(new ChatViolationEvent(infractionPlayer, InfractionType.SPAM, message)).thenAccept(violationEvent -> {
+                if(violationEvent.getResult() == GenericResult.denied()) return;
+            });
             infractionPlayer.addViolation(InfractionType.SPAM);
             detection = InfractionType.SPAM;
             detected = true;
