@@ -11,6 +11,11 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.title.Title;
 
 public class ConfigManager {
+    /**
+     * Get the warning format according to the configuration
+     * @param infraction the type of infraction
+     * @return the format of the warning
+     */
     public static TypeUtils.WarningType getWarningType(TypeUtils.InfractionType infraction){
         String type;
 
@@ -31,6 +36,11 @@ public class ConfigManager {
         }
     }
 
+    /**
+     * Send a message of some kind to the offender.
+     * @param infractor offender
+     * @param type the type of infraction
+     */
     public static void sendWarningMessage(Audience infractor, TypeUtils.InfractionType type){
         String message;
         if(type.equals(TypeUtils.InfractionType.FLOOD)){
@@ -62,12 +72,18 @@ public class ConfigManager {
         }
     }
 
+    /**
+     * Sends an alert message to users who are in the audience with the required permissions
+     * @param staff audience that has the required permission to receive the alert
+     * @param infractor the player who committed the infraction
+     * @param type the type of infraction
+     */
     public static void sendAlertMessage(Audience staff, Player infractor, TypeUtils.InfractionType type){
         String message;
         switch(type){
             case FLOOD: message = Regulator.getConfig().getString("flood.alert-message"); break;
             case REGULAR: message = Regulator.getConfig().getString("infractions.alert-message"); break;
-            default: message = "";
+            default: message = null;
         }
 
         staff.sendMessage(

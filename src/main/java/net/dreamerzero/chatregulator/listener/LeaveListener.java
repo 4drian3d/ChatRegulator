@@ -8,7 +8,7 @@ import com.velocitypowered.api.proxy.Player;
 
 import net.dreamerzero.chatregulator.Regulator;
 
-public class LeaveListenet {
+public class LeaveListener {
     @Subscribe
     public void onLeave(DisconnectEvent event){
         Player player = event.getPlayer();

@@ -14,7 +14,7 @@ import net.dreamerzero.chatregulator.config.Configuration;
 import net.dreamerzero.chatregulator.listener.ChatListener;
 import net.dreamerzero.chatregulator.listener.CommandListener;
 import net.dreamerzero.chatregulator.listener.JoinListener;
-import net.dreamerzero.chatregulator.listener.LeaveListenet;
+import net.dreamerzero.chatregulator.listener.LeaveListener;
 import net.dreamerzero.chatregulator.utils.InfractionPlayer;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
@@ -43,11 +43,19 @@ public class Regulator {
         server.getEventManager().register(this, new ChatListener(server));
         server.getEventManager().register(this, new CommandListener(server));
         server.getEventManager().register(this, new JoinListener());
-        server.getEventManager().register(this, new LeaveListenet());
+        server.getEventManager().register(this, new LeaveListener());
     }
+    /**
+     * Get the plugin configuration
+     * @return the plugin configuration
+     */
     public static Yaml getConfig(){
         return config;
     }
+    /**
+     * Get the configuration of the blacklist of banned words
+     * @return the blacklist configuration
+     */
     public static Yaml getBlackList(){
         return blacklist;
     }
@@ -57,6 +65,11 @@ public class Regulator {
     public static Map<UUID, InfractionPlayer> getInfractionPlayers(){
         return players;
     }
+    /**
+     * Get the InfractionPlayer based on a UUID
+     * @param uuid the player uuid
+     * @return the {@link InfractionPlayer}
+     */
     public static InfractionPlayer getInfractionPlayer(UUID uuid){
         return players.containsKey(uuid) ? players.get(uuid) : null;
     }
