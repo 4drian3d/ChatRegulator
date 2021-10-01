@@ -16,6 +16,7 @@ public class CommandUtils {
                         .replaceAll("<server>", infractor.getCurrentServer().get().getServerInfo().getName());
                     server.getCommandManager().executeAsync(server.getConsoleCommandSource(), commandToSend);
                 });
+                break;
             }
             case FLOOD: if(Regulator.getConfig().getBoolean("flood.execute-commands")){
                 Regulator.getConfig().getStringList("flood.commands-to-execute").forEach(command -> {
@@ -24,6 +25,7 @@ public class CommandUtils {
                         .replaceAll("<server>", infractor.getCurrentServer().get().getServerInfo().getName());
                     server.getCommandManager().executeAsync(server.getConsoleCommandSource(), commandToSend);
                 });
+                break;
             }
             case NONE: return;
         }

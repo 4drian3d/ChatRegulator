@@ -56,16 +56,17 @@ public class ConfigManager {
                             MiniMessage.miniMessage().parse(
                                 titleParts[1])));
                 }
-            case MESSAGE: infractor.sendMessage(MiniMessage.miniMessage().parse(message));
-            case ACTIONBAR: infractor.sendActionBar(MiniMessage.miniMessage().parse(message));
+                break;
+            case MESSAGE: infractor.sendMessage(MiniMessage.miniMessage().parse(message)); break;
+            case ACTIONBAR: infractor.sendActionBar(MiniMessage.miniMessage().parse(message)); break;
         }
     }
 
     public static void sendAlertMessage(Audience staff, Player infractor, TypeUtils.InfractionType type){
         String message;
         switch(type){
-            case FLOOD: message = Regulator.getConfig().getString("flood.alert-message");
-            case REGULAR: message = Regulator.getConfig().getString("infractions.alert-message");
+            case FLOOD: message = Regulator.getConfig().getString("flood.alert-message"); break;
+            case REGULAR: message = Regulator.getConfig().getString("infractions.alert-message"); break;
             default: message = "";
         }
 
