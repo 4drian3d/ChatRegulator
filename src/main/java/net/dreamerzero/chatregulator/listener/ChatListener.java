@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 
 import net.dreamerzero.chatregulator.Regulator;
 import net.dreamerzero.chatregulator.config.ConfigManager;
+import net.dreamerzero.chatregulator.utils.CommandUtils;
 import net.dreamerzero.chatregulator.utils.FloodUtils;
 import net.dreamerzero.chatregulator.utils.InfractionUtils;
 import net.dreamerzero.chatregulator.utils.TypeUtils;
@@ -37,6 +38,7 @@ public class ChatListener {
             ConfigManager.sendWarningMessage(player, InfractionType.FLOOD);
             ConfigManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(
                 op -> op.hasPermission("regulator.notifications")).toList()), player, InfractionType.FLOOD);
+            CommandUtils.executeCommand(InfractionType.FLOOD, player);
             detection = InfractionType.FLOOD;
             detected = true;
         }
@@ -46,6 +48,7 @@ public class ChatListener {
             ConfigManager.sendWarningMessage(player, InfractionType.REGULAR);
             ConfigManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(
                 op -> op.hasPermission("regulator.notifications")).toList()), player, InfractionType.REGULAR);
+            CommandUtils.executeCommand(InfractionType.REGULAR, player);
             detection = InfractionType.REGULAR;
             detected = true;
         }

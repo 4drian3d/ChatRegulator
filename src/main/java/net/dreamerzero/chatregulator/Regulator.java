@@ -15,6 +15,7 @@ import net.dreamerzero.chatregulator.listener.CommandListener;
 public class Regulator {
     private final ProxyServer server;
     private final Logger logger;
+    private static ProxyServer proxy;
     static Yaml config = new Yaml("config", "plugins/chatregulator");
     static Yaml blacklist = new Yaml("blacklist", "plugins/chatregulator");
 
@@ -22,6 +23,7 @@ public class Regulator {
     public Regulator(final ProxyServer server, final Logger logger) {
         this.server = server;
         this.logger = logger;
+        proxy = server;
     }
 
     @Subscribe
@@ -39,5 +41,8 @@ public class Regulator {
     }
     public static Yaml getBlackList(){
         return blacklist;
+    }
+    public static ProxyServer getProxyServer(){
+        return proxy;
     }
 }

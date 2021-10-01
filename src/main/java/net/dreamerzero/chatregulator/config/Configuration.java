@@ -34,6 +34,10 @@ public class Configuration {
         config.setDefault(
             "infractions.alert-message",
             "<red>The player <aqua><player></aqua> <red>has said forbidden words in <aqua><server></aqua> server.");
+        config.setDefault("infractions.execute-commands", false);
+        config.setDefault(
+            "infractions.commands-to-execute",
+            List.of("mute <player> 1m You have been muted for swearing on the server <server>", "example command"));
         /*---------------
         Flood
         ---------------*/
@@ -47,6 +51,10 @@ public class Configuration {
             "flood.alert-message",
             "<red>The player <aqua><player></aqua> <red>has make flood <aqua><server></aqua> server.");
         config.setDefault("flood.limit", "5");
+        config.setDefault("flood.execute-commands", false);
+        config.setDefault(
+            "flood.commands-to-execute",
+            List.of("mute <player> 1m You have been muted for swearing on the server <server>", "example command"));
         /*---------------
         General
         ---------------*/
