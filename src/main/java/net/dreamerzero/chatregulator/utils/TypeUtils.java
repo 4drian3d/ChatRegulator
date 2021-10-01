@@ -10,7 +10,7 @@ public class TypeUtils {
     }
 
     public enum InfractionType{
-        REGULAR(), FLOOD(), NONE();
+        REGULAR(), FLOOD(), SPAM(), NONE();
     }
 
     public static boolean isCommand(String command){

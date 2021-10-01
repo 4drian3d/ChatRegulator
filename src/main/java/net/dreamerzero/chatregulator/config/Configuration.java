@@ -34,9 +34,10 @@ public class Configuration {
         config.setDefault(
             "infractions.alert-message",
             "<red>The player <aqua><player></aqua> <red>has said forbidden words in <aqua><server></aqua> server.");
-        config.setDefault("infractions.execute-commands", false);
+        config.setDefault("infractions.commands.execute-commands", false);
+        config.setDefault("infractions.commands.violations-required", 5);
         config.setDefault(
-            "infractions.commands-to-execute",
+            "infractions.commands.commands-to-execute",
             List.of("mute <player> 1m You have been muted for swearing on the server <server>", "example command"));
         /*---------------
         Flood
@@ -51,10 +52,30 @@ public class Configuration {
             "flood.alert-message",
             "<red>The player <aqua><player></aqua> <red>has make flood <aqua><server></aqua> server.");
         config.setDefault("flood.limit", "5");
-        config.setDefault("flood.execute-commands", false);
+        config.setDefault("flood.commands.execute-commands", false);
+        config.setDefault("flood.commands.violations-required", 5);
         config.setDefault(
-            "flood.commands-to-execute",
+            "flood.commands.commands-to-execute",
             List.of("mute <player> 1m You have been muted for swearing on the server <server>", "example command"));
+        /*---------------
+        Spam
+        ---------------*/
+        config.setDefault(
+            "spam.warning-type",
+            "message");
+        config.setDefault(
+            "spam.warning-message",
+            "<red>Hello, it is not allowed to make flood on this server.");
+        config.setDefault(
+            "spam.alert-message",
+            "<red>The player <aqua><player></aqua> <red>has make flood <aqua><server></aqua> server.");
+        //TODO: Implement SPAM limit
+        config.setDefault("spam.limit", "5");
+        config.setDefault("spam.commands.execute-commands", false);
+        config.setDefault("spam.commands.violations-required", 5);
+        config.setDefault(
+            "spam.commands.commands-to-execute",
+            List.of("mute <player> 1m You have been muted for spam on the server <server>", "example command"));
         /*---------------
         General
         ---------------*/

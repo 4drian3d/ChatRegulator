@@ -1,5 +1,9 @@
 package net.dreamerzero.chatregulator;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
@@ -11,6 +15,7 @@ import de.leonhard.storage.Yaml;
 import net.dreamerzero.chatregulator.config.Configuration;
 import net.dreamerzero.chatregulator.listener.ChatListener;
 import net.dreamerzero.chatregulator.listener.CommandListener;
+import net.dreamerzero.chatregulator.utils.InfractionPlayer;
 
 public class Regulator {
     private final ProxyServer server;
@@ -18,6 +23,7 @@ public class Regulator {
     private static ProxyServer proxy;
     static Yaml config = new Yaml("config", "plugins/chatregulator");
     static Yaml blacklist = new Yaml("blacklist", "plugins/chatregulator");
+    private static Map<UUID, InfractionPlayer> players = new HashMap<>();
 
     @Inject
     public Regulator(final ProxyServer server, final Logger logger) {
@@ -44,5 +50,8 @@ public class Regulator {
     }
     public static ProxyServer getProxyServer(){
         return proxy;
+    }
+    public static Map<UUID, InfractionPlayer> getInfractionPlayers(){
+        return players;
     }
 }

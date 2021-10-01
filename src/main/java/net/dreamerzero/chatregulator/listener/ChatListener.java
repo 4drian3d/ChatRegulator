@@ -10,9 +10,10 @@ import org.slf4j.Logger;
 
 import net.dreamerzero.chatregulator.Regulator;
 import net.dreamerzero.chatregulator.config.ConfigManager;
+import net.dreamerzero.chatregulator.modules.FloodUtils;
+import net.dreamerzero.chatregulator.modules.InfractionUtils;
 import net.dreamerzero.chatregulator.utils.CommandUtils;
-import net.dreamerzero.chatregulator.utils.FloodUtils;
-import net.dreamerzero.chatregulator.utils.InfractionUtils;
+import net.dreamerzero.chatregulator.utils.InfractionPlayer;
 import net.dreamerzero.chatregulator.utils.TypeUtils;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 import net.kyori.adventure.audience.Audience;
@@ -28,30 +29,47 @@ public class ChatListener {
 
     @Subscribe
     public void onChat(final PlayerChatEvent event) {
-        String message = event.getMessage();
         Player player = event.getPlayer();
+        String message = event.getMessage();
         TypeUtils.InfractionType detection = InfractionType.NONE;
         boolean detected = false;
+        InfractionPlayer infractionPlayer = Regulator.getInfractionPlayers().get(player.getUniqueId());
 
-        if(FloodUtils.isFlood(message)) {
+        if(!player.hasPermission("chatregulator.bypass.flood") && FloodUtils.isFlood(message)) {
             event.setResult(ChatResult.denied());
             ConfigManager.sendWarningMessage(player, InfractionType.FLOOD);
             ConfigManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(
-                op -> op.hasPermission("regulator.notifications")).toList()), player, InfractionType.FLOOD);
+                op -> op.hasPermission("chatregulator.notifications")).toList()), player, InfractionType.FLOOD);
             CommandUtils.executeCommand(InfractionType.FLOOD, player);
+            infractionPlayer.addViolation(InfractionType.FLOOD);
             detection = InfractionType.FLOOD;
             detected = true;
+            if(Regulator.getConfig().getInt("flood.commands.violations-required") == infractionPlayer.getFloodInfractions()){
+                CommandUtils.executeCommand(InfractionType.REGULAR, player);
+            }
         }
 
-        if(InfractionUtils.isInfraction(message)) {
+        if(!player.hasPermission("chatregulator.bypass.infractions") && InfractionUtils.isInfraction(message)) {
             event.setResult(ChatResult.denied());
             ConfigManager.sendWarningMessage(player, InfractionType.REGULAR);
             ConfigManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(
-                op -> op.hasPermission("regulator.notifications")).toList()), player, InfractionType.REGULAR);
-            CommandUtils.executeCommand(InfractionType.REGULAR, player);
+                op -> op.hasPermission("chatregulator.notifications")).toList()), player, InfractionType.REGULAR);
+            infractionPlayer.addViolation(InfractionType.REGULAR);
             detection = InfractionType.REGULAR;
             detected = true;
+            if(Regulator.getConfig().getInt("infractions.commands.violations-required") == infractionPlayer.getRegularInfractions()){
+                CommandUtils.executeCommand(InfractionType.REGULAR, player);
+            }
         }
+
+        if(!player.hasPermission("chatregulator.bypass.spam") && infractionPlayer.getLastMessage().equalsIgnoreCase(message)) {
+            event.setResult(ChatResult.denied());
+            infractionPlayer.addViolation(InfractionType.SPAM);
+            detection = InfractionType.SPAM;
+            detected = true;
+        }
+
+        infractionPlayer.setLastMessage(message);
 
         if (detected && Regulator.getConfig().getBoolean("debug")){
             logger.info("User Detected: {}", player.getUsername());
