@@ -18,6 +18,7 @@ public class InfractionPlayer {
     private int floodViolations;
     private int regularViolations;
     private int spamViolations;
+    private boolean isOnline;
 
     public InfractionPlayer(Player player){
         this.player = player;
@@ -28,13 +29,30 @@ public class InfractionPlayer {
         this.floodViolations = 0;
         this.regularViolations = 0;
         this.spamViolations = 0;
+        this.isOnline = true;
+    }
+
+    /**
+     * Returns if the player is offline
+     * @return if the player is offline
+     */
+    public boolean isOnline(){
+        return this.isOnline;
+    }
+
+    /**
+     * Sets the player's online status
+     * @param status online status
+     */
+    public void isOnline(boolean status){
+        this.isOnline = status;
     }
 
     /**
      * Get the message prior to the player's last message
      * @return the message before the player's last message
      */
-    public String getPreLastMessage(){
+    public String preLastMessage(){
         return preLastMessage;
     }
 
@@ -42,7 +60,7 @@ public class InfractionPlayer {
      * Get the last message sent by the player
      * @return last message of the player
      */
-    public String getLastMessage(){
+    public String lastMessage(){
         return lastMessage;
     }
 
@@ -50,7 +68,7 @@ public class InfractionPlayer {
      * Sets the player's last sent message
      * @param newLastMessage the new last message sent by the player
      */
-    public void setLastMessage(String newLastMessage){
+    public void lastMessage(String newLastMessage){
         preLastMessage = lastMessage;
         lastMessage = newLastMessage;
     }
@@ -59,7 +77,7 @@ public class InfractionPlayer {
      * Get the command prior to the player's last command
      * @return the command before the player's last command
      */
-    public String getPreLastCommand(){
+    public String preLastCommand(){
         return preLastCommand;
     }
 
@@ -67,7 +85,7 @@ public class InfractionPlayer {
      * Get the last command executed by the player
      * @return last command of the player
      */
-    public String getLastCommand(){
+    public String lastCommand(){
         return lastCommand;
     }
 
@@ -75,7 +93,7 @@ public class InfractionPlayer {
      * Sets the player's last executed command
      * @param newLastCommand the new last command executed by the player
      */
-    public void setLastCommand(String newLastCommand){
+    public void lastCommand(String newLastCommand){
         preLastCommand = lastCommand;
         lastCommand = newLastCommand;
     }

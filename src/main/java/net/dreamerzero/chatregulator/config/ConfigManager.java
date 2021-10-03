@@ -47,10 +47,11 @@ public class ConfigManager {
      */
     public void sendWarningMessage(Audience infractor, TypeUtils.InfractionType type){
         String message;
-        if(type.equals(TypeUtils.InfractionType.FLOOD)){
-            message = config.getString("flood.warning-message");
-        } else {
-            message = config.getString("infractions.warning-message");
+        switch(type){
+            case FLOOD: message = config.getString("flood.warning-message");
+            case REGULAR: message = config.getString("infractions.warning-message");
+            case SPAM: message = config.getString("spam.warning-message");
+            default: message = "";
         }
 
         switch(getWarningType(type)){

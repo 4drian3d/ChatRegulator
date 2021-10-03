@@ -18,8 +18,7 @@ public class LeaveListener {
     public void onLeave(DisconnectEvent event){
         Player player = event.getPlayer();
         UUID playerUUID = player.getUniqueId();
-        if(infractionPlayers.containsKey(playerUUID)){
-            infractionPlayers.remove(playerUUID);
-        }
+        InfractionPlayer infractionPlayer = infractionPlayers.get(playerUUID);
+        infractionPlayer.isOnline(false);
     }
 }

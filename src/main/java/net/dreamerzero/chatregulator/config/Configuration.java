@@ -71,7 +71,7 @@ public class Configuration {
             "spam.alert-message",
             "<red>The player <aqua><player></aqua> <red>has make flood <aqua><server></aqua> server.");
         //TODO: Implement SPAM limit
-        config.setDefault("spam.limit", "5");
+        //config.setDefault("spam.limit", "5");
         config.setDefault("spam.commands.execute-commands", false);
         config.setDefault("spam.commands.violations-required", 5);
         config.setDefault(

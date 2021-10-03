@@ -18,9 +18,9 @@ public class JoinListener {
     public void onPlayerJoin(PostLoginEvent event){
         Player player = event.getPlayer();
         UUID playerUUID = player.getUniqueId();
+        if(infractionPlayers.containsKey(playerUUID)) return;
+
         InfractionPlayer infractionPlayer = new InfractionPlayer(player);
-        if(!infractionPlayers.containsKey(playerUUID)){
-            infractionPlayers.put(playerUUID, infractionPlayer);
-        }
+        infractionPlayers.put(playerUUID, infractionPlayer);
     }
 }

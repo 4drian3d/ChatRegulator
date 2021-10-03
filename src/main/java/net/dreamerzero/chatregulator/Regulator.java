@@ -30,9 +30,9 @@ public class Regulator {
     @Inject
     public Regulator(final ProxyServer server, Logger logger) {
         this.server = server;
-        infractionPlayers = new HashMap<>();
-        config = new Yaml("config", "plugins/chatregulator");
-        blacklist = new Yaml("blacklist", "plugins/chatregulator");
+        this.infractionPlayers = new HashMap<>();
+        this.config = new Yaml("config", "plugins/chatregulator");
+        this.blacklist = new Yaml("blacklist", "plugins/chatregulator");
         this.logger = logger;
     }
 
@@ -54,14 +54,14 @@ public class Regulator {
      * @return the plugin configuration
      */
     public Yaml getConfig(){
-        return config;
+        return this.config;
     }
     /**
      * Get the configuration of the blacklist of banned words
      * @return the blacklist configuration
      */
     public Yaml getBlackList(){
-        return blacklist;
+        return this.blacklist;
     }
 
     /**
@@ -70,6 +70,6 @@ public class Regulator {
      * @return the {@link InfractionPlayer}
      */
     public InfractionPlayer getInfractionPlayer(UUID uuid){
-        return infractionPlayers.containsKey(uuid) ? infractionPlayers.get(uuid) : null;
+        return this.infractionPlayers.containsKey(uuid) ? this.infractionPlayers.get(uuid) : null;
     }
 }
