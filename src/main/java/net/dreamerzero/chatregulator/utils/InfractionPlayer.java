@@ -33,8 +33,8 @@ public class InfractionPlayer {
     }
 
     /**
-     * Returns if the player is offline
-     * @return if the player is offline
+     * Returns the online status of the player
+     * @return player online status
      */
     public boolean isOnline(){
         return this.isOnline;
@@ -42,7 +42,7 @@ public class InfractionPlayer {
 
     /**
      * Sets the player's online status
-     * @param status online status
+     * @param status new online status
      */
     public void isOnline(boolean status){
         this.isOnline = status;
