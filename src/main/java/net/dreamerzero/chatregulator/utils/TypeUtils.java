@@ -2,9 +2,13 @@ package net.dreamerzero.chatregulator.utils;
 
 import java.util.List;
 
-import net.dreamerzero.chatregulator.Regulator;
+import de.leonhard.storage.Yaml;
 
 public class TypeUtils {
+    private Yaml config;
+    public TypeUtils(Yaml config){
+        this.config = config;
+    }
     /**
      * The warning format to be executed
      */
@@ -31,8 +35,8 @@ public class TypeUtils {
      * @param command the command executed
      * @return if the command is to be checked
      */
-    public static boolean isCommand(String command){
-        List<String> commandsChecked = Regulator.getConfig().getStringList("commands-checked");
+    public boolean isCommand(String command){
+        List<String> commandsChecked = config.getStringList("commands-checked");
         String commandParts[] = command.split(" ");
 
         for (String commandChecked : commandsChecked) {

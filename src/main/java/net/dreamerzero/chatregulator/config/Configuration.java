@@ -1,16 +1,17 @@
 package net.dreamerzero.chatregulator.config;
 
-import net.dreamerzero.chatregulator.Regulator;
-
 import java.util.List;
 
 import de.leonhard.storage.Yaml;
 
 public class Configuration {
-    public static void setDefaultConfig(){
-        Yaml config = Regulator.getConfig();
-        Yaml blacklist = Regulator.getBlackList();
-
+    private Yaml config;
+    private Yaml blacklist;
+    public Configuration(Yaml config, Yaml blacklist){
+        this.config = config;
+        this.blacklist = blacklist;
+    }
+    public void setDefaultConfig(){
         /*---------------
         Blacklist
         ---------------*/

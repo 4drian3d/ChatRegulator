@@ -2,7 +2,7 @@ package net.dreamerzero.chatregulator.config;
 
 import com.velocitypowered.api.proxy.Player;
 
-import net.dreamerzero.chatregulator.Regulator;
+import de.leonhard.storage.Yaml;
 import net.dreamerzero.chatregulator.utils.PlaceholderUtils;
 import net.dreamerzero.chatregulator.utils.TypeUtils;
 import net.kyori.adventure.audience.Audience;
@@ -11,17 +11,21 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.title.Title;
 
 public class ConfigManager {
+    private Yaml config;
+    public ConfigManager(Yaml config){
+        this.config = config;
+    }
     /**
      * Get the warning format according to the configuration
      * @param infraction the type of infraction
      * @return the format of the warning
      */
-    public static TypeUtils.WarningType getWarningType(TypeUtils.InfractionType infraction){
+    public TypeUtils.WarningType getWarningType(TypeUtils.InfractionType infraction){
         String type;
 
         switch(infraction){
-            case REGULAR: type = Regulator.getConfig().getString("infractions.warning-type"); break;
-            case FLOOD: type = Regulator.getConfig().getString("flood.warning-type"); break;
+            case REGULAR: type = config.getString("infractions.warning-type"); break;
+            case FLOOD: type = config.getString("flood.warning-type"); break;
             default: return TypeUtils.WarningType.MESSAGE;
         }
 
@@ -41,12 +45,12 @@ public class ConfigManager {
      * @param infractor offender
      * @param type the type of infraction
      */
-    public static void sendWarningMessage(Audience infractor, TypeUtils.InfractionType type){
+    public void sendWarningMessage(Audience infractor, TypeUtils.InfractionType type){
         String message;
         if(type.equals(TypeUtils.InfractionType.FLOOD)){
-            message = Regulator.getConfig().getString("flood.warning-message");
+            message = config.getString("flood.warning-message");
         } else {
-            message = Regulator.getConfig().getString("infractions.warning-message");
+            message = config.getString("infractions.warning-message");
         }
 
         switch(getWarningType(type)){
@@ -78,17 +82,17 @@ public class ConfigManager {
      * @param infractor the player who committed the infraction
      * @param type the type of infraction
      */
-    public static void sendAlertMessage(Audience staff, Player infractor, TypeUtils.InfractionType type){
+    public void sendAlertMessage(Audience staff, Player infractor, TypeUtils.InfractionType type){
         String message;
         switch(type){
-            case FLOOD: message = Regulator.getConfig().getString("flood.alert-message"); break;
-            case REGULAR: message = Regulator.getConfig().getString("infractions.alert-message"); break;
+            case FLOOD: message = config.getString("flood.alert-message"); break;
+            case REGULAR: message = config.getString("infractions.alert-message"); break;
             default: message = null;
         }
 
         staff.sendMessage(
             MiniMessage.miniMessage().parse(
                 message,
-                PlaceholderUtils.getTemplates(infractor)));
+                new PlaceholderUtils().getTemplates(infractor)));
     }
 }

@@ -4,12 +4,15 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 
 import de.leonhard.storage.Yaml;
-import net.dreamerzero.chatregulator.Regulator;
 
 public class CommandUtils {
-    public static void executeCommand(TypeUtils.InfractionType type, Player infractor){
-        ProxyServer server = Regulator.getProxyServer();
-        Yaml config = Regulator.getConfig();
+    private ProxyServer server;
+    private Yaml config;
+    public CommandUtils(ProxyServer server, Yaml config){
+        this.server = server;
+        this.config = config;
+    }
+    public void executeCommand(TypeUtils.InfractionType type, Player infractor){
         switch(type){
             case REGULAR: if(config.getBoolean("infractions.commands.execute-commands")){
                 config.getStringList("infractions.commands.commands-to-execute").forEach(command -> {
