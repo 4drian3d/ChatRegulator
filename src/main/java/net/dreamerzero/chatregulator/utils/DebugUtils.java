@@ -20,12 +20,40 @@ public class DebugUtils {
         this.config = config;
     }
 
+    public DebugUtils(InfractionUtils iUtils, Logger logger, Yaml config){
+        this.fUtils = null;
+        this.iUtils = iUtils;
+        this.logger = logger;
+        this.config = config;
+    }
+
+    public DebugUtils(FloodUtils fUtils, Logger logger, Yaml config){
+        this.fUtils = fUtils;
+        this.iUtils = null;
+        this.logger = logger;
+        this.config = config;
+    }
+
+    public DebugUtils(Logger logger, Yaml config){
+        this.fUtils = null;
+        this.iUtils = null;
+        this.logger = logger;
+        this.config = config;
+    }
+
     public void debug(InfractionPlayer player, String string, InfractionType detection){
+        String pattern;
+        switch(detection){
+            case FLOOD: pattern = fUtils.getFloodPattern();
+            case REGULAR: pattern = iUtils.getPattern(string);
+            case SPAM: pattern = "Detected for 3 detections";
+            default: pattern = "";
+        }
         if (config.getBoolean("debug")){
             logger.info("User Detected: {}", player.getPlayer().getUsername());
             logger.info("Detection: {}", detection.toString());
             logger.info("String: {}", string);
-            logger.info("Pattern: {}", detection == InfractionType.FLOOD ? fUtils.getFloodPattern() : iUtils.getPattern(string));
+            logger.info("Pattern: {}", pattern);
         }
     }
 }

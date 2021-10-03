@@ -13,10 +13,10 @@ import org.slf4j.Logger;
 
 import de.leonhard.storage.Yaml;
 import net.dreamerzero.chatregulator.config.Configuration;
-import net.dreamerzero.chatregulator.listener.ChatListener;
-import net.dreamerzero.chatregulator.listener.CommandListener;
-import net.dreamerzero.chatregulator.listener.JoinListener;
-import net.dreamerzero.chatregulator.listener.LeaveListener;
+import net.dreamerzero.chatregulator.listener.chat.ChatListener;
+import net.dreamerzero.chatregulator.listener.command.CommandListener;
+import net.dreamerzero.chatregulator.listener.list.JoinListener;
+import net.dreamerzero.chatregulator.listener.list.LeaveListener;
 import net.dreamerzero.chatregulator.utils.InfractionPlayer;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 

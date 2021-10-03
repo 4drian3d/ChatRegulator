@@ -1,4 +1,4 @@
-package net.dreamerzero.chatregulator.listener;
+package net.dreamerzero.chatregulator.listener.list;
 
 import java.util.Map;
 import java.util.UUID;

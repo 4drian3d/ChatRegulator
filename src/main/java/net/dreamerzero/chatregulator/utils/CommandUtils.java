@@ -12,9 +12,12 @@ public class CommandUtils {
         this.server = server;
         this.config = config;
     }
-    public void executeCommand(TypeUtils.InfractionType type, Player infractor){
+    public void executeCommand(TypeUtils.InfractionType type, InfractionPlayer infractorPlayer){
+        Player infractor = infractorPlayer.getPlayer();
         switch(type){
-            case REGULAR: if(config.getBoolean("infractions.commands.execute-commands")){
+            case REGULAR: if(config.getBoolean("infractions.commands.execute-commands") &&
+                config.getInt("infractions.commands.violations-required") <= infractorPlayer.getRegularInfractions()){
+
                 config.getStringList("infractions.commands.commands-to-execute").forEach(command -> {
                     String commandToSend = command
                         .replaceAll("<player>", infractor.getUsername())
@@ -23,7 +26,9 @@ public class CommandUtils {
                 });
                 break;
             }
-            case FLOOD: if(config.getBoolean("flood.commands.execute-commands")){
+            case FLOOD: if(config.getBoolean("flood.commands.execute-commands") &&
+                config.getInt("flood.commands.violations-required") <= infractorPlayer.getFloodInfractions()){
+
                 config.getStringList("flood.commands.commands-to-execute").forEach(command -> {
                     String commandToSend = command
                         .replaceAll("<player>", infractor.getUsername())
@@ -32,7 +37,9 @@ public class CommandUtils {
                 });
                 break;
             }
-            case SPAM: if(config.getBoolean("spam.commands.execute-commands")) {
+            case SPAM: if(config.getBoolean("spam.commands.execute-commands") &&
+                config.getInt("spam.commands.violations-required") <= infractorPlayer.getSpamInfractions()) {
+
                 config.getStringList("spam.commands.commands-to-execute").forEach(command -> {
                     String commandToSend = command
                         .replaceAll("<player>", infractor.getUsername())
