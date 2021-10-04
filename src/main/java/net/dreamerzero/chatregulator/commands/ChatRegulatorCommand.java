@@ -159,11 +159,11 @@ public class ChatRegulatorCommand implements SimpleCommand {
         switch(args.length){
             case 0: return List.of("info", "stats", "player");
             case 1: if(args[0] == "player"){
-                ArrayList<String> playerList = new ArrayList<>();
+                List<String> playerList = new ArrayList<String>();
                 server.getAllPlayers().forEach(player -> playerList.add(player.getUsername()));
                 return playerList;
             }
-            default: return null;
+            default: return List.of("");
         }
     }
 

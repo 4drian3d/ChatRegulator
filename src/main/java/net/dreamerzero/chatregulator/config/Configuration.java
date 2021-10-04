@@ -82,6 +82,7 @@ public class Configuration {
         //TODO: Implement SPAM limit
         //config.setDefault("spam.limit", "5");
         config.setDefault("spam.commands.execute-commands", false);
+        //TODO: not working?
         config.setDefault("spam.commands.violations-required", 5);
         config.setDefault(
             "spam.commands.commands-to-execute",
@@ -108,7 +109,6 @@ public class Configuration {
                 "<#3B4371>| <aqua>Flood Infractions:</aqua> <white><flood></white>",
                 "<#3B4371>| <aqua>Spam Infractions:</aqua> <white><spam></white>",
                 "<#3B4371>|------------------------|"));
-        //TODO: Finish this
         config.setDefault(
             "general.messages.info",
             "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <aqua>by</aqua> <gradient:green:gold>4drian3d");

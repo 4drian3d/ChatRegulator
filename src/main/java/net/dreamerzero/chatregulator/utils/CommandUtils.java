@@ -20,7 +20,7 @@ public class CommandUtils {
 
                 config.getStringList("infractions.commands.commands-to-execute").forEach(command -> {
                     String commandToSend = command
-                        .replaceAll("<player>", infractor.getUsername())
+                        .replaceAll("<player>", infractorPlayer.username())
                         .replaceAll("<server>", infractor.getCurrentServer().get().getServerInfo().getName());
                     server.getCommandManager().executeAsync(server.getConsoleCommandSource(), commandToSend);
                 });

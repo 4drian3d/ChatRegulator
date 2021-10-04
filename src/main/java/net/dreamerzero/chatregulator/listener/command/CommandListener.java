@@ -91,8 +91,8 @@ public class CommandListener {
             });
         }
 
-        SpamCheck panUtils = new SpamCheck();
-        if(!player.hasPermission("chatregulator.bypass.spam") && panUtils.commandSpamInfricted(infractionPlayer, command)) {
+        SpamCheck panUtils = new SpamCheck(logger, infractionPlayer);
+        if(!player.hasPermission("chatregulator.bypass.spam") && panUtils.commandSpamInfricted(command)) {
             server.getEventManager().fire(new CommandViolationEvent(infractionPlayer, InfractionType.SPAM, command)).thenAccept(violationEvent -> {
                 if(violationEvent.getResult() == GenericResult.denied()) {
                     infractionPlayer.lastCommand(command);
@@ -101,7 +101,7 @@ public class CommandListener {
                     event.setResult(CommandResult.denied());
                     cManager.sendWarningMessage(player, InfractionType.REGULAR);
                     cManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(
-                        op -> op.hasPermission("chatregulator.notifications")).toList()), player, InfractionType.REGULAR);
+                        op -> op.hasPermission("chatregulator.notifications")).toList()), player, InfractionType.SPAM);
                     infractionPlayer.addViolation(InfractionType.SPAM);
                     cUtils.executeCommand(InfractionType.SPAM, infractionPlayer);
                     dUtils.debug(infractionPlayer, command, InfractionType.SPAM);

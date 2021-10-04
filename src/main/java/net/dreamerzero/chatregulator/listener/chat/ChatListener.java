@@ -54,14 +54,14 @@ public class ChatListener {
                 if(violationEvent.getResult() == GenericResult.denied()) {
                     infractionPlayer.lastMessage(message);
                 } else {
+                    dUtils.debug(infractionPlayer, message, InfractionType.FLOOD, fUtils);
                     event.setResult(ChatResult.denied());
                     cManager.sendWarningMessage(player, InfractionType.FLOOD, fUtils);
                     cManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(
                         op -> op.hasPermission("chatregulator.notifications")).toList()), player, InfractionType.FLOOD);
                     cUtils.executeCommand(InfractionType.FLOOD, infractionPlayer);
                     infractionPlayer.addViolation(InfractionType.FLOOD);
-                    dUtils.debug(infractionPlayer, message, InfractionType.FLOOD, fUtils);
-                    cUtils.executeCommand(InfractionType.REGULAR, infractionPlayer);
+                    cUtils.executeCommand(InfractionType.FLOOD, infractionPlayer);
                     return;
                 }
             });
@@ -73,32 +73,32 @@ public class ChatListener {
                 if(violationEvent.getResult() == GenericResult.denied() && message != infractionPlayer.lastMessage()) {
                     infractionPlayer.lastMessage(message);
                 } else if(violationEvent.getResult() == GenericResult.allowed()) {
+                    dUtils.debug(infractionPlayer, message, InfractionType.REGULAR, iUtils);
                     event.setResult(ChatResult.denied());
                     cManager.sendWarningMessage(player, InfractionType.REGULAR, iUtils);
                     cManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(
                         op -> op.hasPermission("chatregulator.notifications")).toList()), player, InfractionType.REGULAR);
                     infractionPlayer.addViolation(InfractionType.REGULAR);
-                    dUtils.debug(infractionPlayer, message, InfractionType.REGULAR, iUtils);
                     cUtils.executeCommand(InfractionType.REGULAR, infractionPlayer);
                     return;
                 }
             });
         }
 
-        SpamCheck panUtils = new SpamCheck();
-        if(!player.hasPermission("chatregulator.bypass.spam") && panUtils.messageSpamInfricted(infractionPlayer, message)) {
+        SpamCheck panUtils = new SpamCheck(logger, infractionPlayer);
+        if(!player.hasPermission("chatregulator.bypass.spam") && panUtils.messageSpamInfricted(message)) {
             server.getEventManager().fire(new ChatViolationEvent(infractionPlayer, InfractionType.SPAM, message)).thenAccept(violationEvent -> {
                 if(violationEvent.getResult() == GenericResult.denied()) {
                     infractionPlayer.lastMessage(message);
                     return;
                 } else {
-                    cManager.sendWarningMessage(player, InfractionType.REGULAR);
+                    dUtils.debug(infractionPlayer, message, InfractionType.SPAM);
+                    cManager.sendWarningMessage(player, InfractionType.SPAM);
                     cManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(
-                        op -> op.hasPermission("chatregulator.notifications")).toList()), player, InfractionType.REGULAR);
+                        op -> op.hasPermission("chatregulator.notifications")).toList()), player, InfractionType.SPAM);
                     event.setResult(ChatResult.denied());
                     infractionPlayer.addViolation(InfractionType.SPAM);
-                    dUtils.debug(infractionPlayer, message, InfractionType.SPAM);
-                    cUtils.executeCommand(InfractionType.REGULAR, infractionPlayer);
+                    cUtils.executeCommand(InfractionType.SPAM, infractionPlayer);
 
                     return;
                 }

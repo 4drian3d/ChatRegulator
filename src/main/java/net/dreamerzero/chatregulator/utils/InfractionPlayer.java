@@ -19,14 +19,14 @@ public class InfractionPlayer {
     private int regularViolations;
     private int spamViolations;
     private boolean isOnline;
-    private String username;
+    private final String username;
 
     public InfractionPlayer(Player player){
         this.player = player;
-        this.preLastMessage = null;
-        this.lastMessage = null;
-        this.preLastCommand = null;
-        this.lastCommand = null;
+        this.preLastMessage = " .";
+        this.lastMessage = " ";
+        this.preLastCommand = " ";
+        this.lastCommand = " .";
         this.floodViolations = 0;
         this.regularViolations = 0;
         this.spamViolations = 0;
