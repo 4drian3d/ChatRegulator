@@ -34,7 +34,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
         MiniMessage mm = MiniMessage.miniMessage();
 
         if(args.length == 0){
-
+            source.sendMessage(mm.parse(config.getString("general.messages.info")));
         } else if(args.length >= 1){
             int floods = 0, regular = 0, spam = 0;
 
@@ -84,12 +84,13 @@ public class ChatRegulatorCommand implements SimpleCommand {
                                     break;
                                 }
                             }
-                            source.sendMessage(mm.parse(config.getString("general.messages.player-not-found")));
+                            source.sendMessage(mm.parse(config.getString("general.messages.player-not-found"), "player", args[1]));
                             break;
                         }
                         break;
                     } else {
                         source.sendMessage(mm.parse(config.getString("general.messages.no-argument")));
+                        break;
                     }
                 case "reset":
                 if(args.length >= 2){
@@ -139,7 +140,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
                                 break;
                             }
                         }
-                        source.sendMessage(mm.parse(config.getString("general.messages.player-not-found")));
+                        source.sendMessage(mm.parse(config.getString("general.messages.player-not-found"), "player", args[1]));
                         break;
                     }
                     break;

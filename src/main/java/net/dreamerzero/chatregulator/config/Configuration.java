@@ -93,7 +93,7 @@ public class Configuration {
         config.setDefault(
             "general.messages.stats",
             List.of(
-                "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> ---------|",
+                "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
                 "<#3B4371>| <red>General Stats</red>",
                 "<#3B4371>| <aqua>Regular Infractions:</aqua> <white><regular></white>",
                 "<#3B4371>| <aqua>Flood Infractions:</aqua> <white><flood></white>",
@@ -102,7 +102,7 @@ public class Configuration {
         config.setDefault(
             "general.messages.player", 
             List.of(
-                "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> ---------|",
+                "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
                 "<#3B4371>| <gold><player></gold> <red>Stats</red>",
                 "<#3B4371>| <aqua>Regular Infractions:</aqua> <white><regular></white>",
                 "<#3B4371>| <aqua>Flood Infractions:</aqua> <white><flood></white>",
