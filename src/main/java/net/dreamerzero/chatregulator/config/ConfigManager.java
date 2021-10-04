@@ -3,6 +3,7 @@ package net.dreamerzero.chatregulator.config;
 import com.velocitypowered.api.proxy.Player;
 
 import de.leonhard.storage.Yaml;
+import net.dreamerzero.chatregulator.utils.InfractionPlayer;
 import net.dreamerzero.chatregulator.utils.PlaceholderUtils;
 import net.dreamerzero.chatregulator.utils.TypeUtils;
 import net.kyori.adventure.audience.Audience;
@@ -48,9 +49,9 @@ public class ConfigManager {
     public void sendWarningMessage(Audience infractor, TypeUtils.InfractionType type){
         String message;
         switch(type){
-            case FLOOD: message = config.getString("flood.warning-message");
-            case REGULAR: message = config.getString("infractions.warning-message");
-            case SPAM: message = config.getString("spam.warning-message");
+            case FLOOD: message = config.getString("flood.messages.warning");
+            case REGULAR: message = config.getString("infractions.messages.warning");
+            case SPAM: message = config.getString("spam.messages.warning");
             default: message = "";
         }
 
@@ -86,8 +87,9 @@ public class ConfigManager {
     public void sendAlertMessage(Audience staff, Player infractor, TypeUtils.InfractionType type){
         String message;
         switch(type){
-            case FLOOD: message = config.getString("flood.alert-message"); break;
-            case REGULAR: message = config.getString("infractions.alert-message"); break;
+            case FLOOD: message = config.getString("flood.messages.alert"); break;
+            case REGULAR: message = config.getString("infractions.messages.alert"); break;
+            case SPAM: message = config.getString("spam.messages.alert"); break;
             default: message = null;
         }
 
@@ -95,5 +97,15 @@ public class ConfigManager {
             MiniMessage.miniMessage().parse(
                 message,
                 new PlaceholderUtils().getTemplates(infractor)));
+    }
+
+    public void sendResetMessage(Audience sender, TypeUtils.InfractionType type, InfractionPlayer player){
+        MiniMessage mm = MiniMessage.miniMessage();
+        switch(type){
+            case REGULAR: sender.sendMessage(mm.parse(config.getString("infractions.messages.reset"), "player", player.username())); break;
+            case FLOOD: sender.sendMessage(mm.parse(config.getString("flood.messages.reset"), "player", player.username())); break;
+            case SPAM: sender.sendMessage(mm.parse(config.getString("spam.messages.reset"), "player", player.username())); break;
+            case NONE: sender.sendMessage(mm.parse(config.getString("general.messages.all-reset"), "player", player.username())); break;
+        }
     }
 }

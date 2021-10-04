@@ -30,11 +30,14 @@ public class Configuration {
             "infractions.warning-type",
             "message");
         config.setDefault(
-            "infractions.warning-message",
+            "infractions.messages.warning",
             "<red>Hello, it is not allowed to use dirty words on this server");
         config.setDefault(
-            "infractions.alert-message",
+            "infractions.messages.alert",
             "<red>The player <aqua><player></aqua> <red>has said forbidden words in <aqua><server></aqua> server.");
+        config.setDefault(
+            "infractions.messages.reset",
+            "<red>The infraction warning count for <player> was reset.");
         config.setDefault("infractions.commands.execute-commands", false);
         config.setDefault("infractions.commands.violations-required", 5);
         config.setDefault(
@@ -47,11 +50,14 @@ public class Configuration {
             "flood.warning-type",
             "message");
         config.setDefault(
-            "flood.warning-message",
+            "flood.messages.warning",
             "<red>Hello, it is not allowed to make flood on this server.");
         config.setDefault(
-            "flood.alert-message",
+            "flood.messages.alert",
             "<red>The player <aqua><player></aqua> <red>has make flood <aqua><server></aqua> server.");
+        config.setDefault(
+            "flood.messages.reset",
+            "<red>The flood warning count for <player> was reset.");
         config.setDefault("flood.limit", "5");
         config.setDefault("flood.commands.execute-commands", false);
         config.setDefault("flood.commands.violations-required", 5);
@@ -65,10 +71,13 @@ public class Configuration {
             "spam.warning-type",
             "message");
         config.setDefault(
-            "spam.warning-message",
+            "spam.messages.warning",
             "<red>Hello, it is not allowed to make flood on this server.");
         config.setDefault(
-            "spam.alert-message",
+            "spam.messages.reset",
+            "<red>The spam warning count for <player> was reset.");
+        config.setDefault(
+            "spam.messages.alert",
             "<red>The player <aqua><player></aqua> <red>has make flood <aqua><server></aqua> server.");
         //TODO: Implement SPAM limit
         //config.setDefault("spam.limit", "5");
@@ -103,6 +112,9 @@ public class Configuration {
         config.setDefault(
             "general.messages.info",
             "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> ");
+        config.setDefault(
+            "spam.messages.all-reset",
+            "<red>The warning count for <player> was reset.");
         config.setDefault(
             "general.messages.no-argument",
             "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <white>No argument provided</white>");
