@@ -2,7 +2,7 @@ package net.dreamerzero.chatregulator.modules;
 
 import net.dreamerzero.chatregulator.utils.InfractionPlayer;
 
-public class SpamUtils {
+public class SpamCheck {
     public boolean messageSpamInfricted(InfractionPlayer infractionPlayer, String actualMessage){
         String prelasMessage = infractionPlayer.preLastMessage();
         String lastMessage = infractionPlayer.lastMessage();

@@ -3,12 +3,15 @@ package net.dreamerzero.chatregulator.config;
 import com.velocitypowered.api.proxy.Player;
 
 import de.leonhard.storage.Yaml;
+import net.dreamerzero.chatregulator.modules.FloodCheck;
+import net.dreamerzero.chatregulator.modules.InfractionCheck;
 import net.dreamerzero.chatregulator.utils.InfractionPlayer;
 import net.dreamerzero.chatregulator.utils.PlaceholderUtils;
 import net.dreamerzero.chatregulator.utils.TypeUtils;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.Template;
 import net.kyori.adventure.title.Title;
 
 public class ConfigManager {
@@ -47,13 +50,7 @@ public class ConfigManager {
      * @param type the type of infraction
      */
     public void sendWarningMessage(Audience infractor, TypeUtils.InfractionType type){
-        String message;
-        switch(type){
-            case FLOOD: message = config.getString("flood.messages.warning");
-            case REGULAR: message = config.getString("infractions.messages.warning");
-            case SPAM: message = config.getString("spam.messages.warning");
-            default: message = "";
-        }
+        String message = config.getString("spam.messages.warning");
 
         switch(getWarningType(type)){
             case TITLE:
@@ -71,6 +68,76 @@ public class ConfigManager {
                                 titleParts[0]),
                             MiniMessage.miniMessage().parse(
                                 titleParts[1])));
+                }
+                break;
+            case MESSAGE: infractor.sendMessage(MiniMessage.miniMessage().parse(message)); break;
+            case ACTIONBAR: infractor.sendActionBar(MiniMessage.miniMessage().parse(message)); break;
+        }
+    }
+
+    /**
+     * Send a message of some kind to the offender.
+     * @param infractor offender
+     * @param type the type of infraction
+     */
+    public void sendWarningMessage(Audience infractor, TypeUtils.InfractionType type, FloodCheck fUtils){
+        String message = config.getString("flood.messages.warning");
+        Template template = Template.of("infraction", fUtils.getInfractionWord());
+
+        switch(getWarningType(type)){
+            case TITLE:
+                if(!message.contains(";")){
+                    infractor.showTitle(
+                    Title.title(
+                        Component.empty(),
+                        MiniMessage.miniMessage().parse(
+                            message,
+                            template)));
+                } else {
+                    String titleParts[] = message.split(";");
+                    infractor.showTitle(
+                        Title.title(
+                            MiniMessage.miniMessage().parse(
+                                titleParts[0],
+                                template),
+                            MiniMessage.miniMessage().parse(
+                                titleParts[1],
+                                template)));
+                }
+                break;
+            case MESSAGE: infractor.sendMessage(MiniMessage.miniMessage().parse(message, template)); break;
+            case ACTIONBAR: infractor.sendActionBar(MiniMessage.miniMessage().parse(message, template)); break;
+        }
+    }
+
+    /**
+     * Send a message of some kind to the offender.
+     * @param infractor offender
+     * @param type the type of infraction
+     */
+    public void sendWarningMessage(Audience infractor, TypeUtils.InfractionType type, InfractionCheck iUtils){
+        String message = config.getString("infractions.messages.warning");
+        Template template = Template.of("infraction", iUtils.getInfractionWord());
+
+        switch(getWarningType(type)){
+            case TITLE:
+                if(!message.contains(";")){
+                    infractor.showTitle(
+                    Title.title(
+                        Component.empty(),
+                        MiniMessage.miniMessage().parse(
+                            message,
+                            template)));
+                } else {
+                    String titleParts[] = message.split(";");
+                    infractor.showTitle(
+                        Title.title(
+                            MiniMessage.miniMessage().parse(
+                                titleParts[0],
+                                template),
+                            MiniMessage.miniMessage().parse(
+                                titleParts[1],
+                                template)));
                 }
                 break;
             case MESSAGE: infractor.sendMessage(MiniMessage.miniMessage().parse(message)); break;

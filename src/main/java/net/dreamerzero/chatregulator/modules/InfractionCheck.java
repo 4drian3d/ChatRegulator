@@ -9,9 +9,12 @@ import de.leonhard.storage.Yaml;
 /**
  * Utilities for the detection of restringed words
  */
-public class InfractionUtils {
+public class InfractionCheck {
     private Yaml blacklist;
-    public InfractionUtils(Yaml blacklist){
+    private String pattern;
+    private Matcher matcher;
+    private String string;
+    public InfractionCheck(Yaml blacklist){
         this.blacklist = blacklist;
     }
     /**
@@ -23,7 +26,12 @@ public class InfractionUtils {
         List<String> blockedWords = blacklist.getStringList("blocked-words");
         for (String blockedWord : blockedWords){
             Matcher match = Pattern.compile(blockedWord).matcher(string);
-            if(match.find()) return true;
+            this.string = string;
+            if(match.lookingAt()){
+                pattern = blockedWord;
+                matcher = match;
+                return true;
+            }
         }
         return false;
     }
@@ -33,12 +41,11 @@ public class InfractionUtils {
      * @param string the string to check
      * @return the regex pattern by which the string was detected
      */
-    public String getPattern(String string){
-        List<String> blockedWords = blacklist.getStringList("blocked-words");
-        for (String blockedWord : blockedWords){
-            Matcher match = Pattern.compile(blockedWord).matcher(string);
-            if(match.find()) return blockedWord;
-        }
-        return "No Pattern";
+    public String getPattern(){
+        return this.pattern;
+    }
+
+    public String getInfractionWord(){
+        return string.substring(matcher.start(), matcher.end());
     }
 }
