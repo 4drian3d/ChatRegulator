@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.google.inject.Inject;
+import com.velocitypowered.api.command.CommandMeta;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.proxy.ProxyServer;
@@ -12,6 +13,7 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import org.slf4j.Logger;
 
 import de.leonhard.storage.Yaml;
+import net.dreamerzero.chatregulator.commands.ChatRegulatorCommand;
 import net.dreamerzero.chatregulator.config.Configuration;
 import net.dreamerzero.chatregulator.listener.chat.ChatListener;
 import net.dreamerzero.chatregulator.listener.command.CommandListener;
@@ -48,6 +50,8 @@ public class Regulator {
         server.getEventManager().register(this, new CommandListener(server, logger, config, blacklist, infractionPlayers));
         server.getEventManager().register(this, new JoinListener(infractionPlayers));
         server.getEventManager().register(this, new LeaveListener(infractionPlayers));
+        CommandMeta regulatorMeta = server.getCommandManager().metaBuilder("chatregulator").aliases("chatr", "cregulator").build();
+        server.getCommandManager().register(regulatorMeta, new ChatRegulatorCommand(infractionPlayers, config, server));
     }
     /**
      * Get the plugin configuration

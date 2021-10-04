@@ -82,6 +82,34 @@ public class Configuration {
         ---------------*/
         config.setDefault("debug", false);
         config.setDefault(
+            "general.messages.stats",
+            List.of(
+                "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> ---------|",
+                "<#3B4371>| <red>General Stats</red>",
+                "<#3B4371>| <aqua>Regular Infractions:</aqua> <white><regular></white>",
+                "<#3B4371>| <aqua>Flood Infractions:</aqua> <white><flood></white>",
+                "<#3B4371>| <aqua>Spam Infractions:</aqua> <white><spam></white>",
+                "<#3B4371>|------------------------|"));
+        config.setDefault(
+            "general.messages.player", 
+            List.of(
+                "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> ---------|",
+                "<#3B4371>| <gold><player></gold> <red>Stats</red>",
+                "<#3B4371>| <aqua>Regular Infractions:</aqua> <white><regular></white>",
+                "<#3B4371>| <aqua>Flood Infractions:</aqua> <white><flood></white>",
+                "<#3B4371>| <aqua>Spam Infractions:</aqua> <white><spam></white>",
+                "<#3B4371>|------------------------|"));
+        //TODO: Finish this
+        config.setDefault(
+            "general.messages.info",
+            "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> ");
+        config.setDefault(
+            "general.messages.no-argument",
+            "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <white>No argument provided</white>");
+        config.setDefault(
+            "general.messages.player-not-found",
+            "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <white>The player <aqua><player></aqua> has not joined the server yet</white>");
+        config.setDefault(
             "commands-checked",
             List.of("tell", "etell", "msg", "emsg", "chat", "global", "reply"));
     }

@@ -19,6 +19,7 @@ public class InfractionPlayer {
     private int regularViolations;
     private int spamViolations;
     private boolean isOnline;
+    private String username;
 
     public InfractionPlayer(Player player){
         this.player = player;
@@ -30,6 +31,7 @@ public class InfractionPlayer {
         this.regularViolations = 0;
         this.spamViolations = 0;
         this.isOnline = true;
+        this.username = player.getUsername();
     }
 
     /**
@@ -38,6 +40,10 @@ public class InfractionPlayer {
      */
     public boolean isOnline(){
         return this.isOnline;
+    }
+
+    public String username(){
+        return this.username;
     }
 
     /**
