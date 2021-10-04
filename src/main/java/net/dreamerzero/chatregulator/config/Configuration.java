@@ -111,9 +111,12 @@ public class Configuration {
         //TODO: Finish this
         config.setDefault(
             "general.messages.info",
-            "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> ");
+            "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <aqua>by</aqua> <gradient:green:gold>4drian3d");
         config.setDefault(
-            "spam.messages.all-reset",
+            "general.messages.unknown-command",
+            "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <aqua>Unknown Command <white><args>");
+        config.setDefault(
+            "general.messages.all-reset",
             "<red>The warning count for <player> was reset.");
         config.setDefault(
             "general.messages.no-argument",

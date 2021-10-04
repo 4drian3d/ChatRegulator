@@ -93,60 +93,62 @@ public class ChatRegulatorCommand implements SimpleCommand {
                         break;
                     }
                 case "reset":
-                if(args.length >= 2){
-                    var optionalPlayer = server.getPlayer(args[1]);
-                    if(optionalPlayer.isPresent()){
-                        var infractionPlayer = infractionPlayers.get(optionalPlayer.get().getUniqueId());
-                        ConfigManager cManager = new ConfigManager(config);
-                        if(args.length >= 3){
-                            switch(args[2].toLowerCase()){
-                                case "infractions": case "regular": 
-                                    infractionPlayer.setViolations(InfractionType.REGULAR, 0);
-                                    cManager.sendResetMessage(source, InfractionType.REGULAR, infractionPlayer);
-                                    break;
-                                case "flood": 
-                                    infractionPlayer.setViolations(InfractionType.FLOOD, 0); 
-                                    cManager.sendResetMessage(source, InfractionType.FLOOD, infractionPlayer);
-                                    break;
-                                case "spam": 
-                                    infractionPlayer.setViolations(InfractionType.SPAM, 0); 
-                                    cManager.sendResetMessage(source, InfractionType.SPAM, infractionPlayer);
-                                    break;
-                                case "all": case "general":
-                                    infractionPlayer.setViolations(InfractionType.SPAM, 0);
-                                    infractionPlayer.setViolations(InfractionType.FLOOD, 0);
-                                    infractionPlayer.setViolations(InfractionType.REGULAR, 0);
-                                    cManager.sendResetMessage(source, InfractionType.NONE, infractionPlayer);
-                                    break;
+                    if(args.length >= 2){
+                        var optionalPlayer = server.getPlayer(args[1]);
+                        if(optionalPlayer.isPresent()){
+                            var infractionPlayer = infractionPlayers.get(optionalPlayer.get().getUniqueId());
+                            ConfigManager cManager = new ConfigManager(config);
+                            if(args.length >= 3){
+                                switch(args[2].toLowerCase()){
+                                    case "infractions": case "regular": 
+                                        infractionPlayer.setViolations(InfractionType.REGULAR, 0);
+                                        cManager.sendResetMessage(source, InfractionType.REGULAR, infractionPlayer);
+                                        break;
+                                    case "flood": 
+                                        infractionPlayer.setViolations(InfractionType.FLOOD, 0); 
+                                        cManager.sendResetMessage(source, InfractionType.FLOOD, infractionPlayer);
+                                        break;
+                                    case "spam": 
+                                        infractionPlayer.setViolations(InfractionType.SPAM, 0); 
+                                        cManager.sendResetMessage(source, InfractionType.SPAM, infractionPlayer);
+                                        break;
+                                    case "all": case "general":
+                                        infractionPlayer.setViolations(InfractionType.SPAM, 0);
+                                        infractionPlayer.setViolations(InfractionType.FLOOD, 0);
+                                        infractionPlayer.setViolations(InfractionType.REGULAR, 0);
+                                        cManager.sendResetMessage(source, InfractionType.NONE, infractionPlayer);
+                                        break;
+                                }
+                            } else {
+                                infractionPlayer.setViolations(InfractionType.SPAM, 0);
+                                infractionPlayer.setViolations(InfractionType.FLOOD, 0);
+                                infractionPlayer.setViolations(InfractionType.REGULAR, 0);
+                                cManager.sendResetMessage(source, InfractionType.NONE, infractionPlayer);
                             }
                         } else {
-                            infractionPlayer.setViolations(InfractionType.SPAM, 0);
-                            infractionPlayer.setViolations(InfractionType.FLOOD, 0);
-                            infractionPlayer.setViolations(InfractionType.REGULAR, 0);
-                            cManager.sendResetMessage(source, InfractionType.NONE, infractionPlayer);
-                        }
-                    } else {
-                        for(Entry<UUID, InfractionPlayer> entry : infractionPlayers.entrySet()){
-                            var username = entry.getValue().username();
-                            if(entry.getValue().username() == args[1]){
-                                var infractionPlayer = entry.getValue();
-                                for(String line : config.getStringList("general.messages.player")){
-                                    source.sendMessage(mm.parse(line,
-                                        Template.of("player", username),
-                                        Template.of("regular", String.valueOf(infractionPlayer.getRegularInfractions())),
-                                        Template.of("flood", String.valueOf(infractionPlayer.getFloodInfractions())),
-                                        Template.of("spam", String.valueOf(infractionPlayer.getSpamInfractions()))));
+                            for(Entry<UUID, InfractionPlayer> entry : infractionPlayers.entrySet()){
+                                var username = entry.getValue().username();
+                                if(entry.getValue().username() == args[1]){
+                                    var infractionPlayer = entry.getValue();
+                                    for(String line : config.getStringList("general.messages.player")){
+                                        source.sendMessage(mm.parse(line,
+                                            Template.of("player", username),
+                                            Template.of("regular", String.valueOf(infractionPlayer.getRegularInfractions())),
+                                            Template.of("flood", String.valueOf(infractionPlayer.getFloodInfractions())),
+                                            Template.of("spam", String.valueOf(infractionPlayer.getSpamInfractions()))));
+                                    }
+                                    break;
                                 }
-                                break;
                             }
+                            source.sendMessage(mm.parse(config.getString("general.messages.player-not-found"), "player", args[1]));
+                            break;
                         }
-                        source.sendMessage(mm.parse(config.getString("general.messages.player-not-found"), "player", args[1]));
+                        break;
+                    } else {
+                        source.sendMessage(mm.parse(config.getString("general.messages.no-argument")));
                         break;
                     }
-                    break;
-                } else {
-                    source.sendMessage(mm.parse(config.getString("general.messages.no-argument")));
-                }
+                default: source.sendMessage(mm.parse(config.getString("general.messages.unknown-command"), "args", args[0])); break;
             }
         }
     }
