@@ -9,11 +9,20 @@ import com.velocitypowered.api.proxy.Player;
 
 import net.dreamerzero.chatregulator.InfractionPlayer;
 
+/**
+ * Join Listener for creation of InfractionPlayers
+ */
 public class JoinListener {
     private Map<UUID, InfractionPlayer> infractionPlayers;
     public JoinListener(Map<UUID, InfractionPlayer> infractionPlayers){
         this.infractionPlayers = infractionPlayers;
     }
+
+    /**
+     * Listener for Player Join
+     * Used for the creation of new {@link InfractionPlayer}
+     * @param event the login event
+     */
     @Subscribe(async = true)
     public void onPlayerJoin(PostLoginEvent event){
         Player player = event.getPlayer();

@@ -7,11 +7,25 @@ import org.slf4j.Logger;
 
 import net.frankheijden.serverutils.velocity.events.VelocityPluginEnableEvent;
 
+/**
+ * ServerUtils Listener in case ChatRegulator is reloaded
+ */
 public class PluginListener {
     private Logger logger;
+    /**
+     * Plugin Listener constructor
+     * @param logger
+     */
     public PluginListener(Logger logger){
         this.logger = logger;
     }
+    /**
+     * Enable Listener
+     * In case ChatRegulator is reloaded,
+     * a warning will be sent that all
+     * {@link net.dreamerzero.chatregulator.InfractionPlayer} will be restarted.
+     * @param enableEvent the enable event
+     */
     @Subscribe(order = PostOrder.LATE)
     public void onPluginEnable(VelocityPluginEnableEvent enableEvent){
         if(enableEvent.getPlugin().getDescription().getName().get().equalsIgnoreCase("ChatRegulator")){

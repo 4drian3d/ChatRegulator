@@ -12,9 +12,26 @@ import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
  * Basis for infringement events
  */
 public class ViolationEvent implements ResultedEvent<GenericResult> {
+    /**
+     * InfractionPlayer involved in detection
+     */
     protected final InfractionPlayer infractionPlayer;
+    /**
+     * Type of detection
+     */
     protected final InfractionType type;
-    public static int spamCount, floodCount, regularCount;
+    /**
+     * Global Spam warning count
+     */
+    public static int spamCount,
+    /**
+     * Global Flood warning count
+     */
+    floodCount,
+    /**
+     * Global Regular Infractions warning count
+     */
+    regularCount;
     private GenericResult result = GenericResult.allowed();
 
     /**
@@ -56,6 +73,10 @@ public class ViolationEvent implements ResultedEvent<GenericResult> {
         this.result = Objects.requireNonNull(result);
     }
 
+    /**
+     * Add a violation to the overall violation count.
+     * @param type the infraction type
+     */
     public void addViolationGlobal(InfractionType type){
         switch(type){
             case SPAM: spamCount++; break;

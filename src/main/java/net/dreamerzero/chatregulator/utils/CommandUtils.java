@@ -6,9 +6,18 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import de.leonhard.storage.Yaml;
 import net.dreamerzero.chatregulator.InfractionPlayer;
 
+/**
+ * Utilities for executing commands
+ * when exceeding the set limit
+ */
 public class CommandUtils {
     private ProxyServer server;
     private Yaml config;
+    /**
+     * CommandUtils constructor
+     * @param server the proxy server
+     * @param config the plugin config
+     */
     public CommandUtils(ProxyServer server, Yaml config){
         this.server = server;
         this.config = config;

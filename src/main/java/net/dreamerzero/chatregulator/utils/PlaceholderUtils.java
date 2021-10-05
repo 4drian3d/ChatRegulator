@@ -5,6 +5,9 @@ import java.util.List;
 import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.kyori.adventure.text.minimessage.Template;
 
+/**
+ * Player Data Collection Utilities
+ */
 public class PlaceholderUtils {
     /**
      * Obtain placeholders from an {@link InfractionPlayer}

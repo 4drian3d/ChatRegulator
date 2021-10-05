@@ -2,11 +2,13 @@ package net.dreamerzero.chatregulator.modules;
 
 import net.dreamerzero.chatregulator.InfractionPlayer;
 
+/**
+ * Detection of command/message spamming
+ */
 public class SpamCheck {
     private InfractionPlayer infractionPlayer;
     /**
      * Create a new spam test
-     * @param logger the logger
      * @param infractionPlayer the infractionPlayer involucred
      */
     public SpamCheck(InfractionPlayer infractionPlayer){

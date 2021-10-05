@@ -29,6 +29,9 @@ public class Regulator {
     private final ProxyServer server;
     private Yaml config;
     private Yaml blacklist;
+    /**
+     * InfractionPlayer list
+     */
     protected static Map<UUID, InfractionPlayer> infractionPlayers = new HashMap<>();
     private final Logger logger;
 
@@ -46,6 +49,9 @@ public class Regulator {
     }
 
     @Subscribe
+    /**
+     * Initialization of the plugin
+     */
     public void onProxyInitialization(final ProxyInitializeEvent event) {
         // :)
         server.getConsoleCommandSource().sendMessage(

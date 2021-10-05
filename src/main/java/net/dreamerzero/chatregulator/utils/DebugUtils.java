@@ -8,6 +8,9 @@ import net.dreamerzero.chatregulator.modules.FloodCheck;
 import net.dreamerzero.chatregulator.modules.InfractionCheck;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 
+/**
+ * Utilities for bug or inconsistency resolution
+ */
 public class DebugUtils {
     private Logger logger;
     private Yaml config;

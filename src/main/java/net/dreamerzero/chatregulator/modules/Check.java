@@ -2,6 +2,9 @@ package net.dreamerzero.chatregulator.modules;
 
 import java.util.regex.Matcher;
 
+/**
+ * Base class of the checks used in the plugin
+ */
 public abstract class Check {
     protected boolean detected;
     protected String pattern;

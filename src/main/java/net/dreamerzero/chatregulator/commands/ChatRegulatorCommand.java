@@ -19,6 +19,9 @@ import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.Template;
 
+/**
+ * Main Plugin Command
+ */
 public class ChatRegulatorCommand implements SimpleCommand {
     private Map<UUID, InfractionPlayer> infractionPlayers;
     private Yaml config;

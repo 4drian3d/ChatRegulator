@@ -41,6 +41,10 @@ public class ChatListener {
         this.blacklist = blacklist;
     }
 
+    /**
+     * Chat Listener for detections
+     * @param event the chat event
+     */
     @Subscribe(async = true)
     public void onChat(final PlayerChatEvent event) {
         Player player = event.getPlayer();

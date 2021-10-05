@@ -22,12 +22,18 @@ import net.dreamerzero.chatregulator.utils.TypeUtils;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 import net.kyori.adventure.audience.Audience;
 
+/**
+ * Detections related to command execution by players
+ */
 public class CommandListener {
     private final ProxyServer server;
     private Logger logger;
     private Yaml config;
     private Yaml blacklist;
 
+    /**
+     * CommandListener constructor
+     */
     public CommandListener(final ProxyServer server, Logger logger, Yaml config, Yaml blacklist) {
         this.server = server;
         this.logger = logger;
@@ -35,6 +41,10 @@ public class CommandListener {
         this.blacklist = blacklist;
     }
 
+    /**
+     * Listener for command detections
+     * @param event the command event
+     */
     @Subscribe(async = true)
     public void onCommand(CommandExecuteEvent event){
         if (!(event.getCommandSource() instanceof Player)) {
