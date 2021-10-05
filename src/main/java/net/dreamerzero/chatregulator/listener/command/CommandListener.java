@@ -35,7 +35,7 @@ public class CommandListener {
         this.blacklist = blacklist;
     }
 
-    @Subscribe
+    @Subscribe(async = true)
     public void onCommand(CommandExecuteEvent event){
         if (!(event.getCommandSource() instanceof Player)) {
             return;

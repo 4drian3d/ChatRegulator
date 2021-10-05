@@ -34,7 +34,7 @@ public class ChatListener {
         this.blacklist = blacklist;
     }
 
-    @Subscribe
+    @Subscribe(async = true)
     public void onChat(final PlayerChatEvent event) {
         Player player = event.getPlayer();
         String message = event.getMessage();

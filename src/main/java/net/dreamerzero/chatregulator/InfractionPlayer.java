@@ -60,19 +60,19 @@ public class InfractionPlayer {
     }
 
     /**
-     * Returns the online status of the player
-     * @return player online status
-     */
-    public boolean isOnline(){
-        return this.isOnline;
-    }
-
-    /**
      * A simple method to obtain the player's name
      * @return infraction player name
      */
     public String username(){
         return this.username;
+    }
+
+    /**
+     * Returns the online status of the player
+     * @return player online status
+     */
+    public boolean isOnline(){
+        return this.isOnline;
     }
 
     /**
@@ -186,10 +186,14 @@ public class InfractionPlayer {
 
     /**
      * Obtain the original player
+     * <p>
+     * <strong>Check if the player is online with {@link InfractionPlayer#isOnline()}
+     * if you are going to use this method
+     * outside of a player event or command.</strong>
      * @return the original {@link Player}
      */
     public Player getPlayer(){
-        return player;
+        return this.isOnline ? this.player : null;
     }
 
     /**
@@ -201,10 +205,13 @@ public class InfractionPlayer {
     public static InfractionPlayer get(UUID uuid, ProxyServer server){
         if(Regulator.infractionPlayers.containsKey(uuid)){
             return Regulator.infractionPlayers.get(uuid);
-        } else {
+        } else if(server.getPlayer(uuid).isPresent()) {
             InfractionPlayer infractionPlayer = new InfractionPlayer(uuid, server);
             Regulator.infractionPlayers.put(uuid, infractionPlayer);
             return infractionPlayer;
+        } else {
+            System.err.println("An attempt has been made to obtain a player who has not joined the server yet.");
+            return null;
         }
     }
 

@@ -7,7 +7,7 @@ import com.velocitypowered.api.proxy.Player;
 import net.dreamerzero.chatregulator.InfractionPlayer;
 
 public class LeaveListener {
-    @Subscribe
+    @Subscribe(async = true)
     public void onLeave(DisconnectEvent event){
         Player player = event.getPlayer();
         InfractionPlayer infractionPlayer = InfractionPlayer.get(player);

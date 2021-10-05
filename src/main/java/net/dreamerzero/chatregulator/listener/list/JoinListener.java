@@ -14,7 +14,7 @@ public class JoinListener {
     public JoinListener(Map<UUID, InfractionPlayer> infractionPlayers){
         this.infractionPlayers = infractionPlayers;
     }
-    @Subscribe
+    @Subscribe(async = true)
     public void onPlayerJoin(PostLoginEvent event){
         Player player = event.getPlayer();
         UUID playerUUID = player.getUniqueId();
