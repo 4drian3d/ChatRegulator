@@ -18,4 +18,8 @@ Check the plugin commands from [Commands](https://github.com/4drian3d/ChatRegula
 
 ## Configuration
 
-Check the configuration and function of each option here  [Configuration](https://github.com/4drian3d/ChatRegulator/wiki/Configuration)
+Check the configuration and function of each option here [Configuration](https://github.com/4drian3d/ChatRegulator/wiki/Configuration)
+
+## Plugin API
+
+The plugin offers you several methods and events to interact in the detections and with the infraction players. Check the plugin API and its usage at [API](https://github.com/4drian3d/ChatRegulator/wiki/Plugin-API)
