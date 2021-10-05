@@ -43,8 +43,8 @@ public class Regulator {
     @Inject
     public Regulator(final ProxyServer server, Logger logger) {
         this.server = server;
-        this.config = new Yaml("config", "plugins/chatregulator");
-        this.blacklist = new Yaml("blacklist", "plugins/chatregulator");
+        this.config = new Yaml("config", "plugins/ChatRegulator");
+        this.blacklist = new Yaml("blacklist", "plugins/ChatRegulator");
         this.logger = logger;
     }
 
