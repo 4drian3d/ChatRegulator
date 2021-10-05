@@ -88,7 +88,7 @@ public class CommandListener {
             });
         }
 
-        SpamCheck panUtils = new SpamCheck(logger, infractionPlayer);
+        SpamCheck panUtils = new SpamCheck(infractionPlayer);
         if(!player.hasPermission("chatregulator.bypass.spam") && panUtils.commandSpamInfricted(command)) {
             server.getEventManager().fire(new CommandViolationEvent(infractionPlayer, InfractionType.SPAM, command)).thenAccept(violationEvent -> {
                 if(violationEvent.getResult() == GenericResult.denied()) {

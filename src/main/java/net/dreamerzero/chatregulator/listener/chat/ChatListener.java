@@ -27,6 +27,13 @@ public class ChatListener {
     private Yaml config;
     private Yaml blacklist;
 
+    /**
+     * ChatListener Constructor
+     * @param server the proxy server
+     * @param logger the logger
+     * @param config the plugin config
+     * @param blacklist the blacklist config
+     */
     public ChatListener(final ProxyServer server, Logger logger, Yaml config, Yaml blacklist) {
         this.server = server;
         this.logger = logger;
@@ -82,7 +89,7 @@ public class ChatListener {
             });
         }
 
-        SpamCheck panUtils = new SpamCheck(logger, infractionPlayer);
+        SpamCheck panUtils = new SpamCheck(infractionPlayer);
         if(!player.hasPermission("chatregulator.bypass.spam") && panUtils.messageSpamInfricted(message)) {
             server.getEventManager().fire(new ChatViolationEvent(infractionPlayer, InfractionType.SPAM, message)).thenAccept(violationEvent -> {
                 if(violationEvent.getResult() == GenericResult.denied()) {

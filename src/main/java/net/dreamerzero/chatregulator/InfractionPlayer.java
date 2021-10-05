@@ -184,6 +184,7 @@ public class InfractionPlayer {
         return spamViolations;
     }
 
+    //TODO: Use Optional
     /**
      * Obtain the original player
      * <p>

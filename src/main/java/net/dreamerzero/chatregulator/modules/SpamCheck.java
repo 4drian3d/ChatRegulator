@@ -1,21 +1,15 @@
 package net.dreamerzero.chatregulator.modules;
 
-import org.slf4j.Logger;
-
 import net.dreamerzero.chatregulator.InfractionPlayer;
 
 public class SpamCheck {
-    //For debug
-    @SuppressWarnings("unused")
-    private Logger logger;
     private InfractionPlayer infractionPlayer;
     /**
      * Create a new spam test
      * @param logger the logger
      * @param infractionPlayer the infractionPlayer involucred
      */
-    public SpamCheck(Logger logger,InfractionPlayer infractionPlayer){
-        this.logger = logger;
+    public SpamCheck(InfractionPlayer infractionPlayer){
         this.infractionPlayer = infractionPlayer;
     }
 

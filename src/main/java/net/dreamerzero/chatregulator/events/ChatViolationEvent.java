@@ -13,7 +13,7 @@ public class ChatViolationEvent extends ViolationEvent {
      * Constructor of a ChatViolationEvent
      * @param infractionPlayer the player who committed the infraction
      * @param type the infraction type
-     * @param command the chat message in which the violation was found
+     * @param message the chat message in which the violation was found
      */
     public ChatViolationEvent(InfractionPlayer infractionPlayer, InfractionType type, String message) {
         super(infractionPlayer, type);

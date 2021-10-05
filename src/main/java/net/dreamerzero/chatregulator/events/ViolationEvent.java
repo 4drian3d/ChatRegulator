@@ -8,6 +8,9 @@ import com.velocitypowered.api.event.ResultedEvent.GenericResult;
 import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 
+/**
+ * Basis for infringement events
+ */
 public class ViolationEvent implements ResultedEvent<GenericResult> {
     protected final InfractionPlayer infractionPlayer;
     protected final InfractionType type;

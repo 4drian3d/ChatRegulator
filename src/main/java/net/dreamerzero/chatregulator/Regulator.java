@@ -19,6 +19,7 @@ import net.dreamerzero.chatregulator.listener.chat.ChatListener;
 import net.dreamerzero.chatregulator.listener.command.CommandListener;
 import net.dreamerzero.chatregulator.listener.list.JoinListener;
 import net.dreamerzero.chatregulator.listener.list.LeaveListener;
+import net.dreamerzero.chatregulator.listener.plugin.PluginListener;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
 /**
@@ -51,11 +52,13 @@ public class Regulator {
             MiniMessage.miniMessage().parse("<gradient:#f2709c:#ff9472>ChatRegulator</gradient> <gradient:#DAE2F8:#D4D3DD>has started, have a very nice day</gradient>"));
         // Default config
         new Configuration(config, blacklist).setDefaultConfig();
-        // Register the PostLogin listener
+
+        server.getEventManager().register(this, new PluginListener(logger));
         server.getEventManager().register(this, new ChatListener(server, logger, config, blacklist));
         server.getEventManager().register(this, new CommandListener(server, logger, config, blacklist));
         server.getEventManager().register(this, new JoinListener(infractionPlayers));
         server.getEventManager().register(this, new LeaveListener());
+
         CommandMeta regulatorMeta = server.getCommandManager().metaBuilder("chatregulator").aliases("chatr", "cregulator").build();
         server.getCommandManager().register(regulatorMeta, new ChatRegulatorCommand(infractionPlayers, config, server));
     }
