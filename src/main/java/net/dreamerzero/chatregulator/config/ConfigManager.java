@@ -1,5 +1,8 @@
 package net.dreamerzero.chatregulator.config;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.leonhard.storage.Yaml;
 import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.dreamerzero.chatregulator.modules.FloodCheck;
@@ -54,29 +57,33 @@ public class ConfigManager {
      * @param infractor offender
      * @param type the type of infraction
      */
-    public void sendWarningMessage(Audience infractor, TypeUtils.InfractionType type){
+    public void sendWarningMessage(InfractionPlayer infractor, TypeUtils.InfractionType type){
         String message = config.getString("spam.messages.warning");
+        Audience player = infractor.getPlayer();
 
         switch(getWarningType(type)){
             case TITLE:
                 if(!message.contains(";")){
-                    infractor.showTitle(
+                    player.showTitle(
                     Title.title(
                         Component.empty(),
                         MiniMessage.miniMessage().parse(
-                            message)));
+                            message,
+                            PlaceholderUtils.getTemplates(infractor))));
                 } else {
                     String titleParts[] = message.split(";");
-                    infractor.showTitle(
+                    player.showTitle(
                         Title.title(
                             MiniMessage.miniMessage().parse(
-                                titleParts[0]),
+                                titleParts[0],
+                                PlaceholderUtils.getTemplates(infractor)),
                             MiniMessage.miniMessage().parse(
-                                titleParts[1])));
+                                titleParts[1],
+                                PlaceholderUtils.getTemplates(infractor))));
                 }
                 break;
-            case MESSAGE: infractor.sendMessage(MiniMessage.miniMessage().parse(message)); break;
-            case ACTIONBAR: infractor.sendActionBar(MiniMessage.miniMessage().parse(message)); break;
+            case MESSAGE: player.sendMessage(MiniMessage.miniMessage().parse(message, PlaceholderUtils.getTemplates(infractor))); break;
+            case ACTIONBAR: player.sendActionBar(MiniMessage.miniMessage().parse(message, PlaceholderUtils.getTemplates(infractor))); break;
         }
     }
 
@@ -86,14 +93,18 @@ public class ConfigManager {
      * @param type the type of infraction
      * @param fUtils the flood check
      */
-    public void sendWarningMessage(Audience infractor, TypeUtils.InfractionType type, FloodCheck fUtils){
+    public void sendWarningMessage(InfractionPlayer infractor, TypeUtils.InfractionType type, FloodCheck fUtils){
         String message = config.getString("flood.messages.warning");
-        Template template = Template.of("infraction", fUtils.getInfractionWord());
+        List<Template> template = new ArrayList<>();
+        template.add(Template.of("infraction", fUtils.getInfractionWord()));
+        template.addAll(PlaceholderUtils.getTemplates(infractor));
+
+        Audience player = infractor.getPlayer();
 
         switch(getWarningType(type)){
             case TITLE:
                 if(!message.contains(";")){
-                    infractor.showTitle(
+                    player.showTitle(
                     Title.title(
                         Component.empty(),
                         MiniMessage.miniMessage().parse(
@@ -101,7 +112,7 @@ public class ConfigManager {
                             template)));
                 } else {
                     String titleParts[] = message.split(";");
-                    infractor.showTitle(
+                    player.showTitle(
                         Title.title(
                             MiniMessage.miniMessage().parse(
                                 titleParts[0],
@@ -111,8 +122,8 @@ public class ConfigManager {
                                 template)));
                 }
                 break;
-            case MESSAGE: infractor.sendMessage(MiniMessage.miniMessage().parse(message, template)); break;
-            case ACTIONBAR: infractor.sendActionBar(MiniMessage.miniMessage().parse(message, template)); break;
+            case MESSAGE: player.sendMessage(MiniMessage.miniMessage().parse(message, template)); break;
+            case ACTIONBAR: player.sendActionBar(MiniMessage.miniMessage().parse(message, template)); break;
         }
     }
 
@@ -122,14 +133,18 @@ public class ConfigManager {
      * @param type the type of infraction
      * @param iUtils the infractions check
      */
-    public void sendWarningMessage(Audience infractor, TypeUtils.InfractionType type, InfractionCheck iUtils){
+    public void sendWarningMessage(InfractionPlayer infractor, TypeUtils.InfractionType type, InfractionCheck iUtils){
         String message = config.getString("infractions.messages.warning");
-        Template template = Template.of("infraction", iUtils.getInfractionWord());
+        List<Template> template = new ArrayList<>();
+        template.add(Template.of("infraction", iUtils.getInfractionWord()));
+        template.addAll(PlaceholderUtils.getTemplates(infractor));
+
+        Audience player = infractor.getPlayer();
 
         switch(getWarningType(type)){
             case TITLE:
                 if(!message.contains(";")){
-                    infractor.showTitle(
+                    player.showTitle(
                     Title.title(
                         Component.empty(),
                         MiniMessage.miniMessage().parse(
@@ -137,7 +152,7 @@ public class ConfigManager {
                             template)));
                 } else {
                     String titleParts[] = message.split(";");
-                    infractor.showTitle(
+                    player.showTitle(
                         Title.title(
                             MiniMessage.miniMessage().parse(
                                 titleParts[0],
@@ -147,8 +162,8 @@ public class ConfigManager {
                                 template)));
                 }
                 break;
-            case MESSAGE: infractor.sendMessage(MiniMessage.miniMessage().parse(message)); break;
-            case ACTIONBAR: infractor.sendActionBar(MiniMessage.miniMessage().parse(message)); break;
+            case MESSAGE: player.sendMessage(MiniMessage.miniMessage().parse(message, template)); break;
+            case ACTIONBAR: player.sendActionBar(MiniMessage.miniMessage().parse(message, template)); break;
         }
     }
 

@@ -60,7 +60,7 @@ public class ChatListener {
                     dUtils.debug(infractionPlayer, message, InfractionType.FLOOD, fUtils);
                     violationEvent.addViolationGlobal(InfractionType.FLOOD);
                     event.setResult(ChatResult.denied());
-                    cManager.sendWarningMessage(player, InfractionType.FLOOD, fUtils);
+                    cManager.sendWarningMessage(infractionPlayer, InfractionType.FLOOD, fUtils);
                     cManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(
                         op -> op.hasPermission("chatregulator.notifications")).toList()), infractionPlayer, InfractionType.FLOOD);
                     cUtils.executeCommand(InfractionType.FLOOD, infractionPlayer);
@@ -81,7 +81,7 @@ public class ChatListener {
                     dUtils.debug(infractionPlayer, message, InfractionType.REGULAR, iUtils);
                     violationEvent.addViolationGlobal(InfractionType.REGULAR);
                     event.setResult(ChatResult.denied());
-                    cManager.sendWarningMessage(player, InfractionType.REGULAR, iUtils);
+                    cManager.sendWarningMessage(infractionPlayer, InfractionType.REGULAR, iUtils);
                     cManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(
                         op -> op.hasPermission("chatregulator.notifications")).toList()), infractionPlayer, InfractionType.REGULAR);
                     infractionPlayer.addViolation(InfractionType.REGULAR);
@@ -100,7 +100,7 @@ public class ChatListener {
                 } else {
                     dUtils.debug(infractionPlayer, message, InfractionType.SPAM);
                     violationEvent.addViolationGlobal(InfractionType.SPAM);
-                    cManager.sendWarningMessage(player, InfractionType.SPAM);
+                    cManager.sendWarningMessage(infractionPlayer, InfractionType.SPAM);
                     cManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(
                         op -> op.hasPermission("chatregulator.notifications")).toList()), infractionPlayer, InfractionType.SPAM);
                     event.setResult(ChatResult.denied());
