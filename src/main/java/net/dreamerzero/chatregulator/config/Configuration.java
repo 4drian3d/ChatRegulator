@@ -79,8 +79,6 @@ public class Configuration {
         config.setDefault(
             "spam.messages.alert",
             "<red>The player <aqua><player></aqua> <red>has make flood <aqua><server></aqua> server.");
-        //TODO: Implement SPAM limit
-        //config.setDefault("spam.limit", "5");
         config.setDefault("spam.commands.execute-commands", false);
         config.setDefault("spam.commands.violations-required", 5);
         config.setDefault(
@@ -89,7 +87,8 @@ public class Configuration {
         /*---------------
         General
         ---------------*/
-        config.setDefault("debug", false);
+        config.setDefault("general.debug", false);
+        config.setDefault("general.limit-tab-complete", 30);
         config.setDefault(
             "general.messages.stats",
             List.of(

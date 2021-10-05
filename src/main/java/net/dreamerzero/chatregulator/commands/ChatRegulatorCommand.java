@@ -148,11 +148,15 @@ public class ChatRegulatorCommand implements SimpleCommand {
         String args[] = invocation.arguments();
         switch(args.length){
             case 0: return List.of("info", "stats", "player");
-            //TODO: Return all infractor players
             case 1: if(args[0] == "player"){
-                List<String> playerList = new ArrayList<String>();
-                server.getAllPlayers().forEach(player -> playerList.add(player.getUsername()));
-                return playerList;
+                ArrayList<String> playerList = new ArrayList<>();
+                if(infractionPlayers.size() < config.getInt("general.limit-tab-complete")){
+                    infractionPlayers.entrySet().forEach(entry -> playerList.add(entry.getValue().username()));
+                    return playerList;
+                } else {
+                    server.getAllPlayers().forEach(player -> playerList.add(player.getUsername()));
+                    return playerList;
+                }
             }
             default: return List.of("");
         }
