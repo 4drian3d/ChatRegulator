@@ -1,6 +1,9 @@
-package net.dreamerzero.chatregulator.utils;
+package net.dreamerzero.chatregulator;
+
+import java.util.UUID;
 
 import com.velocitypowered.api.proxy.Player;
+import com.velocitypowered.api.proxy.ProxyServer;
 
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 
@@ -34,6 +37,19 @@ public class InfractionPlayer {
         this.username = player.getUsername();
     }
 
+    public InfractionPlayer(UUID uuid, ProxyServer server){
+        this.player = server.getPlayer(uuid).get();
+        this.preLastMessage = " .";
+        this.lastMessage = " ";
+        this.preLastCommand = " ";
+        this.lastCommand = " .";
+        this.floodViolations = 0;
+        this.regularViolations = 0;
+        this.spamViolations = 0;
+        this.isOnline = true;
+        this.username = player.getUsername();
+    }
+
     /**
      * Returns the online status of the player
      * @return player online status
@@ -42,6 +58,10 @@ public class InfractionPlayer {
         return this.isOnline;
     }
 
+    /**
+     * A simple method to obtain the player's name
+     * @return infraction player name
+     */
     public String username(){
         return this.username;
     }
@@ -157,9 +177,40 @@ public class InfractionPlayer {
 
     /**
      * Obtain the original player
-     * @return the original player
+     * @return the original {@link Player}
      */
     public Player getPlayer(){
         return player;
+    }
+
+    /**
+     * Get the {@link InfractionPlayer} based on a {@link UUID}
+     * @param uuid the player uuid
+     * @return the {@link InfractionPlayer}
+     */
+    public static InfractionPlayer get(UUID uuid, ProxyServer server){
+        if(Regulator.infractionPlayers.containsKey(uuid)){
+            return Regulator.infractionPlayers.get(uuid);
+        } else {
+            InfractionPlayer infractionPlayer = new InfractionPlayer(uuid, server);
+            Regulator.infractionPlayers.put(uuid, infractionPlayer);
+            return infractionPlayer;
+        }
+    }
+
+    /**
+     * Get the {@link InfractionPlayer} based on a {@link Player}
+     * @param player the player uuid
+     * @return the {@link InfractionPlayer}
+     */
+    public static InfractionPlayer get(Player player){
+        UUID uuid = player.getUniqueId();
+        if(Regulator.infractionPlayers.containsKey(uuid)){
+            return Regulator.infractionPlayers.get(uuid);
+        } else {
+            InfractionPlayer infractionPlayer = new InfractionPlayer(player);
+            Regulator.infractionPlayers.put(uuid, infractionPlayer);
+            return infractionPlayer;
+        }
     }
 }

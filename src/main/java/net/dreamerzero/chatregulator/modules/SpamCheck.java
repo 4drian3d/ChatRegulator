@@ -2,10 +2,11 @@ package net.dreamerzero.chatregulator.modules;
 
 import org.slf4j.Logger;
 
-import net.dreamerzero.chatregulator.utils.InfractionPlayer;
+import net.dreamerzero.chatregulator.InfractionPlayer;
 
 public class SpamCheck {
-    //For debug e.e
+    //For debug
+    @SuppressWarnings("unused")
     private Logger logger;
     private InfractionPlayer infractionPlayer;
     public SpamCheck(Logger logger,InfractionPlayer infractionPlayer){

@@ -16,12 +16,12 @@
 
     <repositories>
         <repository>
-            <id>velocity</id>
-            <url>https://nexus.velocitypowered.com/repository/maven-public/</url>
-        </repository>
-        <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
+        </repository>
+        <repository>
+            <id>velocity</id>
+            <url>https://nexus.velocitypowered.com/repository/maven-public/</url>
         </repository>
         <repository>
             <id>sonatype-oss-snapshots</id>
@@ -59,6 +59,13 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!-- TODO: Warning message in reload/unload plugin
+        <dependency>
+            <groupId>com.github.FrankHeijden</groupId>
+            <artifactId>ServerUtils</artifactId>
+            <version>3.0.0</version>
+            <scope>provided</scope>
+        </dependency>-->
     </dependencies>
 
     <build>

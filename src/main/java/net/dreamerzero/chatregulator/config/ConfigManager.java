@@ -3,9 +3,9 @@ package net.dreamerzero.chatregulator.config;
 import com.velocitypowered.api.proxy.Player;
 
 import de.leonhard.storage.Yaml;
+import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.dreamerzero.chatregulator.modules.FloodCheck;
 import net.dreamerzero.chatregulator.modules.InfractionCheck;
-import net.dreamerzero.chatregulator.utils.InfractionPlayer;
 import net.dreamerzero.chatregulator.utils.PlaceholderUtils;
 import net.dreamerzero.chatregulator.utils.TypeUtils;
 import net.kyori.adventure.audience.Audience;

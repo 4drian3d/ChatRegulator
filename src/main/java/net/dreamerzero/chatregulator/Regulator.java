@@ -19,20 +19,18 @@ import net.dreamerzero.chatregulator.listener.chat.ChatListener;
 import net.dreamerzero.chatregulator.listener.command.CommandListener;
 import net.dreamerzero.chatregulator.listener.list.JoinListener;
 import net.dreamerzero.chatregulator.listener.list.LeaveListener;
-import net.dreamerzero.chatregulator.utils.InfractionPlayer;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
 public class Regulator {
     private final ProxyServer server;
     private Yaml config;
     private Yaml blacklist;
-    private Map<UUID, InfractionPlayer> infractionPlayers;
+    protected static Map<UUID, InfractionPlayer> infractionPlayers = new HashMap<>();
     private final Logger logger;
 
     @Inject
     public Regulator(final ProxyServer server, Logger logger) {
         this.server = server;
-        this.infractionPlayers = new HashMap<>();
         this.config = new Yaml("config", "plugins/chatregulator");
         this.blacklist = new Yaml("blacklist", "plugins/chatregulator");
         this.logger = logger;
@@ -46,10 +44,10 @@ public class Regulator {
         // Default config
         new Configuration(config, blacklist).setDefaultConfig();
         // Register the PostLogin listener
-        server.getEventManager().register(this, new ChatListener(server, logger, config, blacklist, infractionPlayers));
-        server.getEventManager().register(this, new CommandListener(server, logger, config, blacklist, infractionPlayers));
+        server.getEventManager().register(this, new ChatListener(server, logger, config, blacklist));
+        server.getEventManager().register(this, new CommandListener(server, logger, config, blacklist));
         server.getEventManager().register(this, new JoinListener(infractionPlayers));
-        server.getEventManager().register(this, new LeaveListener(infractionPlayers));
+        server.getEventManager().register(this, new LeaveListener());
         CommandMeta regulatorMeta = server.getCommandManager().metaBuilder("chatregulator").aliases("chatr", "cregulator").build();
         server.getCommandManager().register(regulatorMeta, new ChatRegulatorCommand(infractionPlayers, config, server));
     }
@@ -66,14 +64,5 @@ public class Regulator {
      */
     public Yaml getBlackList(){
         return this.blacklist;
-    }
-
-    /**
-     * Get the InfractionPlayer based on a UUID
-     * @param uuid the player uuid
-     * @return the {@link InfractionPlayer}
-     */
-    public InfractionPlayer getInfractionPlayer(UUID uuid){
-        return this.infractionPlayers.containsKey(uuid) ? this.infractionPlayers.get(uuid) : null;
     }
 }

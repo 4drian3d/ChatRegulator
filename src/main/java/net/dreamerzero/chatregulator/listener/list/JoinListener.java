@@ -7,7 +7,7 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.PostLoginEvent;
 import com.velocitypowered.api.proxy.Player;
 
-import net.dreamerzero.chatregulator.utils.InfractionPlayer;
+import net.dreamerzero.chatregulator.InfractionPlayer;
 
 public class JoinListener {
     private Map<UUID, InfractionPlayer> infractionPlayers;
@@ -18,7 +18,10 @@ public class JoinListener {
     public void onPlayerJoin(PostLoginEvent event){
         Player player = event.getPlayer();
         UUID playerUUID = player.getUniqueId();
-        if(infractionPlayers.containsKey(playerUUID)) return;
+        if(infractionPlayers.containsKey(playerUUID)) {
+            infractionPlayers.get(playerUUID).isOnline(true);
+            return;
+        }
 
         InfractionPlayer infractionPlayer = new InfractionPlayer(player);
         infractionPlayers.put(playerUUID, infractionPlayer);

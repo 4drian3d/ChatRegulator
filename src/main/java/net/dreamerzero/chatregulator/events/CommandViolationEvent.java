@@ -5,7 +5,7 @@ import java.util.Objects;
 import com.velocitypowered.api.event.ResultedEvent;
 import com.velocitypowered.api.event.ResultedEvent.GenericResult;
 
-import net.dreamerzero.chatregulator.utils.InfractionPlayer;
+import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 
 /**

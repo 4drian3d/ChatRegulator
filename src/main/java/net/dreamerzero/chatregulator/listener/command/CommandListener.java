@@ -1,8 +1,5 @@
 package net.dreamerzero.chatregulator.listener.command;
 
-import java.util.Map;
-import java.util.UUID;
-
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.ResultedEvent.GenericResult;
 import com.velocitypowered.api.event.command.CommandExecuteEvent;
@@ -13,6 +10,7 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import org.slf4j.Logger;
 
 import de.leonhard.storage.Yaml;
+import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.dreamerzero.chatregulator.config.ConfigManager;
 import net.dreamerzero.chatregulator.events.CommandViolationEvent;
 import net.dreamerzero.chatregulator.modules.FloodCheck;
@@ -20,7 +18,6 @@ import net.dreamerzero.chatregulator.modules.InfractionCheck;
 import net.dreamerzero.chatregulator.modules.SpamCheck;
 import net.dreamerzero.chatregulator.utils.CommandUtils;
 import net.dreamerzero.chatregulator.utils.DebugUtils;
-import net.dreamerzero.chatregulator.utils.InfractionPlayer;
 import net.dreamerzero.chatregulator.utils.TypeUtils;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 import net.kyori.adventure.audience.Audience;
@@ -30,14 +27,12 @@ public class CommandListener {
     private Logger logger;
     private Yaml config;
     private Yaml blacklist;
-    private Map<UUID, InfractionPlayer> infractionPlayers;
 
-    public CommandListener(final ProxyServer server, Logger logger, Yaml config, Yaml blacklist, Map<UUID, InfractionPlayer> infractionPlayers) {
+    public CommandListener(final ProxyServer server, Logger logger, Yaml config, Yaml blacklist) {
         this.server = server;
         this.logger = logger;
         this.config = config;
         this.blacklist = blacklist;
-        this.infractionPlayers = infractionPlayers;
     }
 
     @Subscribe
@@ -47,7 +42,7 @@ public class CommandListener {
         }
 
         Player player = (Player)event.getCommandSource();
-        InfractionPlayer infractionPlayer = infractionPlayers.get(player.getUniqueId());
+        InfractionPlayer infractionPlayer = InfractionPlayer.get(player);
         String command = event.getCommand();
         ConfigManager cManager = new ConfigManager(config);
         CommandUtils cUtils = new CommandUtils(server, config);

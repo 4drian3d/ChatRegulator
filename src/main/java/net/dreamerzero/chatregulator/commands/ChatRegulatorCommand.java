@@ -11,8 +11,8 @@ import com.velocitypowered.api.permission.Tristate;
 import com.velocitypowered.api.proxy.ProxyServer;
 
 import de.leonhard.storage.Yaml;
+import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.dreamerzero.chatregulator.config.ConfigManager;
-import net.dreamerzero.chatregulator.utils.InfractionPlayer;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.Template;
