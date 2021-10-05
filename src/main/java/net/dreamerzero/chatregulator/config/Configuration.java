@@ -4,13 +4,25 @@ import java.util.List;
 
 import de.leonhard.storage.Yaml;
 
+/**
+ * The configuration paths available in the plugin
+ */
 public class Configuration {
     private Yaml config;
     private Yaml blacklist;
+    /**
+     * Constructor of the Configuration
+     * @param config the plugin config
+     * @param blacklist the plugin blacklist config
+     */
     public Configuration(Yaml config, Yaml blacklist){
         this.config = config;
         this.blacklist = blacklist;
     }
+    /**
+     * Set the default values of the configuration
+     * paths if they are not found.
+     */
     public void setDefaultConfig(){
         /*---------------
         Blacklist

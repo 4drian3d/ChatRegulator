@@ -24,6 +24,9 @@ public class ChatRegulatorCommand implements SimpleCommand {
     private ProxyServer server;
     /**
      * ChatRegulatorCommand Contructor
+     * @param infractionPlayers the list of infractor players
+     * @param config the plugin config
+     * @param server the proxy server
      */
     public ChatRegulatorCommand(Map<UUID, InfractionPlayer> infractionPlayers, Yaml config, ProxyServer server){
         this.infractionPlayers = infractionPlayers;

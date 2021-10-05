@@ -17,6 +17,10 @@ import net.kyori.adventure.title.Title;
  */
 public class ConfigManager {
     private Yaml config;
+    /**
+     * Constructor of the ConfigManager
+     * @param config plugin config
+     */
     public ConfigManager(Yaml config){
         this.config = config;
     }
@@ -169,6 +173,14 @@ public class ConfigManager {
                 PlaceholderUtils.getTemplates(infractor)));
     }
 
+    /**
+     * Sends the message of a successful
+     * warning reset to the command executor
+     * @param sender command executor
+     * @param type type of infraction
+     * @param player the infraction player
+     *               whose warnings have been reset
+     */
     public void sendResetMessage(Audience sender, TypeUtils.InfractionType type, InfractionPlayer player){
         MiniMessage mm = MiniMessage.miniMessage();
         switch(type){

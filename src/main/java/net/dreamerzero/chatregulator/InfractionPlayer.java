@@ -187,7 +187,7 @@ public class InfractionPlayer {
     /**
      * Obtain the original player
      * <p>
-     * <strong>Check if the player is online with {@link InfractionPlayer#isOnline()}
+     * <strong>Check if the player is online with {@link #isOnline()}
      * if you are going to use this method
      * outside of a player event or command.</strong>
      * @return the original {@link Player}
