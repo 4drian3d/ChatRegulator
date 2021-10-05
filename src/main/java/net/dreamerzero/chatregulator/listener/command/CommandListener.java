@@ -57,13 +57,14 @@ public class CommandListener {
                 if(violationEvent.getResult() == GenericResult.denied()) {
                     infractionPlayer.lastCommand(command);
                 } else {
+                    dUtils.debug(infractionPlayer, command, InfractionType.FLOOD, fUtils);
+                    violationEvent.addViolationGlobal(InfractionType.FLOOD);
                     event.setResult(CommandResult.denied());
                     cManager.sendWarningMessage(player, InfractionType.FLOOD);
                     cManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(
                         op -> op.hasPermission("chatregulator.notifications")).toList()), infractionPlayer, InfractionType.FLOOD);
                     infractionPlayer.addViolation(InfractionType.FLOOD);
                     cUtils.executeCommand(InfractionType.FLOOD, infractionPlayer);
-                    dUtils.debug(infractionPlayer, command, InfractionType.FLOOD, fUtils);
                     return;
                 }
             });
@@ -76,13 +77,14 @@ public class CommandListener {
                 if(violationEvent.getResult() == GenericResult.denied() && command != infractionPlayer.lastCommand()) {
                     infractionPlayer.lastCommand(command);
                 } else if(violationEvent.getResult() == GenericResult.allowed()){
+                    dUtils.debug(infractionPlayer, command, InfractionType.REGULAR, iUtils);
+                    violationEvent.addViolationGlobal(InfractionType.REGULAR);
                     event.setResult(CommandResult.denied());
                     cManager.sendWarningMessage(player, InfractionType.REGULAR);
                     cManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(
                         op -> op.hasPermission("chatregulator.notifications")).toList()), infractionPlayer, InfractionType.REGULAR);
                     infractionPlayer.addViolation(InfractionType.REGULAR);
                     cUtils.executeCommand(InfractionType.REGULAR, infractionPlayer);
-                    dUtils.debug(infractionPlayer, command, InfractionType.REGULAR, iUtils);
                     return;
                 }
             });
@@ -95,13 +97,14 @@ public class CommandListener {
                     infractionPlayer.lastCommand(command);
                     return;
                 } else {
+                    dUtils.debug(infractionPlayer, command, InfractionType.SPAM);
+                    violationEvent.addViolationGlobal(InfractionType.SPAM);
                     event.setResult(CommandResult.denied());
-                    cManager.sendWarningMessage(player, InfractionType.REGULAR);
+                    cManager.sendWarningMessage(player, InfractionType.SPAM);
                     cManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(
                         op -> op.hasPermission("chatregulator.notifications")).toList()), infractionPlayer, InfractionType.SPAM);
                     infractionPlayer.addViolation(InfractionType.SPAM);
                     cUtils.executeCommand(InfractionType.SPAM, infractionPlayer);
-                    dUtils.debug(infractionPlayer, command, InfractionType.SPAM);
                     return;
                 }
             });

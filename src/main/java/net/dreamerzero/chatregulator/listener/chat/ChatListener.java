@@ -58,6 +58,7 @@ public class ChatListener {
                     infractionPlayer.lastMessage(message);
                 } else {
                     dUtils.debug(infractionPlayer, message, InfractionType.FLOOD, fUtils);
+                    violationEvent.addViolationGlobal(InfractionType.FLOOD);
                     event.setResult(ChatResult.denied());
                     cManager.sendWarningMessage(player, InfractionType.FLOOD, fUtils);
                     cManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(
@@ -78,6 +79,7 @@ public class ChatListener {
                     infractionPlayer.lastMessage(message);
                 } else if(violationEvent.getResult() == GenericResult.allowed()) {
                     dUtils.debug(infractionPlayer, message, InfractionType.REGULAR, iUtils);
+                    violationEvent.addViolationGlobal(InfractionType.REGULAR);
                     event.setResult(ChatResult.denied());
                     cManager.sendWarningMessage(player, InfractionType.REGULAR, iUtils);
                     cManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(
@@ -97,6 +99,7 @@ public class ChatListener {
                     return;
                 } else {
                     dUtils.debug(infractionPlayer, message, InfractionType.SPAM);
+                    violationEvent.addViolationGlobal(InfractionType.SPAM);
                     cManager.sendWarningMessage(player, InfractionType.SPAM);
                     cManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(
                         op -> op.hasPermission("chatregulator.notifications")).toList()), infractionPlayer, InfractionType.SPAM);

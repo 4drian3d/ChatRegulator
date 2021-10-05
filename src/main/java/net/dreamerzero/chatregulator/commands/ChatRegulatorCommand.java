@@ -13,6 +13,7 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import de.leonhard.storage.Yaml;
 import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.dreamerzero.chatregulator.config.ConfigManager;
+import net.dreamerzero.chatregulator.events.ViolationEvent;
 import net.dreamerzero.chatregulator.utils.PlaceholderUtils;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -43,18 +44,10 @@ public class ChatRegulatorCommand implements SimpleCommand {
         if(args.length == 0){
             source.sendMessage(mm.parse(config.getString("general.messages.info")));
         } else if(args.length >= 1){
-            int floods = 0, regular = 0, spam = 0;
-
-            for(Entry<UUID, InfractionPlayer> player : infractionPlayers.entrySet()){
-                regular = regular + player.getValue().getRegularInfractions();
-                floods = floods + player.getValue().getFloodInfractions();
-                spam = spam + player.getValue().getSpamInfractions();
-            }
-
             ArrayList<Template> templates = new ArrayList<>();
-            templates.add(Template.of("flood", String.valueOf(floods)));
-            templates.add(Template.of("spam", String.valueOf(spam)));
-            templates.add(Template.of("regular", String.valueOf(regular)));
+            templates.add(Template.of("flood", String.valueOf(ViolationEvent.floodCount)));
+            templates.add(Template.of("spam", String.valueOf(ViolationEvent.spamCount)));
+            templates.add(Template.of("regular", String.valueOf(ViolationEvent.regularCount)));
             switch(args[0]){
                 case "info":
                     source.sendMessage(mm.parse(config.getString("general.messages.info")));
@@ -98,7 +91,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
                             ConfigManager cManager = new ConfigManager(config);
                             if(args.length >= 3){
                                 switch(args[2].toLowerCase()){
-                                    case "infractions": case "regular": 
+                                    case "infractions": case "regular":
                                         infractionPlayer.setViolations(InfractionType.REGULAR, 0);
                                         cManager.sendResetMessage(source, InfractionType.REGULAR, infractionPlayer);
                                         break;
