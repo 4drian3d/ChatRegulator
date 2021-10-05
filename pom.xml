@@ -16,10 +16,6 @@
 
     <repositories>
         <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-        <repository>
             <id>velocity</id>
             <url>https://nexus.velocitypowered.com/repository/maven-public/</url>
         </repository>
@@ -27,16 +23,20 @@
             <id>sonatype-oss-snapshots</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
-    <pluginRepositories>
-        <pluginRepository>
-            <id>apache.snapshots</id>
-            <url>https://repository.apache.org/snapshots/</url>
-        </pluginRepository>
-    </pluginRepositories>
-
     <dependencies>
+        <!-- TODO: Warning message in reload/unload plugin
+        <dependency>
+            <groupId>com.github.FrankHeijden</groupId>
+            <artifactId>ServerUtils</artifactId>
+            <version>v3.0.0</version>
+            <scope>provided</scope>
+        </dependency>-->
         <dependency>
             <groupId>com.velocitypowered</groupId>
             <artifactId>velocity-api</artifactId>
@@ -59,14 +59,15 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- TODO: Warning message in reload/unload plugin
-        <dependency>
-            <groupId>com.github.FrankHeijden</groupId>
-            <artifactId>ServerUtils</artifactId>
-            <version>3.0.0</version>
-            <scope>provided</scope>
-        </dependency>-->
+        
     </dependencies>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>apache.snapshots</id>
+            <url>https://repository.apache.org/snapshots/</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <build>
         <finalName>${project.artifactId}-${project.version}</finalName>

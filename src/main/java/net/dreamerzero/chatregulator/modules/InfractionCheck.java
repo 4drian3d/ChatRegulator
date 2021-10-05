@@ -9,43 +9,30 @@ import de.leonhard.storage.Yaml;
 /**
  * Utilities for the detection of restringed words
  */
-public class InfractionCheck {
+public class InfractionCheck extends Check {
     private Yaml blacklist;
-    private String pattern;
-    private Matcher matcher;
-    private String string;
+
+    /**
+     * Create a new infringement test
+     * @param blacklist the blacklist config
+     */
     public InfractionCheck(Yaml blacklist){
         this.blacklist = blacklist;
     }
-    /**
-     * Check if the delivered string contains any restringed words.
-     * @param string the message to be reviewed for infringement
-     * @return if the string contains any forbidden words
-     */
-    public boolean isInfraction(String string){
+
+    @Override
+    public void check(String string){
         List<String> blockedWords = blacklist.getStringList("blocked-words");
         for (String blockedWord : blockedWords){
             Matcher match = Pattern.compile(blockedWord).matcher(string);
-            this.string = string;
+            super.string = string;
             if(match.lookingAt()){
-                pattern = blockedWord;
-                matcher = match;
-                return true;
+                super.pattern = blockedWord;
+                super.matcher = match;
+                super.detected = true;
+                return;
             }
         }
-        return false;
-    }
-
-    /**
-     * Gets the regex pattern by which the word was detected.
-     * @param string the string to check
-     * @return the regex pattern by which the string was detected
-     */
-    public String getPattern(){
-        return this.pattern;
-    }
-
-    public String getInfractionWord(){
-        return string.substring(matcher.start(), matcher.end());
+        super.detected = false;
     }
 }

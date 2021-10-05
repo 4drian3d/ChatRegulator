@@ -24,6 +24,10 @@ public class InfractionPlayer {
     private boolean isOnline;
     private final String username;
 
+    /**
+     * Constructor of an InfractorPlayer based on a {@link Player}
+     * @param player the player on which it will be based
+     */
     public InfractionPlayer(Player player){
         this.player = player;
         this.preLastMessage = " .";
@@ -37,6 +41,11 @@ public class InfractionPlayer {
         this.username = player.getUsername();
     }
 
+    /**
+     * Constructor of an InfractorPlayer based on its {@link UUID}
+     * @param uuid the uuid on which it will be based
+     * @param server the proxy server
+     */
     public InfractionPlayer(UUID uuid, ProxyServer server){
         this.player = server.getPlayer(uuid).get();
         this.preLastMessage = " .";
@@ -186,6 +195,7 @@ public class InfractionPlayer {
     /**
      * Get the {@link InfractionPlayer} based on a {@link UUID}
      * @param uuid the player uuid
+     * @param server the proxy server
      * @return the {@link InfractionPlayer}
      */
     public static InfractionPlayer get(UUID uuid, ProxyServer server){

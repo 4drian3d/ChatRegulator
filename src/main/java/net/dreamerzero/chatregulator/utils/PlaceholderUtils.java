@@ -2,14 +2,21 @@ package net.dreamerzero.chatregulator.utils;
 
 import java.util.List;
 
-import com.velocitypowered.api.proxy.Player;
-
+import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.kyori.adventure.text.minimessage.Template;
 
 public class PlaceholderUtils {
-    public List<Template> getTemplates(Player player){
+    /**
+     * Obtain placeholders from an {@link InfractionPlayer}
+     * @param player the {@link InfractionPlayer}
+     * @return placeholders based on this player
+     */
+    public static List<Template> getTemplates(InfractionPlayer player){
         return List.of(
-            Template.of("player", player.getUsername()),
-            Template.of("server", player.getCurrentServer().get().getServerInfo().getName()));
+            Template.of("player", player.username()),
+            Template.of("server", player.getPlayer().getCurrentServer().get().getServerInfo().getName()),
+            Template.of("flood", String.valueOf(player.getFloodInfractions())),
+            Template.of("spam", String.valueOf(player.getSpamInfractions())),
+            Template.of("regular", String.valueOf(player.getRegularInfractions())));
     }
 }

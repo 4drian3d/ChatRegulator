@@ -1,7 +1,5 @@
 package net.dreamerzero.chatregulator.config;
 
-import com.velocitypowered.api.proxy.Player;
-
 import de.leonhard.storage.Yaml;
 import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.dreamerzero.chatregulator.modules.FloodCheck;
@@ -14,6 +12,9 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.Template;
 import net.kyori.adventure.title.Title;
 
+/**
+ * Utilities for using the configuration paths in an orderly manner
+ */
 public class ConfigManager {
     private Yaml config;
     public ConfigManager(Yaml config){
@@ -79,6 +80,7 @@ public class ConfigManager {
      * Send a message of some kind to the offender.
      * @param infractor offender
      * @param type the type of infraction
+     * @param fUtils the flood check
      */
     public void sendWarningMessage(Audience infractor, TypeUtils.InfractionType type, FloodCheck fUtils){
         String message = config.getString("flood.messages.warning");
@@ -114,6 +116,7 @@ public class ConfigManager {
      * Send a message of some kind to the offender.
      * @param infractor offender
      * @param type the type of infraction
+     * @param iUtils the infractions check
      */
     public void sendWarningMessage(Audience infractor, TypeUtils.InfractionType type, InfractionCheck iUtils){
         String message = config.getString("infractions.messages.warning");
@@ -151,7 +154,7 @@ public class ConfigManager {
      * @param infractor the player who committed the infraction
      * @param type the type of infraction
      */
-    public void sendAlertMessage(Audience staff, Player infractor, TypeUtils.InfractionType type){
+    public void sendAlertMessage(Audience staff, InfractionPlayer infractor, TypeUtils.InfractionType type){
         String message;
         switch(type){
             case FLOOD: message = config.getString("flood.messages.alert"); break;
@@ -163,16 +166,16 @@ public class ConfigManager {
         staff.sendMessage(
             MiniMessage.miniMessage().parse(
                 message,
-                new PlaceholderUtils().getTemplates(infractor)));
+                PlaceholderUtils.getTemplates(infractor)));
     }
 
     public void sendResetMessage(Audience sender, TypeUtils.InfractionType type, InfractionPlayer player){
         MiniMessage mm = MiniMessage.miniMessage();
         switch(type){
-            case REGULAR: sender.sendMessage(mm.parse(config.getString("infractions.messages.reset"), "player", player.username())); break;
-            case FLOOD: sender.sendMessage(mm.parse(config.getString("flood.messages.reset"), "player", player.username())); break;
-            case SPAM: sender.sendMessage(mm.parse(config.getString("spam.messages.reset"), "player", player.username())); break;
-            case NONE: sender.sendMessage(mm.parse(config.getString("general.messages.all-reset"), "player", player.username())); break;
+            case REGULAR: sender.sendMessage(mm.parse(config.getString("infractions.messages.reset"), PlaceholderUtils.getTemplates(player)); break;
+            case FLOOD: sender.sendMessage(mm.parse(config.getString("flood.messages.reset"), PlaceholderUtils.getTemplates(player))); break;
+            case SPAM: sender.sendMessage(mm.parse(config.getString("spam.messages.reset"), PlaceholderUtils.getTemplates(player))); break;
+            case NONE: sender.sendMessage(mm.parse(config.getString("general.messages.all-reset"), PlaceholderUtils.getTemplates(player))); break;
         }
     }
 }

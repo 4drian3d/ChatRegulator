@@ -21,6 +21,9 @@ import net.dreamerzero.chatregulator.listener.list.JoinListener;
 import net.dreamerzero.chatregulator.listener.list.LeaveListener;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
+/**
+ * Plugin main class
+ */
 public class Regulator {
     private final ProxyServer server;
     private Yaml config;
@@ -28,6 +31,11 @@ public class Regulator {
     protected static Map<UUID, InfractionPlayer> infractionPlayers = new HashMap<>();
     private final Logger logger;
 
+    /**
+     * Constructor for ChatRegulator Plugin
+     * @param server the proxy server
+     * @param logger logger
+     */
     @Inject
     public Regulator(final ProxyServer server, Logger logger) {
         this.server = server;

@@ -13,6 +13,7 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import de.leonhard.storage.Yaml;
 import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.dreamerzero.chatregulator.config.ConfigManager;
+import net.dreamerzero.chatregulator.utils.PlaceholderUtils;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.Template;
@@ -21,6 +22,9 @@ public class ChatRegulatorCommand implements SimpleCommand {
     private Map<UUID, InfractionPlayer> infractionPlayers;
     private Yaml config;
     private ProxyServer server;
+    /**
+     * ChatRegulatorCommand Contructor
+     */
     public ChatRegulatorCommand(Map<UUID, InfractionPlayer> infractionPlayers, Yaml config, ProxyServer server){
         this.infractionPlayers = infractionPlayers;
         this.config = config;
@@ -63,23 +67,14 @@ public class ChatRegulatorCommand implements SimpleCommand {
                         if(optionalPlayer.isPresent()){
                             var infractionPlayer = infractionPlayers.get(optionalPlayer.get().getUniqueId());
                             for(String line : config.getStringList("general.messages.player")){
-                                source.sendMessage(mm.parse(line,
-                                    Template.of("player", infractionPlayer.username()),
-                                    Template.of("regular", String.valueOf(infractionPlayer.getRegularInfractions())),
-                                    Template.of("flood", String.valueOf(infractionPlayer.getFloodInfractions())),
-                                    Template.of("spam", String.valueOf(infractionPlayer.getSpamInfractions()))));
+                                source.sendMessage(mm.parse(line, PlaceholderUtils.getTemplates(infractionPlayer)));
                             }
                         } else {
                             for(Entry<UUID, InfractionPlayer> entry : infractionPlayers.entrySet()){
-                                var username = entry.getValue().username();
                                 if(entry.getValue().username() == args[1]){
                                     var infractionPlayer = entry.getValue();
                                     for(String line : config.getStringList("general.messages.player")){
-                                        source.sendMessage(mm.parse(line,
-                                            Template.of("player", username),
-                                            Template.of("regular", String.valueOf(infractionPlayer.getRegularInfractions())),
-                                            Template.of("flood", String.valueOf(infractionPlayer.getFloodInfractions())),
-                                            Template.of("spam", String.valueOf(infractionPlayer.getSpamInfractions()))));
+                                        source.sendMessage(mm.parse(line, PlaceholderUtils.getTemplates(infractionPlayer)));
                                     }
                                     break;
                                 }
@@ -127,15 +122,10 @@ public class ChatRegulatorCommand implements SimpleCommand {
                             }
                         } else {
                             for(Entry<UUID, InfractionPlayer> entry : infractionPlayers.entrySet()){
-                                var username = entry.getValue().username();
                                 if(entry.getValue().username() == args[1]){
                                     var infractionPlayer = entry.getValue();
                                     for(String line : config.getStringList("general.messages.player")){
-                                        source.sendMessage(mm.parse(line,
-                                            Template.of("player", username),
-                                            Template.of("regular", String.valueOf(infractionPlayer.getRegularInfractions())),
-                                            Template.of("flood", String.valueOf(infractionPlayer.getFloodInfractions())),
-                                            Template.of("spam", String.valueOf(infractionPlayer.getSpamInfractions()))));
+                                        source.sendMessage(mm.parse(line,PlaceholderUtils.getTemplates(infractionPlayer)));
                                     }
                                     break;
                                 }
@@ -158,6 +148,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
         String args[] = invocation.arguments();
         switch(args.length){
             case 0: return List.of("info", "stats", "player");
+            //TODO: Return all infractor players
             case 1: if(args[0] == "player"){
                 List<String> playerList = new ArrayList<String>();
                 server.getAllPlayers().forEach(player -> playerList.add(player.getUsername()));

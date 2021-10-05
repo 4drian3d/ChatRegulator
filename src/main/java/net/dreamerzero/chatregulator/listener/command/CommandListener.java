@@ -51,7 +51,8 @@ public class CommandListener {
         if(!new TypeUtils(config).isCommand(command)) return;
 
         FloodCheck fUtils = new FloodCheck(config);
-        if(!player.hasPermission("chatregulator.bypass.flood") && fUtils.isFlood(command)){
+        fUtils.check(command);
+        if(!player.hasPermission("chatregulator.bypass.flood") && fUtils.isInfraction()){
             server.getEventManager().fire(new CommandViolationEvent(infractionPlayer, InfractionType.FLOOD, command)).thenAccept(violationEvent -> {
                 if(violationEvent.getResult() == GenericResult.denied()) {
                     infractionPlayer.lastCommand(command);
@@ -59,7 +60,7 @@ public class CommandListener {
                     event.setResult(CommandResult.denied());
                     cManager.sendWarningMessage(player, InfractionType.FLOOD);
                     cManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(
-                        op -> op.hasPermission("chatregulator.notifications")).toList()), player, InfractionType.FLOOD);
+                        op -> op.hasPermission("chatregulator.notifications")).toList()), infractionPlayer, InfractionType.FLOOD);
                     infractionPlayer.addViolation(InfractionType.FLOOD);
                     cUtils.executeCommand(InfractionType.FLOOD, infractionPlayer);
                     dUtils.debug(infractionPlayer, command, InfractionType.FLOOD, fUtils);
@@ -69,7 +70,8 @@ public class CommandListener {
         }
 
         InfractionCheck iUtils = new InfractionCheck(blacklist);
-        if (!player.hasPermission("chatregulator.bypass.infraction") && iUtils.isInfraction(command)) {
+        iUtils.check(command);
+        if (!player.hasPermission("chatregulator.bypass.infraction") && iUtils.isInfraction()) {
             server.getEventManager().fire(new CommandViolationEvent(infractionPlayer, InfractionType.REGULAR, command)).thenAccept(violationEvent -> {
                 if(violationEvent.getResult() == GenericResult.denied() && command != infractionPlayer.lastCommand()) {
                     infractionPlayer.lastCommand(command);
@@ -77,7 +79,7 @@ public class CommandListener {
                     event.setResult(CommandResult.denied());
                     cManager.sendWarningMessage(player, InfractionType.REGULAR);
                     cManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(
-                        op -> op.hasPermission("chatregulator.notifications")).toList()), player, InfractionType.REGULAR);
+                        op -> op.hasPermission("chatregulator.notifications")).toList()), infractionPlayer, InfractionType.REGULAR);
                     infractionPlayer.addViolation(InfractionType.REGULAR);
                     cUtils.executeCommand(InfractionType.REGULAR, infractionPlayer);
                     dUtils.debug(infractionPlayer, command, InfractionType.REGULAR, iUtils);
@@ -96,7 +98,7 @@ public class CommandListener {
                     event.setResult(CommandResult.denied());
                     cManager.sendWarningMessage(player, InfractionType.REGULAR);
                     cManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(
-                        op -> op.hasPermission("chatregulator.notifications")).toList()), player, InfractionType.SPAM);
+                        op -> op.hasPermission("chatregulator.notifications")).toList()), infractionPlayer, InfractionType.SPAM);
                     infractionPlayer.addViolation(InfractionType.SPAM);
                     cUtils.executeCommand(InfractionType.SPAM, infractionPlayer);
                     dUtils.debug(infractionPlayer, command, InfractionType.SPAM);

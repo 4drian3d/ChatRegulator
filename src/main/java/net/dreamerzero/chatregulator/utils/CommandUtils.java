@@ -13,11 +13,19 @@ public class CommandUtils {
         this.server = server;
         this.config = config;
     }
+
+    /**
+     * This will check if it is possible to execute the
+     * configured commands when it detects that the limit
+     * of a violation has been exceeded.
+     * @param type the {@link TypeUtils.InfractionType}
+     * @param infractorPlayer the {@link InfractionPlayer} involved
+     */
     public void executeCommand(TypeUtils.InfractionType type, InfractionPlayer infractorPlayer){
         Player infractor = infractorPlayer.getPlayer();
         //TODO: Debug
-        System.out.println("infracciones spam: " + infractorPlayer.getSpamInfractions());
-        System.out.println("infracciones max config: " + config.getInt("spam.commands.violations-required"));
+        //System.out.println("infracciones spam: " + infractorPlayer.getSpamInfractions());
+        //System.out.println("infracciones max config: " + config.getInt("spam.commands.violations-required"));
         switch(type){
             case REGULAR: if(config.getBoolean("infractions.commands.execute-commands") &&
             infractorPlayer.getRegularInfractions() >= config.getInt("infractions.commands.violations-required")){

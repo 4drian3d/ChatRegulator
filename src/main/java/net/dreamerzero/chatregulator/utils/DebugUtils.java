@@ -12,13 +12,24 @@ public class DebugUtils {
     private Logger logger;
     private Yaml config;
 
+    /**
+     * Creates a debug object for easier troubleshooting
+     * @param logger the logger
+     * @param config the plugin config
+     */
     public DebugUtils(Logger logger, Yaml config){
         this.logger = logger;
         this.config = config;
     }
 
+    /**
+     * Spam debug message
+     * @param player the {@link InfractionPlayer} involved
+     * @param string the message/command
+     * @param detection the detection type
+     */
     public void debug(InfractionPlayer player, String string, InfractionType detection){
-        String pattern = "Detected for 3 detections";
+        String pattern = "Detected for spam in 3 detections";
 
         if (config.getBoolean("debug")){
             logger.info("User Detected: {}", player.getPlayer().getUsername());
@@ -28,6 +39,13 @@ public class DebugUtils {
         }
     }
 
+    /**
+     * Regular Infraction debug message
+     * @param player the {@link InfractionPlayer} involved
+     * @param string the message/command
+     * @param detection the detection type
+     * @param iUtils the detection made
+     */
     public void debug(InfractionPlayer player, String string, InfractionType detection, InfractionCheck iUtils){
         String pattern = iUtils.getPattern();
 
@@ -39,8 +57,15 @@ public class DebugUtils {
         }
     }
 
+    /**
+     * Flood debug message
+     * @param player the {@link InfractionPlayer} involved
+     * @param string the message/command
+     * @param detection the detection type
+     * @param fUtils the detection made
+     */
     public void debug(InfractionPlayer player, String string, InfractionType detection, FloodCheck fUtils){
-        String pattern = fUtils.getFloodPattern();
+        String pattern = fUtils.getPattern();
 
         if (config.getBoolean("debug")){
             logger.info("User Detected: {}", player.getPlayer().getUsername());
