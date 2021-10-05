@@ -172,7 +172,7 @@ public class ConfigManager {
     public void sendResetMessage(Audience sender, TypeUtils.InfractionType type, InfractionPlayer player){
         MiniMessage mm = MiniMessage.miniMessage();
         switch(type){
-            case REGULAR: sender.sendMessage(mm.parse(config.getString("infractions.messages.reset"), PlaceholderUtils.getTemplates(player)); break;
+            case REGULAR: sender.sendMessage(mm.parse(config.getString("infractions.messages.reset"), PlaceholderUtils.getTemplates(player))); break;
             case FLOOD: sender.sendMessage(mm.parse(config.getString("flood.messages.reset"), PlaceholderUtils.getTemplates(player))); break;
             case SPAM: sender.sendMessage(mm.parse(config.getString("spam.messages.reset"), PlaceholderUtils.getTemplates(player))); break;
             case NONE: sender.sendMessage(mm.parse(config.getString("general.messages.all-reset"), PlaceholderUtils.getTemplates(player))); break;

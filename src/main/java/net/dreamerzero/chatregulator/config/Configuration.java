@@ -82,7 +82,6 @@ public class Configuration {
         //TODO: Implement SPAM limit
         //config.setDefault("spam.limit", "5");
         config.setDefault("spam.commands.execute-commands", false);
-        //TODO: not working?
         config.setDefault("spam.commands.violations-required", 5);
         config.setDefault(
             "spam.commands.commands-to-execute",

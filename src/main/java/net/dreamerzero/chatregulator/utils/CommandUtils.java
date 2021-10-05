@@ -23,12 +23,9 @@ public class CommandUtils {
      */
     public void executeCommand(TypeUtils.InfractionType type, InfractionPlayer infractorPlayer){
         Player infractor = infractorPlayer.getPlayer();
-        //TODO: Debug
-        //System.out.println("infracciones spam: " + infractorPlayer.getSpamInfractions());
-        //System.out.println("infracciones max config: " + config.getInt("spam.commands.violations-required"));
         switch(type){
             case REGULAR: if(config.getBoolean("infractions.commands.execute-commands") &&
-            infractorPlayer.getRegularInfractions() >= config.getInt("infractions.commands.violations-required")){
+            infractorPlayer.getRegularInfractions() % config.getInt("infractions.commands.violations-required") == 0){
 
                 config.getStringList("infractions.commands.commands-to-execute").forEach(command -> {
                     String commandToSend = command
@@ -39,7 +36,7 @@ public class CommandUtils {
                 break;
             }
             case FLOOD: if(config.getBoolean("flood.commands.execute-commands") &&
-                config.getInt("flood.commands.violations-required") <= infractorPlayer.getFloodInfractions()){
+                config.getInt("flood.commands.violations-required") % infractorPlayer.getFloodInfractions() == 0){
 
                 config.getStringList("flood.commands.commands-to-execute").forEach(command -> {
                     String commandToSend = command
@@ -50,7 +47,7 @@ public class CommandUtils {
                 break;
             }
             case SPAM: if(config.getBoolean("spam.commands.execute-commands") &&
-                infractorPlayer.getSpamInfractions() >= config.getInt("spam.commands.violations-required")) {
+                infractorPlayer.getSpamInfractions() % config.getInt("spam.commands.violations-required") == 0) {
 
                 config.getStringList("spam.commands.commands-to-execute").forEach(command -> {
                     String commandToSend = command
