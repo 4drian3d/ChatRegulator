@@ -16,5 +16,6 @@ public class LeaveListener {
         Player player = event.getPlayer();
         InfractionPlayer infractionPlayer = InfractionPlayer.get(player);
         infractionPlayer.isOnline(false);
+        infractionPlayer.setLastSeen();
     }
 }
