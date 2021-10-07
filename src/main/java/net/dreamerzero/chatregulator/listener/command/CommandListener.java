@@ -35,6 +35,7 @@ public class CommandListener {
     private final FloodCheck fUtils;
     private final InfractionCheck iUtils;
     private final TypeUtils tUtils;
+    private final Yaml config;
 
     /**
      * CommandListener constructor
@@ -47,6 +48,7 @@ public class CommandListener {
         this.fUtils = new FloodCheck(config);
         this.iUtils = new InfractionCheck(blacklist);
         this.tUtils = new TypeUtils(config);
+        this.config = config;
     }
 
     /**
@@ -66,21 +68,30 @@ public class CommandListener {
         InfractionPlayer infractionPlayer = InfractionPlayer.get(player);
 
         fUtils.check(command);
-        if(!player.hasPermission("chatregulator.bypass.flood") && fUtils.isInfraction()) {
+        if(config.getBoolean("flood.enabled") &&
+            !player.hasPermission("chatregulator.bypass.flood") &&
+            fUtils.isInfraction()) {
+
             if(!callCommandViolationEvent(infractionPlayer, event, InfractionType.FLOOD)) {
                 return;
             }
         }
 
         iUtils.check(command);
-        if(!player.hasPermission("chatregulator.bypass.infractions") && iUtils.isInfraction()) {
+        if(config.getBoolean("infractions.enabled") &&
+            !player.hasPermission("chatregulator.bypass.infractions") &&
+            iUtils.isInfraction()) {
+
             if(!callCommandViolationEvent(infractionPlayer, event, InfractionType.REGULAR)) {
                 return;
             }
         }
 
         SpamCheck panUtils = new SpamCheck(infractionPlayer);
-        if(!player.hasPermission("chatregulator.bypass.spam") && panUtils.commandSpamInfricted(command)) {
+        if(config.getBoolean("flood.enabled") &&
+            !player.hasPermission("chatregulator.bypass.spam") &&
+            panUtils.commandSpamInfricted(command)) {
+
             if(!callCommandViolationEvent(infractionPlayer, event, InfractionType.SPAM)) {
                 return;
             }

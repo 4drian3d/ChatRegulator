@@ -31,6 +31,7 @@ public class ChatListener {
     private final DebugUtils dUtils;
     private final FloodCheck fUtils;
     private final InfractionCheck iUtils;
+    private final Yaml config;
 
     /**
      * ChatListener Constructor
@@ -46,6 +47,7 @@ public class ChatListener {
         this.dUtils = new DebugUtils(logger, config);
         this.fUtils = new FloodCheck(config);
         this.iUtils = new InfractionCheck(blacklist);
+        this.config = config;
     }
 
     /**
@@ -59,21 +61,30 @@ public class ChatListener {
         InfractionPlayer infractionPlayer = InfractionPlayer.get(player);
 
         fUtils.check(message);
-        if(!player.hasPermission("chatregulator.bypass.flood") && fUtils.isInfraction()) {
+        if(config.getBoolean("flood.enabled") &&
+            !player.hasPermission("chatregulator.bypass.flood")
+            && fUtils.isInfraction()) {
+
             if(!callChatViolationEvent(infractionPlayer, event, InfractionType.FLOOD)) {
                 return;
             }
         }
 
         iUtils.check(message);
-        if(!player.hasPermission("chatregulator.bypass.infractions") && iUtils.isInfraction()) {
+        if(config.getBoolean("infractions.enabled") &&
+            !player.hasPermission("chatregulator.bypass.infractions") &&
+            iUtils.isInfraction()) {
+
             if(!callChatViolationEvent(infractionPlayer, event, InfractionType.REGULAR)) {
                 return;
             }
         }
 
         SpamCheck panUtils = new SpamCheck(infractionPlayer);
-        if(!player.hasPermission("chatregulator.bypass.spam") && panUtils.messageSpamInfricted(message)) {
+        if(config.getBoolean("spam.enabled") &&
+            !player.hasPermission("chatregulator.bypass.spam") &&
+            panUtils.messageSpamInfricted(message)) {
+
             if(!callChatViolationEvent(infractionPlayer, event, InfractionType.SPAM)) {
                 return;
             }

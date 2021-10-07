@@ -38,6 +38,7 @@ public class Configuration {
         /*---------------
         Infractions
         ---------------*/
+        config.setDefault("infractions.enabled", true);
         config.setDefault(
             "infractions.warning-type",
             "message");
@@ -58,6 +59,7 @@ public class Configuration {
         /*---------------
         Flood
         ---------------*/
+        config.setDefault("flood.enabled", true);
         config.setDefault(
             "flood.warning-type",
             "message");
@@ -79,6 +81,7 @@ public class Configuration {
         /*---------------
         Spam
         ---------------*/
+        config.setDefault("spam.enabled", true);
         config.setDefault(
             "spam.warning-type",
             "message");
@@ -138,6 +141,15 @@ public class Configuration {
         config.setDefault(
             "commands-checked",
             List.of("tell", "etell", "msg", "emsg", "chat", "global", "reply"));
+        config.setHeader(
+            " ChatRegulator | by 4drian3d",
+            " To modify the plugin messages and to use the plugin in general,",
+            " I recommend that you have a basic knowledge of MiniMessage.",
+            " Guide: https://docs.adventure.kyori.net/minimessage.html#format",
+            " Spanish Guide: https://gist.github.com/4drian3d/9ccce0ca1774285e38becb09b73728f3",
+            " ",
+            " Check the function of each configuration option at",
+            " https://github.com/4drian3d/ChatRegulator/wiki/Configuration");
     }
 
 }
