@@ -59,7 +59,7 @@ public class ConfigManager {
      */
     public void sendWarningMessage(InfractionPlayer infractor, TypeUtils.InfractionType type){
         String message = config.getString("spam.messages.warning");
-        Audience player = infractor.getPlayer();
+        Audience player = infractor.getPlayer().get();
 
         switch(getWarningType(type)){
             case TITLE:
@@ -99,7 +99,7 @@ public class ConfigManager {
         template.add(Template.of("infraction", fUtils.getInfractionWord()));
         template.addAll(PlaceholderUtils.getTemplates(infractor));
 
-        Audience player = infractor.getPlayer();
+        Audience player = infractor.getPlayer().get();
 
         switch(getWarningType(type)){
             case TITLE:
@@ -139,7 +139,7 @@ public class ConfigManager {
         template.add(Template.of("infraction", iUtils.getInfractionWord()));
         template.addAll(PlaceholderUtils.getTemplates(infractor));
 
-        Audience player = infractor.getPlayer();
+        Audience player = infractor.getPlayer().get();
 
         switch(getWarningType(type)){
             case TITLE:

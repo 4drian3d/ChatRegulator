@@ -1,5 +1,6 @@
 package net.dreamerzero.chatregulator;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import com.velocitypowered.api.proxy.Player;
@@ -202,7 +203,6 @@ public class InfractionPlayer {
         return spamViolations;
     }
 
-    //TODO: Use Optional
     /**
      * Obtain the original player
      * <p>
@@ -211,8 +211,8 @@ public class InfractionPlayer {
      * outside of a player event or command.</strong>
      * @return the original {@link Player}
      */
-    public Player getPlayer(){
-        return this.isOnline ? this.player : null;
+    public Optional<Player> getPlayer(){
+        return Optional.of(this.player);
     }
 
     /**
@@ -221,16 +221,16 @@ public class InfractionPlayer {
      * @param server the proxy server
      * @return the {@link InfractionPlayer}
      */
-    public static InfractionPlayer get(UUID uuid, ProxyServer server){
+    public static Optional<InfractionPlayer> get(UUID uuid, ProxyServer server){
         if(Regulator.infractionPlayers.containsKey(uuid)){
-            return Regulator.infractionPlayers.get(uuid);
+            return Optional.of(Regulator.infractionPlayers.get(uuid));
         } else if(server.getPlayer(uuid).isPresent()) {
             InfractionPlayer infractionPlayer = new InfractionPlayer(uuid, server);
             Regulator.infractionPlayers.put(uuid, infractionPlayer);
-            return infractionPlayer;
+            return Optional.of(infractionPlayer);
         } else {
             System.err.println("An attempt has been made to obtain a player who has not joined the server yet.");
-            return null;
+            return Optional.of(null);
         }
     }
 

@@ -35,7 +35,7 @@ public class DebugUtils {
         String pattern = "Detected for spam in 3 detections";
 
         if (config.getBoolean("debug")){
-            logger.info("User Detected: {}", player.getPlayer().getUsername());
+            logger.info("User Detected: {}", player.getPlayer().get().getUsername());
             logger.info("Detection: {}", detection.toString());
             logger.info("String: {}", string);
             logger.info("Pattern: {}", pattern);
@@ -53,7 +53,7 @@ public class DebugUtils {
         String pattern = iUtils.getPattern();
 
         if (config.getBoolean("debug")){
-            logger.info("User Detected: {}", player.getPlayer().getUsername());
+            logger.info("User Detected: {}", player.getPlayer().get().getUsername());
             logger.info("Detection: {}", detection.toString());
             logger.info("String: {}", string);
             logger.info("Pattern: {}", pattern);
@@ -71,7 +71,7 @@ public class DebugUtils {
         String pattern = fUtils.getPattern();
 
         if (config.getBoolean("debug")){
-            logger.info("User Detected: {}", player.getPlayer().getUsername());
+            logger.info("User Detected: {}", player.getPlayer().get().getUsername());
             logger.info("Detection: {}", detection.toString());
             logger.info("String: {}", string);
             logger.info("Pattern: {}", pattern);

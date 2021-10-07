@@ -20,7 +20,18 @@ public class SpamCheck extends Check {
 
     @Override
     public void check(String message){
+        super.string = message;
         spamInfricted(message, type);
+    }
+
+    @Override
+    public String getInfractionWord(){
+        return super.string;
+    }
+
+    @Override
+    public String getPattern(){
+        return "This check does not require a pattern";
     }
 
     /**

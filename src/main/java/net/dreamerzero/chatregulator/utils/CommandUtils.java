@@ -31,7 +31,7 @@ public class CommandUtils {
      * @param infractorPlayer the {@link InfractionPlayer} involved
      */
     public void executeCommand(TypeUtils.InfractionType type, InfractionPlayer infractorPlayer){
-        Player infractor = infractorPlayer.getPlayer();
+        Player infractor = infractorPlayer.getPlayer().get();
         switch(type){
             case REGULAR:
                 if(config.getBoolean("infractions.commands.execute-commands") &&
