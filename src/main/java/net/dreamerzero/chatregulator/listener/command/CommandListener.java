@@ -1,5 +1,7 @@
 package net.dreamerzero.chatregulator.listener.command;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.ResultedEvent.GenericResult;
 import com.velocitypowered.api.event.command.CommandExecuteEvent;
@@ -27,18 +29,24 @@ import net.kyori.adventure.audience.Audience;
  */
 public class CommandListener {
     private final ProxyServer server;
-    private Logger logger;
-    private Yaml config;
-    private Yaml blacklist;
+    private final ConfigManager cManager;
+    private final CommandUtils cUtils;
+    private final DebugUtils dUtils;
+    private final FloodCheck fUtils;
+    private final InfractionCheck iUtils;
+    private final TypeUtils tUtils;
 
     /**
      * CommandListener constructor
      */
     public CommandListener(final ProxyServer server, Logger logger, Yaml config, Yaml blacklist) {
         this.server = server;
-        this.logger = logger;
-        this.config = config;
-        this.blacklist = blacklist;
+        this.cManager = new ConfigManager(config);
+        this.cUtils = new CommandUtils(server, config);
+        this.dUtils = new DebugUtils(logger, config);
+        this.fUtils = new FloodCheck(config);
+        this.iUtils = new InfractionCheck(blacklist);
+        this.tUtils = new TypeUtils(config);
     }
 
     /**
@@ -52,72 +60,61 @@ public class CommandListener {
         }
 
         String command = event.getCommand();
-        if(!new TypeUtils(config).isCommand(command)) return;
+        if(!tUtils.isCommand(command)) return;
 
         Player player = (Player)event.getCommandSource();
         InfractionPlayer infractionPlayer = InfractionPlayer.get(player);
-        ConfigManager cManager = new ConfigManager(config);
-        CommandUtils cUtils = new CommandUtils(server, config);
-        DebugUtils dUtils = new DebugUtils(logger, config);
 
-        FloodCheck fUtils = new FloodCheck(config);
         fUtils.check(command);
-        if(!player.hasPermission("chatregulator.bypass.flood") && fUtils.isInfraction()){
-            server.getEventManager().fire(new CommandViolationEvent(infractionPlayer, InfractionType.FLOOD, command)).thenAccept(violationEvent -> {
-                if(violationEvent.getResult() == GenericResult.denied()) {
-                    infractionPlayer.lastCommand(command);
-                } else {
-                    dUtils.debug(infractionPlayer, command, InfractionType.FLOOD, fUtils);
-                    violationEvent.addViolationGlobal(InfractionType.FLOOD);
-                    event.setResult(CommandResult.denied());
-                    cManager.sendWarningMessage(infractionPlayer, InfractionType.FLOOD);
-                    cManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(
-                        op -> op.hasPermission("chatregulator.notifications")).toList()), infractionPlayer, InfractionType.FLOOD);
-                    infractionPlayer.addViolation(InfractionType.FLOOD);
-                    cUtils.executeCommand(InfractionType.FLOOD, infractionPlayer);
-                    return;
-                }
-            });
+        if(!player.hasPermission("chatregulator.bypass.flood") && fUtils.isInfraction()) {
+            if(!callCommandViolationEvent(infractionPlayer, event, InfractionType.FLOOD)) {
+                return;
+            }
         }
 
-        InfractionCheck iUtils = new InfractionCheck(blacklist);
         iUtils.check(command);
-        if (!player.hasPermission("chatregulator.bypass.infraction") && iUtils.isInfraction()) {
-            server.getEventManager().fire(new CommandViolationEvent(infractionPlayer, InfractionType.REGULAR, command)).thenAccept(violationEvent -> {
-                if(violationEvent.getResult() == GenericResult.denied() && command != infractionPlayer.lastCommand()) {
-                    infractionPlayer.lastCommand(command);
-                } else if(violationEvent.getResult() == GenericResult.allowed()){
-                    dUtils.debug(infractionPlayer, command, InfractionType.REGULAR, iUtils);
-                    violationEvent.addViolationGlobal(InfractionType.REGULAR);
-                    event.setResult(CommandResult.denied());
-                    cManager.sendWarningMessage(infractionPlayer, InfractionType.REGULAR);
-                    cManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(
-                        op -> op.hasPermission("chatregulator.notifications")).toList()), infractionPlayer, InfractionType.REGULAR);
-                    infractionPlayer.addViolation(InfractionType.REGULAR);
-                    cUtils.executeCommand(InfractionType.REGULAR, infractionPlayer);
-                    return;
-                }
-            });
+        if(!player.hasPermission("chatregulator.bypass.infractions") && iUtils.isInfraction()) {
+            if(!callCommandViolationEvent(infractionPlayer, event, InfractionType.REGULAR)) {
+                return;
+            }
         }
 
         SpamCheck panUtils = new SpamCheck(infractionPlayer);
         if(!player.hasPermission("chatregulator.bypass.spam") && panUtils.commandSpamInfricted(command)) {
-            server.getEventManager().fire(new CommandViolationEvent(infractionPlayer, InfractionType.SPAM, command)).thenAccept(violationEvent -> {
-                if(violationEvent.getResult() == GenericResult.denied()) {
-                    infractionPlayer.lastCommand(command);
-                    return;
-                } else {
-                    dUtils.debug(infractionPlayer, command, InfractionType.SPAM);
-                    violationEvent.addViolationGlobal(InfractionType.SPAM);
-                    event.setResult(CommandResult.denied());
-                    cManager.sendWarningMessage(infractionPlayer, InfractionType.SPAM);
-                    cManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(
-                        op -> op.hasPermission("chatregulator.notifications")).toList()), infractionPlayer, InfractionType.SPAM);
-                    infractionPlayer.addViolation(InfractionType.SPAM);
-                    cUtils.executeCommand(InfractionType.SPAM, infractionPlayer);
-                    return;
-                }
-            });
+            if(!callCommandViolationEvent(infractionPlayer, event, InfractionType.SPAM)) {
+                return;
+            }
         }
+
+        infractionPlayer.lastCommand(command);
+    }
+
+    /**
+     * Call command violation event
+     * and approves player command
+     * @param player Player who executed the command
+     * @param event Event listening
+     * @param type InfractionType to check
+     * @return message of {@link CommandExecuteEvent} is approved
+     */
+    private boolean callCommandViolationEvent(InfractionPlayer player, CommandExecuteEvent event, InfractionType type) {
+        String command = event.getCommand();
+        AtomicBoolean approved = new AtomicBoolean(true);
+        server.getEventManager().fire(new CommandViolationEvent(player, type, command)).thenAccept(violationEvent -> {
+            if(violationEvent.getResult() == GenericResult.denied()) {
+                player.lastMessage(command);
+            } else {
+                dUtils.debug(player, command, type);
+                violationEvent.addViolationGlobal(type);
+                cManager.sendWarningMessage(player, type);
+                cManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(
+                  op -> op.hasPermission("chatregulator.notifications")).toList()), player, type);
+                event.setResult(CommandResult.denied());
+                player.addViolation(type);
+                cUtils.executeCommand(type, player);
+                approved.set(false);
+            }
+        });
+        return approved.get();
     }
 }

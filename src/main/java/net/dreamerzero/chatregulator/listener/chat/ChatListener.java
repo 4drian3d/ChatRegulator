@@ -88,6 +88,7 @@ public class ChatListener {
      * @param player Player who send the message
      * @param event Event listening
      * @param type InfractionType to check
+     * @author Espryth
      * @return message of {@link PlayerChatEvent} is approved
      */
     private boolean callChatViolationEvent(InfractionPlayer player, PlayerChatEvent event, InfractionType type) {
