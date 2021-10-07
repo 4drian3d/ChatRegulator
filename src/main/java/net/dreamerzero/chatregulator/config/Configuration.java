@@ -134,6 +134,7 @@ public class Configuration {
         config.setDefault(
             "general.messages.player-not-found",
             "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <white>The player <aqua><player></aqua> has not joined the server yet</white>");
+        config.setDefault("general.delete-users-after", 300);
         config.setDefault(
             "commands-checked",
             List.of("tell", "etell", "msg", "emsg", "chat", "global", "reply"));

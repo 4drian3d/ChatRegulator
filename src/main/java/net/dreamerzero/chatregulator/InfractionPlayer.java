@@ -23,6 +23,7 @@ public class InfractionPlayer {
     private int spamViolations;
     private boolean isOnline;
     private final String username;
+    private long lastTimeSeen;
 
     /**
      * Constructor of an InfractorPlayer based on a {@link Player}
@@ -81,6 +82,23 @@ public class InfractionPlayer {
      */
     public void isOnline(boolean status){
         this.isOnline = status;
+    }
+
+    /**
+     * Get the time in milliseconds
+     * when the player was last seen.
+     * @return time in microseconds of the
+     * moment when the user exited
+     */
+    public long getLastSeen(){
+        return this.lastTimeSeen;
+    }
+
+    /**
+     * Sets the time at which the player has left the server
+     */
+    public void setLastSeen(){
+        this.lastTimeSeen = System.currentTimeMillis();
     }
 
     /**

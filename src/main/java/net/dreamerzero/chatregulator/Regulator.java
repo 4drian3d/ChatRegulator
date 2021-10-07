@@ -3,6 +3,8 @@ package net.dreamerzero.chatregulator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
 import com.google.inject.Inject;
 import com.velocitypowered.api.command.CommandMeta;
@@ -29,11 +31,12 @@ public class Regulator {
     private final ProxyServer server;
     private Yaml config;
     private Yaml blacklist;
+    private final Logger logger;
+
     /**
      * InfractionPlayer list
      */
     protected static Map<UUID, InfractionPlayer> infractionPlayers = new HashMap<>();
-    private final Logger logger;
 
     /**
      * Constructor for ChatRegulator Plugin
@@ -67,6 +70,8 @@ public class Regulator {
 
         CommandMeta regulatorMeta = server.getCommandManager().metaBuilder("chatregulator").aliases("chatr", "cregulator").build();
         server.getCommandManager().register(regulatorMeta, new ChatRegulatorCommand(infractionPlayers, config, server));
+
+        checkInfractionPlayersRunnable();
     }
     /**
      * Get the plugin configuration
@@ -81,5 +86,28 @@ public class Regulator {
      */
     public Yaml getBlackList(){
         return this.blacklist;
+    }
+
+    /**
+     * Verification check for players who have
+     * left the server and have not re-entered
+     * in the configured time
+     */
+    void checkInfractionPlayersRunnable(){
+        long timeToDelete = config.getLong("general.delete-users-after")*1000;
+        server.getScheduler().buildTask(this, ()->{
+            for(Entry<UUID, InfractionPlayer> entry : infractionPlayers.entrySet()){
+                InfractionPlayer iPlayer = entry.getValue();
+                if(iPlayer.isOnline()) continue;
+                if(entry.getValue().getLastSeen() - System.currentTimeMillis() > timeToDelete){
+                    infractionPlayers.remove(entry.getKey());
+                    if(config.getBoolean("general.debug")) {
+                        logger.info("The player {} was eliminated", iPlayer.username());
+                    }
+                }
+            }
+        })
+        .repeat(timeToDelete, TimeUnit.MILLISECONDS)
+        .schedule();
     }
 }
