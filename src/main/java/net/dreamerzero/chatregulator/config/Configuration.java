@@ -68,7 +68,7 @@ public class Configuration {
             "<red>Hello, it is not allowed to make flood on this server.");
         config.setDefault(
             "flood.messages.alert",
-            "<red>The player <aqua><player></aqua> <red>has make flood <aqua><server></aqua> server.");
+            "<red>The player <aqua><player></aqua> <red>has make flood in <aqua><server></aqua> server.");
         config.setDefault(
             "flood.messages.reset",
             "<red>The flood warning count for <player> was reset.");
@@ -87,13 +87,13 @@ public class Configuration {
             "message");
         config.setDefault(
             "spam.messages.warning",
-            "<red>Hello, it is not allowed to make flood on this server.");
+            "<red>Hello, it is not allowed to make spam on this server.");
         config.setDefault(
             "spam.messages.reset",
             "<red>The spam warning count for <player> was reset.");
         config.setDefault(
             "spam.messages.alert",
-            "<red>The player <aqua><player></aqua> <red>has make flood <aqua><server></aqua> server.");
+            "<red>The player <aqua><player></aqua> <red>was spamming the chat in <aqua><server></aqua> server.");
         config.setDefault("spam.commands.execute-commands", false);
         config.setDefault("spam.commands.violations-required", 5);
         config.setDefault(

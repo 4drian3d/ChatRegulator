@@ -61,8 +61,9 @@ public class Regulator {
             MiniMessage.miniMessage().parse("<gradient:#f2709c:#ff9472>ChatRegulator</gradient> <gradient:#DAE2F8:#D4D3DD>has started, have a very nice day</gradient>"));
         // Default config
         new Configuration(config, blacklist).setDefaultConfig();
-
-        server.getEventManager().register(this, new PluginListener(logger));
+        if(server.getPluginManager().isLoaded("ServerUtils")){
+            server.getEventManager().register(this, new PluginListener(logger));
+        }
         server.getEventManager().register(this, new ChatListener(server, logger, config, blacklist));
         server.getEventManager().register(this, new CommandListener(server, logger, config, blacklist));
         server.getEventManager().register(this, new JoinListener(infractionPlayers));
@@ -99,7 +100,7 @@ public class Regulator {
             for(Entry<UUID, InfractionPlayer> entry : infractionPlayers.entrySet()){
                 InfractionPlayer iPlayer = entry.getValue();
                 if(iPlayer.isOnline()) continue;
-                if(entry.getValue().getLastSeen() - System.currentTimeMillis() > timeToDelete){
+                if(iPlayer.getLastSeen() - System.currentTimeMillis() > timeToDelete){
                     infractionPlayers.remove(entry.getKey());
                     if(config.getBoolean("general.debug")) {
                         logger.info("The player {} was eliminated", iPlayer.username());

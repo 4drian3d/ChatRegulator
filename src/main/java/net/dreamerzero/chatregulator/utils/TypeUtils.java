@@ -84,10 +84,10 @@ public class TypeUtils {
      */
     public boolean isCommand(String command){
         List<String> commandsChecked = config.getStringList("commands-checked");
-        String commandParts[] = command.split(" ");
+        String commandExecuted = command.split(" ")[0];
 
         for (String commandChecked : commandsChecked) {
-            if (commandParts[0].contains(commandChecked)) {
+            if (commandExecuted.contains(commandChecked)) {
                 return true;
             }
         }
