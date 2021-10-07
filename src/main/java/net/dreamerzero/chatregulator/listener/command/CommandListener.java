@@ -15,6 +15,7 @@ import de.leonhard.storage.Yaml;
 import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.dreamerzero.chatregulator.config.ConfigManager;
 import net.dreamerzero.chatregulator.events.CommandViolationEvent;
+import net.dreamerzero.chatregulator.modules.Check;
 import net.dreamerzero.chatregulator.modules.FloodCheck;
 import net.dreamerzero.chatregulator.modules.InfractionCheck;
 import net.dreamerzero.chatregulator.modules.SpamCheck;
@@ -22,6 +23,7 @@ import net.dreamerzero.chatregulator.utils.CommandUtils;
 import net.dreamerzero.chatregulator.utils.DebugUtils;
 import net.dreamerzero.chatregulator.utils.TypeUtils;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
+import net.dreamerzero.chatregulator.utils.TypeUtils.SourceType;
 import net.kyori.adventure.audience.Audience;
 
 /**
@@ -72,7 +74,7 @@ public class CommandListener {
             !player.hasPermission("chatregulator.bypass.flood") &&
             fUtils.isInfraction()) {
 
-            if(!callCommandViolationEvent(infractionPlayer, event, InfractionType.FLOOD)) {
+            if(!callCommandViolationEvent(infractionPlayer, event, InfractionType.FLOOD, fUtils)) {
                 return;
             }
         }
@@ -82,17 +84,18 @@ public class CommandListener {
             !player.hasPermission("chatregulator.bypass.infractions") &&
             iUtils.isInfraction()) {
 
-            if(!callCommandViolationEvent(infractionPlayer, event, InfractionType.REGULAR)) {
+            if(!callCommandViolationEvent(infractionPlayer, event, InfractionType.REGULAR, iUtils)) {
                 return;
             }
         }
 
-        SpamCheck panUtils = new SpamCheck(infractionPlayer);
+        SpamCheck sUtils = new SpamCheck(infractionPlayer, SourceType.COMMAND);
+        sUtils.check(command);
         if(config.getBoolean("flood.enabled") &&
             !player.hasPermission("chatregulator.bypass.spam") &&
-            panUtils.commandSpamInfricted(command)) {
+            sUtils.isInfraction()) {
 
-            if(!callCommandViolationEvent(infractionPlayer, event, InfractionType.SPAM)) {
+            if(!callCommandViolationEvent(infractionPlayer, event, InfractionType.SPAM, sUtils)) {
                 return;
             }
         }
@@ -108,10 +111,10 @@ public class CommandListener {
      * @param type InfractionType to check
      * @return message of {@link CommandExecuteEvent} is approved
      */
-    private boolean callCommandViolationEvent(InfractionPlayer player, CommandExecuteEvent event, InfractionType type) {
+    private boolean callCommandViolationEvent(InfractionPlayer player, CommandExecuteEvent event, InfractionType type, Check detection) {
         String command = event.getCommand();
         AtomicBoolean approved = new AtomicBoolean(true);
-        server.getEventManager().fire(new CommandViolationEvent(player, type, command)).thenAccept(violationEvent -> {
+        server.getEventManager().fire(new CommandViolationEvent(player, type, detection, command)).thenAccept(violationEvent -> {
             if(violationEvent.getResult() == GenericResult.denied()) {
                 player.lastMessage(command);
             } else {

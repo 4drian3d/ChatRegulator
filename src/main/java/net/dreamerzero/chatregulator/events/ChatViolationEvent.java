@@ -1,6 +1,7 @@
 package net.dreamerzero.chatregulator.events;
 
 import net.dreamerzero.chatregulator.InfractionPlayer;
+import net.dreamerzero.chatregulator.modules.Check;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 
 /**
@@ -15,8 +16,8 @@ public class ChatViolationEvent extends ViolationEvent {
      * @param type the infraction type
      * @param message the chat message in which the violation was found
      */
-    public ChatViolationEvent(InfractionPlayer infractionPlayer, InfractionType type, String message) {
-        super(infractionPlayer, type);
+    public ChatViolationEvent(InfractionPlayer infractionPlayer, InfractionType type, Check detection, String message) {
+        super(infractionPlayer, type, detection);
         this.message = message;
     }
 
@@ -28,5 +29,4 @@ public class ChatViolationEvent extends ViolationEvent {
     public String getMessage(){
         return this.message;
     }
-
 }

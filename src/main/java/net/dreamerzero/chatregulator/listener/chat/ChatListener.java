@@ -13,12 +13,14 @@ import de.leonhard.storage.Yaml;
 import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.dreamerzero.chatregulator.config.ConfigManager;
 import net.dreamerzero.chatregulator.events.ChatViolationEvent;
+import net.dreamerzero.chatregulator.modules.Check;
 import net.dreamerzero.chatregulator.modules.FloodCheck;
 import net.dreamerzero.chatregulator.modules.InfractionCheck;
 import net.dreamerzero.chatregulator.modules.SpamCheck;
 import net.dreamerzero.chatregulator.utils.CommandUtils;
 import net.dreamerzero.chatregulator.utils.DebugUtils;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
+import net.dreamerzero.chatregulator.utils.TypeUtils.SourceType;
 import net.kyori.adventure.audience.Audience;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -65,7 +67,7 @@ public class ChatListener {
             !player.hasPermission("chatregulator.bypass.flood")
             && fUtils.isInfraction()) {
 
-            if(!callChatViolationEvent(infractionPlayer, event, InfractionType.FLOOD)) {
+            if(!callChatViolationEvent(infractionPlayer, event, InfractionType.FLOOD, fUtils)) {
                 return;
             }
         }
@@ -75,17 +77,18 @@ public class ChatListener {
             !player.hasPermission("chatregulator.bypass.infractions") &&
             iUtils.isInfraction()) {
 
-            if(!callChatViolationEvent(infractionPlayer, event, InfractionType.REGULAR)) {
+            if(!callChatViolationEvent(infractionPlayer, event, InfractionType.REGULAR, iUtils)) {
                 return;
             }
         }
 
-        SpamCheck panUtils = new SpamCheck(infractionPlayer);
+        SpamCheck sUtils = new SpamCheck(infractionPlayer, SourceType.CHAT);
+        sUtils.check(message);
         if(config.getBoolean("spam.enabled") &&
             !player.hasPermission("chatregulator.bypass.spam") &&
-            panUtils.messageSpamInfricted(message)) {
+            sUtils.isInfraction()) {
 
-            if(!callChatViolationEvent(infractionPlayer, event, InfractionType.SPAM)) {
+            if(!callChatViolationEvent(infractionPlayer, event, InfractionType.SPAM, sUtils)) {
                 return;
             }
         }
@@ -102,10 +105,10 @@ public class ChatListener {
      * @author Espryth
      * @return message of {@link PlayerChatEvent} is approved
      */
-    private boolean callChatViolationEvent(InfractionPlayer player, PlayerChatEvent event, InfractionType type) {
+    private boolean callChatViolationEvent(InfractionPlayer player, PlayerChatEvent event, InfractionType type, Check detection) {
         String message = event.getMessage();
         AtomicBoolean approved = new AtomicBoolean(true);
-        server.getEventManager().fire(new ChatViolationEvent(player, type, message)).thenAccept(violationEvent -> {
+        server.getEventManager().fire(new ChatViolationEvent(player, type, detection, message)).thenAccept(violationEvent -> {
             if(violationEvent.getResult() == GenericResult.denied()) {
                 player.lastMessage(message);
             } else {

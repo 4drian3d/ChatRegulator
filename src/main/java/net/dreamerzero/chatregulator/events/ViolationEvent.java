@@ -6,6 +6,7 @@ import com.velocitypowered.api.event.ResultedEvent;
 import com.velocitypowered.api.event.ResultedEvent.GenericResult;
 
 import net.dreamerzero.chatregulator.InfractionPlayer;
+import net.dreamerzero.chatregulator.modules.Check;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 
 /**
@@ -32,6 +33,7 @@ public class ViolationEvent implements ResultedEvent<GenericResult> {
      * Global Regular Infractions warning count
      */
     regularCount;
+    private Check detection;
     private GenericResult result = GenericResult.allowed();
 
     /**
@@ -39,9 +41,10 @@ public class ViolationEvent implements ResultedEvent<GenericResult> {
      * @param infractionPlayer the player who committed the infraction
      * @param type the infraction type
      */
-    public ViolationEvent(InfractionPlayer infractionPlayer, InfractionType type){
+    public ViolationEvent(InfractionPlayer infractionPlayer, InfractionType type, Check detection){
         this.infractionPlayer = infractionPlayer;
         this.type = type;
+        this.detection = detection;
     }
 
     /**
@@ -61,6 +64,16 @@ public class ViolationEvent implements ResultedEvent<GenericResult> {
      */
     public InfractionType getType(){
         return this.type;
+    }
+
+    /**
+     * Obtain the detection performed
+     * With this object, you can get the pattern,
+     * the detected string and more.
+     * @return the detection performed
+     */
+    public Check getDetection(){
+        return this.detection;
     }
 
     @Override
