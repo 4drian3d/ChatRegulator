@@ -1,5 +1,6 @@
 package net.dreamerzero.chatregulator.listener.chat;
 
+import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.ResultedEvent.GenericResult;
 import com.velocitypowered.api.event.player.PlayerChatEvent;
@@ -59,7 +60,7 @@ public class ChatListener {
      * Chat Listener for detections
      * @param event the chat event
      */
-    @Subscribe(async = true)
+    @Subscribe(async = true, order = PostOrder.FIRST)
     public void onChat(final PlayerChatEvent event) {
         Player player = event.getPlayer();
         String message = event.getMessage();

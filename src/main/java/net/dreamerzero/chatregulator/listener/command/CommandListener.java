@@ -2,6 +2,7 @@ package net.dreamerzero.chatregulator.listener.command;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.ResultedEvent.GenericResult;
 import com.velocitypowered.api.event.command.CommandExecuteEvent;
@@ -60,7 +61,7 @@ public class CommandListener {
      * Listener for command detections
      * @param event the command event
      */
-    @Subscribe(async = true)
+    @Subscribe(async = true, order = PostOrder.FIRST)
     public void onCommand(CommandExecuteEvent event){
         if (!(event.getCommandSource() instanceof Player)) {
             return;
