@@ -8,16 +8,15 @@ import java.util.List;
 
 import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.permission.Tristate;
+import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 
 import de.leonhard.storage.Yaml;
 import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.dreamerzero.chatregulator.config.ConfigManager;
-import net.dreamerzero.chatregulator.events.ViolationEvent;
 import net.dreamerzero.chatregulator.utils.PlaceholderUtils;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.Template;
 
 /**
  * Main Plugin Command
@@ -47,31 +46,28 @@ public class ChatRegulatorCommand implements SimpleCommand {
         if(args.length == 0){
             source.sendMessage(mm.parse(config.getString("general.messages.info")));
         } else if(args.length >= 1){
-            ArrayList<Template> templates = new ArrayList<>();
-            templates.add(Template.of("flood", String.valueOf(ViolationEvent.floodCount)));
-            templates.add(Template.of("spam", String.valueOf(ViolationEvent.spamCount)));
-            templates.add(Template.of("regular", String.valueOf(ViolationEvent.regularCount)));
             switch(args[0]){
                 case "info":
                     source.sendMessage(mm.parse(config.getString("general.messages.info")));
                     break;
                 case "stats":
                     for(String line : config.getStringList("general.messages.stats")){
-                        source.sendMessage(mm.parse(line, templates));
+                        source.sendMessage(mm.parse(line, PlaceholderUtils.getGlobalTemplates()));
                     }
                     break;
                 case "player":
                     if(args.length >= 2){
                         var optionalPlayer = server.getPlayer(args[1]);
                         if(optionalPlayer.isPresent()){
-                            var infractionPlayer = infractionPlayers.get(optionalPlayer.get().getUniqueId());
+                            Player player = optionalPlayer.get();
+                            InfractionPlayer infractionPlayer = InfractionPlayer.get(player);
                             for(String line : config.getStringList("general.messages.player")){
                                 source.sendMessage(mm.parse(line, PlaceholderUtils.getTemplates(infractionPlayer)));
                             }
                         } else {
                             for(Entry<UUID, InfractionPlayer> entry : infractionPlayers.entrySet()){
                                 if(entry.getValue().username() == args[1]){
-                                    var infractionPlayer = entry.getValue();
+                                    InfractionPlayer infractionPlayer = entry.getValue();
                                     for(String line : config.getStringList("general.messages.player")){
                                         source.sendMessage(mm.parse(line, PlaceholderUtils.getTemplates(infractionPlayer)));
                                     }
@@ -90,7 +86,8 @@ public class ChatRegulatorCommand implements SimpleCommand {
                     if(args.length >= 2){
                         var optionalPlayer = server.getPlayer(args[1]);
                         if(optionalPlayer.isPresent()){
-                            var infractionPlayer = infractionPlayers.get(optionalPlayer.get().getUniqueId());
+                            Player player = optionalPlayer.get();
+                            InfractionPlayer infractionPlayer = InfractionPlayer.get(player);
                             ConfigManager cManager = new ConfigManager(config);
                             if(args.length >= 3){
                                 switch(args[2].toLowerCase()){
@@ -122,7 +119,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
                         } else {
                             for(Entry<UUID, InfractionPlayer> entry : infractionPlayers.entrySet()){
                                 if(entry.getValue().username() == args[1]){
-                                    var infractionPlayer = entry.getValue();
+                                    InfractionPlayer infractionPlayer = entry.getValue();
                                     for(String line : config.getStringList("general.messages.player")){
                                         source.sendMessage(mm.parse(line,PlaceholderUtils.getTemplates(infractionPlayer)));
                                     }

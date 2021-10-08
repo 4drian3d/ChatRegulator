@@ -3,6 +3,7 @@ package net.dreamerzero.chatregulator.utils;
 import java.util.List;
 
 import net.dreamerzero.chatregulator.InfractionPlayer;
+import net.dreamerzero.chatregulator.events.ViolationEvent;
 import net.kyori.adventure.text.minimessage.Template;
 
 /**
@@ -17,9 +18,21 @@ public class PlaceholderUtils {
     public static List<Template> getTemplates(InfractionPlayer player){
         return List.of(
             Template.of("player", player.username()),
-            Template.of("server", player.getPlayer().get().getCurrentServer().get().getServerInfo().getName()),
+            Template.of("server", player.getPlayer().isPresent() ? player.getPlayer().get().getCurrentServer().get().getServerInfo().getName() : "Offline Player"),
             Template.of("flood", String.valueOf(player.getFloodInfractions())),
             Template.of("spam", String.valueOf(player.getSpamInfractions())),
             Template.of("regular", String.valueOf(player.getRegularInfractions())));
+    }
+
+    /**
+     * Obtain the global placeholders
+     * @return global placeholders
+     */
+    public static List<Template> getGlobalTemplates(){
+        return List.of(
+            Template.of("flood", String.valueOf(ViolationEvent.floodCount)),
+            Template.of("spam", String.valueOf(ViolationEvent.spamCount)),
+            Template.of("regular", String.valueOf(ViolationEvent.regularCount))
+        );
     }
 }
