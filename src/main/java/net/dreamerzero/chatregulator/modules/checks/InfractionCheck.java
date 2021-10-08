@@ -1,4 +1,4 @@
-package net.dreamerzero.chatregulator.modules;
+package net.dreamerzero.chatregulator.modules.checks;
 
 import java.util.List;
 import java.util.regex.Matcher;

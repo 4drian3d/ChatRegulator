@@ -1,7 +1,7 @@
 package net.dreamerzero.chatregulator.events;
 
 import net.dreamerzero.chatregulator.InfractionPlayer;
-import net.dreamerzero.chatregulator.modules.Check;
+import net.dreamerzero.chatregulator.modules.checks.Check;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 
 /**

@@ -13,10 +13,11 @@ import de.leonhard.storage.Yaml;
 import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.dreamerzero.chatregulator.config.ConfigManager;
 import net.dreamerzero.chatregulator.events.ChatViolationEvent;
-import net.dreamerzero.chatregulator.modules.Check;
-import net.dreamerzero.chatregulator.modules.FloodCheck;
-import net.dreamerzero.chatregulator.modules.InfractionCheck;
-import net.dreamerzero.chatregulator.modules.SpamCheck;
+import net.dreamerzero.chatregulator.modules.Replacer;
+import net.dreamerzero.chatregulator.modules.checks.Check;
+import net.dreamerzero.chatregulator.modules.checks.FloodCheck;
+import net.dreamerzero.chatregulator.modules.checks.InfractionCheck;
+import net.dreamerzero.chatregulator.modules.checks.SpamCheck;
 import net.dreamerzero.chatregulator.utils.CommandUtils;
 import net.dreamerzero.chatregulator.utils.DebugUtils;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
@@ -34,6 +35,7 @@ public class ChatListener {
     private final FloodCheck fUtils;
     private final InfractionCheck iUtils;
     private final Yaml config;
+    private final Replacer rUtils;
 
     /**
      * ChatListener Constructor
@@ -49,6 +51,7 @@ public class ChatListener {
         this.dUtils = new DebugUtils(logger, config);
         this.fUtils = new FloodCheck(config);
         this.iUtils = new InfractionCheck(blacklist);
+        this.rUtils = new Replacer(config);
         this.config = config;
     }
 
@@ -91,6 +94,10 @@ public class ChatListener {
             if(!callChatViolationEvent(infractionPlayer, event, InfractionType.SPAM, sUtils)) {
                 return;
             }
+        }
+
+        if(config.getBoolean("format.enabled")){
+            event.setResult(ChatResult.message(rUtils.applyFormat(message)));
         }
 
         infractionPlayer.lastMessage(message);

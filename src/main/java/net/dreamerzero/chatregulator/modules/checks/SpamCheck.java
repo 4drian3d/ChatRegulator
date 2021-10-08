@@ -1,4 +1,4 @@
-package net.dreamerzero.chatregulator.modules;
+package net.dreamerzero.chatregulator.modules.checks;
 
 import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.dreamerzero.chatregulator.utils.TypeUtils.SourceType;

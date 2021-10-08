@@ -4,8 +4,8 @@ import org.slf4j.Logger;
 
 import de.leonhard.storage.Yaml;
 import net.dreamerzero.chatregulator.InfractionPlayer;
-import net.dreamerzero.chatregulator.modules.FloodCheck;
-import net.dreamerzero.chatregulator.modules.InfractionCheck;
+import net.dreamerzero.chatregulator.modules.checks.FloodCheck;
+import net.dreamerzero.chatregulator.modules.checks.InfractionCheck;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 
 /**

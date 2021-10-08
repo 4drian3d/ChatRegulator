@@ -15,10 +15,11 @@ import de.leonhard.storage.Yaml;
 import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.dreamerzero.chatregulator.config.ConfigManager;
 import net.dreamerzero.chatregulator.events.CommandViolationEvent;
-import net.dreamerzero.chatregulator.modules.Check;
-import net.dreamerzero.chatregulator.modules.FloodCheck;
-import net.dreamerzero.chatregulator.modules.InfractionCheck;
-import net.dreamerzero.chatregulator.modules.SpamCheck;
+import net.dreamerzero.chatregulator.modules.Replacer;
+import net.dreamerzero.chatregulator.modules.checks.Check;
+import net.dreamerzero.chatregulator.modules.checks.FloodCheck;
+import net.dreamerzero.chatregulator.modules.checks.InfractionCheck;
+import net.dreamerzero.chatregulator.modules.checks.SpamCheck;
 import net.dreamerzero.chatregulator.utils.CommandUtils;
 import net.dreamerzero.chatregulator.utils.DebugUtils;
 import net.dreamerzero.chatregulator.utils.TypeUtils;
@@ -38,6 +39,7 @@ public class CommandListener {
     private final InfractionCheck iUtils;
     private final TypeUtils tUtils;
     private final Yaml config;
+    private final Replacer rUtils;
 
     /**
      * CommandListener constructor
@@ -50,6 +52,7 @@ public class CommandListener {
         this.fUtils = new FloodCheck(config);
         this.iUtils = new InfractionCheck(blacklist);
         this.tUtils = new TypeUtils(config);
+        this.rUtils = new Replacer(config);
         this.config = config;
     }
 
@@ -63,8 +66,19 @@ public class CommandListener {
             return;
         }
 
-        String command = event.getCommand();
-        if(!tUtils.isCommand(command)) return;
+        String rawCommand = event.getCommand();
+
+        String commandSplit[] = rawCommand.split(" ");
+        String realCommand = commandSplit[0];
+        if(!tUtils.isCommand(realCommand)) return;
+
+        StringBuilder sBuilder = new StringBuilder();
+
+        for(int i = 1; i < commandSplit.length; i++){
+            sBuilder.append(commandSplit[i]).append(" ");
+        }
+
+        String command = sBuilder.toString();
 
         Player player = (Player)event.getCommandSource();
         InfractionPlayer infractionPlayer = InfractionPlayer.get(player);
@@ -98,6 +112,10 @@ public class CommandListener {
             if(!callCommandViolationEvent(infractionPlayer, event, InfractionType.SPAM, sUtils)) {
                 return;
             }
+        }
+
+        if(config.getBoolean("format.enabled")){
+            event.setResult(CommandResult.command(rUtils.applyFormat(rawCommand)));
         }
 
         infractionPlayer.lastCommand(command);

@@ -100,6 +100,12 @@ public class Configuration {
             "spam.commands.commands-to-execute",
             List.of("mute <player> 1m You have been muted for spam on the server <server>", "example command"));
         /*---------------
+        Format Module
+        ---------------*/
+        config.setDefault("format.enabled", true);
+        config.setDefault("format.set-first-letter-uppercase", true);
+        config.setDefault("format.set-final-dot", true);
+        /*---------------
         General
         ---------------*/
         config.setDefault("general.debug", false);
