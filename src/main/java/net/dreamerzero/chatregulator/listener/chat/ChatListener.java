@@ -97,7 +97,10 @@ public class ChatListener {
         }
 
         if(config.getBoolean("format.enabled")){
-            event.setResult(ChatResult.message(rUtils.applyFormat(message)));
+            String formatted = rUtils.applyFormat(message);
+            infractionPlayer.lastMessage(formatted);
+            event.setResult(ChatResult.message(formatted));
+            return;
         }
 
         infractionPlayer.lastMessage(message);

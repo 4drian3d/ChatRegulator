@@ -115,7 +115,9 @@ public class CommandListener {
         }
 
         if(config.getBoolean("format.enabled")){
-            event.setResult(CommandResult.command(rUtils.applyFormat(rawCommand)));
+            String formatted = rUtils.applyFormat(command);
+            infractionPlayer.lastCommand(formatted);
+            event.setResult(CommandResult.command(formatted));
         }
 
         infractionPlayer.lastCommand(command);
