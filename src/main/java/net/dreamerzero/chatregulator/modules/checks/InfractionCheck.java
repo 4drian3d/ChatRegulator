@@ -26,7 +26,7 @@ public class InfractionCheck extends Check {
         for (String blockedWord : blockedWords){
             Matcher match = Pattern.compile(blockedWord).matcher(string);
             super.string = string;
-            if(match.lookingAt()){
+            if(match.find()){
                 super.pattern = blockedWord;
                 super.matcher = match;
                 super.detected = true;

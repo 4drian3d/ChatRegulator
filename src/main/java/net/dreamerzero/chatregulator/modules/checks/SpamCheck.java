@@ -47,13 +47,13 @@ public class SpamCheck extends Check {
                 String prelastMessage = infractionPlayer.preLastMessage();
                 String lastMessage = infractionPlayer.lastMessage();
 
-                super.detected = prelastMessage.equalsIgnoreCase(lastMessage) && lastMessage.equalsIgnoreCase(string);
+                super.detected = prelastMessage.equalsIgnoreCase(lastMessage) && lastMessage.contains(string);
                 break;
             case COMMAND:
                 String prelastCommand = infractionPlayer.preLastCommand();
                 String lastCommand = infractionPlayer.lastCommand();
 
-                super.detected = prelastCommand == lastCommand && lastCommand == string;
+                super.detected = prelastCommand == lastCommand && lastCommand.contains(string);
                 break;
         }
     }

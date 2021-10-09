@@ -1,6 +1,5 @@
 package net.dreamerzero.chatregulator.listener.chat;
 
-import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.ResultedEvent.GenericResult;
 import com.velocitypowered.api.event.player.PlayerChatEvent;
@@ -60,7 +59,7 @@ public class ChatListener {
      * Chat Listener for detections
      * @param event the chat event
      */
-    @Subscribe(async = true, order = PostOrder.FIRST)
+    @Subscribe(async = true)
     public void onChat(final PlayerChatEvent event) {
         Player player = event.getPlayer();
         String message = event.getMessage();
@@ -71,7 +70,8 @@ public class ChatListener {
             !player.hasPermission("chatregulator.bypass.flood")
             && fUtils.isInfraction()) {
 
-            if(!callChatViolationEvent(infractionPlayer, event, InfractionType.FLOOD, fUtils)) {
+            if(!callChatViolationEvent(infractionPlayer, message, InfractionType.FLOOD, fUtils)) {
+                event.setResult(ChatResult.denied());
                 return;
             }
         }
@@ -81,7 +81,8 @@ public class ChatListener {
             !player.hasPermission("chatregulator.bypass.infractions") &&
             iUtils.isInfraction()) {
 
-            if(!callChatViolationEvent(infractionPlayer, event, InfractionType.REGULAR, iUtils)) {
+            if(!callChatViolationEvent(infractionPlayer, message, InfractionType.REGULAR, iUtils)) {
+                event.setResult(ChatResult.denied());
                 return;
             }
         }
@@ -92,7 +93,8 @@ public class ChatListener {
             !player.hasPermission("chatregulator.bypass.spam") &&
             sUtils.isInfraction()) {
 
-            if(!callChatViolationEvent(infractionPlayer, event, InfractionType.SPAM, sUtils)) {
+            if(!callChatViolationEvent(infractionPlayer, message, InfractionType.SPAM, sUtils)) {
+                event.setResult(ChatResult.denied());
                 return;
             }
         }
@@ -111,27 +113,25 @@ public class ChatListener {
      * Call chat violation event
      * and approves player message
      * @param player Player who send the message
-     * @param event Event listening
+     * @param message The message
      * @param type InfractionType to check
      * @author Espryth
      * @return message of {@link PlayerChatEvent} is approved
      */
-    private boolean callChatViolationEvent(InfractionPlayer player, PlayerChatEvent event, InfractionType type, Check detection) {
-        String message = event.getMessage();
+    private boolean callChatViolationEvent(InfractionPlayer player, String message, InfractionType type, Check detection) {
         AtomicBoolean approved = new AtomicBoolean(true);
         server.getEventManager().fire(new ChatViolationEvent(player, type, detection, message)).thenAccept(violationEvent -> {
             if(violationEvent.getResult() == GenericResult.denied()) {
                 player.lastMessage(message);
             } else {
+                approved.set(false);
                 dUtils.debug(player, message, type);
                 violationEvent.addViolationGlobal(type);
                 cManager.sendWarningMessage(player, type);
                 cManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(
                   op -> op.hasPermission("chatregulator.notifications")).toList()), player, type);
-                event.setResult(ChatResult.denied());
                 player.addViolation(type);
                 cUtils.executeCommand(type, player);
-                approved.set(false);
             }
         });
         return approved.get();

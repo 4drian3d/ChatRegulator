@@ -3,7 +3,6 @@ package net.dreamerzero.chatregulator.commands;
 import java.util.Map;
 import java.util.UUID;
 import java.util.Map.Entry;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.velocitypowered.api.command.SimpleCommand;
@@ -66,10 +65,9 @@ public class ChatRegulatorCommand implements SimpleCommand {
                             }
                         } else {
                             for(Entry<UUID, InfractionPlayer> entry : infractionPlayers.entrySet()){
-                                if(entry.getValue().username() == args[1]){
-                                    InfractionPlayer infractionPlayer = entry.getValue();
+                                if(entry.getValue().username() == args[0]){
                                     for(String line : config.getStringList("general.messages.player")){
-                                        source.sendMessage(mm.parse(line, PlaceholderUtils.getTemplates(infractionPlayer)));
+                                        source.sendMessage(mm.parse(line, PlaceholderUtils.getTemplates(entry.getValue())));
                                     }
                                     break;
                                 }
@@ -95,11 +93,11 @@ public class ChatRegulatorCommand implements SimpleCommand {
                                         infractionPlayer.setViolations(InfractionType.REGULAR, 0);
                                         cManager.sendResetMessage(source, InfractionType.REGULAR, infractionPlayer);
                                         break;
-                                    case "flood": 
+                                    case "flood":
                                         infractionPlayer.setViolations(InfractionType.FLOOD, 0); 
                                         cManager.sendResetMessage(source, InfractionType.FLOOD, infractionPlayer);
                                         break;
-                                    case "spam": 
+                                    case "spam":
                                         infractionPlayer.setViolations(InfractionType.SPAM, 0); 
                                         cManager.sendResetMessage(source, InfractionType.SPAM, infractionPlayer);
                                         break;
@@ -119,9 +117,8 @@ public class ChatRegulatorCommand implements SimpleCommand {
                         } else {
                             for(Entry<UUID, InfractionPlayer> entry : infractionPlayers.entrySet()){
                                 if(entry.getValue().username() == args[1]){
-                                    InfractionPlayer infractionPlayer = entry.getValue();
                                     for(String line : config.getStringList("general.messages.player")){
-                                        source.sendMessage(mm.parse(line,PlaceholderUtils.getTemplates(infractionPlayer)));
+                                        source.sendMessage(mm.parse(line,PlaceholderUtils.getTemplates(entry.getValue())));
                                     }
                                     break;
                                 }
@@ -145,14 +142,9 @@ public class ChatRegulatorCommand implements SimpleCommand {
         switch(args.length){
             case 0: return List.of("info", "stats", "player");
             case 1: if(args[0] == "player"){
-                ArrayList<String> playerList = new ArrayList<>();
-                if(infractionPlayers.size() < config.getInt("general.limit-tab-complete")){
-                    infractionPlayers.entrySet().forEach(entry -> playerList.add(entry.getValue().username()));
-                    return playerList;
-                } else {
-                    server.getAllPlayers().forEach(player -> playerList.add(player.getUsername()));
-                    return playerList;
-                }
+                return infractionPlayers.entrySet().stream()
+                    .limit(config.getInt("general.limit-tab-complete"))
+                    .map(x -> x.getValue().username()).toList();
             }
             default: return List.of("");
         }

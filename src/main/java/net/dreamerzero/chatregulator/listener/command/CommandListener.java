@@ -2,7 +2,6 @@ package net.dreamerzero.chatregulator.listener.command;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.ResultedEvent.GenericResult;
 import com.velocitypowered.api.event.command.CommandExecuteEvent;
@@ -61,7 +60,7 @@ public class CommandListener {
      * Listener for command detections
      * @param event the command event
      */
-    @Subscribe(async = true, order = PostOrder.FIRST)
+    @Subscribe(async = true)
     public void onCommand(CommandExecuteEvent event){
         if (!(event.getCommandSource() instanceof Player)) {
             return;
@@ -89,7 +88,8 @@ public class CommandListener {
             !player.hasPermission("chatregulator.bypass.flood") &&
             fUtils.isInfraction()) {
 
-            if(!callCommandViolationEvent(infractionPlayer, event, InfractionType.FLOOD, fUtils)) {
+            if(!callCommandViolationEvent(infractionPlayer, command, InfractionType.FLOOD, fUtils)) {
+                event.setResult(CommandResult.denied());
                 return;
             }
         }
@@ -99,7 +99,8 @@ public class CommandListener {
             !player.hasPermission("chatregulator.bypass.infractions") &&
             iUtils.isInfraction()) {
 
-            if(!callCommandViolationEvent(infractionPlayer, event, InfractionType.REGULAR, iUtils)) {
+            if(!callCommandViolationEvent(infractionPlayer, command, InfractionType.REGULAR, iUtils)) {
+                event.setResult(CommandResult.denied());
                 return;
             }
         }
@@ -110,7 +111,8 @@ public class CommandListener {
             !player.hasPermission("chatregulator.bypass.spam") &&
             sUtils.isInfraction()) {
 
-            if(!callCommandViolationEvent(infractionPlayer, event, InfractionType.SPAM, sUtils)) {
+            if(!callCommandViolationEvent(infractionPlayer, command, InfractionType.SPAM, sUtils)) {
+                event.setResult(CommandResult.denied());
                 return;
             }
         }
@@ -128,26 +130,24 @@ public class CommandListener {
      * Call command violation event
      * and approves player command
      * @param player Player who executed the command
-     * @param event Event listening
+     * @param command The command
      * @param type InfractionType to check
      * @return message of {@link CommandExecuteEvent} is approved
      */
-    private boolean callCommandViolationEvent(InfractionPlayer player, CommandExecuteEvent event, InfractionType type, Check detection) {
-        String command = event.getCommand();
+    private boolean callCommandViolationEvent(InfractionPlayer player, String command, InfractionType type, Check detection) {
         AtomicBoolean approved = new AtomicBoolean(true);
         server.getEventManager().fire(new CommandViolationEvent(player, type, detection, command)).thenAccept(violationEvent -> {
             if(violationEvent.getResult() == GenericResult.denied()) {
                 player.lastMessage(command);
             } else {
+                approved.set(false);
                 dUtils.debug(player, command, type);
                 violationEvent.addViolationGlobal(type);
                 cManager.sendWarningMessage(player, type);
                 cManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(
                   op -> op.hasPermission("chatregulator.notifications")).toList()), player, type);
-                event.setResult(CommandResult.denied());
                 player.addViolation(type);
                 cUtils.executeCommand(type, player);
-                approved.set(false);
             }
         });
         return approved.get();

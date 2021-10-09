@@ -85,11 +85,6 @@ public class TypeUtils {
     public boolean isCommand(String command){
         List<String> commandsChecked = config.getStringList("commands-checked");
 
-        for (String commandChecked : commandsChecked) {
-            if (command.contains(commandChecked)) {
-                return true;
-            }
-        }
-        return false;
+        return commandsChecked.stream().anyMatch(commandChecked -> command.contains(commandChecked));
     }
 }
