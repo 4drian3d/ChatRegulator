@@ -8,14 +8,12 @@ public class Replacer {
         this.config = config;
     }
     public String firstLetterUpercase(String string){
+        if(!config.getBoolean("format.set-first-letter-uppercase")) return string;
         char firstCharacter = string.charAt(0);
-        if(Character.isUpperCase(firstCharacter) ||
-            !config.getBoolean("format.set-first-letter-uppercase")) {
-                return string;
-            }
+        if(Character.isUpperCase(firstCharacter)) return string;
 
         StringBuilder builder = new StringBuilder();
-        builder.append(firstCharacter).append(string.substring(1));
+        builder.append(Character.toUpperCase(firstCharacter)).append(string.substring(1));
         return builder.toString();
     }
 
