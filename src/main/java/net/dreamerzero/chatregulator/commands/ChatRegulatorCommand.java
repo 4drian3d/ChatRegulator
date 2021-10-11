@@ -3,6 +3,7 @@ package net.dreamerzero.chatregulator.commands;
 import java.util.Map;
 import java.util.UUID;
 import java.util.Map.Entry;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.velocitypowered.api.command.SimpleCommand;
@@ -142,9 +143,17 @@ public class ChatRegulatorCommand implements SimpleCommand {
         switch(args.length){
             case 0: return List.of("info", "stats", "player");
             case 1: if(args[0] == "player"){
-                return infractionPlayers.entrySet().stream()
+                //TODO: Change this in java 16 update
+                /*
+                infractionPlayers.entrySet().stream()
                     .limit(config.getInt("general.limit-tab-complete"))
-                    .map(x -> x.getValue().username()).toList();
+                    .map(x -> x.getValue().username()).toList()
+                */
+                ArrayList<String> players = new ArrayList<>();
+                infractionPlayers.entrySet().forEach(infractionPlayer -> {
+                    players.add(infractionPlayer.getValue().username());
+                });
+                return players;
             }
             default: return List.of("");
         }

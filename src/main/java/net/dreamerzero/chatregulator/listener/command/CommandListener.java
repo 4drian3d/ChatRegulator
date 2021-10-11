@@ -1,5 +1,6 @@
 package net.dreamerzero.chatregulator.listener.command;
 
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.velocitypowered.api.event.Subscribe;
@@ -144,8 +145,18 @@ public class CommandListener {
                 dUtils.debug(player, command, type);
                 violationEvent.addViolationGlobal(type);
                 cManager.sendWarningMessage(player, type);
+                //TODO: Change this in java 16 update
+                /*
                 cManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(
                   op -> op.hasPermission("chatregulator.notifications")).toList()), player, type);
+                */
+                ArrayList<Audience> playersOp = new ArrayList<>();
+                for(Player playerOp : server.getAllPlayers()){
+                    if(playerOp.hasPermission("chatregulator.notifications")){
+                        playersOp.add(playerOp);
+                    }
+                }
+                cManager.sendAlertMessage(Audience.audience(playersOp), player, type);
                 player.addViolation(type);
                 cUtils.executeCommand(type, player);
             }
