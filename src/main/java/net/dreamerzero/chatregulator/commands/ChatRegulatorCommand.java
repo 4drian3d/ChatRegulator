@@ -1,6 +1,7 @@
 package net.dreamerzero.chatregulator.commands;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.Map.Entry;
 import java.util.ArrayList;
@@ -10,12 +11,15 @@ import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.permission.Tristate;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
+import com.velocitypowered.api.proxy.server.RegisteredServer;
 
 import de.leonhard.storage.Yaml;
 import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.dreamerzero.chatregulator.config.ConfigManager;
+import net.dreamerzero.chatregulator.utils.GeneralUtils;
 import net.dreamerzero.chatregulator.utils.PlaceholderUtils;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
 /**
@@ -46,7 +50,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
         if(args.length == 0){
             source.sendMessage(mm.parse(config.getString("general.messages.info")));
         } else if(args.length >= 1){
-            switch(args[0]){
+            switch(args[0].toLowerCase()){
                 case "info":
                     source.sendMessage(mm.parse(config.getString("general.messages.info")));
                     break;
@@ -132,6 +136,55 @@ public class ChatRegulatorCommand implements SimpleCommand {
                         source.sendMessage(mm.parse(config.getString("general.messages.no-argument")));
                         break;
                     }
+                case "clear":
+                    if(args.length >= 2){
+                        switch(args[1].toLowerCase()){
+                            case "server":
+                                if(args.length >= 3){
+                                    Optional<RegisteredServer> optionalServer = server.getServer(args[2]);
+                                    if(optionalServer.isPresent()){
+                                        optionalServer.get().sendMessage(GeneralUtils.spacesComponent);
+                                        source.sendMessage(mm.parse(config.getString("clear.messages.cleared-server-chat")));
+                                    } else {
+                                        source.sendMessage(mm.parse(config.getString("clear.messages.no-server-found"), "server", args[2]));
+                                    }
+                                    break;
+                                } else {
+                                    if(source instanceof Player) {
+                                        Player player = (Player)source;
+                                        player.getCurrentServer().get().getServer().sendMessage(GeneralUtils.spacesComponent);
+                                    } else {
+                                        source.sendMessage(mm.parse(config.getString("general.messages.no-argument")));
+                                    }
+                                }
+                                break;
+                            case "player":
+                                if(args.length >= 3){
+                                    Optional<Player> optionalPlayer = server.getPlayer(args[2]);
+                                    if(optionalPlayer.isPresent()){
+                                        Player player = optionalPlayer.get();
+                                        player.sendMessage(GeneralUtils.spacesComponent);
+                                        source.sendMessage(mm.parse(
+                                            config.getString("clear.messages.cleared-player-chat"),
+                                            PlaceholderUtils.getTemplates(InfractionPlayer.get(player))));
+                                    } else {
+                                        source.sendMessage(mm.parse(config.getString("general.messages.player-not-found"), "player", args[2]));
+                                    }
+                                } else {
+                                    source.sendMessage(mm.parse(config.getString("general.messages.no-argument")));
+                                }
+                                break;
+                            default:
+                                Audience.audience(server.getAllPlayers()).sendMessage(GeneralUtils.spacesComponent);
+                                source.sendMessage(mm.parse(config.getString("clear.messages.global-chat-cleared")));
+                                break;
+                        }
+                    } else {
+                        Audience.audience(server.getAllPlayers()).sendMessage(GeneralUtils.spacesComponent);
+                        source.sendMessage(mm.parse(config.getString("clear.messages.global-chat-cleared")));
+                        break;
+                    }
+                    break;
                 default: source.sendMessage(mm.parse(config.getString("general.messages.unknown-command"), "args", args[0])); break;
             }
         }
