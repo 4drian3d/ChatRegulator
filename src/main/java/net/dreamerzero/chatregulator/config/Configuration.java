@@ -142,10 +142,13 @@ public class Configuration {
             "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <aqua>The chat has been cleaned up");
         config.setDefault(
             "clear.messages.cleared-server-chat",
-            "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <aqua>The chat of the player <white><player></white> has been cleared.");
+            "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <aqua>The chat of the server <white><server></white> has been cleared.");
         config.setDefault(
             "clear.messages.no-server-found",
             "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <aqua>The <white><server></white> server was not found");
+        config.setDefault(
+            "clear.messages.cleared-player-chat",
+            "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <aqua>The chat of the player <white><player></white> has been cleared.");
         /*---------------
         General
         ---------------*/

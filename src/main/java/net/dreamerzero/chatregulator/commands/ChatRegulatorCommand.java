@@ -144,7 +144,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
                                     Optional<RegisteredServer> optionalServer = server.getServer(args[2]);
                                     if(optionalServer.isPresent()){
                                         optionalServer.get().sendMessage(GeneralUtils.spacesComponent);
-                                        source.sendMessage(mm.parse(config.getString("clear.messages.cleared-server-chat")));
+                                        source.sendMessage(mm.parse(config.getString("clear.messages.cleared-server-chat"), "server", args[2]));
                                     } else {
                                         source.sendMessage(mm.parse(config.getString("clear.messages.no-server-found"), "server", args[2]));
                                     }
@@ -152,7 +152,9 @@ public class ChatRegulatorCommand implements SimpleCommand {
                                 } else {
                                     if(source instanceof Player) {
                                         Player player = (Player)source;
-                                        player.getCurrentServer().get().getServer().sendMessage(GeneralUtils.spacesComponent);
+                                        RegisteredServer playerServer = player.getCurrentServer().get().getServer();
+                                        playerServer.sendMessage(GeneralUtils.spacesComponent);
+                                        source.sendMessage(mm.parse(config.getString("clear.messages.cleared-server-chat"), "server", playerServer.getServerInfo().getName()));
                                     } else {
                                         source.sendMessage(mm.parse(config.getString("general.messages.no-argument")));
                                     }
