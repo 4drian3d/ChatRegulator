@@ -106,11 +106,17 @@ public class Configuration {
         config.setDefault("format.set-first-letter-uppercase", true);
         config.setDefault("format.set-final-dot", true);
         /*
-        Clear 
+        Clear Subcommand
         */
-        config.setDefault("clear.messages.global-chat-cleared", "The chat has been cleaned up");
-        config.setDefault("clear.messages.cleared-server-chat", "The chat of the player <player> has been cleared.");
-        config.setDefault("clear.messages.no-server-found", "The <server> server was not found");
+        config.setDefault(
+            "clear.messages.global-chat-cleared",
+            "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <aqua>The chat has been cleaned up");
+        config.setDefault(
+            "clear.messages.cleared-server-chat",
+            "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <aqua>The chat of the player <white><player></white> has been cleared.");
+        config.setDefault(
+            "clear.messages.no-server-found",
+            "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <aqua>The <white><server></white> server was not found");
         /*---------------
         General
         ---------------*/
