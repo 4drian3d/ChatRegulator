@@ -32,7 +32,8 @@ public class PlaceholderUtils {
         return List.of(
             Template.of("flood", String.valueOf(ViolationEvent.floodCount)),
             Template.of("spam", String.valueOf(ViolationEvent.spamCount)),
-            Template.of("regular", String.valueOf(ViolationEvent.regularCount))
+            Template.of("regular", String.valueOf(ViolationEvent.regularCount)),
+            Template.of("command", String.valueOf(ViolationEvent.commandCount))
         );
     }
 }

@@ -33,22 +33,12 @@ public class ConfigManager {
      * @return the format of the warning
      */
     public TypeUtils.WarningType getWarningType(TypeUtils.InfractionType infraction){
-        String type;
-
         switch(infraction){
-            case REGULAR: type = config.getString("infractions.warning-type"); break;
-            case FLOOD: type = config.getString("flood.warning-type"); break;
+            case REGULAR: return TypeUtils.WarningType.valueOf(config.getString("infractions.warning-type").toUpperCase());
+            case FLOOD: return TypeUtils.WarningType.valueOf(config.getString("flood.warning-type").toUpperCase());
+            case SPAM: return TypeUtils.WarningType.valueOf(config.getString("spam.warning-type").toUpperCase());
+            case BCOMMAND: return TypeUtils.WarningType.valueOf(config.getString("blocked-commands.warning-type").toUpperCase());
             default: return TypeUtils.WarningType.MESSAGE;
-        }
-
-        if(type.contains("title")){
-            return TypeUtils.WarningType.TITLE;
-        } else if(type.contains("actionbar")){
-            return TypeUtils.WarningType.ACTIONBAR;
-        } else if(type.contains("message")){
-            return TypeUtils.WarningType.MESSAGE;
-        } else {
-            return TypeUtils.WarningType.MESSAGE;
         }
     }
 
@@ -179,6 +169,7 @@ public class ConfigManager {
             case FLOOD: message = config.getString("flood.messages.alert"); break;
             case REGULAR: message = config.getString("infractions.messages.alert"); break;
             case SPAM: message = config.getString("spam.messages.alert"); break;
+            case BCOMMAND:  message = config.getString("blocked-commands.messages.alert"); break;
             default: message = null;
         }
 
@@ -203,6 +194,7 @@ public class ConfigManager {
             case FLOOD: sender.sendMessage(mm.parse(config.getString("flood.messages.reset"), PlaceholderUtils.getTemplates(player))); break;
             case SPAM: sender.sendMessage(mm.parse(config.getString("spam.messages.reset"), PlaceholderUtils.getTemplates(player))); break;
             case NONE: sender.sendMessage(mm.parse(config.getString("general.messages.all-reset"), PlaceholderUtils.getTemplates(player))); break;
+            case BCOMMAND: sender.sendMessage(mm.parse(config.getString("commands-blocked.messages.reset"), PlaceholderUtils.getTemplates(player))); break;
         }
     }
 }

@@ -36,12 +36,39 @@ public class Configuration {
                 "b(i|1)tch",
                 "(a|4|@)w(e|3|@)b(o|@|0)n(a|4|@)d(o|@|0)"));
         /*---------------
+        Command Blacklist
+        ---------------*/
+        blacklist.setDefault(
+            "blocked-commands",
+            List.of(
+                "execute",
+                "/calc"));
+        config.setDefault(
+            "blocked-commands.warning-type",
+            "MESSAGE");
+        config.setDefault(
+            "blocked-commands.messages.warning",
+            "<red>Hello, it is not allowed to use blocked commands");
+        config.setDefault(
+            "blocked-commands.messages.alert",
+            "<red>The player <aqua><player></aqua> <red>has executed blocked commands in <aqua><server></aqua> server.");
+        config.setDefault(
+            "blocked-commands.messages.reset",
+            "<red>The infraction warning count for <player> was reset.");
+        config.setDefault("blocked-commands.commands.execute-commands", false);
+        config.setDefault("blocked-commands.commands.violations-required", 2);
+        config.setDefault(
+            "blocked-commands.commands.commands-to-execute",
+            List.of(
+                "mute <player> 1m You have been muted for executing blocked commands",
+                "example command"));
+        /*---------------
         Infractions
         ---------------*/
         config.setDefault("infractions.enabled", true);
         config.setDefault(
             "infractions.warning-type",
-            "message");
+            "MESSAGE");
         config.setDefault(
             "infractions.messages.warning",
             "<red>Hello, it is not allowed to use dirty words on this server");
@@ -55,14 +82,16 @@ public class Configuration {
         config.setDefault("infractions.commands.violations-required", 5);
         config.setDefault(
             "infractions.commands.commands-to-execute",
-            List.of("mute <player> 1m You have been muted for swearing on the server <server>", "example command"));
+            List.of(
+                "mute <player> 1m You have been muted for swearing on the server <server>",
+                "example command"));
         /*---------------
         Flood
         ---------------*/
         config.setDefault("flood.enabled", true);
         config.setDefault(
             "flood.warning-type",
-            "message");
+            "MESSAGE");
         config.setDefault(
             "flood.messages.warning",
             "<red>Hello, it is not allowed to make flood on this server.");
@@ -84,7 +113,7 @@ public class Configuration {
         config.setDefault("spam.enabled", true);
         config.setDefault(
             "spam.warning-type",
-            "message");
+            "MESSAGE");
         config.setDefault(
             "spam.messages.warning",
             "<red>Hello, it is not allowed to make spam on this server.");
@@ -105,9 +134,9 @@ public class Configuration {
         config.setDefault("format.enabled", true);
         config.setDefault("format.set-first-letter-uppercase", true);
         config.setDefault("format.set-final-dot", true);
-        /*
+        /*---------------
         Clear Subcommand
-        */
+        ---------------*/
         config.setDefault(
             "clear.messages.global-chat-cleared",
             "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <aqua>The chat has been cleaned up");

@@ -55,6 +55,10 @@ public class TypeUtils {
          */
         SPAM,
         /**
+         * Represents a blocked command
+         */
+        BCOMMAND,
+        /**
          * Used internally to represent a
          * multiple warning and in other cases more
          */

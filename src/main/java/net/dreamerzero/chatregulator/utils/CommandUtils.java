@@ -57,7 +57,7 @@ public class CommandUtils {
                     });
                     break;
                 }
-            case SPAM: 
+            case SPAM:
                 if(config.getBoolean("spam.commands.execute-commands") &&
                     infractorPlayer.getSpamInfractions() % config.getInt("spam.commands.violations-required") == 0) {
 
@@ -66,6 +66,18 @@ public class CommandUtils {
                                 .replaceAll("<player>", infractor.getUsername())
                         .replaceAll("<server>", infractor.getCurrentServer().get().getServerInfo().getName());
                         server.getCommandManager().executeAsync(server.getConsoleCommandSource(), commandToSend);
+                    });
+                    break;
+                }
+            case BCOMMAND:
+                if(config.getBoolean("blocked-commands.commands.execute-commands") &&
+                    infractorPlayer.getRegularInfractions() % config.getInt("blocked-commands.commands.violations-required") == 0){
+
+                    config.getStringList("blocked-commands.commands-to-execute").forEach(command -> {
+                    String commandToSend = command
+                        .replaceAll("<player>", infractorPlayer.username())
+                        .replaceAll("<server>", infractor.getCurrentServer().get().getServerInfo().getName());
+                    server.getCommandManager().executeAsync(server.getConsoleCommandSource(), commandToSend);
                     });
                     break;
                 }

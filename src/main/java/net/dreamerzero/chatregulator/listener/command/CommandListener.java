@@ -18,6 +18,7 @@ import net.dreamerzero.chatregulator.config.ConfigManager;
 import net.dreamerzero.chatregulator.events.CommandViolationEvent;
 import net.dreamerzero.chatregulator.modules.Replacer;
 import net.dreamerzero.chatregulator.modules.checks.Check;
+import net.dreamerzero.chatregulator.modules.checks.CommandCheck;
 import net.dreamerzero.chatregulator.modules.checks.FloodCheck;
 import net.dreamerzero.chatregulator.modules.checks.InfractionCheck;
 import net.dreamerzero.chatregulator.modules.checks.SpamCheck;
@@ -38,6 +39,7 @@ public class CommandListener {
     private final DebugUtils dUtils;
     private final FloodCheck fUtils;
     private final InfractionCheck iUtils;
+    private final CommandCheck cCheck;
     private final TypeUtils tUtils;
     private final Yaml config;
     private final Replacer rUtils;
@@ -52,6 +54,7 @@ public class CommandListener {
         this.dUtils = new DebugUtils(logger, config);
         this.fUtils = new FloodCheck(config);
         this.iUtils = new InfractionCheck(blacklist);
+        this.cCheck = new CommandCheck(blacklist);
         this.tUtils = new TypeUtils(config);
         this.rUtils = new Replacer(config);
         this.config = config;
@@ -83,6 +86,17 @@ public class CommandListener {
 
         Player player = (Player)event.getCommandSource();
         InfractionPlayer infractionPlayer = InfractionPlayer.get(player);
+
+        cCheck.check(command);
+        if(config.getBoolean("blocked-commands.enabled") &&
+            !player.hasPermission("cheatregulator.bypass.blocked-command")
+            &&cCheck.isInfraction()){
+
+                if(!callCommandViolationEvent(infractionPlayer, command, InfractionType.BCOMMAND, cCheck)) {
+                    event.setResult(CommandResult.denied());
+                    return;
+                }
+            }
 
         fUtils.check(command);
         if(config.getBoolean("flood.enabled") &&

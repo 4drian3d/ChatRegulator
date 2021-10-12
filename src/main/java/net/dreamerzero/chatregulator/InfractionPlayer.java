@@ -22,6 +22,7 @@ public class InfractionPlayer {
     private int floodViolations;
     private int regularViolations;
     private int spamViolations;
+    private int commandViolations;
     private boolean isOnline;
     private final String username;
     private long lastTimeSeen;
@@ -39,6 +40,7 @@ public class InfractionPlayer {
         this.floodViolations = 0;
         this.regularViolations = 0;
         this.spamViolations = 0;
+        this.commandViolations = 0;
         this.isOnline = true;
         this.username = player.getUsername();
     }
@@ -57,6 +59,7 @@ public class InfractionPlayer {
         this.floodViolations = 0;
         this.regularViolations = 0;
         this.spamViolations = 0;
+        this.commandViolations = 0;
         this.isOnline = true;
         this.username = player.getUsername();
     }
@@ -161,6 +164,7 @@ public class InfractionPlayer {
             case SPAM: spamViolations += 1; break;
             case REGULAR: regularViolations += 1; break;
             case FLOOD: floodViolations += 1; break;
+            case BCOMMAND: commandViolations += 1; break;
             case NONE: return;
         }
     }
@@ -175,6 +179,7 @@ public class InfractionPlayer {
             case SPAM: spamViolations = newViolationsCount; break;
             case REGULAR: regularViolations = newViolationsCount; break;
             case FLOOD: floodViolations = newViolationsCount; break;
+            case BCOMMAND: commandViolations = newViolationsCount; break;
             case NONE: return;
         }
     }
@@ -201,6 +206,14 @@ public class InfractionPlayer {
      */
     public int getSpamInfractions(){
         return spamViolations;
+    }
+
+    /**
+     * Get the amount of commands blocked the player already executed.
+     * @return the commands blocked count executed by the player
+     */
+    public int getCommandInfractions(){
+        return commandViolations;
     }
 
     /**

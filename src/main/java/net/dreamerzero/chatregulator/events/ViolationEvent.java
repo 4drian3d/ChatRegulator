@@ -32,7 +32,12 @@ public class ViolationEvent implements ResultedEvent<GenericResult> {
     /**
      * Global Regular Infractions warning count
      */
-    regularCount;
+    regularCount,
+
+    /**
+     * Global commands blocked executed
+     */
+    commandCount;
     private Check detection;
     private GenericResult result = GenericResult.allowed();
 
@@ -95,6 +100,7 @@ public class ViolationEvent implements ResultedEvent<GenericResult> {
             case SPAM: spamCount++; break;
             case FLOOD: floodCount++; break;
             case REGULAR: regularCount++; break;
+            case BCOMMAND: commandCount++; break;
             default: break;
         }
     }
