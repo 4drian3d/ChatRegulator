@@ -1,6 +1,6 @@
 package net.dreamerzero.chatregulator.utils;
 
-public class Constants {
+public final class Constants {
     public final static String VERSION = "{version}";
     public final static String NAME = "{name}";
     public final static String DESCRIPTION = "{description}";
