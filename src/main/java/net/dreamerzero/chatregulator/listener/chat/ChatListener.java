@@ -45,9 +45,9 @@ public class ChatListener {
      * @param config the plugin config
      * @param blacklist the blacklist config
      */
-    public ChatListener(final ProxyServer server, Logger logger, Yaml config, Yaml blacklist) {
+    public ChatListener(final ProxyServer server, Logger logger, Yaml config, Yaml blacklist, Yaml messages) {
         this.server = server;
-        this.cManager = new ConfigManager(config);
+        this.cManager = new ConfigManager(messages);
         this.cUtils = new CommandUtils(server, config);
         this.dUtils = new DebugUtils(logger, config);
         this.fUtils = new FloodCheck(config);

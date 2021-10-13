@@ -19,13 +19,13 @@ import net.kyori.adventure.title.Title;
  * Utilities for using the configuration paths in an orderly manner
  */
 public class ConfigManager {
-    private Yaml config;
+    private Yaml messages;
     /**
      * Constructor of the ConfigManager
      * @param config plugin config
      */
-    public ConfigManager(Yaml config){
-        this.config = config;
+    public ConfigManager(Yaml messages){
+        this.messages = messages;
     }
     /**
      * Get the warning format according to the configuration
@@ -34,10 +34,10 @@ public class ConfigManager {
      */
     public TypeUtils.WarningType getWarningType(TypeUtils.InfractionType infraction){
         switch(infraction){
-            case REGULAR: return TypeUtils.WarningType.valueOf(config.getString("infractions.warning-type").toUpperCase());
-            case FLOOD: return TypeUtils.WarningType.valueOf(config.getString("flood.warning-type").toUpperCase());
-            case SPAM: return TypeUtils.WarningType.valueOf(config.getString("spam.warning-type").toUpperCase());
-            case BCOMMAND: return TypeUtils.WarningType.valueOf(config.getString("blocked-commands.warning-type").toUpperCase());
+            case REGULAR: return TypeUtils.WarningType.valueOf(messages.getString("infractions.warning-type").toUpperCase());
+            case FLOOD: return TypeUtils.WarningType.valueOf(messages.getString("flood.warning-type").toUpperCase());
+            case SPAM: return TypeUtils.WarningType.valueOf(messages.getString("spam.warning-type").toUpperCase());
+            case BCOMMAND: return TypeUtils.WarningType.valueOf(messages.getString("blocked-commands.warning-type").toUpperCase());
             default: return TypeUtils.WarningType.MESSAGE;
         }
     }
@@ -48,7 +48,7 @@ public class ConfigManager {
      * @param type the type of infraction
      */
     public void sendWarningMessage(InfractionPlayer infractor, TypeUtils.InfractionType type){
-        String message = config.getString("spam.messages.warning");
+        String message = messages.getString("spam.warning");
         Audience player = infractor.getPlayer().get();
 
         switch(getWarningType(type)){
@@ -84,7 +84,7 @@ public class ConfigManager {
      * @param fUtils the flood check
      */
     public void sendWarningMessage(InfractionPlayer infractor, TypeUtils.InfractionType type, FloodCheck fUtils){
-        String message = config.getString("flood.messages.warning");
+        String message = messages.getString("flood.warning");
         List<Template> template = new ArrayList<>();
         template.add(Template.of("infraction", fUtils.getInfractionWord()));
         template.addAll(PlaceholderUtils.getTemplates(infractor));
@@ -124,7 +124,7 @@ public class ConfigManager {
      * @param iUtils the infractions check
      */
     public void sendWarningMessage(InfractionPlayer infractor, TypeUtils.InfractionType type, InfractionCheck iUtils){
-        String message = config.getString("infractions.messages.warning");
+        String message = messages.getString("infractions.warning");
         List<Template> template = new ArrayList<>();
         template.add(Template.of("infraction", iUtils.getInfractionWord()));
         template.addAll(PlaceholderUtils.getTemplates(infractor));
@@ -166,10 +166,10 @@ public class ConfigManager {
     public void sendAlertMessage(Audience staff, InfractionPlayer infractor, TypeUtils.InfractionType type){
         String message;
         switch(type){
-            case FLOOD: message = config.getString("flood.messages.alert"); break;
-            case REGULAR: message = config.getString("infractions.messages.alert"); break;
-            case SPAM: message = config.getString("spam.messages.alert"); break;
-            case BCOMMAND:  message = config.getString("blocked-commands.messages.alert"); break;
+            case FLOOD: message = messages.getString("flood.alert"); break;
+            case REGULAR: message = messages.getString("infractions.alert"); break;
+            case SPAM: message = messages.getString("spam.alert"); break;
+            case BCOMMAND:  message = messages.getString("blocked-commands.alert"); break;
             default: message = null;
         }
 
@@ -190,11 +190,11 @@ public class ConfigManager {
     public void sendResetMessage(Audience sender, TypeUtils.InfractionType type, InfractionPlayer player){
         MiniMessage mm = MiniMessage.miniMessage();
         switch(type){
-            case REGULAR: sender.sendMessage(mm.parse(config.getString("infractions.messages.reset"), PlaceholderUtils.getTemplates(player))); break;
-            case FLOOD: sender.sendMessage(mm.parse(config.getString("flood.messages.reset"), PlaceholderUtils.getTemplates(player))); break;
-            case SPAM: sender.sendMessage(mm.parse(config.getString("spam.messages.reset"), PlaceholderUtils.getTemplates(player))); break;
-            case NONE: sender.sendMessage(mm.parse(config.getString("general.messages.all-reset"), PlaceholderUtils.getTemplates(player))); break;
-            case BCOMMAND: sender.sendMessage(mm.parse(config.getString("commands-blocked.messages.reset"), PlaceholderUtils.getTemplates(player))); break;
+            case REGULAR: sender.sendMessage(mm.parse(messages.getString("infractions.reset"), PlaceholderUtils.getTemplates(player))); break;
+            case FLOOD: sender.sendMessage(mm.parse(messages.getString("flood.reset"), PlaceholderUtils.getTemplates(player))); break;
+            case SPAM: sender.sendMessage(mm.parse(messages.getString("spam.reset"), PlaceholderUtils.getTemplates(player))); break;
+            case NONE: sender.sendMessage(mm.parse(messages.getString("general.all-reset"), PlaceholderUtils.getTemplates(player))); break;
+            case BCOMMAND: sender.sendMessage(mm.parse(messages.getString("commands-blocked.reset"), PlaceholderUtils.getTemplates(player))); break;
         }
     }
 }

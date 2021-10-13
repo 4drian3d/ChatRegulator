@@ -40,6 +40,7 @@ public class Regulator {
     private final ProxyServer server;
     private Yaml config;
     private Yaml blacklist;
+    private Yaml messages;
     private final Logger logger;
 
     /**
@@ -57,6 +58,7 @@ public class Regulator {
         this.server = server;
         this.config = new Yaml("config", "plugins/ChatRegulator");
         this.blacklist = new Yaml("blacklist", "plugins/ChatRegulator");
+        this.messages = new Yaml("messages", "plugins/ChatRegulator");
         this.logger = logger;
     }
 
@@ -69,17 +71,17 @@ public class Regulator {
         server.getConsoleCommandSource().sendMessage(
             MiniMessage.miniMessage().parse("<gradient:#f2709c:#ff9472>ChatRegulator</gradient> <gradient:#DAE2F8:#D4D3DD>has started, have a very nice day</gradient>"));
         // Default config
-        new Configuration(config, blacklist).setDefaultConfig();
+        new Configuration(config, blacklist, messages).setDefaultConfig();
         if(server.getPluginManager().isLoaded("ServerUtils")){
             server.getEventManager().register(this, new PluginListener(logger));
         }
-        server.getEventManager().register(this, new ChatListener(server, logger, config, blacklist));
-        server.getEventManager().register(this, new CommandListener(server, logger, config, blacklist));
+        server.getEventManager().register(this, new ChatListener(server, logger, config, blacklist, messages));
+        server.getEventManager().register(this, new CommandListener(server, logger, config, blacklist, messages));
         server.getEventManager().register(this, new JoinListener(infractionPlayers));
         server.getEventManager().register(this, new LeaveListener());
 
         CommandMeta regulatorMeta = server.getCommandManager().metaBuilder("chatregulator").aliases("chatr", "cregulator").build();
-        server.getCommandManager().register(regulatorMeta, new ChatRegulatorCommand(infractionPlayers, config, server));
+        server.getCommandManager().register(regulatorMeta, new ChatRegulatorCommand(infractionPlayers, messages, server));
 
         checkInfractionPlayersRunnable();
     }

@@ -27,18 +27,20 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
  */
 public class ChatRegulatorCommand implements SimpleCommand {
     private Map<UUID, InfractionPlayer> infractionPlayers;
-    private Yaml config;
+    private Yaml messages;
     private ProxyServer server;
+    private ConfigManager cManager;
     /**
      * ChatRegulatorCommand Contructor
      * @param infractionPlayers the list of infractor players
-     * @param config the plugin config
+     * @param messages the plugin messages
      * @param server the proxy server
      */
-    public ChatRegulatorCommand(Map<UUID, InfractionPlayer> infractionPlayers, Yaml config, ProxyServer server){
+    public ChatRegulatorCommand(Map<UUID, InfractionPlayer> infractionPlayers, Yaml messages, ProxyServer server){
         this.infractionPlayers = infractionPlayers;
-        this.config = config;
+        this.messages = messages;
         this.server = server;
+        this.cManager = new ConfigManager(messages);
     }
 
     @Override
@@ -48,14 +50,26 @@ public class ChatRegulatorCommand implements SimpleCommand {
         MiniMessage mm = MiniMessage.miniMessage();
 
         if(args.length == 0){
-            source.sendMessage(mm.parse(config.getString("general.messages.info")));
+            source.sendMessage(mm.parse(messages.getString("general.info"), "command", invocation.alias()));
         } else if(args.length >= 1){
             switch(args[0].toLowerCase()){
-                case "info":
-                    source.sendMessage(mm.parse(config.getString("general.messages.info")));
+                case "info": case "help":
+                    if(args.length == 1){
+                        messages.getStringList("general.help.main").forEach(line -> source.sendMessage(mm.parse(line)));
+                        break;
+                    } else if(args.length == 2){
+                        switch(args[1]){
+                            //TODO: Implement each help message
+                            case "reset": messages.getStringList("general.help.reset").forEach(line -> source.sendMessage(mm.parse(line))); break;
+                            case "clear": messages.getStringList("general.help.clear").forEach(line -> source.sendMessage(mm.parse(line))); break;
+                            case "player": messages.getStringList("general.help.player").forEach(line -> source.sendMessage(mm.parse(line))); break;
+                            default: source.sendMessage(mm.parse(messages.getString("general.no-argument"))); break;
+                        }
+                    }
+                    source.sendMessage(mm.parse(messages.getString("general.help"), "command", invocation.alias()));
                     break;
                 case "stats":
-                    for(String line : config.getStringList("general.messages.stats")){
+                    for(String line : messages.getStringList("general.stats")){
                         source.sendMessage(mm.parse(line, PlaceholderUtils.getGlobalTemplates()));
                     }
                     break;
@@ -65,24 +79,24 @@ public class ChatRegulatorCommand implements SimpleCommand {
                         if(optionalPlayer.isPresent()){
                             Player player = optionalPlayer.get();
                             InfractionPlayer infractionPlayer = InfractionPlayer.get(player);
-                            for(String line : config.getStringList("general.messages.player")){
+                            for(String line : messages.getStringList("general.player")){
                                 source.sendMessage(mm.parse(line, PlaceholderUtils.getTemplates(infractionPlayer)));
                             }
                         } else {
                             for(Entry<UUID, InfractionPlayer> entry : infractionPlayers.entrySet()){
                                 if(entry.getValue().username() == args[0]){
-                                    for(String line : config.getStringList("general.messages.player")){
+                                    for(String line : messages.getStringList("general.player")){
                                         source.sendMessage(mm.parse(line, PlaceholderUtils.getTemplates(entry.getValue())));
                                     }
                                     break;
                                 }
                             }
-                            source.sendMessage(mm.parse(config.getString("general.messages.player-not-found"), "player", args[1]));
+                            source.sendMessage(mm.parse(messages.getString("general.player-not-found"), "player", args[1]));
                             break;
                         }
                         break;
                     } else {
-                        source.sendMessage(mm.parse(config.getString("general.messages.no-argument")));
+                        source.sendMessage(mm.parse(messages.getString("general.no-argument")));
                         break;
                     }
                 case "reset":
@@ -91,7 +105,6 @@ public class ChatRegulatorCommand implements SimpleCommand {
                         if(optionalPlayer.isPresent()){
                             Player player = optionalPlayer.get();
                             InfractionPlayer infractionPlayer = InfractionPlayer.get(player);
-                            ConfigManager cManager = new ConfigManager(config);
                             if(args.length >= 3){
                                 switch(args[2].toLowerCase()){
                                     case "infractions": case "regular":
@@ -122,18 +135,18 @@ public class ChatRegulatorCommand implements SimpleCommand {
                         } else {
                             for(Entry<UUID, InfractionPlayer> entry : infractionPlayers.entrySet()){
                                 if(entry.getValue().username() == args[1]){
-                                    for(String line : config.getStringList("general.messages.player")){
+                                    for(String line : messages.getStringList("general.player")){
                                         source.sendMessage(mm.parse(line,PlaceholderUtils.getTemplates(entry.getValue())));
                                     }
                                     break;
                                 }
                             }
-                            source.sendMessage(mm.parse(config.getString("general.messages.player-not-found"), "player", args[1]));
+                            source.sendMessage(mm.parse(messages.getString("general.player-not-found"), "player", args[1]));
                             break;
                         }
                         break;
                     } else {
-                        source.sendMessage(mm.parse(config.getString("general.messages.no-argument")));
+                        source.sendMessage(mm.parse(messages.getString("general.no-argument")));
                         break;
                     }
                 case "clear":
@@ -144,9 +157,9 @@ public class ChatRegulatorCommand implements SimpleCommand {
                                     Optional<RegisteredServer> optionalServer = server.getServer(args[2]);
                                     if(optionalServer.isPresent()){
                                         optionalServer.get().sendMessage(GeneralUtils.spacesComponent);
-                                        source.sendMessage(mm.parse(config.getString("clear.messages.cleared-server-chat"), "server", args[2]));
+                                        source.sendMessage(mm.parse(messages.getString("clear.cleared-server-chat"), "server", args[2]));
                                     } else {
-                                        source.sendMessage(mm.parse(config.getString("clear.messages.no-server-found"), "server", args[2]));
+                                        source.sendMessage(mm.parse(messages.getString("clear.no-server-found"), "server", args[2]));
                                     }
                                     break;
                                 } else {
@@ -154,9 +167,9 @@ public class ChatRegulatorCommand implements SimpleCommand {
                                         Player player = (Player)source;
                                         RegisteredServer playerServer = player.getCurrentServer().get().getServer();
                                         playerServer.sendMessage(GeneralUtils.spacesComponent);
-                                        source.sendMessage(mm.parse(config.getString("clear.messages.cleared-server-chat"), "server", playerServer.getServerInfo().getName()));
+                                        source.sendMessage(mm.parse(messages.getString("clear.cleared-server-chat"), "server", playerServer.getServerInfo().getName()));
                                     } else {
-                                        source.sendMessage(mm.parse(config.getString("general.messages.no-argument")));
+                                        source.sendMessage(mm.parse(messages.getString("general.no-argument")));
                                     }
                                 }
                                 break;
@@ -167,27 +180,27 @@ public class ChatRegulatorCommand implements SimpleCommand {
                                         Player player = optionalPlayer.get();
                                         player.sendMessage(GeneralUtils.spacesComponent);
                                         source.sendMessage(mm.parse(
-                                            config.getString("clear.messages.cleared-player-chat"),
+                                            messages.getString("clear.cleared-player-chat"),
                                             PlaceholderUtils.getTemplates(InfractionPlayer.get(player))));
                                     } else {
-                                        source.sendMessage(mm.parse(config.getString("general.messages.player-not-found"), "player", args[2]));
+                                        source.sendMessage(mm.parse(messages.getString("general.player-not-found"), "player", args[2]));
                                     }
                                 } else {
-                                    source.sendMessage(mm.parse(config.getString("general.messages.no-argument")));
+                                    source.sendMessage(mm.parse(messages.getString("general.no-argument")));
                                 }
                                 break;
                             default:
                                 Audience.audience(server.getAllPlayers()).sendMessage(GeneralUtils.spacesComponent);
-                                source.sendMessage(mm.parse(config.getString("clear.messages.global-chat-cleared")));
+                                source.sendMessage(mm.parse(messages.getString("clear.global-chat-cleared")));
                                 break;
                         }
                     } else {
                         Audience.audience(server.getAllPlayers()).sendMessage(GeneralUtils.spacesComponent);
-                        source.sendMessage(mm.parse(config.getString("clear.messages.global-chat-cleared")));
+                        source.sendMessage(mm.parse(messages.getString("clear.global-chat-cleared")));
                         break;
                     }
                     break;
-                default: source.sendMessage(mm.parse(config.getString("general.messages.unknown-command"), "args", args[0])); break;
+                default: source.sendMessage(mm.parse(messages.getString("general.unknown-command"), "args", args[0])); break;
             }
         }
     }
@@ -201,7 +214,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
                 //TODO: Change this in java 16 update
                 /*
                 infractionPlayers.entrySet().stream()
-                    .limit(config.getInt("general.limit-tab-complete"))
+                    .limit(messages.getInt("general.limit-tab-complete"))
                     .map(x -> x.getValue().username()).toList()
                 */
                 ArrayList<String> players = new ArrayList<>();
