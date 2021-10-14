@@ -24,8 +24,8 @@ import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 import net.dreamerzero.chatregulator.utils.TypeUtils.SourceType;
 import net.kyori.adventure.audience.Audience;
 
-import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 public class ChatListener {
 
@@ -129,18 +129,13 @@ public class ChatListener {
                 dUtils.debug(player, message, type);
                 violationEvent.addViolationGlobal(type);
                 cManager.sendWarningMessage(player, type);
-                //TODO: Change this in java 16 update
-                /*
-                cManager.sendAlertMessage(Audience.audience(server.getAllPlayers().stream().filter(
-                  op -> op.hasPermission("chatregulator.notifications")).toList()), player, type);
-                */
-                ArrayList<Audience> playersOp = new ArrayList<>();
-                for(Player playerOp : server.getAllPlayers()){
-                    if(playerOp.hasPermission("chatregulator.notifications")){
-                        playersOp.add(playerOp);
-                    }
-                }
-                cManager.sendAlertMessage(Audience.audience(playersOp), player, type);
+                //Test parallelstream
+                cManager.sendAlertMessage(Audience.audience(
+                    server.getAllPlayers().stream()
+                        .filter(op -> op.hasPermission("chatregulator.notifications"))
+                        .collect(Collectors.toList())),
+                    player, type);
+
                 player.addViolation(type);
                 cUtils.executeCommand(type, player);
             }

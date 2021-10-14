@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.Map.Entry;
-import java.util.ArrayList;
+import java.util.stream.Collectors;
 import java.util.List;
 
 import com.velocitypowered.api.command.SimpleCommand;
@@ -211,17 +211,10 @@ public class ChatRegulatorCommand implements SimpleCommand {
         switch(args.length){
             case 0: return List.of("info", "stats", "player");
             case 1: if(args[0] == "player"){
-                //TODO: Change this in java 16 update
-                /*
-                infractionPlayers.entrySet().stream()
+                return infractionPlayers.entrySet().stream()
                     .limit(messages.getInt("general.limit-tab-complete"))
-                    .map(x -> x.getValue().username()).toList()
-                */
-                ArrayList<String> players = new ArrayList<>();
-                infractionPlayers.entrySet().forEach(infractionPlayer -> {
-                    players.add(infractionPlayer.getValue().username());
-                });
-                return players;
+                    .map(x -> x.getValue().username())
+                    .collect(Collectors.toList());
             }
             default: return List.of("");
         }
