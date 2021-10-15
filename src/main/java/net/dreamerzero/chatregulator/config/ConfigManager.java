@@ -20,12 +20,14 @@ import net.kyori.adventure.title.Title;
  */
 public class ConfigManager {
     private Yaml messages;
+    private MiniMessage mm;
     /**
      * Constructor of the ConfigManager
      * @param config plugin config
      */
     public ConfigManager(Yaml messages){
         this.messages = messages;
+        this.mm = MiniMessage.miniMessage();
     }
     /**
      * Get the warning format according to the configuration
@@ -57,23 +59,23 @@ public class ConfigManager {
                     player.showTitle(
                     Title.title(
                         Component.empty(),
-                        MiniMessage.miniMessage().parse(
+                        mm.parse(
                             message,
                             PlaceholderUtils.getTemplates(infractor))));
                 } else {
                     String titleParts[] = message.split(";");
                     player.showTitle(
                         Title.title(
-                            MiniMessage.miniMessage().parse(
+                            mm.parse(
                                 titleParts[0],
                                 PlaceholderUtils.getTemplates(infractor)),
-                            MiniMessage.miniMessage().parse(
+                            mm.parse(
                                 titleParts[1],
                                 PlaceholderUtils.getTemplates(infractor))));
                 }
                 break;
-            case MESSAGE: player.sendMessage(MiniMessage.miniMessage().parse(message, PlaceholderUtils.getTemplates(infractor))); break;
-            case ACTIONBAR: player.sendActionBar(MiniMessage.miniMessage().parse(message, PlaceholderUtils.getTemplates(infractor))); break;
+            case MESSAGE: player.sendMessage(mm.parse(message, PlaceholderUtils.getTemplates(infractor))); break;
+            case ACTIONBAR: player.sendActionBar(mm.parse(message, PlaceholderUtils.getTemplates(infractor))); break;
         }
     }
 
@@ -97,23 +99,23 @@ public class ConfigManager {
                     player.showTitle(
                     Title.title(
                         Component.empty(),
-                        MiniMessage.miniMessage().parse(
+                        mm.parse(
                             message,
                             template)));
                 } else {
                     String titleParts[] = message.split(";");
                     player.showTitle(
                         Title.title(
-                            MiniMessage.miniMessage().parse(
+                            mm.parse(
                                 titleParts[0],
                                 template),
-                            MiniMessage.miniMessage().parse(
+                            mm.parse(
                                 titleParts[1],
                                 template)));
                 }
                 break;
-            case MESSAGE: player.sendMessage(MiniMessage.miniMessage().parse(message, template)); break;
-            case ACTIONBAR: player.sendActionBar(MiniMessage.miniMessage().parse(message, template)); break;
+            case MESSAGE: player.sendMessage(mm.parse(message, template)); break;
+            case ACTIONBAR: player.sendActionBar(mm.parse(message, template)); break;
         }
     }
 
@@ -137,23 +139,23 @@ public class ConfigManager {
                     player.showTitle(
                     Title.title(
                         Component.empty(),
-                        MiniMessage.miniMessage().parse(
+                        mm.parse(
                             message,
                             template)));
                 } else {
                     String titleParts[] = message.split(";");
                     player.showTitle(
                         Title.title(
-                            MiniMessage.miniMessage().parse(
+                            mm.parse(
                                 titleParts[0],
                                 template),
-                            MiniMessage.miniMessage().parse(
+                            mm.parse(
                                 titleParts[1],
                                 template)));
                 }
                 break;
-            case MESSAGE: player.sendMessage(MiniMessage.miniMessage().parse(message, template)); break;
-            case ACTIONBAR: player.sendActionBar(MiniMessage.miniMessage().parse(message, template)); break;
+            case MESSAGE: player.sendMessage(mm.parse(message, template)); break;
+            case ACTIONBAR: player.sendActionBar(mm.parse(message, template)); break;
         }
     }
 
@@ -174,7 +176,7 @@ public class ConfigManager {
         }
 
         staff.sendMessage(
-            MiniMessage.miniMessage().parse(
+            mm.parse(
                 message,
                 PlaceholderUtils.getTemplates(infractor)));
     }
@@ -188,7 +190,6 @@ public class ConfigManager {
      *               whose warnings have been reset
      */
     public void sendResetMessage(Audience sender, TypeUtils.InfractionType type, InfractionPlayer player){
-        MiniMessage mm = MiniMessage.miniMessage();
         switch(type){
             case REGULAR: sender.sendMessage(mm.parse(messages.getString("infractions.reset"), PlaceholderUtils.getTemplates(player))); break;
             case FLOOD: sender.sendMessage(mm.parse(messages.getString("flood.reset"), PlaceholderUtils.getTemplates(player))); break;

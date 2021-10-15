@@ -16,7 +16,6 @@ import de.leonhard.storage.Yaml;
 import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.dreamerzero.chatregulator.config.ConfigManager;
 import net.dreamerzero.chatregulator.events.CommandViolationEvent;
-import net.dreamerzero.chatregulator.modules.Replacer;
 import net.dreamerzero.chatregulator.modules.checks.Check;
 import net.dreamerzero.chatregulator.modules.checks.CommandCheck;
 import net.dreamerzero.chatregulator.modules.checks.FloodCheck;
@@ -42,7 +41,6 @@ public class CommandListener {
     private final CommandCheck cCheck;
     private final TypeUtils tUtils;
     private final Yaml config;
-    private final Replacer rUtils;
 
     /**
      * CommandListener constructor
@@ -56,7 +54,6 @@ public class CommandListener {
         this.iUtils = new InfractionCheck(blacklist);
         this.cCheck = new CommandCheck(blacklist);
         this.tUtils = new TypeUtils(config);
-        this.rUtils = new Replacer(config);
         this.config = config;
     }
 
@@ -130,12 +127,6 @@ public class CommandListener {
                 event.setResult(CommandResult.denied());
                 return;
             }
-        }
-
-        if(config.getBoolean("format.enabled")){
-            String formatted = rUtils.applyFormat(command);
-            infractionPlayer.lastCommand(formatted);
-            event.setResult(CommandResult.command(formatted));
         }
 
         infractionPlayer.lastCommand(command);
