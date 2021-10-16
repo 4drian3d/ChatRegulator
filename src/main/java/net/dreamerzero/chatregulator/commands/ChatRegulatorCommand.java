@@ -58,7 +58,6 @@ public class ChatRegulatorCommand implements SimpleCommand {
                         messages.getStringList("general.help.main").forEach(line -> source.sendMessage(mm.parse(line)));
                     } else {
                         switch(args[1]){
-                            //TODO: Implement each help message
                             case "reset": messages.getStringList("general.help.reset").forEach(line -> source.sendMessage(mm.parse(line))); break;
                             case "clear": messages.getStringList("general.help.clear").forEach(line -> source.sendMessage(mm.parse(line))); break;
                             case "player": messages.getStringList("general.help.player").forEach(line -> source.sendMessage(mm.parse(line))); break;
