@@ -56,8 +56,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
                 case "info": case "help":
                     if(args.length == 1){
                         messages.getStringList("general.help.main").forEach(line -> source.sendMessage(mm.parse(line)));
-                        break;
-                    } else if(args.length == 2){
+                    } else {
                         switch(args[1]){
                             //TODO: Implement each help message
                             case "reset": messages.getStringList("general.help.reset").forEach(line -> source.sendMessage(mm.parse(line))); break;
@@ -66,7 +65,6 @@ public class ChatRegulatorCommand implements SimpleCommand {
                             default: source.sendMessage(mm.parse(messages.getString("general.no-argument"))); break;
                         }
                     }
-                    source.sendMessage(mm.parse(messages.getString("general.help"), "command", invocation.alias()));
                     break;
                 case "stats":
                     for(String line : messages.getStringList("general.stats")){
@@ -112,11 +110,11 @@ public class ChatRegulatorCommand implements SimpleCommand {
                                         cManager.sendResetMessage(source, InfractionType.REGULAR, infractionPlayer);
                                         break;
                                     case "flood":
-                                        infractionPlayer.setViolations(InfractionType.FLOOD, 0); 
+                                        infractionPlayer.setViolations(InfractionType.FLOOD, 0);
                                         cManager.sendResetMessage(source, InfractionType.FLOOD, infractionPlayer);
                                         break;
                                     case "spam":
-                                        infractionPlayer.setViolations(InfractionType.SPAM, 0); 
+                                        infractionPlayer.setViolations(InfractionType.SPAM, 0);
                                         cManager.sendResetMessage(source, InfractionType.SPAM, infractionPlayer);
                                         break;
                                     case "all": case "general":

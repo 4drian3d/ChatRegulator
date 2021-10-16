@@ -216,7 +216,32 @@ public class Configuration {
                 "<#3B4371>| <click:run_command:'chatr help clear'><hover:show_text:'<gradient:#ff4b1f:#ff9068>Cleans the chat of a player, server or network</gradient> <gray>[<yellow>Click here for more</yellow>]'><gradient:#FF5F6D:#FFC371><command> <aqua>clear</aqua></hover></click>",
                 "<#3B4371>|----------------------|"
             ));
-        messages.setDefault("general.help.player", List.of(""));
+        messages.setDefault(
+            "general.help.player",
+            List.of(
+                "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
+                "<#3B4371>| <gold>+ <gradient:#CAC531:#F3F9A7>Player Help</gradient>",
+                "<#3B4371>| <click:suggest_command:'chatr player <player>'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command shows you a player infractions</gradient>'><gradient:#FF5F6D:#FFC371><command> <aqua>player</aqua> <player></hover>",
+                "<#3B4371>|----------------------|"
+            ));
+        messages.setDefault(
+            //TODO: complete this
+            "general.help.reset",
+            List.of(
+                "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
+                "<#3B4371>| <gold>+ <gradient:#CAC531:#F3F9A7>Player Help</gradient>",
+                "<#3B4371>| <click:suggest_command:'chatr player <player>'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command shows you a player infractions</gradient>'><gradient:#FF5F6D:#FFC371><command> <aqua>player</aqua> <player></hover>",
+                "<#3B4371>|----------------------|"
+            ));
+        messages.setDefault(
+            //TODO: Complete this
+            "general.help.clear",
+            List.of(
+                "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
+                "<#3B4371>| <gold>+ <gradient:#CAC531:#F3F9A7>Player Help</gradient>",
+                "<#3B4371>| <click:suggest_command:'chatr player <player>'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command shows you a player infractions</gradient>'><gradient:#FF5F6D:#FFC371><command> <aqua>player</aqua> <player></hover>",
+                "<#3B4371>|----------------------|"
+            ));
     }
 
 }
