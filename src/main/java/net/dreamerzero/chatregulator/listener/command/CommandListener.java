@@ -86,7 +86,7 @@ public class CommandListener {
 
         cCheck.check(command);
         if(config.getBoolean("blocked-commands.enabled") &&
-            !player.hasPermission("cheatregulator.bypass.blocked-command")
+            !player.hasPermission("chatregulator.bypass.blocked-command")
             &&cCheck.isInfraction()){
 
                 if(!callCommandViolationEvent(infractionPlayer, command, InfractionType.BCOMMAND, cCheck)) {

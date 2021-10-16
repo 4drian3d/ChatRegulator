@@ -220,7 +220,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
                         .collect(Collectors.toList());
                 case "help": case "info": return List.of("clear", "player", "reset");
                 case "clear":
-                    if(args.length < 1){
+                    if(args.length <= 1){
                         return List.of("server", "player");
                     } else {
                         switch(args[1]){
