@@ -47,7 +47,7 @@ public class ChatListener {
      */
     public ChatListener(final ProxyServer server, Logger logger, Yaml config, Yaml blacklist, Yaml messages) {
         this.server = server;
-        this.cManager = new ConfigManager(messages);
+        this.cManager = new ConfigManager(messages, config);
         this.cUtils = new CommandUtils(server, config);
         this.dUtils = new DebugUtils(logger, config);
         this.fUtils = new FloodCheck(config);
@@ -129,7 +129,6 @@ public class ChatListener {
                 dUtils.debug(player, message, type);
                 violationEvent.addViolationGlobal(type);
                 cManager.sendWarningMessage(player, type);
-                //Test parallelstream
                 cManager.sendAlertMessage(Audience.audience(
                     server.getAllPlayers().stream()
                         .filter(op -> op.hasPermission("chatregulator.notifications"))

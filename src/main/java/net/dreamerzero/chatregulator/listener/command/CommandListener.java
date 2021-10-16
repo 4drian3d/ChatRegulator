@@ -47,7 +47,7 @@ public class CommandListener {
      */
     public CommandListener(final ProxyServer server, Logger logger, Yaml config, Yaml blacklist, Yaml messages) {
         this.server = server;
-        this.cManager = new ConfigManager(messages);
+        this.cManager = new ConfigManager(messages, config);
         this.cUtils = new CommandUtils(server, config);
         this.dUtils = new DebugUtils(logger, config);
         this.fUtils = new FloodCheck(config);

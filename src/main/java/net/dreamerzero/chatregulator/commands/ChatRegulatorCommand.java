@@ -37,11 +37,11 @@ public class ChatRegulatorCommand implements SimpleCommand {
      * @param messages the plugin messages
      * @param server the proxy server
      */
-    public ChatRegulatorCommand(Map<UUID, InfractionPlayer> infractionPlayers, Yaml messages, ProxyServer server){
+    public ChatRegulatorCommand(Map<UUID, InfractionPlayer> infractionPlayers, Yaml messages, ProxyServer server, Yaml config){
         this.infractionPlayers = infractionPlayers;
         this.messages = messages;
         this.server = server;
-        this.cManager = new ConfigManager(messages);
+        this.cManager = new ConfigManager(messages, config);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
             switch(args[0].toLowerCase()){
                 case "info": case "help":
                     if(args.length == 1){
-                        messages.getStringList("general.help.main").forEach(line -> source.sendMessage(mm.parse(line)));
+                        messages.getStringList("general.help.main").forEach(line -> source.sendMessage(mm.parse(line, commandTemplate)));
                     } else {
                         switch(args[1]){
                             case "reset": messages.getStringList("general.help.reset").forEach(line -> source.sendMessage(mm.parse(line, commandTemplate))); break;
@@ -220,7 +220,9 @@ public class ChatRegulatorCommand implements SimpleCommand {
                         .collect(Collectors.toList());
                 case "help": case "info": return List.of("clear", "player", "reset");
                 case "clear":
-                    if(args.length >= 2){
+                    if(args.length < 1){
+                        return List.of("server", "player");
+                    } else {
                         switch(args[1]){
                             case "server": return server.getAllServers().stream()
                                 .map(sv -> sv.getServerInfo().getName())
@@ -229,8 +231,6 @@ public class ChatRegulatorCommand implements SimpleCommand {
                                 .map(Player::getUsername)
                                 .collect(Collectors.toList());
                         }
-                    } else {
-                        return List.of("server", "player");
                     }
                     break;
                 case "reset":
@@ -243,7 +243,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
                     }
             }
         }
-        return null;
+        return List.of("");
     }
 
     @Override

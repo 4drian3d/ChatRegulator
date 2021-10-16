@@ -20,13 +20,15 @@ import net.kyori.adventure.title.Title;
  */
 public class ConfigManager {
     private Yaml messages;
+	private Yaml config;
     private MiniMessage mm;
     /**
      * Constructor of the ConfigManager
      * @param config plugin config
      */
-    public ConfigManager(Yaml messages){
+    public ConfigManager(Yaml messages, Yaml config){
         this.messages = messages;
+		this.config = config;
         this.mm = MiniMessage.miniMessage();
     }
     /**
@@ -36,10 +38,10 @@ public class ConfigManager {
      */
     public TypeUtils.WarningType getWarningType(TypeUtils.InfractionType infraction){
         switch(infraction){
-            case REGULAR: return TypeUtils.WarningType.valueOf(messages.getString("infractions.warning-type").toUpperCase());
-            case FLOOD: return TypeUtils.WarningType.valueOf(messages.getString("flood.warning-type").toUpperCase());
-            case SPAM: return TypeUtils.WarningType.valueOf(messages.getString("spam.warning-type").toUpperCase());
-            case BCOMMAND: return TypeUtils.WarningType.valueOf(messages.getString("blocked-commands.warning-type").toUpperCase());
+            case REGULAR: return TypeUtils.WarningType.valueOf(config.getString("infractions.warning-type").toUpperCase());
+            case FLOOD: return TypeUtils.WarningType.valueOf(config.getString("flood.warning-type").toUpperCase());
+            case SPAM: return TypeUtils.WarningType.valueOf(config.getString("spam.warning-type").toUpperCase());
+            case BCOMMAND: return TypeUtils.WarningType.valueOf(config.getString("blocked-commands.warning-type").toUpperCase());
             default: return TypeUtils.WarningType.MESSAGE;
         }
     }

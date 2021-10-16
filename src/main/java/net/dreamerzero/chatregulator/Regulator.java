@@ -81,7 +81,7 @@ public class Regulator {
         server.getEventManager().register(this, new LeaveListener());
 
         CommandMeta regulatorMeta = server.getCommandManager().metaBuilder("chatregulator").aliases("chatr", "cregulator").build();
-        server.getCommandManager().register(regulatorMeta, new ChatRegulatorCommand(infractionPlayers, messages, server));
+        server.getCommandManager().register(regulatorMeta, new ChatRegulatorCommand(infractionPlayers, messages, server, config));
 
         checkInfractionPlayersRunnable();
     }
