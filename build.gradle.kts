@@ -31,14 +31,14 @@ dependencies {
     shadow("net.kyori:adventure-text-minimessage:4.2.0-SNAPSHOT"){
         exclude("net.kyori", "adventure-api")
     }
-
     compileOnly("net.frankheijden.serverutils:ServerUtils:3.1.1")
+
     compileOnly("com.velocitypowered:velocity-api:3.0.1")
     annotationProcessor("com.velocitypowered:velocity-api:3.0.1")
 }
 
 group = "net.dreamerzero.chatregulator"
-version = "1.3.0"
+version = "1.4.0"
 description = "A Chat regulator for you Velocity network"
 java.sourceCompatibility = JavaVersion.VERSION_11
 

@@ -21,6 +21,7 @@ import net.dreamerzero.chatregulator.utils.PlaceholderUtils;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.Template;
 
 /**
  * Main Plugin Command
@@ -48,9 +49,10 @@ public class ChatRegulatorCommand implements SimpleCommand {
         String args[] = invocation.arguments();
         var source = invocation.source();
         MiniMessage mm = MiniMessage.miniMessage();
+        Template commandTemplate = Template.of("command", invocation.alias());
 
         if(args.length == 0){
-            source.sendMessage(mm.parse(messages.getString("general.info"), "command", invocation.alias()));
+            source.sendMessage(mm.parse(messages.getString("general.info"), commandTemplate));
         } else if(args.length >= 1){
             switch(args[0].toLowerCase()){
                 case "info": case "help":
@@ -58,9 +60,9 @@ public class ChatRegulatorCommand implements SimpleCommand {
                         messages.getStringList("general.help.main").forEach(line -> source.sendMessage(mm.parse(line)));
                     } else {
                         switch(args[1]){
-                            case "reset": messages.getStringList("general.help.reset").forEach(line -> source.sendMessage(mm.parse(line))); break;
-                            case "clear": messages.getStringList("general.help.clear").forEach(line -> source.sendMessage(mm.parse(line))); break;
-                            case "player": messages.getStringList("general.help.player").forEach(line -> source.sendMessage(mm.parse(line))); break;
+                            case "reset": messages.getStringList("general.help.reset").forEach(line -> source.sendMessage(mm.parse(line, commandTemplate))); break;
+                            case "clear": messages.getStringList("general.help.clear").forEach(line -> source.sendMessage(mm.parse(line, commandTemplate))); break;
+                            case "player": messages.getStringList("general.help.player").forEach(line -> source.sendMessage(mm.parse(line, commandTemplate))); break;
                             default: source.sendMessage(mm.parse(messages.getString("general.no-argument"))); break;
                         }
                     }
@@ -81,9 +83,10 @@ public class ChatRegulatorCommand implements SimpleCommand {
                             }
                         } else {
                             for(Entry<UUID, InfractionPlayer> entry : infractionPlayers.entrySet()){
-                                if(entry.getValue().username() == args[0]){
+                                InfractionPlayer iPlayer = entry.getValue();
+                                if(iPlayer.username() == args[0]){
                                     for(String line : messages.getStringList("general.player")){
-                                        source.sendMessage(mm.parse(line, PlaceholderUtils.getTemplates(entry.getValue())));
+                                        source.sendMessage(mm.parse(line, PlaceholderUtils.getTemplates(iPlayer)));
                                     }
                                     break;
                                 }
@@ -131,9 +134,10 @@ public class ChatRegulatorCommand implements SimpleCommand {
                             }
                         } else {
                             for(Entry<UUID, InfractionPlayer> entry : infractionPlayers.entrySet()){
-                                if(entry.getValue().username() == args[1]){
+                                InfractionPlayer iPlayer = entry.getValue();
+                                if(iPlayer.username() == args[1]){
                                     for(String line : messages.getStringList("general.player")){
-                                        source.sendMessage(mm.parse(line,PlaceholderUtils.getTemplates(entry.getValue())));
+                                        source.sendMessage(mm.parse(line,PlaceholderUtils.getTemplates(iPlayer)));
                                     }
                                     break;
                                 }
@@ -205,16 +209,39 @@ public class ChatRegulatorCommand implements SimpleCommand {
     @Override
     public List<String> suggest(final Invocation invocation) {
         String args[] = invocation.arguments();
-        switch(args.length){
-            case 0: return List.of("info", "stats", "player");
-            case 1: if(args[0] == "player"){
-                return infractionPlayers.entrySet().stream()
-                    .limit(messages.getInt("general.limit-tab-complete"))
-                    .map(x -> x.getValue().username())
-                    .collect(Collectors.toList());
+        if(args.length == 0){
+            return List.of("info", "help", "clear", "stats", "player");
+        } else if(args.length >= 1){
+            switch(args[0]){
+                case "player":
+                    return infractionPlayers.entrySet().stream()
+                        .limit(messages.getInt("general.limit-tab-complete"))
+                        .map(x -> x.getValue().username())
+                        .collect(Collectors.toList());
+                case "help": case "info": return List.of("clear", "player", "reset");
+                case "clear":
+                    if(args.length >= 2){
+                        switch(args[1]){
+                            case "server": return server.getAllServers().stream()
+                                .map(sv -> sv.getServerInfo().getName())
+                                .collect(Collectors.toList());
+                            case "player": return server.getAllPlayers().stream()
+                                .map(Player::getUsername)
+                                .collect(Collectors.toList());
+                        }
+                    }
+                    break;
+                case "reset":
+                    if(args.length == 1){
+                        return server.getAllPlayers().stream()
+                                .map(Player::getUsername)
+                                .collect(Collectors.toList());
+                    } else {
+                        return List.of("infractions", "regular", "flood", "spam", "all");
+                    }
             }
-            default: return List.of("");
         }
+        return null;
     }
 
     @Override
