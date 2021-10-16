@@ -8,7 +8,9 @@ public class Replacer {
         this.config = config;
     }
     public String firstLetterUpercase(String string){
-        if(!config.getBoolean("format.set-first-letter-uppercase")) return string;
+        if(string.length() < 1 ||
+        !config.getBoolean("format.set-first-letter-uppercase")) return string;
+
         char firstCharacter = string.charAt(0);
         if(Character.isUpperCase(firstCharacter)) return string;
 
@@ -18,8 +20,8 @@ public class Replacer {
     }
 
     public String addFinalDot(String string){
-        if(string.charAt(string.length()-1)=='.' ||
-            !config.getBoolean("format.set-final-dot")) return string;
+        if(string.length() <= 1 || string.charAt(string.length()-1)=='.'
+        || !config.getBoolean("format.set-final-dot")) return string;
 
         return string.concat(".");
     }
