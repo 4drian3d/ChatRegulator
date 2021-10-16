@@ -229,6 +229,8 @@ public class ChatRegulatorCommand implements SimpleCommand {
                                 .map(Player::getUsername)
                                 .collect(Collectors.toList());
                         }
+                    } else {
+                        return List.of("server", "player");
                     }
                     break;
                 case "reset":
