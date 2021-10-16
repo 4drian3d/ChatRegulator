@@ -234,7 +234,7 @@ public class InfractionPlayer {
      * @param server the proxy server
      * @return the {@link InfractionPlayer}
      */
-    public static Optional<InfractionPlayer> get(UUID uuid, ProxyServer server){
+    public static Optional<InfractionPlayer> get(final UUID uuid, final ProxyServer server){
         if(Regulator.infractionPlayers.containsKey(uuid)){
             return Optional.of(Regulator.infractionPlayers.get(uuid));
         } else if(server.getPlayer(uuid).isPresent()) {
@@ -252,8 +252,8 @@ public class InfractionPlayer {
      * @param player the player uuid
      * @return the {@link InfractionPlayer}
      */
-    public static InfractionPlayer get(Player player){
-        UUID uuid = player.getUniqueId();
+    public static InfractionPlayer get(final Player player){
+        final UUID uuid = player.getUniqueId();
         if(Regulator.infractionPlayers.containsKey(uuid)){
             return Regulator.infractionPlayers.get(uuid);
         } else {

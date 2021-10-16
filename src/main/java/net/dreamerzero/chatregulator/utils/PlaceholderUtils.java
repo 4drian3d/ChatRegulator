@@ -15,7 +15,7 @@ public class PlaceholderUtils {
      * @param player the {@link InfractionPlayer}
      * @return placeholders based on this player
      */
-    public static List<Template> getTemplates(InfractionPlayer player){
+    public static List<Template> getTemplates(final InfractionPlayer player){
         return List.of(
             Template.of("player", player.username()),
             Template.of("server", player.getPlayer().isPresent() ? player.getPlayer().get().getCurrentServer().get().getServerInfo().getName() : "Offline Player"),

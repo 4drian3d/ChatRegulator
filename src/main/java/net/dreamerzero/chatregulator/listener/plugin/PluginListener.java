@@ -5,6 +5,7 @@ import com.velocitypowered.api.event.Subscribe;
 
 import org.slf4j.Logger;
 
+import net.frankheijden.serverutils.common.events.PluginEvent.Stage;
 import net.frankheijden.serverutils.velocity.events.VelocityPluginEnableEvent;
 
 /**
@@ -28,7 +29,9 @@ public class PluginListener {
      */
     @Subscribe(order = PostOrder.LATE)
     public void onPluginEnable(VelocityPluginEnableEvent enableEvent){
-        if(enableEvent.getPlugin().getDescription().getName().get().equalsIgnoreCase("ChatRegulator")){
+        if(enableEvent.getStage() == Stage.POST &&
+        enableEvent.getPlugin().getDescription().getName().get().equalsIgnoreCase("ChatRegulator")){
+
             logger.warn("ChatRegulator has been reloaded via ServerUtils");
             logger.warn("Although this is safe, the warnings of all InfractionPlayers will be deleted.");
         }
