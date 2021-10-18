@@ -18,7 +18,7 @@ public class PlaceholderUtils {
     public static List<Template> getTemplates(final InfractionPlayer player){
         return List.of(
             Template.of("player", player.username()),
-            Template.of("server", player.getPlayer().isPresent() ? player.getPlayer().get().getCurrentServer().get().getServerInfo().getName() : "Offline Player"),
+            Template.of("server", player.isOnline() ? player.getPlayer().get().getCurrentServer().get().getServerInfo().getName() : "Offline Player"),
             Template.of("flood", String.valueOf(player.getFloodInfractions())),
             Template.of("spam", String.valueOf(player.getSpamInfractions())),
             Template.of("regular", String.valueOf(player.getRegularInfractions())));

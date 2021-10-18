@@ -61,7 +61,6 @@ public class TypeUtils {
         /**
          * Represents a Unicode check
          */
-        //TODO: set messages and etc corresponding
         UNICODE,
         /**
          * Used internally to represent a
