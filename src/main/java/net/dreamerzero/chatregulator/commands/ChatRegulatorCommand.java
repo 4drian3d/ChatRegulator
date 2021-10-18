@@ -22,6 +22,7 @@ import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.Template;
+import net.kyori.adventure.text.minimessage.template.TemplateResolver;
 
 /**
  * Main Plugin Command
@@ -49,27 +50,27 @@ public class ChatRegulatorCommand implements SimpleCommand {
         String args[] = invocation.arguments();
         var source = invocation.source();
         MiniMessage mm = MiniMessage.miniMessage();
-        Template commandTemplate = Template.of("command", invocation.alias());
+        TemplateResolver commandTemplate = TemplateResolver.templates(Template.template("command", invocation.alias()));
 
         if(args.length == 0){
-            source.sendMessage(mm.parse(messages.getString("general.info"), commandTemplate));
+            source.sendMessage(mm.deserialize(messages.getString("general.info"), commandTemplate));
         } else if(args.length >= 1){
             switch(args[0].toLowerCase()){
                 case "info": case "help":
                     if(args.length == 1){
-                        messages.getStringList("general.help.main").forEach(line -> source.sendMessage(mm.parse(line, commandTemplate)));
+                        messages.getStringList("general.help.main").forEach(line -> source.sendMessage(mm.deserialize(line, commandTemplate)));
                     } else {
                         switch(args[1]){
-                            case "reset": messages.getStringList("general.help.reset").forEach(line -> source.sendMessage(mm.parse(line, commandTemplate))); break;
-                            case "clear": messages.getStringList("general.help.clear").forEach(line -> source.sendMessage(mm.parse(line, commandTemplate))); break;
-                            case "player": messages.getStringList("general.help.player").forEach(line -> source.sendMessage(mm.parse(line, commandTemplate))); break;
-                            default: source.sendMessage(mm.parse(messages.getString("general.no-argument"))); break;
+                            case "reset": messages.getStringList("general.help.reset").forEach(line -> source.sendMessage(mm.deserialize(line, commandTemplate))); break;
+                            case "clear": messages.getStringList("general.help.clear").forEach(line -> source.sendMessage(mm.deserialize(line, commandTemplate))); break;
+                            case "player": messages.getStringList("general.help.player").forEach(line -> source.sendMessage(mm.deserialize(line, commandTemplate))); break;
+                            default: source.sendMessage(mm.deserialize(messages.getString("general.no-argument"))); break;
                         }
                     }
                     break;
                 case "stats":
                     for(String line : messages.getStringList("general.stats")){
-                        source.sendMessage(mm.parse(line, PlaceholderUtils.getGlobalTemplates()));
+                        source.sendMessage(mm.deserialize(line, PlaceholderUtils.getGlobalTemplates()));
                     }
                     break;
                 case "player":
@@ -79,24 +80,25 @@ public class ChatRegulatorCommand implements SimpleCommand {
                             Player player = optionalPlayer.get();
                             InfractionPlayer infractionPlayer = InfractionPlayer.get(player);
                             for(String line : messages.getStringList("general.player")){
-                                source.sendMessage(mm.parse(line, PlaceholderUtils.getTemplates(infractionPlayer)));
+                                source.sendMessage(mm.deserialize(line, PlaceholderUtils.getTemplates(infractionPlayer)));
                             }
                         } else {
                             for(Entry<UUID, InfractionPlayer> entry : infractionPlayers.entrySet()){
                                 InfractionPlayer iPlayer = entry.getValue();
                                 if(iPlayer.username() == args[0]){
                                     for(String line : messages.getStringList("general.player")){
-                                        source.sendMessage(mm.parse(line, PlaceholderUtils.getTemplates(iPlayer)));
+                                        source.sendMessage(mm.deserialize(line, PlaceholderUtils.getTemplates(iPlayer)));
                                     }
                                     break;
                                 }
                             }
-                            source.sendMessage(mm.parse(messages.getString("general.player-not-found"), "player", args[1]));
+                            TemplateResolver platerTemplate = TemplateResolver.templates(Template.template("player", args[1]));
+                            source.sendMessage(mm.deserialize(messages.getString("general.player-not-found"), platerTemplate));
                             break;
                         }
                         break;
                     } else {
-                        source.sendMessage(mm.parse(messages.getString("general.no-argument")));
+                        source.sendMessage(mm.deserialize(messages.getString("general.no-argument")));
                         break;
                     }
                 case "reset":
@@ -149,17 +151,18 @@ public class ChatRegulatorCommand implements SimpleCommand {
                                 InfractionPlayer iPlayer = entry.getValue();
                                 if(iPlayer.username() == args[1]){
                                     for(String line : messages.getStringList("general.player")){
-                                        source.sendMessage(mm.parse(line,PlaceholderUtils.getTemplates(iPlayer)));
+                                        source.sendMessage(mm.deserialize(line,PlaceholderUtils.getTemplates(iPlayer)));
                                     }
                                     break;
                                 }
                             }
-                            source.sendMessage(mm.parse(messages.getString("general.player-not-found"), "player", args[1]));
+                            TemplateResolver platerTemplate = TemplateResolver.templates(Template.template("player", args[1]));
+                            source.sendMessage(mm.deserialize(messages.getString("general.player-not-found"), platerTemplate));
                             break;
                         }
                         break;
                     } else {
-                        source.sendMessage(mm.parse(messages.getString("general.no-argument")));
+                        source.sendMessage(mm.deserialize(messages.getString("general.no-argument")));
                         break;
                     }
                 case "clear":
@@ -168,21 +171,24 @@ public class ChatRegulatorCommand implements SimpleCommand {
                             case "server":
                                 if(args.length >= 3){
                                     Optional<RegisteredServer> optionalServer = server.getServer(args[2]);
+                                    var serverTemplate = TemplateResolver.templates(Template.template("server", args[2]));
                                     if(optionalServer.isPresent()){
                                         optionalServer.get().sendMessage(GeneralUtils.spacesComponent);
-                                        source.sendMessage(mm.parse(messages.getString("clear.cleared-server-chat"), "server", args[2]));
+                                        source.sendMessage(mm.deserialize(messages.getString("clear.cleared-server-chat"), serverTemplate));
                                     } else {
-                                        source.sendMessage(mm.parse(messages.getString("clear.no-server-found"), "server", args[2]));
+                                        source.sendMessage(mm.deserialize(messages.getString("clear.no-server-found"), serverTemplate));
                                     }
                                     break;
                                 } else {
                                     if(source instanceof Player) {
                                         Player player = (Player)source;
                                         RegisteredServer playerServer = player.getCurrentServer().get().getServer();
+                                        var servername = playerServer.getServerInfo().getName();
+                                        var serverTemplate = TemplateResolver.templates(Template.template("server", servername));
                                         playerServer.sendMessage(GeneralUtils.spacesComponent);
-                                        source.sendMessage(mm.parse(messages.getString("clear.cleared-server-chat"), "server", playerServer.getServerInfo().getName()));
+                                        source.sendMessage(mm.deserialize(messages.getString("clear.cleared-server-chat"), serverTemplate));
                                     } else {
-                                        source.sendMessage(mm.parse(messages.getString("general.no-argument")));
+                                        source.sendMessage(mm.deserialize(messages.getString("general.no-argument")));
                                     }
                                 }
                                 break;
@@ -192,28 +198,29 @@ public class ChatRegulatorCommand implements SimpleCommand {
                                     if(optionalPlayer.isPresent()){
                                         Player player = optionalPlayer.get();
                                         player.sendMessage(GeneralUtils.spacesComponent);
-                                        source.sendMessage(mm.parse(
+                                        source.sendMessage(mm.deserialize(
                                             messages.getString("clear.cleared-player-chat"),
                                             PlaceholderUtils.getTemplates(InfractionPlayer.get(player))));
                                     } else {
-                                        source.sendMessage(mm.parse(messages.getString("general.player-not-found"), "player", args[2]));
+                                        var playerTemplate = TemplateResolver.templates(Template.template("player", args[2]));
+                                        source.sendMessage(mm.deserialize(messages.getString("general.player-not-found"), playerTemplate));
                                     }
                                 } else {
-                                    source.sendMessage(mm.parse(messages.getString("general.no-argument")));
+                                    source.sendMessage(mm.deserialize(messages.getString("general.no-argument")));
                                 }
                                 break;
                             default:
                                 Audience.audience(server.getAllPlayers()).sendMessage(GeneralUtils.spacesComponent);
-                                source.sendMessage(mm.parse(messages.getString("clear.global-chat-cleared")));
+                                source.sendMessage(mm.deserialize(messages.getString("clear.global-chat-cleared")));
                                 break;
                         }
                     } else {
                         Audience.audience(server.getAllPlayers()).sendMessage(GeneralUtils.spacesComponent);
-                        source.sendMessage(mm.parse(messages.getString("clear.global-chat-cleared")));
+                        source.sendMessage(mm.deserialize(messages.getString("clear.global-chat-cleared")));
                         break;
                     }
                     break;
-                default: source.sendMessage(mm.parse(messages.getString("general.unknown-command"), "args", args[0])); break;
+                default: source.sendMessage(mm.deserialize(messages.getString("general.unknown-command"), TemplateResolver.templates(Template.template("args", args[0])))); break;
             }
         }
     }

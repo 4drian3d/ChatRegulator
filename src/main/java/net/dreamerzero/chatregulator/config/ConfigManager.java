@@ -1,8 +1,5 @@
 package net.dreamerzero.chatregulator.config;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import de.leonhard.storage.Yaml;
 import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.dreamerzero.chatregulator.modules.checks.FloodCheck;
@@ -13,6 +10,7 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.Template;
+import net.kyori.adventure.text.minimessage.template.TemplateResolver;
 import net.kyori.adventure.title.Title;
 
 /**
@@ -63,23 +61,23 @@ public class ConfigManager {
                     player.showTitle(
                     Title.title(
                         Component.empty(),
-                        mm.parse(
+                        mm.deserialize(
                             message,
                             PlaceholderUtils.getTemplates(infractor))));
                 } else {
                     String titleParts[] = message.split(";");
                     player.showTitle(
                         Title.title(
-                            mm.parse(
+                            mm.deserialize(
                                 titleParts[0],
                                 PlaceholderUtils.getTemplates(infractor)),
-                            mm.parse(
+                            mm.deserialize(
                                 titleParts[1],
                                 PlaceholderUtils.getTemplates(infractor))));
                 }
                 break;
-            case MESSAGE: player.sendMessage(mm.parse(message, PlaceholderUtils.getTemplates(infractor))); break;
-            case ACTIONBAR: player.sendActionBar(mm.parse(message, PlaceholderUtils.getTemplates(infractor))); break;
+            case MESSAGE: player.sendMessage(mm.deserialize(message, PlaceholderUtils.getTemplates(infractor))); break;
+            case ACTIONBAR: player.sendActionBar(mm.deserialize(message, PlaceholderUtils.getTemplates(infractor))); break;
         }
     }
 
@@ -91,9 +89,10 @@ public class ConfigManager {
      */
     public void sendWarningMessage(InfractionPlayer infractor, TypeUtils.InfractionType type, FloodCheck fUtils){
         String message = messages.getString("flood.warning");
-        List<Template> template = new ArrayList<>();
-        template.add(Template.of("infraction", fUtils.getInfractionWord()));
-        template.addAll(PlaceholderUtils.getTemplates(infractor));
+        TemplateResolver template = TemplateResolver.combining(
+            TemplateResolver.templates(
+                Template.template("infraction", fUtils.getInfractionWord())),
+                PlaceholderUtils.getTemplates(infractor));
 
         Audience player = infractor.getPlayer().get();
 
@@ -103,23 +102,23 @@ public class ConfigManager {
                     player.showTitle(
                     Title.title(
                         Component.empty(),
-                        mm.parse(
+                        mm.deserialize(
                             message,
                             template)));
                 } else {
                     String titleParts[] = message.split(";");
                     player.showTitle(
                         Title.title(
-                            mm.parse(
+                            mm.deserialize(
                                 titleParts[0],
                                 template),
-                            mm.parse(
+                            mm.deserialize(
                                 titleParts[1],
                                 template)));
                 }
                 break;
-            case MESSAGE: player.sendMessage(mm.parse(message, template)); break;
-            case ACTIONBAR: player.sendActionBar(mm.parse(message, template)); break;
+            case MESSAGE: player.sendMessage(mm.deserialize(message, template)); break;
+            case ACTIONBAR: player.sendActionBar(mm.deserialize(message, template)); break;
         }
     }
 
@@ -131,9 +130,10 @@ public class ConfigManager {
      */
     public void sendWarningMessage(InfractionPlayer infractor, TypeUtils.InfractionType type, InfractionCheck iUtils){
         String message = messages.getString("infractions.warning");
-        List<Template> template = new ArrayList<>();
-        template.add(Template.of("infraction", iUtils.getInfractionWord()));
-        template.addAll(PlaceholderUtils.getTemplates(infractor));
+        TemplateResolver template = TemplateResolver.combining(
+            TemplateResolver.templates(
+                Template.template("infraction", iUtils.getInfractionWord())),
+                PlaceholderUtils.getTemplates(infractor));
 
         Audience player = infractor.getPlayer().get();
 
@@ -143,23 +143,23 @@ public class ConfigManager {
                     player.showTitle(
                     Title.title(
                         Component.empty(),
-                        mm.parse(
+                        mm.deserialize(
                             message,
                             template)));
                 } else {
                     String titleParts[] = message.split(";");
                     player.showTitle(
                         Title.title(
-                            mm.parse(
+                            mm.deserialize(
                                 titleParts[0],
                                 template),
-                            mm.parse(
+                            mm.deserialize(
                                 titleParts[1],
                                 template)));
                 }
                 break;
-            case MESSAGE: player.sendMessage(mm.parse(message, template)); break;
-            case ACTIONBAR: player.sendActionBar(mm.parse(message, template)); break;
+            case MESSAGE: player.sendMessage(mm.deserialize(message, template)); break;
+            case ACTIONBAR: player.sendActionBar(mm.deserialize(message, template)); break;
         }
     }
 
@@ -181,7 +181,7 @@ public class ConfigManager {
         }
 
         staff.sendMessage(
-            mm.parse(
+            mm.deserialize(
                 message,
                 PlaceholderUtils.getTemplates(infractor)));
     }
@@ -196,12 +196,12 @@ public class ConfigManager {
      */
     public void sendResetMessage(Audience sender, TypeUtils.InfractionType type, InfractionPlayer player){
         switch(type){
-            case REGULAR: sender.sendMessage(mm.parse(messages.getString("infractions.reset"), PlaceholderUtils.getTemplates(player))); break;
-            case FLOOD: sender.sendMessage(mm.parse(messages.getString("flood.reset"), PlaceholderUtils.getTemplates(player))); break;
-            case SPAM: sender.sendMessage(mm.parse(messages.getString("spam.reset"), PlaceholderUtils.getTemplates(player))); break;
-            case NONE: sender.sendMessage(mm.parse(messages.getString("general.all-reset"), PlaceholderUtils.getTemplates(player))); break;
-            case BCOMMAND: sender.sendMessage(mm.parse(messages.getString("commands-blocked.reset"), PlaceholderUtils.getTemplates(player))); break;
-            case UNICODE: sender.sendMessage(mm.parse(messages.getString("unicode-blocker.reset"), PlaceholderUtils.getTemplates(player))); break;
+            case REGULAR: sender.sendMessage(mm.deserialize(messages.getString("infractions.reset"), PlaceholderUtils.getTemplates(player))); break;
+            case FLOOD: sender.sendMessage(mm.deserialize(messages.getString("flood.reset"), PlaceholderUtils.getTemplates(player))); break;
+            case SPAM: sender.sendMessage(mm.deserialize(messages.getString("spam.reset"), PlaceholderUtils.getTemplates(player))); break;
+            case NONE: sender.sendMessage(mm.deserialize(messages.getString("general.all-reset"), PlaceholderUtils.getTemplates(player))); break;
+            case BCOMMAND: sender.sendMessage(mm.deserialize(messages.getString("commands-blocked.reset"), PlaceholderUtils.getTemplates(player))); break;
+            case UNICODE: sender.sendMessage(mm.deserialize(messages.getString("unicode-blocker.reset"), PlaceholderUtils.getTemplates(player))); break;
         }
     }
 }
