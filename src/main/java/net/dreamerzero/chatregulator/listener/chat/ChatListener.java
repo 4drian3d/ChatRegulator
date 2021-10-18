@@ -18,6 +18,7 @@ import net.dreamerzero.chatregulator.modules.checks.Check;
 import net.dreamerzero.chatregulator.modules.checks.FloodCheck;
 import net.dreamerzero.chatregulator.modules.checks.InfractionCheck;
 import net.dreamerzero.chatregulator.modules.checks.SpamCheck;
+import net.dreamerzero.chatregulator.modules.checks.UnicodeCheck;
 import net.dreamerzero.chatregulator.utils.CommandUtils;
 import net.dreamerzero.chatregulator.utils.DebugUtils;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
@@ -35,6 +36,7 @@ public class ChatListener {
     private final DebugUtils dUtils;
     private final FloodCheck fUtils;
     private final InfractionCheck iUtils;
+    private final UnicodeCheck uCheck;
     private final Yaml config;
     private final Replacer rUtils;
 
@@ -52,6 +54,7 @@ public class ChatListener {
         this.dUtils = new DebugUtils(logger, config);
         this.fUtils = new FloodCheck(config);
         this.iUtils = new InfractionCheck(blacklist);
+        this.uCheck = new UnicodeCheck();
         this.rUtils = new Replacer(config);
         this.config = config;
     }
@@ -65,6 +68,16 @@ public class ChatListener {
         Player player = event.getPlayer();
         String message = event.getMessage();
         InfractionPlayer infractionPlayer = InfractionPlayer.get(player);
+
+        uCheck.check(message);
+        if(config.getBoolean("unicode-blocker.enabled") &&
+            !player.hasPermission("chatregulator.bypass.unicode")
+            && uCheck.isInfraction()){
+                if(!callChatViolationEvent(infractionPlayer, message, InfractionType.UNICODE, uCheck)) {
+                    event.setResult(ChatResult.denied());
+                    return;
+                }
+        }
 
         fUtils.check(message);
         if(config.getBoolean("flood.enabled") &&

@@ -37,7 +37,12 @@ public class ViolationEvent implements ResultedEvent<GenericResult> {
     /**
      * Global commands blocked executed
      */
-    commandCount;
+    commandCount,
+
+    /**
+     * Global Unicode caracters count
+     */
+    unicodeViolations;
     private Check detection;
     private GenericResult result = GenericResult.allowed();
 
@@ -101,7 +106,8 @@ public class ViolationEvent implements ResultedEvent<GenericResult> {
             case FLOOD: floodCount++; break;
             case REGULAR: regularCount++; break;
             case BCOMMAND: commandCount++; break;
-            default: break;
+            case UNICODE: unicodeViolations++; break;
+            case NONE: break;
         }
     }
 }

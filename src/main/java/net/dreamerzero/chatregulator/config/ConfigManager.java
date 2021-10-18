@@ -42,6 +42,8 @@ public class ConfigManager {
             case FLOOD: return TypeUtils.WarningType.valueOf(config.getString("flood.warning-type").toUpperCase());
             case SPAM: return TypeUtils.WarningType.valueOf(config.getString("spam.warning-type").toUpperCase());
             case BCOMMAND: return TypeUtils.WarningType.valueOf(config.getString("blocked-commands.warning-type").toUpperCase());
+            case UNICODE: return TypeUtils.WarningType.valueOf(config.getString("unicode-blocker.warning-type").toUpperCase());
+            case NONE: return TypeUtils.WarningType.MESSAGE;
             default: return TypeUtils.WarningType.MESSAGE;
         }
     }
@@ -174,6 +176,7 @@ public class ConfigManager {
             case REGULAR: message = messages.getString("infractions.alert"); break;
             case SPAM: message = messages.getString("spam.alert"); break;
             case BCOMMAND:  message = messages.getString("blocked-commands.alert"); break;
+            case UNICODE: message = messages.getString("unicode-blocker.alert"); break;
             default: message = null;
         }
 
@@ -198,6 +201,7 @@ public class ConfigManager {
             case SPAM: sender.sendMessage(mm.parse(messages.getString("spam.reset"), PlaceholderUtils.getTemplates(player))); break;
             case NONE: sender.sendMessage(mm.parse(messages.getString("general.all-reset"), PlaceholderUtils.getTemplates(player))); break;
             case BCOMMAND: sender.sendMessage(mm.parse(messages.getString("commands-blocked.reset"), PlaceholderUtils.getTemplates(player))); break;
+            case UNICODE: sender.sendMessage(mm.parse(messages.getString("unicode-blocker.reset"), PlaceholderUtils.getTemplates(player))); break;
         }
     }
 }

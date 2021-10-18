@@ -119,10 +119,20 @@ public class ChatRegulatorCommand implements SimpleCommand {
                                         infractionPlayer.setViolations(InfractionType.SPAM, 0);
                                         cManager.sendResetMessage(source, InfractionType.SPAM, infractionPlayer);
                                         break;
+                                    case "command": case "commands":
+                                        infractionPlayer.setViolations(InfractionType.BCOMMAND, 0);
+                                        cManager.sendResetMessage(source, InfractionType.BCOMMAND, infractionPlayer);
+                                        break;
+                                    case "unicode":
+                                        infractionPlayer.setViolations(InfractionType.UNICODE, 0);
+                                        cManager.sendResetMessage(source, InfractionType.UNICODE, infractionPlayer);
+                                        break;
                                     case "all": case "general":
                                         infractionPlayer.setViolations(InfractionType.SPAM, 0);
                                         infractionPlayer.setViolations(InfractionType.FLOOD, 0);
                                         infractionPlayer.setViolations(InfractionType.REGULAR, 0);
+                                        infractionPlayer.setViolations(InfractionType.BCOMMAND, 0);
+                                        infractionPlayer.setViolations(InfractionType.UNICODE, 0);
                                         cManager.sendResetMessage(source, InfractionType.NONE, infractionPlayer);
                                         break;
                                 }
@@ -130,6 +140,8 @@ public class ChatRegulatorCommand implements SimpleCommand {
                                 infractionPlayer.setViolations(InfractionType.SPAM, 0);
                                 infractionPlayer.setViolations(InfractionType.FLOOD, 0);
                                 infractionPlayer.setViolations(InfractionType.REGULAR, 0);
+                                infractionPlayer.setViolations(InfractionType.BCOMMAND, 0);
+                                infractionPlayer.setViolations(InfractionType.UNICODE, 0);
                                 cManager.sendResetMessage(source, InfractionType.NONE, infractionPlayer);
                             }
                         } else {

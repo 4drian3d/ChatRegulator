@@ -23,6 +23,7 @@ public class InfractionPlayer {
     private int regularViolations;
     private int spamViolations;
     private int commandViolations;
+    private int unicodeViolations;
     private boolean isOnline;
     private final String username;
     private long lastTimeSeen;
@@ -41,6 +42,7 @@ public class InfractionPlayer {
         this.regularViolations = 0;
         this.spamViolations = 0;
         this.commandViolations = 0;
+        this.unicodeViolations = 0;
         this.isOnline = true;
         this.username = player.getUsername();
     }
@@ -60,6 +62,7 @@ public class InfractionPlayer {
         this.regularViolations = 0;
         this.spamViolations = 0;
         this.commandViolations = 0;
+        this.unicodeViolations = 0;
         this.isOnline = true;
         this.username = player.getUsername();
     }
@@ -161,10 +164,11 @@ public class InfractionPlayer {
      */
     public void addViolation(InfractionType type){
         switch(type){
-            case SPAM: spamViolations += 1; break;
-            case REGULAR: regularViolations += 1; break;
-            case FLOOD: floodViolations += 1; break;
-            case BCOMMAND: commandViolations += 1; break;
+            case SPAM: spamViolations++; break;
+            case REGULAR: regularViolations++; break;
+            case FLOOD: floodViolations++; break;
+            case BCOMMAND: commandViolations++; break;
+            case UNICODE: unicodeViolations++; break;
             case NONE: return;
         }
     }
@@ -180,6 +184,7 @@ public class InfractionPlayer {
             case REGULAR: regularViolations = newViolationsCount; break;
             case FLOOD: floodViolations = newViolationsCount; break;
             case BCOMMAND: commandViolations = newViolationsCount; break;
+            case UNICODE: unicodeViolations = newViolationsCount; break;
             case NONE: return;
         }
     }
@@ -214,6 +219,14 @@ public class InfractionPlayer {
      */
     public int getCommandInfractions(){
         return commandViolations;
+    }
+
+    /**
+     * Get the amount of unicode infractions the player already has.
+     * @return the unicode infractions of the player
+     */
+    public int getUnicodeInfractions(){
+        return unicodeViolations;
     }
 
     /**

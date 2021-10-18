@@ -131,6 +131,27 @@ public class Configuration {
             "spam.commands.commands-to-execute",
             List.of("mute <player> 1m You have been muted for spam on the server <server>", "example command"));
         /*---------------
+        Unicode Module
+        ---------------*/
+        config.setDefault("unicode-blocker.enabled", true);
+        config.setDefault(
+            "unicode-blocker.warning-type",
+            "MESSAGE");
+        messages.setDefault(
+            "unicode-blocker.warning",
+            "<red>Hello, it is not allowed to use this symbols.");
+        messages.setDefault(
+            "unicode-blocker.reset",
+            "<red>The simbols sended count for <player> was reset.");
+        messages.setDefault(
+            "unicode-blocker.alert",
+            "<red>The player <aqua><player></aqua> <red>was using unicode symbols in the chat of <aqua><server></aqua> server.");
+        config.setDefault("unicode-blocker.commands.execute-commands", false);
+        config.setDefault("unicode-blocker.commands.violations-required", 5);
+        config.setDefault(
+            "unicode-blocker.commands.commands-to-execute",
+            List.of("mute <player> 1m You have been muted for use symbols on the server <server>", "example command"));
+        /*---------------
         Format Module
         ---------------*/
         config.setDefault("format.enabled", true);
@@ -234,6 +255,8 @@ public class Configuration {
                 "<#3B4371>| <click:suggest_command:'/chatr <player> reset infractions'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will restart a player regular infractions.</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <green><player> <aqua>reset</aqua> infractions</hover>",
                 "<#3B4371>| <click:suggest_command:'/chatr <player> reset flood'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will reset a player flood infractions</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <green><player> <aqua>reset</aqua> flood</hover>",
                 "<#3B4371>| <click:suggest_command:'/chatr <player> reset spam'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will reset a player spam violations</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <green><player> <aqua>reset</aqua> spam</hover>",
+                "<#3B4371>| <click:suggest_command:'/chatr <player> reset command'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will reset a player blocked commands executions</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <green><player> <aqua>command</aqua> spam</hover>",
+                "<#3B4371>| <click:suggest_command:'/chatr <player> reset unicode'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will reset a player unicode violations</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <green><player> <aqua>reset</aqua> spam</hover>",
                 "<#3B4371>|----------------------|"
             ));
         messages.setDefault(

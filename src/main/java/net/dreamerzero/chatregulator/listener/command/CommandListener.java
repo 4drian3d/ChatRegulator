@@ -21,6 +21,7 @@ import net.dreamerzero.chatregulator.modules.checks.CommandCheck;
 import net.dreamerzero.chatregulator.modules.checks.FloodCheck;
 import net.dreamerzero.chatregulator.modules.checks.InfractionCheck;
 import net.dreamerzero.chatregulator.modules.checks.SpamCheck;
+import net.dreamerzero.chatregulator.modules.checks.UnicodeCheck;
 import net.dreamerzero.chatregulator.utils.CommandUtils;
 import net.dreamerzero.chatregulator.utils.DebugUtils;
 import net.dreamerzero.chatregulator.utils.TypeUtils;
@@ -39,6 +40,7 @@ public class CommandListener {
     private final FloodCheck fUtils;
     private final InfractionCheck iUtils;
     private final CommandCheck cCheck;
+    private final UnicodeCheck uCheck;
     private final TypeUtils tUtils;
     private final Yaml config;
 
@@ -54,6 +56,7 @@ public class CommandListener {
         this.iUtils = new InfractionCheck(blacklist);
         this.cCheck = new CommandCheck(blacklist);
         this.tUtils = new TypeUtils(config);
+        this.uCheck = new UnicodeCheck();
         this.config = config;
     }
 
@@ -94,6 +97,16 @@ public class CommandListener {
                     return;
                 }
             }
+
+        uCheck.check(command);
+        if(config.getBoolean("unicode-blocker.enabled") &&
+            !player.hasPermission("chatregulator.bypass.unicode")
+            && uCheck.isInfraction()){
+                if(!callCommandViolationEvent(infractionPlayer, command, InfractionType.UNICODE, uCheck)) {
+                    event.setResult(CommandResult.denied());
+                    return;
+                }
+        }
 
         fUtils.check(command);
         if(config.getBoolean("flood.enabled") &&

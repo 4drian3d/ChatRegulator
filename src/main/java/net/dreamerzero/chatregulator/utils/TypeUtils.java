@@ -59,6 +59,11 @@ public class TypeUtils {
          */
         BCOMMAND,
         /**
+         * Represents a Unicode check
+         */
+        //TODO: set messages and etc corresponding
+        UNICODE,
+        /**
          * Used internally to represent a
          * multiple warning and in other cases more
          */

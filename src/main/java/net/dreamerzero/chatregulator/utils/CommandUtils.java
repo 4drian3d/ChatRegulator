@@ -81,6 +81,18 @@ public class CommandUtils {
                     });
                     break;
                 }
+            case UNICODE:
+                if(config.getBoolean("unicode-blocker.commands.execute-commands") &&
+                    infractorPlayer.getUnicodeInfractions() % config.getInt("unicode-blocker.commands.violations-required") == 0){
+
+                    config.getStringList("unicode-blocker.commands-to-execute").forEach(command -> {
+                    String commandToSend = command
+                        .replaceAll("<player>", infractorPlayer.username())
+                        .replaceAll("<server>", infractor.getCurrentServer().get().getServerInfo().getName());
+                    server.getCommandManager().executeAsync(server.getConsoleCommandSource(), commandToSend);
+                    });
+                    break;
+                }
             case NONE: return;
         }
     }

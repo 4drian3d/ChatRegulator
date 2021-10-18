@@ -73,7 +73,7 @@ public class Regulator {
         // Default config
         new Configuration(config, blacklist, messages).setDefaultConfig();
         if(server.getPluginManager().isLoaded("ServerUtils")){
-            server.getEventManager().register(this, new PluginListener(logger));
+            server.getEventManager().register(this, new PluginListener(logger, server));
         }
         server.getEventManager().register(this, new ChatListener(server, logger, config, blacklist, messages));
         server.getEventManager().register(this, new CommandListener(server, logger, config, blacklist, messages));
