@@ -21,7 +21,7 @@ public class SpamCheck extends Check {
     @Override
     public void check(String message){
         super.string = message;
-        spamInfricted(message, type);
+        this.spamInfricted(message, type);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class SpamCheck extends Check {
      * @param string the ultimate command/message
      * @param type the source type
      */
-    void spamInfricted(String string, SourceType type){
+    private void spamInfricted(String string, SourceType type){
         switch(type){
             case CHAT:
                 String prelastMessage = infractionPlayer.preLastMessage();
@@ -53,7 +53,7 @@ public class SpamCheck extends Check {
                 String prelastCommand = infractionPlayer.preLastCommand();
                 String lastCommand = infractionPlayer.lastCommand();
 
-                super.detected = prelastCommand == lastCommand && lastCommand.contains(string);
+                super.detected = prelastCommand.equalsIgnoreCase(lastCommand) && lastCommand.contains(string);
                 break;
         }
     }

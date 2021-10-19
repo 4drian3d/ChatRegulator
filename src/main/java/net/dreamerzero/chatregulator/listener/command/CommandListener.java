@@ -134,7 +134,8 @@ public class CommandListener {
         sUtils.check(command);
         if(config.getBoolean("flood.enabled") &&
             !player.hasPermission("chatregulator.bypass.spam") &&
-            sUtils.isInfraction()) {
+            sUtils.isInfraction() &&
+            (config.getBoolean("spam.cooldown.enabled") && infractionPlayer.getTimeSinceLastCommand() < config.getLong("spam.cooldown.limit") || !config.getBoolean("spam.cooldown.enabled"))) {
 
             if(!callCommandViolationEvent(infractionPlayer, command, InfractionType.SPAM, sUtils)) {
                 event.setResult(CommandResult.denied());

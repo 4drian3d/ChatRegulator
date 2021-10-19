@@ -113,6 +113,8 @@ public class Configuration {
         Spam
         ---------------*/
         config.setDefault("spam.enabled", true);
+        config.setDefault("spam.cooldown.enabled", true);
+        config.setDefault("spam.cooldown.limit", 2500);
         config.setDefault(
             "spam.warning-type",
             "MESSAGE");

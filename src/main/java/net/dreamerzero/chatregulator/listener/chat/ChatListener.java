@@ -105,7 +105,8 @@ public class ChatListener {
         sUtils.check(message);
         if(config.getBoolean("spam.enabled") &&
             !player.hasPermission("chatregulator.bypass.spam") &&
-            sUtils.isInfraction()) {
+            sUtils.isInfraction() &&
+            (config.getBoolean("spam.cooldown.enabled") && infractionPlayer.getTimeSinceLastMessage() < config.getLong("spam.cooldown.limit") || !config.getBoolean("spam.cooldown.enabled"))) {
 
             if(!callChatViolationEvent(infractionPlayer, message, InfractionType.SPAM, sUtils)) {
                 event.setResult(ChatResult.denied());
