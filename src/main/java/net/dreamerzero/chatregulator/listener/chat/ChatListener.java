@@ -140,7 +140,7 @@ public class ChatListener {
                 player.lastMessage(message);
             } else {
                 approved.set(false);
-                dUtils.debug(player, message, type);
+                dUtils.debug(player, message, type, detection);
                 violationEvent.addViolationGlobal(type);
                 cManager.sendWarningMessage(player, type);
                 cManager.sendAlertMessage(Audience.audience(

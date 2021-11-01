@@ -161,7 +161,7 @@ public class CommandListener {
                 player.lastMessage(command);
             } else {
                 approved.set(false);
-                dUtils.debug(player, command, type);
+                dUtils.debug(player, command, type, detection);
                 violationEvent.addViolationGlobal(type);
                 cManager.sendWarningMessage(player, type);
 

@@ -10,6 +10,7 @@ import com.google.inject.Inject;
 import com.velocitypowered.api.command.CommandMeta;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
+import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.ProxyServer;
 
@@ -35,7 +36,17 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
     version = Constants.VERSION,
     description = Constants.DESCRIPTION,
     url = Constants.URL,
-    authors = {"4drian3d"})
+    authors = {
+        "4drian3d"
+    },
+    // The dependency is necessary only to send a warning message when reloading the plugin.
+    dependencies = {
+        @Dependency(
+            id = "serverutils",
+            optional = true
+        )
+    }
+)
 public class Regulator {
     private final ProxyServer server;
     private Yaml config;

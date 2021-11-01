@@ -4,8 +4,8 @@ import org.slf4j.Logger;
 
 import de.leonhard.storage.Yaml;
 import net.dreamerzero.chatregulator.InfractionPlayer;
-import net.dreamerzero.chatregulator.modules.checks.FloodCheck;
-import net.dreamerzero.chatregulator.modules.checks.InfractionCheck;
+import net.dreamerzero.chatregulator.modules.checks.Check;
+import net.dreamerzero.chatregulator.modules.checks.SpamCheck;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 
 /**
@@ -26,49 +26,14 @@ public class DebugUtils {
     }
 
     /**
-     * Spam debug message
+     * Debug message
      * @param player the {@link InfractionPlayer} involved
      * @param string the message/command
      * @param detection the detection type
+     * @param check the check
      */
-    public void debug(InfractionPlayer player, String string, InfractionType detection){
-        String pattern = "Detected for spam in 3 detections";
-
-        if (config.getBoolean("debug")){
-            logger.info("User Detected: {}", player.getPlayer().get().getUsername());
-            logger.info("Detection: {}", detection.toString());
-            logger.info("String: {}", string);
-            logger.info("Pattern: {}", pattern);
-        }
-    }
-
-    /**
-     * Regular Infraction debug message
-     * @param player the {@link InfractionPlayer} involved
-     * @param string the message/command
-     * @param detection the detection type
-     * @param iUtils the detection made
-     */
-    public void debug(InfractionPlayer player, String string, InfractionType detection, InfractionCheck iUtils){
-        String pattern = iUtils.getPattern();
-
-        if (config.getBoolean("debug")){
-            logger.info("User Detected: {}", player.getPlayer().get().getUsername());
-            logger.info("Detection: {}", detection.toString());
-            logger.info("String: {}", string);
-            logger.info("Pattern: {}", pattern);
-        }
-    }
-
-    /**
-     * Flood debug message
-     * @param player the {@link InfractionPlayer} involved
-     * @param string the message/command
-     * @param detection the detection type
-     * @param fUtils the detection made
-     */
-    public void debug(InfractionPlayer player, String string, InfractionType detection, FloodCheck fUtils){
-        String pattern = fUtils.getPattern();
+    public void debug(InfractionPlayer player, String string, InfractionType detection, Check check){
+        final String pattern = check instanceof SpamCheck ? check.getInfractionWord() : check.getPattern();
 
         if (config.getBoolean("debug")){
             logger.info("User Detected: {}", player.getPlayer().get().getUsername());
