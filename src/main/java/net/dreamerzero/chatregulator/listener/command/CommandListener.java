@@ -16,7 +16,7 @@ import de.leonhard.storage.Yaml;
 import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.dreamerzero.chatregulator.config.ConfigManager;
 import net.dreamerzero.chatregulator.events.CommandViolationEvent;
-import net.dreamerzero.chatregulator.modules.checks.Check;
+import net.dreamerzero.chatregulator.modules.checks.AbstractCheck;
 import net.dreamerzero.chatregulator.modules.checks.CommandCheck;
 import net.dreamerzero.chatregulator.modules.checks.FloodCheck;
 import net.dreamerzero.chatregulator.modules.checks.InfractionCheck;
@@ -154,7 +154,7 @@ public class CommandListener {
      * @param type InfractionType to check
      * @return message of {@link CommandExecuteEvent} is approved
      */
-    private boolean callCommandViolationEvent(InfractionPlayer player, String command, InfractionType type, Check detection) {
+    private boolean callCommandViolationEvent(InfractionPlayer player, String command, InfractionType type, AbstractCheck detection) {
         AtomicBoolean approved = new AtomicBoolean(true);
         server.getEventManager().fire(new CommandViolationEvent(player, type, detection, command)).thenAccept(violationEvent -> {
             if(violationEvent.getResult() == GenericResult.denied()) {

@@ -7,7 +7,7 @@ import de.leonhard.storage.Yaml;
 /**
  * Utilities for detecting incoherent messages containing floods
  */
-public class FloodCheck extends Check {
+public class FloodCheck extends AbstractCheck {
 
     /**
      * Create a new flood test

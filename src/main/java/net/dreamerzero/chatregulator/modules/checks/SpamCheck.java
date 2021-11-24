@@ -6,7 +6,7 @@ import net.dreamerzero.chatregulator.utils.TypeUtils.SourceType;
 /**
  * Detection of command/message spamming
  */
-public class SpamCheck extends Check {
+public class SpamCheck extends AbstractCheck {
     private final InfractionPlayer infractionPlayer;
     private final SourceType type;
     /**
@@ -42,19 +42,16 @@ public class SpamCheck extends Check {
      * @param type the source type
      */
     private void spamInfricted(String string, SourceType type){
-        switch(type){
-            case CHAT:
-                String prelastMessage = infractionPlayer.preLastMessage();
-                String lastMessage = infractionPlayer.lastMessage();
+        if(type == SourceType.CHAT){
+            String prelastMessage = infractionPlayer.preLastMessage();
+            String lastMessage = infractionPlayer.lastMessage();
 
-                super.detected = prelastMessage.equalsIgnoreCase(lastMessage) && lastMessage.contains(string);
-                break;
-            case COMMAND:
-                String prelastCommand = infractionPlayer.preLastCommand();
-                String lastCommand = infractionPlayer.lastCommand();
+            super.detected = prelastMessage.equalsIgnoreCase(lastMessage) && lastMessage.contains(string);
+        } else {
+            String prelastCommand = infractionPlayer.preLastCommand();
+            String lastCommand = infractionPlayer.lastCommand();
 
-                super.detected = prelastCommand.equalsIgnoreCase(lastCommand) && lastCommand.contains(string);
-                break;
+            super.detected = prelastCommand.equalsIgnoreCase(lastCommand) && lastCommand.contains(string);
         }
     }
 }

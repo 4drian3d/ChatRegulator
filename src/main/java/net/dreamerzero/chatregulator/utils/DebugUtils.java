@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 
 import de.leonhard.storage.Yaml;
 import net.dreamerzero.chatregulator.InfractionPlayer;
-import net.dreamerzero.chatregulator.modules.checks.Check;
+import net.dreamerzero.chatregulator.modules.checks.AbstractCheck;
 import net.dreamerzero.chatregulator.modules.checks.SpamCheck;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 
@@ -32,7 +32,7 @@ public class DebugUtils {
      * @param detection the detection type
      * @param check the check
      */
-    public void debug(InfractionPlayer player, String string, InfractionType detection, Check check){
+    public void debug(InfractionPlayer player, String string, InfractionType detection, AbstractCheck check){
         final String pattern = check instanceof SpamCheck ? check.getInfractionWord() : check.getPattern();
 
         if (config.getBoolean("debug")){

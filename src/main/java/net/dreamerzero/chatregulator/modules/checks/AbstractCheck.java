@@ -5,7 +5,7 @@ import java.util.regex.Matcher;
 /**
  * Base class of the checks used in the plugin
  */
-public abstract class Check {
+public abstract class AbstractCheck {
     protected boolean detected;
     protected String pattern;
     protected Matcher matcher;

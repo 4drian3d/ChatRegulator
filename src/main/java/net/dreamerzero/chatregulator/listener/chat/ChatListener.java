@@ -14,7 +14,7 @@ import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.dreamerzero.chatregulator.config.ConfigManager;
 import net.dreamerzero.chatregulator.events.ChatViolationEvent;
 import net.dreamerzero.chatregulator.modules.Replacer;
-import net.dreamerzero.chatregulator.modules.checks.Check;
+import net.dreamerzero.chatregulator.modules.checks.AbstractCheck;
 import net.dreamerzero.chatregulator.modules.checks.FloodCheck;
 import net.dreamerzero.chatregulator.modules.checks.InfractionCheck;
 import net.dreamerzero.chatregulator.modules.checks.SpamCheck;
@@ -72,33 +72,28 @@ public class ChatListener {
         uCheck.check(message);
         if(config.getBoolean("unicode-blocker.enabled") &&
             !player.hasPermission("chatregulator.bypass.unicode")
-            && uCheck.isInfraction()){
-                if(!callChatViolationEvent(infractionPlayer, message, InfractionType.UNICODE, uCheck)) {
-                    event.setResult(ChatResult.denied());
-                    return;
-                }
+            && uCheck.isInfraction()
+            && !callChatViolationEvent(infractionPlayer, message, InfractionType.UNICODE, uCheck)){
+                event.setResult(ChatResult.denied());
+                return;
         }
 
         fUtils.check(message);
         if(config.getBoolean("flood.enabled") &&
             !player.hasPermission("chatregulator.bypass.flood")
-            && fUtils.isInfraction()) {
-
-            if(!callChatViolationEvent(infractionPlayer, message, InfractionType.FLOOD, fUtils)) {
+            && fUtils.isInfraction()
+            && !callChatViolationEvent(infractionPlayer, message, InfractionType.FLOOD, fUtils)) {
                 event.setResult(ChatResult.denied());
                 return;
-            }
         }
 
         iUtils.check(message);
         if(config.getBoolean("infractions.enabled") &&
             !player.hasPermission("chatregulator.bypass.infractions") &&
-            iUtils.isInfraction()) {
-
-            if(!callChatViolationEvent(infractionPlayer, message, InfractionType.REGULAR, iUtils)) {
+            iUtils.isInfraction() &&
+            !callChatViolationEvent(infractionPlayer, message, InfractionType.REGULAR, iUtils)) {
                 event.setResult(ChatResult.denied());
                 return;
-            }
         }
 
         SpamCheck sUtils = new SpamCheck(infractionPlayer, SourceType.CHAT);
@@ -106,12 +101,13 @@ public class ChatListener {
         if(config.getBoolean("spam.enabled") &&
             !player.hasPermission("chatregulator.bypass.spam") &&
             sUtils.isInfraction() &&
-            (config.getBoolean("spam.cooldown.enabled") && infractionPlayer.getTimeSinceLastMessage() < config.getLong("spam.cooldown.limit") || !config.getBoolean("spam.cooldown.enabled"))) {
+            (config.getBoolean("spam.cooldown.enabled")
+                && infractionPlayer.getTimeSinceLastMessage() < config.getLong("spam.cooldown.limit")
+            || !config.getBoolean("spam.cooldown.enabled"))
+            && !callChatViolationEvent(infractionPlayer, message, InfractionType.SPAM, sUtils)) {
 
-            if(!callChatViolationEvent(infractionPlayer, message, InfractionType.SPAM, sUtils)) {
                 event.setResult(ChatResult.denied());
                 return;
-            }
         }
 
         if(config.getBoolean("format.enabled")){
@@ -133,7 +129,7 @@ public class ChatListener {
      * @author Espryth
      * @return message of {@link PlayerChatEvent} is approved
      */
-    private boolean callChatViolationEvent(InfractionPlayer player, String message, InfractionType type, Check detection) {
+    private boolean callChatViolationEvent(InfractionPlayer player, String message, InfractionType type, AbstractCheck detection) {
         AtomicBoolean approved = new AtomicBoolean(true);
         server.getEventManager().fire(new ChatViolationEvent(player, type, detection, message)).thenAccept(violationEvent -> {
             if(violationEvent.getResult() == GenericResult.denied()) {

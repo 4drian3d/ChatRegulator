@@ -6,7 +6,7 @@ import com.velocitypowered.api.event.ResultedEvent;
 import com.velocitypowered.api.event.ResultedEvent.GenericResult;
 
 import net.dreamerzero.chatregulator.InfractionPlayer;
-import net.dreamerzero.chatregulator.modules.checks.Check;
+import net.dreamerzero.chatregulator.modules.checks.AbstractCheck;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 
 /**
@@ -43,7 +43,7 @@ public class ViolationEvent implements ResultedEvent<GenericResult> {
      * Global Unicode caracters count
      */
     unicodeViolations;
-    private Check detection;
+    private AbstractCheck detection;
     private GenericResult result = GenericResult.allowed();
 
     /**
@@ -51,7 +51,7 @@ public class ViolationEvent implements ResultedEvent<GenericResult> {
      * @param infractionPlayer the player who committed the infraction
      * @param type the infraction type
      */
-    public ViolationEvent(InfractionPlayer infractionPlayer, InfractionType type, Check detection){
+    public ViolationEvent(InfractionPlayer infractionPlayer, InfractionType type, AbstractCheck detection){
         this.infractionPlayer = infractionPlayer;
         this.type = type;
         this.detection = detection;
@@ -82,7 +82,7 @@ public class ViolationEvent implements ResultedEvent<GenericResult> {
      * the detected string and more.
      * @return the detection performed
      */
-    public Check getDetection(){
+    public AbstractCheck getDetection(){
         return this.detection;
     }
 

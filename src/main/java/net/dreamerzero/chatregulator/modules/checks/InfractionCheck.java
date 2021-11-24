@@ -9,7 +9,7 @@ import de.leonhard.storage.Yaml;
 /**
  * Utilities for the detection of restringed words
  */
-public class InfractionCheck extends Check {
+public class InfractionCheck extends AbstractCheck {
     private Yaml blacklist;
 
     /**

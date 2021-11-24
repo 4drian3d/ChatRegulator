@@ -1,7 +1,7 @@
 package net.dreamerzero.chatregulator.events;
 
 import net.dreamerzero.chatregulator.InfractionPlayer;
-import net.dreamerzero.chatregulator.modules.checks.Check;
+import net.dreamerzero.chatregulator.modules.checks.AbstractCheck;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 
 /**
@@ -16,7 +16,7 @@ public class CommandViolationEvent extends ViolationEvent {
      * @param type the infraction type
      * @param command the executed command in which the violation was found
      */
-    public CommandViolationEvent(InfractionPlayer infractionPlayer, InfractionType type, Check detection, String command){
+    public CommandViolationEvent(InfractionPlayer infractionPlayer, InfractionType type, AbstractCheck detection, String command){
         super(infractionPlayer, type, detection);
         this.command = command;
 

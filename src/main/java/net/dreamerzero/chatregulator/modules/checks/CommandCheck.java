@@ -4,7 +4,7 @@ import java.util.List;
 
 import de.leonhard.storage.Yaml;
 
-public class CommandCheck extends Check {
+public class CommandCheck extends AbstractCheck {
     private Yaml blacklist;
 
     public CommandCheck(Yaml blacklist){
@@ -20,6 +20,7 @@ public class CommandCheck extends Check {
                 super.pattern = blockedCommand;
                 super.matcher = null;
                 super.detected = true;
+                return;
             }
         }
         super.detected = false;
