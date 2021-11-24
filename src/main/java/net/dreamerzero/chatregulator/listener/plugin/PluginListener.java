@@ -2,8 +2,6 @@ package net.dreamerzero.chatregulator.listener.plugin;
 
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
-import com.velocitypowered.api.plugin.PluginDescription;
-import com.velocitypowered.api.proxy.ProxyServer;
 
 import org.slf4j.Logger;
 
@@ -15,14 +13,13 @@ import net.frankheijden.serverutils.velocity.events.VelocityPluginEnableEvent;
  */
 public class PluginListener {
     private final Logger logger;
-    private final PluginDescription plinfo;
+    private static final String PLNAME = "chatregulator";
     /**
      * Plugin Listener constructor
      * @param logger
      */
-    public PluginListener(Logger logger, ProxyServer server){
+    public PluginListener(Logger logger){
         this.logger = logger;
-        this.plinfo = server.getPluginManager().getPlugin("chatregulator").get().getDescription();
     }
     /**
      * Enable Listener
@@ -33,7 +30,7 @@ public class PluginListener {
      */
     @Subscribe(order = PostOrder.LATE)
     public void onPluginEnable(VelocityPluginEnableEvent enableEvent){
-        if(enableEvent.getStage() == Stage.POST && enableEvent.getPlugin().getDescription().equals(plinfo)){
+        if(enableEvent.getStage() == Stage.POST && enableEvent.getPlugin().getDescription().getId().equals(PLNAME)){
             logger.warn("ChatRegulator has been reloaded via ServerUtils");
             logger.warn("Although this is safe, the warnings of all InfractionPlayers will be deleted.");
         }

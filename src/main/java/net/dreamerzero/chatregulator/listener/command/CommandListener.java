@@ -72,7 +72,7 @@ public class CommandListener {
 
         String rawCommand = event.getCommand();
 
-        String commandSplit[] = rawCommand.split(" ");
+        String[] commandSplit = rawCommand.split(" ");
         String realCommand = commandSplit[0];
         if(!tUtils.isCommand(realCommand)) return;
 
@@ -90,44 +90,40 @@ public class CommandListener {
         cCheck.check(command);
         if(config.getBoolean("blocked-commands.enabled") &&
             !player.hasPermission("chatregulator.bypass.blocked-command")
-            &&cCheck.isInfraction()){
+            &&cCheck.isInfraction()
+            && !callCommandViolationEvent(infractionPlayer, command, InfractionType.BCOMMAND, cCheck)){
 
-                if(!callCommandViolationEvent(infractionPlayer, command, InfractionType.BCOMMAND, cCheck)) {
                     event.setResult(CommandResult.denied());
                     return;
-                }
             }
 
         uCheck.check(command);
         if(config.getBoolean("unicode-blocker.enabled") &&
             !player.hasPermission("chatregulator.bypass.unicode")
-            && uCheck.isInfraction()){
-                if(!callCommandViolationEvent(infractionPlayer, command, InfractionType.UNICODE, uCheck)) {
+            && uCheck.isInfraction()
+            && !callCommandViolationEvent(infractionPlayer, command, InfractionType.UNICODE, uCheck)){
                     event.setResult(CommandResult.denied());
                     return;
-                }
         }
 
         fUtils.check(command);
         if(config.getBoolean("flood.enabled") &&
             !player.hasPermission("chatregulator.bypass.flood") &&
-            fUtils.isInfraction()) {
+            fUtils.isInfraction()
+            && !callCommandViolationEvent(infractionPlayer, command, InfractionType.FLOOD, fUtils)) {
 
-            if(!callCommandViolationEvent(infractionPlayer, command, InfractionType.FLOOD, fUtils)) {
                 event.setResult(CommandResult.denied());
                 return;
-            }
         }
 
         iUtils.check(command);
         if(config.getBoolean("infractions.enabled") &&
             !player.hasPermission("chatregulator.bypass.infractions") &&
-            iUtils.isInfraction()) {
+            iUtils.isInfraction() &&
+            !callCommandViolationEvent(infractionPlayer, command, InfractionType.REGULAR, iUtils)) {
 
-            if(!callCommandViolationEvent(infractionPlayer, command, InfractionType.REGULAR, iUtils)) {
                 event.setResult(CommandResult.denied());
                 return;
-            }
         }
 
         SpamCheck sUtils = new SpamCheck(infractionPlayer, SourceType.COMMAND);
@@ -135,12 +131,12 @@ public class CommandListener {
         if(config.getBoolean("flood.enabled") &&
             !player.hasPermission("chatregulator.bypass.spam") &&
             sUtils.isInfraction() &&
-            (config.getBoolean("spam.cooldown.enabled") && infractionPlayer.getTimeSinceLastCommand() < config.getLong("spam.cooldown.limit") || !config.getBoolean("spam.cooldown.enabled"))) {
+            (config.getBoolean("spam.cooldown.enabled") && infractionPlayer.getTimeSinceLastCommand() < config.getLong("spam.cooldown.limit") 
+            || !config.getBoolean("spam.cooldown.enabled"))
+            && !callCommandViolationEvent(infractionPlayer, command, InfractionType.SPAM, sUtils)) {
 
-            if(!callCommandViolationEvent(infractionPlayer, command, InfractionType.SPAM, sUtils)) {
                 event.setResult(CommandResult.denied());
                 return;
-            }
         }
 
         infractionPlayer.lastCommand(command);

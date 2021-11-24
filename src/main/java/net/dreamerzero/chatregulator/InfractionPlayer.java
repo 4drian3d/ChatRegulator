@@ -275,7 +275,7 @@ public class InfractionPlayer {
             Regulator.infractionPlayers.put(uuid, infractionPlayer);
             return Optional.of(infractionPlayer);
         } else {
-            System.err.println("An attempt has been made to obtain a player who has not joined the server yet.");
+            Regulator.getInstance().getLogger().error("An attempt has been made to obtain a player who has not joined the server yet.");
             return Optional.of(null);
         }
     }

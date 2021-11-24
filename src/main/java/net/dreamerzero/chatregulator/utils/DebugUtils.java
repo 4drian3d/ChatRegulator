@@ -36,8 +36,8 @@ public class DebugUtils {
         final String pattern = check instanceof SpamCheck ? check.getInfractionWord() : check.getPattern();
 
         if (config.getBoolean("debug")){
-            logger.info("User Detected: {}", player.getPlayer().get().getUsername());
-            logger.info("Detection: {}", detection.toString());
+            logger.info("User Detected: {}", player.getPlayer().isPresent() ? player.getPlayer().get().getUsername() : "not present");
+            logger.info("Detection: {}", detection);
             logger.info("String: {}", string);
             logger.info("Pattern: {}", pattern);
         }

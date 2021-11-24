@@ -52,33 +52,17 @@ public class ConfigManager {
      * @param type the type of infraction
      */
     public void sendWarningMessage(InfractionPlayer infractor, TypeUtils.InfractionType type){
-        String message = messages.getString("spam.warning");
-        Audience player = infractor.getPlayer().get();
+        infractor.getPlayer().ifPresent(player -> {
+            String message = messages.getString("spam.warning");
+            TemplateResolver templates = PlaceholderUtils.getTemplates(infractor);
 
-        switch(getWarningType(type)){
-            case TITLE:
-                if(!message.contains(";")){
-                    player.showTitle(
-                    Title.title(
-                        Component.empty(),
-                        mm.deserialize(
-                            message,
-                            PlaceholderUtils.getTemplates(infractor))));
-                } else {
-                    String titleParts[] = message.split(";");
-                    player.showTitle(
-                        Title.title(
-                            mm.deserialize(
-                                titleParts[0],
-                                PlaceholderUtils.getTemplates(infractor)),
-                            mm.deserialize(
-                                titleParts[1],
-                                PlaceholderUtils.getTemplates(infractor))));
-                }
-                break;
-            case MESSAGE: player.sendMessage(mm.deserialize(message, PlaceholderUtils.getTemplates(infractor))); break;
-            case ACTIONBAR: player.sendActionBar(mm.deserialize(message, PlaceholderUtils.getTemplates(infractor))); break;
-        }
+            switch(getWarningType(type)){
+                case TITLE: sendTitle(message, player, templates); break;
+                case MESSAGE: player.sendMessage(mm.deserialize(message, templates)); break;
+                case ACTIONBAR: player.sendActionBar(mm.deserialize(message, templates)); break;
+            }
+        });
+        
     }
 
     /**
@@ -88,38 +72,18 @@ public class ConfigManager {
      * @param fUtils the flood check
      */
     public void sendWarningMessage(InfractionPlayer infractor, TypeUtils.InfractionType type, FloodCheck fUtils){
-        String message = messages.getString("flood.warning");
-        TemplateResolver template = TemplateResolver.combining(
-            TemplateResolver.templates(
-                Template.template("infraction", fUtils.getInfractionWord())),
-                PlaceholderUtils.getTemplates(infractor));
-
-        Audience player = infractor.getPlayer().get();
-
-        switch(getWarningType(type)){
-            case TITLE:
-                if(!message.contains(";")){
-                    player.showTitle(
-                    Title.title(
-                        Component.empty(),
-                        mm.deserialize(
-                            message,
-                            template)));
-                } else {
-                    String titleParts[] = message.split(";");
-                    player.showTitle(
-                        Title.title(
-                            mm.deserialize(
-                                titleParts[0],
-                                template),
-                            mm.deserialize(
-                                titleParts[1],
-                                template)));
-                }
-                break;
-            case MESSAGE: player.sendMessage(mm.deserialize(message, template)); break;
-            case ACTIONBAR: player.sendActionBar(mm.deserialize(message, template)); break;
-        }
+        infractor.getPlayer().ifPresent(player -> {
+            String message = messages.getString("flood.warning");
+            TemplateResolver template = TemplateResolver.combining(
+                TemplateResolver.templates(
+                    Template.template("infraction", fUtils.getInfractionWord())),
+                    PlaceholderUtils.getTemplates(infractor));
+            switch(getWarningType(type)){
+                case TITLE: sendTitle(message, player, template); break;
+                case MESSAGE: player.sendMessage(mm.deserialize(message, template)); break;
+                case ACTIONBAR: player.sendActionBar(mm.deserialize(message, template)); break;
+            }
+        });
     }
 
     /**
@@ -129,37 +93,38 @@ public class ConfigManager {
      * @param iUtils the infractions check
      */
     public void sendWarningMessage(InfractionPlayer infractor, TypeUtils.InfractionType type, InfractionCheck iUtils){
-        String message = messages.getString("infractions.warning");
-        TemplateResolver template = TemplateResolver.combining(
-            TemplateResolver.templates(
-                Template.template("infraction", iUtils.getInfractionWord())),
-                PlaceholderUtils.getTemplates(infractor));
+        infractor.getPlayer().ifPresent(player -> {
+            String message = messages.getString("infractions.warning");
+            TemplateResolver template = TemplateResolver.combining(
+                TemplateResolver.templates(
+                    Template.template("infraction", iUtils.getInfractionWord())),
+                    PlaceholderUtils.getTemplates(infractor));
+            switch(getWarningType(type)){
+                case TITLE: sendTitle(message, player, template); break;
+                case MESSAGE: player.sendMessage(mm.deserialize(message, template)); break;
+                case ACTIONBAR: player.sendActionBar(mm.deserialize(message, template)); break;
+            }
+        });
+    }
 
-        Audience player = infractor.getPlayer().get();
-
-        switch(getWarningType(type)){
-            case TITLE:
-                if(!message.contains(";")){
-                    player.showTitle(
-                    Title.title(
-                        Component.empty(),
-                        mm.deserialize(
-                            message,
-                            template)));
-                } else {
-                    String titleParts[] = message.split(";");
-                    player.showTitle(
-                        Title.title(
-                            mm.deserialize(
-                                titleParts[0],
-                                template),
-                            mm.deserialize(
-                                titleParts[1],
-                                template)));
-                }
-                break;
-            case MESSAGE: player.sendMessage(mm.deserialize(message, template)); break;
-            case ACTIONBAR: player.sendActionBar(mm.deserialize(message, template)); break;
+    private void sendTitle(String message, Audience player, TemplateResolver template){
+        if(!message.contains(";")){
+            player.showTitle(
+            Title.title(
+                Component.empty(),
+                mm.deserialize(
+                    message,
+                    template)));
+        } else {
+            String[] titleParts = message.split(";");
+            player.showTitle(
+                Title.title(
+                    mm.deserialize(
+                        titleParts[0],
+                        template),
+                    mm.deserialize(
+                        titleParts[1],
+                        template)));
         }
     }
 
@@ -177,7 +142,7 @@ public class ConfigManager {
             case SPAM: message = messages.getString("spam.alert"); break;
             case BCOMMAND:  message = messages.getString("blocked-commands.alert"); break;
             case UNICODE: message = messages.getString("unicode-blocker.alert"); break;
-            default: message = null;
+            default: return;
         }
 
         staff.sendMessage(

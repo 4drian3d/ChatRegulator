@@ -53,6 +53,7 @@ public class Regulator {
     private Yaml blacklist;
     private Yaml messages;
     private final Logger logger;
+    private static Regulator plugin;
 
     /**
      * InfractionPlayer list
@@ -78,13 +79,14 @@ public class Regulator {
      * Initialization of the plugin
      */
     public void onProxyInitialization(final ProxyInitializeEvent event) {
+        plugin = this;
         // :)
         server.getConsoleCommandSource().sendMessage(
             MiniMessage.miniMessage().parse("<gradient:#f2709c:#ff9472>ChatRegulator</gradient> <gradient:#DAE2F8:#D4D3DD>has started, have a very nice day</gradient>"));
         // Default config
         new Configuration(config, blacklist, messages).setDefaultConfig();
         if(server.getPluginManager().isLoaded("ServerUtils")){
-            server.getEventManager().register(this, new PluginListener(logger, server));
+            server.getEventManager().register(this, new PluginListener(logger));
         }
         server.getEventManager().register(this, new ChatListener(server, logger, config, blacklist, messages));
         server.getEventManager().register(this, new CommandListener(server, logger, config, blacklist, messages));
@@ -95,6 +97,10 @@ public class Regulator {
         server.getCommandManager().register(regulatorMeta, new ChatRegulatorCommand(infractionPlayers, messages, server, config));
 
         checkInfractionPlayersRunnable();
+    }
+
+    public static Regulator getInstance(){
+        return plugin;
     }
     /**
      * Get the plugin configuration
@@ -109,6 +115,10 @@ public class Regulator {
      */
     public Yaml getBlackList(){
         return this.blacklist;
+    }
+
+    public Logger getLogger(){
+        return this.logger;
     }
 
     /**

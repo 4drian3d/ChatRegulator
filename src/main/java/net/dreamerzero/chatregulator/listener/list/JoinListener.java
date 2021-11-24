@@ -25,8 +25,8 @@ public class JoinListener {
      */
     @Subscribe(async = true)
     public void onPlayerJoin(PostLoginEvent event){
-        Player player = event.getPlayer();
-        UUID playerUUID = player.getUniqueId();
+        final Player player = event.getPlayer();
+        final UUID playerUUID = player.getUniqueId();
         if(infractionPlayers.containsKey(playerUUID)) {
             infractionPlayers.get(playerUUID).isOnline(true);
             return;
