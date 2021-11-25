@@ -34,10 +34,8 @@ public class ChatListener {
     private final ConfigManager cManager;
     private final CommandUtils cUtils;
     private final DebugUtils dUtils;
-    private final FloodCheck fUtils;
-    private final InfractionCheck iUtils;
-    private final UnicodeCheck uCheck;
     private final Yaml config;
+    private final Yaml blacklist;
     private final Replacer rUtils;
 
     /**
@@ -49,14 +47,12 @@ public class ChatListener {
      */
     public ChatListener(final ProxyServer server, Logger logger, Yaml config, Yaml blacklist, Yaml messages) {
         this.server = server;
+        this.config = config;
+        this.blacklist = blacklist;
         this.cManager = new ConfigManager(messages, config);
         this.cUtils = new CommandUtils(server, config);
         this.dUtils = new DebugUtils(logger, config);
-        this.fUtils = new FloodCheck(config);
-        this.iUtils = new InfractionCheck(blacklist);
-        this.uCheck = new UnicodeCheck();
         this.rUtils = new Replacer(config);
-        this.config = config;
     }
 
     /**
@@ -69,6 +65,7 @@ public class ChatListener {
         String message = event.getMessage();
         InfractionPlayer infractionPlayer = InfractionPlayer.get(player);
 
+        UnicodeCheck uCheck = new UnicodeCheck();
         uCheck.check(message);
         if(config.getBoolean("unicode-blocker.enabled") &&
             !player.hasPermission("chatregulator.bypass.unicode")
@@ -78,21 +75,29 @@ public class ChatListener {
                 return;
         }
 
-        fUtils.check(message);
-        if(config.getBoolean("flood.enabled") &&
-            !player.hasPermission("chatregulator.bypass.flood")
-            && fUtils.isInfraction()
-            && !callChatViolationEvent(infractionPlayer, message, InfractionType.FLOOD, fUtils)) {
-                event.setResult(ChatResult.denied());
+        FloodCheck fCheck = new FloodCheck(config);
+        fCheck.check(message);
+        if(config.getBoolean("flood.enabled")
+            && !player.hasPermission("chatregulator.bypass.flood")
+            && fCheck.isInfraction()
+            && !callChatViolationEvent(infractionPlayer, message, InfractionType.FLOOD, fCheck)) {
+
+                event.setResult(config.getString("flood.controltype").equalsIgnoreCase("blockmessage") ?
+                    ChatResult.denied() :
+                    ChatResult.message(fCheck.replaceInfraction()));
                 return;
         }
 
+        InfractionCheck iUtils = new InfractionCheck(blacklist);
         iUtils.check(message);
         if(config.getBoolean("infractions.enabled") &&
             !player.hasPermission("chatregulator.bypass.infractions") &&
             iUtils.isInfraction() &&
             !callChatViolationEvent(infractionPlayer, message, InfractionType.REGULAR, iUtils)) {
-                event.setResult(ChatResult.denied());
+
+                event.setResult(config.getString("infractions.controltype").equalsIgnoreCase("blockmessage") ?
+                    ChatResult.denied() :
+                    ChatResult.message(iUtils.replaceInfraction()));
                 return;
         }
 

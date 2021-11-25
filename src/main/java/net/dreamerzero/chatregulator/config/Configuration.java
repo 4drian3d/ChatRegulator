@@ -21,6 +21,8 @@ public class Configuration {
         this.blacklist = blacklist;
         this.messages = messages;
     }
+    //TODO: Add new control check configuration
+    //TODO: Migrate to configurate
     /**
      * Set the default values of the configuration
      * paths if they are not found.

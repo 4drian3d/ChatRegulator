@@ -8,14 +8,6 @@ import de.leonhard.storage.Yaml;
  * Utilities for the distinction of the detections performed
  */
 public class TypeUtils {
-    private Yaml config;
-    /**
-     * Creates an object to distinguish any detection
-     * @param config the plugin config
-     */
-    public TypeUtils(Yaml config){
-        this.config = config;
-    }
     /**
      * The warning format to be executed
      */
@@ -90,7 +82,7 @@ public class TypeUtils {
      * @param command the command executed
      * @return if the command is to be checked
      */
-    public boolean isCommand(String command){
+    public static boolean isCommand(String command, Yaml config){
         List<String> commandsChecked = config.getStringList("commands-checked");
 
         return commandsChecked.stream().anyMatch(command::contains);
