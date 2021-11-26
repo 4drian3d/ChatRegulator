@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 
 import com.google.inject.Inject;
 import com.velocitypowered.api.command.CommandMeta;
@@ -134,9 +135,7 @@ public class Regulator {
                 if(iPlayer.isOnline()) continue;
                 if(iPlayer.getLastSeen() - System.currentTimeMillis() > timeToDelete){
                     infractionPlayers.remove(entry.getKey());
-                    if(config.getBoolean("general.debug")) {
-                        logger.info("The player {} was eliminated", iPlayer.username());
-                    }
+                    logger.debug("The player {} was eliminated", iPlayer.username());
                 }
             }
         })

@@ -180,7 +180,6 @@ public class Configuration {
         /*---------------
         General
         ---------------*/
-        config.setDefault("general.debug", false);
         config.setDefault("general.limit-tab-complete", 30);
         messages.setDefault(
             "general.stats",
