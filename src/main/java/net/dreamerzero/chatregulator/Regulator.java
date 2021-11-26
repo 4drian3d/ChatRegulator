@@ -88,7 +88,7 @@ public class Regulator {
         if(server.getPluginManager().isLoaded("ServerUtils")){
             server.getEventManager().register(this, new PluginListener(logger));
         }
-        server.getEventManager().register(this, new ChatListener(server, logger, config, blacklist, messages));
+        server.getEventManager().register(this, new ChatListener(server, config, blacklist, messages));
         server.getEventManager().register(this, new CommandListener(server, config, blacklist, messages));
         server.getEventManager().register(this, new JoinListener(infractionPlayers));
         server.getEventManager().register(this, new LeaveListener());

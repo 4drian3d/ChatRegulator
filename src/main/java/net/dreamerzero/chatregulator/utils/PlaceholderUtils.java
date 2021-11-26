@@ -1,7 +1,8 @@
 package net.dreamerzero.chatregulator.utils;
 
 import net.dreamerzero.chatregulator.InfractionPlayer;
-import net.dreamerzero.chatregulator.events.ViolationEvent;
+import net.dreamerzero.chatregulator.modules.Statistics;
+import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 import net.kyori.adventure.text.minimessage.Template;
 import net.kyori.adventure.text.minimessage.template.TemplateResolver;
 
@@ -29,10 +30,12 @@ public class PlaceholderUtils {
      */
     public static TemplateResolver getGlobalTemplates(){
         return TemplateResolver.templates(
-            Template.template("flood", String.valueOf(ViolationEvent.floodCount)),
-            Template.template("spam", String.valueOf(ViolationEvent.spamCount)),
-            Template.template("regular", String.valueOf(ViolationEvent.regularCount)),
-            Template.template("command", String.valueOf(ViolationEvent.commandCount))
+            Template.template("flood", String.valueOf(Statistics.getViolationCount(InfractionType.FLOOD))),
+            Template.template("spam", String.valueOf(Statistics.getViolationCount(InfractionType.SPAM))),
+            Template.template("regular", String.valueOf(Statistics.getViolationCount(InfractionType.REGULAR))),
+            Template.template("command", String.valueOf(Statistics.getViolationCount(InfractionType.BCOMMAND)))
         );
     }
+
+    private PlaceholderUtils(){}
 }

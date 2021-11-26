@@ -14,6 +14,7 @@ import de.leonhard.storage.Yaml;
 import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.dreamerzero.chatregulator.config.ConfigManager;
 import net.dreamerzero.chatregulator.events.CommandViolationEvent;
+import net.dreamerzero.chatregulator.modules.Statistics;
 import net.dreamerzero.chatregulator.modules.checks.AbstractCheck;
 import net.dreamerzero.chatregulator.modules.checks.CommandCheck;
 import net.dreamerzero.chatregulator.modules.checks.FloodCheck;
@@ -154,7 +155,7 @@ public class CommandListener {
             } else {
                 approved.set(false);
                 DebugUtils.debug(player, command, type, detection);
-                violationEvent.addViolationGlobal(type);
+                Statistics.addViolationCount(type);
                 cManager.sendWarningMessage(player, type);
 
                 cManager.sendAlertMessage(Audience.audience(

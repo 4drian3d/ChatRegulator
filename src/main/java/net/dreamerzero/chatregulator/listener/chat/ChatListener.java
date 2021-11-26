@@ -7,13 +7,13 @@ import com.velocitypowered.api.event.player.PlayerChatEvent.ChatResult;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 
-import org.slf4j.Logger;
 
 import de.leonhard.storage.Yaml;
 import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.dreamerzero.chatregulator.config.ConfigManager;
 import net.dreamerzero.chatregulator.events.ChatViolationEvent;
 import net.dreamerzero.chatregulator.modules.Replacer;
+import net.dreamerzero.chatregulator.modules.Statistics;
 import net.dreamerzero.chatregulator.modules.checks.AbstractCheck;
 import net.dreamerzero.chatregulator.modules.checks.FloodCheck;
 import net.dreamerzero.chatregulator.modules.checks.InfractionCheck;
@@ -40,11 +40,10 @@ public class ChatListener {
     /**
      * ChatListener Constructor
      * @param server the proxy server
-     * @param logger the logger
      * @param config the plugin config
      * @param blacklist the blacklist config
      */
-    public ChatListener(final ProxyServer server, Logger logger, Yaml config, Yaml blacklist, Yaml messages) {
+    public ChatListener(final ProxyServer server, Yaml config, Yaml blacklist, Yaml messages) {
         this.server = server;
         this.config = config;
         this.blacklist = blacklist;
@@ -140,7 +139,7 @@ public class ChatListener {
             } else {
                 approved.set(false);
                 DebugUtils.debug(player, message, type, detection);
-                violationEvent.addViolationGlobal(type);
+                Statistics.addViolationCount(type);
                 cManager.sendWarningMessage(player, type);
                 cManager.sendAlertMessage(Audience.audience(
                     server.getAllPlayers().stream()

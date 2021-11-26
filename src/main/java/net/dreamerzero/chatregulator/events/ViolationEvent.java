@@ -21,28 +21,6 @@ public class ViolationEvent implements ResultedEvent<GenericResult> {
      * Type of detection
      */
     protected final InfractionType type;
-    /**
-     * Global Spam warning count
-     */
-    public static int spamCount,
-    /**
-     * Global Flood warning count
-     */
-    floodCount,
-    /**
-     * Global Regular Infractions warning count
-     */
-    regularCount,
-
-    /**
-     * Global commands blocked executed
-     */
-    commandCount,
-
-    /**
-     * Global Unicode caracters count
-     */
-    unicodeViolations;
     private AbstractCheck detection;
     private GenericResult result = GenericResult.allowed();
 
@@ -94,20 +72,5 @@ public class ViolationEvent implements ResultedEvent<GenericResult> {
     @Override
     public void setResult(GenericResult result) {
         this.result = Objects.requireNonNull(result);
-    }
-
-    /**
-     * Add a violation to the overall violation count.
-     * @param type the infraction type
-     */
-    public void addViolationGlobal(InfractionType type){
-        switch(type){
-            case SPAM: spamCount++; break;
-            case FLOOD: floodCount++; break;
-            case REGULAR: regularCount++; break;
-            case BCOMMAND: commandCount++; break;
-            case UNICODE: unicodeViolations++; break;
-            case NONE: break;
-        }
     }
 }
