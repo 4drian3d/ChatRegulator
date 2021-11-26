@@ -10,8 +10,6 @@ import com.velocitypowered.api.event.command.CommandExecuteEvent.CommandResult;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 
-import org.slf4j.Logger;
-
 import de.leonhard.storage.Yaml;
 import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.dreamerzero.chatregulator.config.ConfigManager;
@@ -35,23 +33,18 @@ public class CommandListener {
     private final ProxyServer server;
     private final ConfigManager cManager;
     private final CommandUtils cUtils;
-    private final DebugUtils dUtils;
-    
-    
-    
     private final Yaml config;
     private final Yaml blacklist;
 
     /**
      * CommandListener constructor
      */
-    public CommandListener(final ProxyServer server, Logger logger, Yaml config, Yaml blacklist, Yaml messages) {
+    public CommandListener(final ProxyServer server, Yaml config, Yaml blacklist, Yaml messages) {
         this.server = server;
         this.config = config;
         this.blacklist = blacklist;
         this.cManager = new ConfigManager(messages, config);
         this.cUtils = new CommandUtils(server, config);
-        this.dUtils = new DebugUtils(logger, config);
     }
 
     /**
@@ -83,8 +76,8 @@ public class CommandListener {
 
         CommandCheck cCheck = new CommandCheck(blacklist);
         cCheck.check(command);
-        if(config.getBoolean("blocked-commands.enabled") &&
-            !player.hasPermission("chatregulator.bypass.blocked-command")
+        if(config.getBoolean("blocked-commands.enabled")
+            && !player.hasPermission("chatregulator.bypass.blocked-command")
             &&cCheck.isInfraction()
             && !callCommandViolationEvent(infractionPlayer, command, InfractionType.BCOMMAND, cCheck)){
 
@@ -94,8 +87,8 @@ public class CommandListener {
 
         UnicodeCheck uCheck = new UnicodeCheck();
         uCheck.check(command);
-        if(config.getBoolean("unicode-blocker.enabled") &&
-            !player.hasPermission("chatregulator.bypass.unicode")
+        if(config.getBoolean("unicode-blocker.enabled")
+            && !player.hasPermission("chatregulator.bypass.unicode")
             && uCheck.isInfraction()
             && !callCommandViolationEvent(infractionPlayer, command, InfractionType.UNICODE, uCheck)){
                     event.setResult(CommandResult.denied());
@@ -160,7 +153,7 @@ public class CommandListener {
                 player.lastMessage(command);
             } else {
                 approved.set(false);
-                dUtils.debug(player, command, type, detection);
+                DebugUtils.debug(player, command, type, detection);
                 violationEvent.addViolationGlobal(type);
                 cManager.sendWarningMessage(player, type);
 

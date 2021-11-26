@@ -33,7 +33,6 @@ public class ChatListener {
     private final ProxyServer server;
     private final ConfigManager cManager;
     private final CommandUtils cUtils;
-    private final DebugUtils dUtils;
     private final Yaml config;
     private final Yaml blacklist;
     private final Replacer rUtils;
@@ -51,7 +50,6 @@ public class ChatListener {
         this.blacklist = blacklist;
         this.cManager = new ConfigManager(messages, config);
         this.cUtils = new CommandUtils(server, config);
-        this.dUtils = new DebugUtils(logger, config);
         this.rUtils = new Replacer(config);
     }
 
@@ -141,7 +139,7 @@ public class ChatListener {
                 player.lastMessage(message);
             } else {
                 approved.set(false);
-                dUtils.debug(player, message, type, detection);
+                DebugUtils.debug(player, message, type, detection);
                 violationEvent.addViolationGlobal(type);
                 cManager.sendWarningMessage(player, type);
                 cManager.sendAlertMessage(Audience.audience(

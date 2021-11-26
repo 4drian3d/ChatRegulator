@@ -1,9 +1,5 @@
 package net.dreamerzero.chatregulator.utils;
 
-import java.util.List;
-
-import de.leonhard.storage.Yaml;
-
 /**
  * Utilities for the distinction of the detections performed
  */
