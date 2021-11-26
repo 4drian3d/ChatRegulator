@@ -1,7 +1,7 @@
 package net.dreamerzero.chatregulator;
 
 import java.time.Duration;
-import java.time.LocalTime;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,8 +29,8 @@ public class InfractionPlayer {
     private boolean isOnline;
     private final String username;
     private long lastTimeSeen;
-    private LocalTime timeSinceLastMessage;
-    private LocalTime timeSinceLastCommand;
+    private Instant timeSinceLastMessage;
+    private Instant timeSinceLastCommand;
 
     /**
      * Constructor of an InfractorPlayer based on a {@link Player}
@@ -42,8 +42,8 @@ public class InfractionPlayer {
         this.lastMessage = " ";
         this.preLastCommand = " ";
         this.lastCommand = " .";
-        this.timeSinceLastMessage = LocalTime.now();
-        this.timeSinceLastCommand = LocalTime.now();
+        this.timeSinceLastMessage = Instant.now();
+        this.timeSinceLastCommand = Instant.now();
         this.floodViolations = 0;
         this.regularViolations = 0;
         this.spamViolations = 0;
@@ -59,13 +59,13 @@ public class InfractionPlayer {
      * @param server the proxy server
      */
     public InfractionPlayer(UUID uuid, ProxyServer server){
-        this.player = server.getPlayer(uuid).get();
+        this.player = server.getPlayer(uuid).orElseThrow();
         this.preLastMessage = " .";
         this.lastMessage = " ";
         this.preLastCommand = " ";
         this.lastCommand = " .";
-        this.timeSinceLastMessage = LocalTime.now();
-        this.timeSinceLastCommand = LocalTime.now();
+        this.timeSinceLastMessage = Instant.now();
+        this.timeSinceLastCommand = Instant.now();
         this.floodViolations = 0;
         this.regularViolations = 0;
         this.spamViolations = 0;
@@ -139,7 +139,7 @@ public class InfractionPlayer {
     public void lastMessage(String newLastMessage){
         preLastMessage = lastMessage;
         lastMessage = newLastMessage;
-        this.timeSinceLastMessage = LocalTime.now();
+        this.timeSinceLastMessage = Instant.now();
     }
 
     /**
@@ -165,17 +165,15 @@ public class InfractionPlayer {
     public void lastCommand(String newLastCommand){
         preLastCommand = lastCommand;
         lastCommand = newLastCommand;
-        this.timeSinceLastCommand = LocalTime.now();
+        this.timeSinceLastCommand = Instant.now();
     }
 
     public long getTimeSinceLastMessage(){
-        LocalTime actualTime = LocalTime.now();
-        return Duration.between(timeSinceLastMessage, actualTime).toMillis();
+        return Duration.between(timeSinceLastMessage, Instant.now()).toMillis();
     }
 
     public long getTimeSinceLastCommand(){
-        LocalTime actualTime = LocalTime.now();
-        return Duration.between(timeSinceLastCommand, actualTime).toMillis();
+        return Duration.between(timeSinceLastCommand, Instant.now()).toMillis();
     }
 
     /**

@@ -2,6 +2,9 @@ package net.dreamerzero.chatregulator.modules;
 
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 
+/**
+ * Manages the plugin's internal statistics
+ */
 public class Statistics {
     /**
      * Global Spam warning count
@@ -47,6 +50,11 @@ public class Statistics {
         globalViolations++;
     }
 
+    /**
+     * Obtain the number of infractions of some type
+     * @param type the infraction type
+     * @return count of the respective infraction type
+     */
     public static int getViolationCount(InfractionType type){
         switch(type){
             case SPAM: return spamCount;

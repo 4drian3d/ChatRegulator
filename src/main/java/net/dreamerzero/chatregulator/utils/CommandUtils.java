@@ -1,7 +1,6 @@
 package net.dreamerzero.chatregulator.utils;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
@@ -34,9 +33,7 @@ public class CommandUtils {
      * @param infractorPlayer the {@link InfractionPlayer} involved
      */
     public void executeCommand(TypeUtils.InfractionType type, InfractionPlayer infractorPlayer){
-        Optional<Player> optionalPlayer = infractorPlayer.getPlayer();
-        if(optionalPlayer.isEmpty()) return;
-        Player infractor = optionalPlayer.get();
+        Player infractor = infractorPlayer.getPlayer().orElseThrow();
         switch(type){
             case REGULAR:
                 if(config.getBoolean("infractions.commands.execute-commands") &&

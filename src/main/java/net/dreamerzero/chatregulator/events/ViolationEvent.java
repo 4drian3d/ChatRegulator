@@ -16,11 +16,11 @@ public class ViolationEvent implements ResultedEvent<GenericResult> {
     /**
      * InfractionPlayer involved in detection
      */
-    protected final InfractionPlayer infractionPlayer;
+    private final InfractionPlayer infractionPlayer;
     /**
      * Type of detection
      */
-    protected final InfractionType type;
+    private final InfractionType type;
     private AbstractCheck detection;
     private GenericResult result = GenericResult.allowed();
 
