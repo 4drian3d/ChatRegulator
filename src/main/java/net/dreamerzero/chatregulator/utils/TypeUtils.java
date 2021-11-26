@@ -76,15 +76,4 @@ public class TypeUtils {
          */
         CHAT;
     }
-
-    /**
-     * Check if the command provided is within the list of commands to be checked.
-     * @param command the command executed
-     * @return if the command is to be checked
-     */
-    public static boolean isCommand(String command, Yaml config){
-        List<String> commandsChecked = config.getStringList("commands-checked");
-
-        return commandsChecked.stream().anyMatch(command::contains);
-    }
 }

@@ -1,5 +1,6 @@
 package net.dreamerzero.chatregulator.utils;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.velocitypowered.api.proxy.Player;
@@ -89,5 +90,16 @@ public class CommandUtils {
                 .replace("<server>", currentServer.get().getServerInfo().getName());
         }
         server.getCommandManager().executeAsync(server.getConsoleCommandSource(), commandToSend);
+    }
+
+    /**
+     * Check if the command provided is within the list of commands to be checked.
+     * @param command the command executed
+     * @return if the command is to be checked
+     */
+    public static boolean isCommand(String command, Yaml config){
+        List<String> commandsChecked = config.getStringList("commands-checked");
+
+        return commandsChecked.stream().anyMatch(command::contains);
     }
 }

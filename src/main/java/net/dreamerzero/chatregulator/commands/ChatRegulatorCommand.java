@@ -3,6 +3,7 @@ package net.dreamerzero.chatregulator.commands;
 import java.util.Map;
 import java.util.UUID;
 import java.util.Map.Entry;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.List;
 
@@ -218,44 +219,45 @@ public class ChatRegulatorCommand implements SimpleCommand {
     }
 
     @Override
-    public List<String> suggest(final Invocation invocation) {
+    public CompletableFuture<List<String>> suggestAsync(final Invocation invocation) {
         String[] args = invocation.arguments();
         if(args.length == 0){
-            return List.of("info", "help", "clear", "stats", "player");
+            return CompletableFuture.supplyAsync(() -> List.of("info", "help", "clear", "stats", "player"));
         }
-        switch(args[0]){
-            case "player":
-                return infractionPlayers.entrySet().stream()
-                    .limit(messages.getInt("general.limit-tab-complete"))
-                    .map(x -> x.getValue().username())
-                    .collect(Collectors.toList());
-            case "help": case "info": return List.of("clear", "player", "reset");
-            case "clear":
-                if(args.length <= 1){
-                    return List.of("server", "player");
-                } else {
-                    switch(args[1]){
-                        case "server": return server.getAllServers().stream()
-                            .map(sv -> sv.getServerInfo().getName())
-                            .collect(Collectors.toList());
-                        case "player": return server.getAllPlayers().stream()
-                            .map(Player::getUsername)
-                            .collect(Collectors.toList());
-                        default: break;
+        return CompletableFuture.supplyAsync(() -> {
+            switch(args[0]){
+                case "player":
+                    return infractionPlayers.entrySet().stream()
+                        .limit(messages.getInt("general.limit-tab-complete"))
+                        .map(x -> x.getValue().username())
+                        .collect(Collectors.toList());
+                case "help": case "info": return List.of("clear", "player", "reset");
+                case "clear":
+                    if(args.length <= 1){
+                        return List.of("server", "player");
+                    } else {
+                        switch(args[1]){
+                            case "server": return server.getAllServers().stream()
+                                .map(sv -> sv.getServerInfo().getName())
+                                .collect(Collectors.toList());
+                            case "player": return server.getAllPlayers().stream()
+                                .map(Player::getUsername)
+                                .collect(Collectors.toList());
+                            default: return List.of();
+                        }
                     }
-                }
-                break;
-            case "reset":
-                if(args.length == 1){
-                    return server.getAllPlayers().stream()
-                            .map(Player::getUsername)
-                            .collect(Collectors.toList());
-                } else {
-                    return List.of("infractions", "regular", "flood", "spam", "all");
-                }
-            default: break;
-        }
-        return List.of("");
+                    break;
+                case "reset":
+                    if(args.length == 1){
+                        return server.getAllPlayers().stream()
+                                .map(Player::getUsername)
+                                .collect(Collectors.toList());
+                    } else {
+                        return List.of("infractions", "regular", "flood", "spam", "all");
+                    }
+                default: return List.of();
+            }
+        });
     }
 
     @Override

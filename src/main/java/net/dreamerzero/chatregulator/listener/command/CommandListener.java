@@ -24,7 +24,6 @@ import net.dreamerzero.chatregulator.modules.checks.SpamCheck;
 import net.dreamerzero.chatregulator.modules.checks.UnicodeCheck;
 import net.dreamerzero.chatregulator.utils.CommandUtils;
 import net.dreamerzero.chatregulator.utils.DebugUtils;
-import net.dreamerzero.chatregulator.utils.TypeUtils;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 import net.dreamerzero.chatregulator.utils.TypeUtils.SourceType;
 import net.kyori.adventure.audience.Audience;
@@ -69,7 +68,7 @@ public class CommandListener {
 
         String[] commandSplit = rawCommand.split(" ");
         String realCommand = commandSplit[0];
-        if(!TypeUtils.isCommand(realCommand, config)) return;
+        if(!CommandUtils.isCommand(realCommand, config)) return;
 
         StringBuilder sBuilder = new StringBuilder();
 
