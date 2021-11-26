@@ -82,7 +82,6 @@ public class CommandListener {
         Player player = (Player)event.getCommandSource();
         InfractionPlayer infractionPlayer = InfractionPlayer.get(player);
 
-        //TODO: Finish controltype on commandscheck
         CommandCheck cCheck = new CommandCheck(blacklist);
         cCheck.check(command);
         if(config.getBoolean("blocked-commands.enabled") &&
@@ -90,8 +89,8 @@ public class CommandListener {
             &&cCheck.isInfraction()
             && !callCommandViolationEvent(infractionPlayer, command, InfractionType.BCOMMAND, cCheck)){
 
-                    event.setResult(CommandResult.denied());
-                    return;
+                event.setResult(CommandResult.denied());
+                return;
             }
 
         UnicodeCheck uCheck = new UnicodeCheck();
@@ -111,7 +110,10 @@ public class CommandListener {
             fCheck.isInfraction()
             && !callCommandViolationEvent(infractionPlayer, command, InfractionType.FLOOD, fCheck)) {
 
-                event.setResult(CommandResult.denied());
+                event.setResult(config.getString("flood.control-type").equalsIgnoreCase("block") ?
+                    CommandResult.denied() :
+                    CommandResult.command(fCheck.replaceInfraction()));
+
                 return;
         }
 
@@ -122,7 +124,9 @@ public class CommandListener {
             iCheck.isInfraction() &&
             !callCommandViolationEvent(infractionPlayer, command, InfractionType.REGULAR, iCheck)) {
 
-                event.setResult(CommandResult.denied());
+                event.setResult(config.getString("flood.control-type").equalsIgnoreCase("block") ?
+                    CommandResult.denied() :
+                    CommandResult.command(iCheck.replaceInfraction()));
                 return;
         }
 

@@ -82,7 +82,7 @@ public class ChatListener {
             && fCheck.isInfraction()
             && !callChatViolationEvent(infractionPlayer, message, InfractionType.FLOOD, fCheck)) {
 
-                event.setResult(config.getString("flood.controltype").equalsIgnoreCase("blockmessage") ?
+                event.setResult(config.getString("flood.control-type").equalsIgnoreCase("block") ?
                     ChatResult.denied() :
                     ChatResult.message(fCheck.replaceInfraction()));
                 return;
@@ -95,7 +95,7 @@ public class ChatListener {
             iUtils.isInfraction() &&
             !callChatViolationEvent(infractionPlayer, message, InfractionType.REGULAR, iUtils)) {
 
-                event.setResult(config.getString("infractions.controltype").equalsIgnoreCase("blockmessage") ?
+                event.setResult(config.getString("infractions.control-type").equalsIgnoreCase("block") ?
                     ChatResult.denied() :
                     ChatResult.message(iUtils.replaceInfraction()));
                 return;

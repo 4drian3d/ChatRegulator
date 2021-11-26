@@ -21,8 +21,7 @@ public class Configuration {
         this.blacklist = blacklist;
         this.messages = messages;
     }
-    //TODO: Add new control check configuration
-    //TODO: Migrate to configurate
+    //TODO: Migrate to configurate!!!!!!
     /**
      * Set the default values of the configuration
      * paths if they are not found.
@@ -82,6 +81,7 @@ public class Configuration {
         messages.setDefault(
             "infractions.reset",
             "<red>The infraction warning count for <player> was reset.");
+        config.setDefault("infractions.control-type", "block");
         config.setDefault("infractions.commands.execute-commands", false);
         config.setDefault("infractions.commands.violations-required", 5);
         config.setDefault(
@@ -105,6 +105,7 @@ public class Configuration {
         messages.setDefault(
             "flood.reset",
             "<red>The flood warning count for <player> was reset.");
+        config.setDefault("flood.control-type", "block");
         config.setDefault("flood.limit", "5");
         config.setDefault("flood.commands.execute-commands", false);
         config.setDefault("flood.commands.violations-required", 5);
