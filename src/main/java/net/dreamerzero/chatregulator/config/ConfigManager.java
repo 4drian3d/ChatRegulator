@@ -1,6 +1,5 @@
 package net.dreamerzero.chatregulator.config;
 
-import de.leonhard.storage.Yaml;
 import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.dreamerzero.chatregulator.modules.checks.FloodCheck;
 import net.dreamerzero.chatregulator.modules.checks.InfractionCheck;
@@ -17,17 +16,16 @@ import net.kyori.adventure.title.Title;
  * Utilities for using the configuration paths in an orderly manner
  */
 public class ConfigManager {
-    private Yaml messages;
-	private Yaml config;
     private MiniMessage mm;
+    private MainConfig.Config config;
+    private Messages.Config messages;
     /**
      * Constructor of the ConfigManager
-     * @param config plugin config
      */
-    public ConfigManager(Yaml messages, Yaml config){
-        this.messages = messages;
-		this.config = config;
+    public ConfigManager(){
         this.mm = MiniMessage.miniMessage();
+        this.config = Configuration.getConfig();
+        this.messages = Configuration.getMessages();
     }
     /**
      * Get the warning format according to the configuration
@@ -36,11 +34,11 @@ public class ConfigManager {
      */
     public TypeUtils.WarningType getWarningType(TypeUtils.InfractionType infraction){
         switch(infraction){
-            case REGULAR: return TypeUtils.WarningType.valueOf(config.getString("infractions.warning-type").toUpperCase());
-            case FLOOD: return TypeUtils.WarningType.valueOf(config.getString("flood.warning-type").toUpperCase());
-            case SPAM: return TypeUtils.WarningType.valueOf(config.getString("spam.warning-type").toUpperCase());
-            case BCOMMAND: return TypeUtils.WarningType.valueOf(config.getString("blocked-commands.warning-type").toUpperCase());
-            case UNICODE: return TypeUtils.WarningType.valueOf(config.getString("unicode-blocker.warning-type").toUpperCase());
+            case REGULAR: return config.getInfractionsConfig().getWarningType();
+            case FLOOD: return config.getFloodConfig().getWarningType();
+            case SPAM: return config.getSpamConfig().getWarningType();
+            case BCOMMAND: return config.getCommandBlacklistConfig().getWarningType();
+            case UNICODE: return config.getUnicodeConfig().getWarningType();
             case NONE: return TypeUtils.WarningType.MESSAGE;
             default: return TypeUtils.WarningType.MESSAGE;
         }
@@ -53,7 +51,7 @@ public class ConfigManager {
      */
     public void sendWarningMessage(InfractionPlayer infractor, TypeUtils.InfractionType type){
         infractor.getPlayer().ifPresent(player -> {
-            String message = messages.getString("spam.warning");
+            String message = messages.getSpamMessages().getWarningMessage();
             TemplateResolver templates = PlaceholderUtils.getTemplates(infractor);
 
             switch(getWarningType(type)){
@@ -73,7 +71,7 @@ public class ConfigManager {
      */
     public void sendWarningMessage(InfractionPlayer infractor, TypeUtils.InfractionType type, FloodCheck fUtils){
         infractor.getPlayer().ifPresent(player -> {
-            String message = messages.getString("flood.warning");
+            String message = messages.getFloodMessages().getWarningMessage();
             TemplateResolver template = TemplateResolver.combining(
                 TemplateResolver.templates(
                     Template.template("infraction", fUtils.getInfractionWord())),
@@ -94,7 +92,7 @@ public class ConfigManager {
      */
     public void sendWarningMessage(InfractionPlayer infractor, TypeUtils.InfractionType type, InfractionCheck iUtils){
         infractor.getPlayer().ifPresent(player -> {
-            String message = messages.getString("infractions.warning");
+            String message = messages.getInfractionsMessages().getWarningMessage();
             TemplateResolver template = TemplateResolver.combining(
                 TemplateResolver.templates(
                     Template.template("infraction", iUtils.getInfractionWord())),
@@ -137,11 +135,11 @@ public class ConfigManager {
     public void sendAlertMessage(Audience staff, InfractionPlayer infractor, TypeUtils.InfractionType type){
         String message;
         switch(type){
-            case FLOOD: message = messages.getString("flood.alert"); break;
-            case REGULAR: message = messages.getString("infractions.alert"); break;
-            case SPAM: message = messages.getString("spam.alert"); break;
-            case BCOMMAND:  message = messages.getString("blocked-commands.alert"); break;
-            case UNICODE: message = messages.getString("unicode-blocker.alert"); break;
+            case FLOOD: message = messages.getFloodMessages().getAlertMessage(); break;
+            case REGULAR: message = messages.getInfractionsMessages().getAlertMessage(); break;
+            case SPAM: message = messages.getSpamMessages().getAlertMessage(); break;
+            case BCOMMAND:  message = messages.getBlacklistMessages().getAlertMessage(); break;
+            case UNICODE: message = messages.getUnicodeMessages().getAlertMessage(); break;
             default: return;
         }
 
@@ -161,12 +159,12 @@ public class ConfigManager {
      */
     public void sendResetMessage(Audience sender, TypeUtils.InfractionType type, InfractionPlayer player){
         switch(type){
-            case REGULAR: sender.sendMessage(mm.deserialize(messages.getString("infractions.reset"), PlaceholderUtils.getTemplates(player))); break;
-            case FLOOD: sender.sendMessage(mm.deserialize(messages.getString("flood.reset"), PlaceholderUtils.getTemplates(player))); break;
-            case SPAM: sender.sendMessage(mm.deserialize(messages.getString("spam.reset"), PlaceholderUtils.getTemplates(player))); break;
-            case NONE: sender.sendMessage(mm.deserialize(messages.getString("general.all-reset"), PlaceholderUtils.getTemplates(player))); break;
-            case BCOMMAND: sender.sendMessage(mm.deserialize(messages.getString("commands-blocked.reset"), PlaceholderUtils.getTemplates(player))); break;
-            case UNICODE: sender.sendMessage(mm.deserialize(messages.getString("unicode-blocker.reset"), PlaceholderUtils.getTemplates(player))); break;
+            case REGULAR: sender.sendMessage(mm.deserialize(messages.getInfractionsMessages().getResetMessage(), PlaceholderUtils.getTemplates(player))); break;
+            case FLOOD: sender.sendMessage(mm.deserialize(messages.getFloodMessages().getResetMessage(), PlaceholderUtils.getTemplates(player))); break;
+            case SPAM: sender.sendMessage(mm.deserialize(messages.getSpamMessages().getResetMessage(), PlaceholderUtils.getTemplates(player))); break;
+            case NONE: sender.sendMessage(mm.deserialize(messages.getGeneralMessages().allReset(), PlaceholderUtils.getTemplates(player))); break;
+            case BCOMMAND: sender.sendMessage(mm.deserialize(messages.getBlacklistMessages().getResetMessage(), PlaceholderUtils.getTemplates(player))); break;
+            case UNICODE: sender.sendMessage(mm.deserialize(messages.getUnicodeMessages().getResetMessage(), PlaceholderUtils.getTemplates(player))); break;
         }
     }
 }

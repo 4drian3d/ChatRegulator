@@ -15,16 +15,17 @@ repositories {
 }
 
 dependencies {
-    shadow("com.github.simplix-softworks:simplixstorage:3.2.3")
     shadow("net.kyori:adventure-text-minimessage:4.2.0-SNAPSHOT"){
         exclude("net.kyori", "adventure-api")
     }
+    shadow("org.spongepowered:configurate-hocon:4.1.2")
     compileOnly("net.frankheijden.serverutils:ServerUtils:3.2.0")
 
     compileOnly("com.velocitypowered:velocity-api:3.1.0")
     annotationProcessor("com.velocitypowered:velocity-api:3.1.0")
 
-    testImplementation("com.github.simplix-softworks", "simplixstorage", "3.2.3")
+    testImplementation("org.slf4j:slf4j-api:1.7.32")
+    testImplementation("org.spongepowered:configurate-hocon:4.1.2")
     testImplementation(platform("org.junit:junit-bom:5.8.1"))
 	testImplementation("org.junit.jupiter:junit-jupiter")
 }

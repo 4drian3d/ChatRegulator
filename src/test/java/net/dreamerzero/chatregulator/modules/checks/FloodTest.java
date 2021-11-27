@@ -2,22 +2,24 @@ package net.dreamerzero.chatregulator.modules.checks;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.nio.file.Paths;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.leonhard.storage.Yaml;
 import net.dreamerzero.chatregulator.config.Configuration;
 
 public class FloodTest {
-    private static Yaml config = new Yaml("config", "build/reports/tests/test/config");
-    private static Yaml blacklist = new Yaml("blacklist", "build/reports/tests/test/config");
-    private static Yaml messages = new Yaml("messages", "build/reports/tests/test/config");
     @BeforeAll
     static void loadConfig(){
-        new Configuration(config, blacklist, messages).setDefaultConfig();
+        Logger logger = LoggerFactory.getLogger(FloodTest.class);
+        Configuration.loadConfig(Paths.get("build", "reports", "tests", "test"), logger);
     }
 
     @Test
@@ -25,7 +27,7 @@ public class FloodTest {
     @Disabled("Broken D:")
     //TODO: Fix this test
     void floodCheck(){
-        FloodCheck fCheck = new FloodCheck(config);
+        FloodCheck fCheck = new FloodCheck();
 
         String original = "flooooooooooood";
 
@@ -37,7 +39,7 @@ public class FloodTest {
     @Test
     @DisplayName("Flood Replacement Test")
     void replaceFlood(){
-        FloodCheck fCheck = new FloodCheck(config);
+        FloodCheck fCheck = new FloodCheck();
 
         String original = "flooooooooooood";
 

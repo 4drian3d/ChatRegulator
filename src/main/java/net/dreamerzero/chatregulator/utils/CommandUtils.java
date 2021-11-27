@@ -1,12 +1,13 @@
 package net.dreamerzero.chatregulator.utils;
 
-import java.util.List;
+import java.util.Set;
 
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 
-import de.leonhard.storage.Yaml;
 import net.dreamerzero.chatregulator.InfractionPlayer;
+import net.dreamerzero.chatregulator.config.Configuration;
+import net.dreamerzero.chatregulator.config.MainConfig;
 
 /**
  * Utilities for executing commands
@@ -14,15 +15,15 @@ import net.dreamerzero.chatregulator.InfractionPlayer;
  */
 public class CommandUtils {
     private ProxyServer server;
-    private Yaml config;
+    private MainConfig.Config config;
     /**
      * CommandUtils constructor
      * @param server the proxy server
      * @param config the plugin config
      */
-    public CommandUtils(ProxyServer server, Yaml config){
+    public CommandUtils(ProxyServer server){
         this.server = server;
-        this.config = config;
+        this.config = Configuration.getConfig();
     }
 
     /**
@@ -36,10 +37,11 @@ public class CommandUtils {
         Player infractor = infractorPlayer.getPlayer().orElseThrow();
         switch(type){
             case REGULAR:
-                if(config.getBoolean("infractions.commands.execute-commands") &&
-                    infractorPlayer.getRegularInfractions() % config.getInt("infractions.commands.violations-required") == 0){
+                var iconfig = config.getInfractionsConfig().getCommandsConfig();
+                if(iconfig.executeCommand() &&
+                    infractorPlayer.getRegularInfractions() % iconfig.violationsRequired() == 0){
 
-                    config.getStringList("infractions.commands.commands-to-execute").forEach(command -> {
+                        iconfig.getCommandsToExecute().forEach(command -> {
                         String commandToSend = command
                             .replace("<player>", infractorPlayer.username())
                             .replace("<server>", infractor.getCurrentServer().get().getServerInfo().getName());
@@ -48,31 +50,34 @@ public class CommandUtils {
                 }
                 break;
             case FLOOD:
-                if(config.getBoolean("flood.commands.execute-commands") &&
-                    config.getInt("flood.commands.violations-required") % infractorPlayer.getFloodInfractions() == 0){
+                var fconfig = config.getFloodConfig().getCommandsConfig();
+                if(fconfig.executeCommand() &&
+                    fconfig.violationsRequired() % infractorPlayer.getFloodInfractions() == 0){
 
-                    config.getStringList("flood.commands.commands-to-execute").forEach(command -> execute(command, infractor));
+                        fconfig.getCommandsToExecute().forEach(command -> execute(command, infractor));
                 }
                 break;
             case SPAM:
-                if(config.getBoolean("spam.commands.execute-commands") &&
-                    infractorPlayer.getSpamInfractions() % config.getInt("spam.commands.violations-required") == 0) {
+                var sconfig = config.getSpamConfig().getCommandsConfig();
+                if(sconfig.executeCommand() && infractorPlayer.getSpamInfractions() % sconfig.violationsRequired() == 0) {
 
-                    config.getStringList("spam.commands.commands-to-execute").forEach(command -> execute(command, infractor));
+                    sconfig.getCommandsToExecute().forEach(command -> execute(command, infractor));
                 }
                 break;
             case BCOMMAND:
-                if(config.getBoolean("blocked-commands.commands.execute-commands") &&
-                    infractorPlayer.getRegularInfractions() % config.getInt("blocked-commands.commands.violations-required") == 0){
+                var cconfig = config.getCommandBlacklistConfig().getCommandsConfig();
+                if(cconfig.executeCommand() &&
+                    infractorPlayer.getRegularInfractions() % cconfig.violationsRequired() == 0){
 
-                    config.getStringList("blocked-commands.commands-to-execute").forEach(command -> execute(command, infractor));
+                    cconfig.getCommandsToExecute().forEach(command -> execute(command, infractor));
                 }
                 break;
             case UNICODE:
-                if(config.getBoolean("unicode-blocker.commands.execute-commands") &&
-                    infractorPlayer.getUnicodeInfractions() % config.getInt("unicode-blocker.commands.violations-required") == 0){
+                var uconfig = config.getUnicodeConfig().getCommandsConfig();
+                if(uconfig.executeCommand() &&
+                    infractorPlayer.getUnicodeInfractions() % uconfig.violationsRequired() == 0){
 
-                    config.getStringList("unicode-blocker.commands-to-execute").forEach(command -> execute(command, infractor));
+                    uconfig.getCommandsToExecute().forEach(command -> execute(command, infractor));
                 }
                 break;
             case NONE: return;
@@ -94,8 +99,8 @@ public class CommandUtils {
      * @param command the command executed
      * @return if the command is to be checked
      */
-    public static boolean isCommand(String command, Yaml config){
-        List<String> commandsChecked = config.getStringList("commands-checked");
+    public static boolean isCommand(String command){
+        Set<String> commandsChecked = Configuration.getBlacklist().getBlockedCommands();
 
         return commandsChecked.stream().anyMatch(command::contains);
     }

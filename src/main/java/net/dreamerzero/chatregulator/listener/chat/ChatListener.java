@@ -8,9 +8,10 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 
 
-import de.leonhard.storage.Yaml;
 import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.dreamerzero.chatregulator.config.ConfigManager;
+import net.dreamerzero.chatregulator.config.Configuration;
+import net.dreamerzero.chatregulator.config.MainConfig;
 import net.dreamerzero.chatregulator.events.ChatViolationEvent;
 import net.dreamerzero.chatregulator.modules.Replacer;
 import net.dreamerzero.chatregulator.modules.Statistics;
@@ -21,6 +22,7 @@ import net.dreamerzero.chatregulator.modules.checks.SpamCheck;
 import net.dreamerzero.chatregulator.modules.checks.UnicodeCheck;
 import net.dreamerzero.chatregulator.utils.CommandUtils;
 import net.dreamerzero.chatregulator.utils.DebugUtils;
+import net.dreamerzero.chatregulator.utils.TypeUtils.ControlType;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 import net.dreamerzero.chatregulator.utils.TypeUtils.SourceType;
 import net.kyori.adventure.audience.Audience;
@@ -29,27 +31,22 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 public class ChatListener {
-
+    private MainConfig.Config config;
     private final ProxyServer server;
     private final ConfigManager cManager;
     private final CommandUtils cUtils;
-    private final Yaml config;
-    private final Yaml blacklist;
     private final Replacer rUtils;
 
     /**
      * ChatListener Constructor
      * @param server the proxy server
-     * @param config the plugin config
-     * @param blacklist the blacklist config
      */
-    public ChatListener(final ProxyServer server, Yaml config, Yaml blacklist, Yaml messages) {
+    public ChatListener(final ProxyServer server) {
         this.server = server;
-        this.config = config;
-        this.blacklist = blacklist;
-        this.cManager = new ConfigManager(messages, config);
-        this.cUtils = new CommandUtils(server, config);
-        this.rUtils = new Replacer(config);
+        this.config = Configuration.getConfig();
+        this.cManager = new ConfigManager();
+        this.cUtils = new CommandUtils(server);
+        this.rUtils = new Replacer();
     }
 
     /**
@@ -64,35 +61,35 @@ public class ChatListener {
 
         UnicodeCheck uCheck = new UnicodeCheck();
         uCheck.check(message);
-        if(config.getBoolean("unicode-blocker.enabled") &&
-            !player.hasPermission("chatregulator.bypass.unicode")
+        if(config.getUnicodeConfig().enabled() 
+            && !player.hasPermission("chatregulator.bypass.unicode")
             && uCheck.isInfraction()
             && !callChatViolationEvent(infractionPlayer, message, InfractionType.UNICODE, uCheck)){
                 event.setResult(ChatResult.denied());
                 return;
         }
 
-        FloodCheck fCheck = new FloodCheck(config);
+        FloodCheck fCheck = new FloodCheck();
         fCheck.check(message);
-        if(config.getBoolean("flood.enabled")
+        if(config.getFloodConfig().enabled()
             && !player.hasPermission("chatregulator.bypass.flood")
             && fCheck.isInfraction()
             && !callChatViolationEvent(infractionPlayer, message, InfractionType.FLOOD, fCheck)) {
 
-                event.setResult(config.getString("flood.control-type").equalsIgnoreCase("block") ?
+                event.setResult(config.getFloodConfig().getControlType() == ControlType.BLOCK ?
                     ChatResult.denied() :
                     ChatResult.message(fCheck.replaceInfraction()));
                 return;
         }
 
-        InfractionCheck iUtils = new InfractionCheck(blacklist);
+        InfractionCheck iUtils = new InfractionCheck();
         iUtils.check(message);
-        if(config.getBoolean("infractions.enabled") &&
+        if(config.getInfractionsConfig().enabled() &&
             !player.hasPermission("chatregulator.bypass.infractions") &&
             iUtils.isInfraction() &&
             !callChatViolationEvent(infractionPlayer, message, InfractionType.REGULAR, iUtils)) {
 
-                event.setResult(config.getString("infractions.control-type").equalsIgnoreCase("block") ?
+                event.setResult(config.getInfractionsConfig().getControlType() == ControlType.BLOCK ?
                     ChatResult.denied() :
                     ChatResult.message(iUtils.replaceInfraction()));
                 return;
@@ -100,19 +97,19 @@ public class ChatListener {
 
         SpamCheck sUtils = new SpamCheck(infractionPlayer, SourceType.CHAT);
         sUtils.check(message);
-        if(config.getBoolean("spam.enabled") &&
+        if(config.getSpamConfig().enabled() &&
             !player.hasPermission("chatregulator.bypass.spam") &&
             sUtils.isInfraction() &&
-            (config.getBoolean("spam.cooldown.enabled")
-                && infractionPlayer.getTimeSinceLastMessage() < config.getLong("spam.cooldown.limit")
-            || !config.getBoolean("spam.cooldown.enabled"))
+            (config.getSpamConfig().getCooldownConfig().enabled()
+                && infractionPlayer.getTimeSinceLastMessage() < config.getSpamConfig().getCooldownConfig().limit()
+            || !config.getSpamConfig().getCooldownConfig().enabled())
             && !callChatViolationEvent(infractionPlayer, message, InfractionType.SPAM, sUtils)) {
 
                 event.setResult(ChatResult.denied());
                 return;
         }
 
-        if(config.getBoolean("format.enabled")){
+        if(config.getFormatConfig().enabled()){
             String formatted = rUtils.applyFormat(message);
             infractionPlayer.lastMessage(formatted);
             event.setResult(ChatResult.message(formatted));

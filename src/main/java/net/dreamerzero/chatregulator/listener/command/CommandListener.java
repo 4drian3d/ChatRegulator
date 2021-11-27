@@ -10,9 +10,10 @@ import com.velocitypowered.api.event.command.CommandExecuteEvent.CommandResult;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 
-import de.leonhard.storage.Yaml;
 import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.dreamerzero.chatregulator.config.ConfigManager;
+import net.dreamerzero.chatregulator.config.Configuration;
+import net.dreamerzero.chatregulator.config.MainConfig;
 import net.dreamerzero.chatregulator.events.CommandViolationEvent;
 import net.dreamerzero.chatregulator.modules.Statistics;
 import net.dreamerzero.chatregulator.modules.checks.AbstractCheck;
@@ -23,6 +24,7 @@ import net.dreamerzero.chatregulator.modules.checks.SpamCheck;
 import net.dreamerzero.chatregulator.modules.checks.UnicodeCheck;
 import net.dreamerzero.chatregulator.utils.CommandUtils;
 import net.dreamerzero.chatregulator.utils.DebugUtils;
+import net.dreamerzero.chatregulator.utils.TypeUtils.ControlType;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 import net.dreamerzero.chatregulator.utils.TypeUtils.SourceType;
 import net.kyori.adventure.audience.Audience;
@@ -34,18 +36,16 @@ public class CommandListener {
     private final ProxyServer server;
     private final ConfigManager cManager;
     private final CommandUtils cUtils;
-    private final Yaml config;
-    private final Yaml blacklist;
+    private final MainConfig.Config config;
 
     /**
      * CommandListener constructor
      */
-    public CommandListener(final ProxyServer server, Yaml config, Yaml blacklist, Yaml messages) {
+    public CommandListener(final ProxyServer server) {
         this.server = server;
-        this.config = config;
-        this.blacklist = blacklist;
-        this.cManager = new ConfigManager(messages, config);
-        this.cUtils = new CommandUtils(server, config);
+        this.config = Configuration.getConfig();
+        this.cManager = new ConfigManager();
+        this.cUtils = new CommandUtils(server);
     }
 
     /**
@@ -62,7 +62,7 @@ public class CommandListener {
 
         String[] commandSplit = rawCommand.split(" ");
         String realCommand = commandSplit[0];
-        if(!CommandUtils.isCommand(realCommand, config)) return;
+        if(!CommandUtils.isCommand(realCommand)) return;
 
         StringBuilder sBuilder = new StringBuilder();
 
@@ -75,11 +75,11 @@ public class CommandListener {
         Player player = (Player)event.getCommandSource();
         InfractionPlayer infractionPlayer = InfractionPlayer.get(player);
 
-        CommandCheck cCheck = new CommandCheck(blacklist);
+        CommandCheck cCheck = new CommandCheck();
         cCheck.check(command);
-        if(config.getBoolean("blocked-commands.enabled")
+        if(config.getCommandBlacklistConfig().enabled()
             && !player.hasPermission("chatregulator.bypass.blocked-command")
-            &&cCheck.isInfraction()
+            && cCheck.isInfraction()
             && !callCommandViolationEvent(infractionPlayer, command, InfractionType.BCOMMAND, cCheck)){
 
                 event.setResult(CommandResult.denied());
@@ -88,7 +88,7 @@ public class CommandListener {
 
         UnicodeCheck uCheck = new UnicodeCheck();
         uCheck.check(command);
-        if(config.getBoolean("unicode-blocker.enabled")
+        if(config.getUnicodeConfig().enabled()
             && !player.hasPermission("chatregulator.bypass.unicode")
             && uCheck.isInfraction()
             && !callCommandViolationEvent(infractionPlayer, command, InfractionType.UNICODE, uCheck)){
@@ -96,28 +96,28 @@ public class CommandListener {
                     return;
         }
 
-        FloodCheck fCheck = new FloodCheck(config);
+        FloodCheck fCheck = new FloodCheck();
         fCheck.check(command);
-        if(config.getBoolean("flood.enabled") &&
+        if(Configuration.getConfig().getFloodConfig().enabled() &&
             !player.hasPermission("chatregulator.bypass.flood") &&
             fCheck.isInfraction()
             && !callCommandViolationEvent(infractionPlayer, command, InfractionType.FLOOD, fCheck)) {
 
-                event.setResult(config.getString("flood.control-type").equalsIgnoreCase("block") ?
+                event.setResult(Configuration.getConfig().getFloodConfig().getControlType() == ControlType.BLOCK ?
                     CommandResult.denied() :
                     CommandResult.command(fCheck.replaceInfraction()));
 
                 return;
         }
 
-        InfractionCheck iCheck = new InfractionCheck(blacklist);
+        InfractionCheck iCheck = new InfractionCheck();
         iCheck.check(command);
-        if(config.getBoolean("infractions.enabled") &&
+        if(config.getInfractionsConfig().enabled() &&
             !player.hasPermission("chatregulator.bypass.infractions") &&
             iCheck.isInfraction() &&
             !callCommandViolationEvent(infractionPlayer, command, InfractionType.REGULAR, iCheck)) {
 
-                event.setResult(config.getString("flood.control-type").equalsIgnoreCase("block") ?
+                event.setResult(config.getFloodConfig().getControlType() == ControlType.BLOCK ?
                     CommandResult.denied() :
                     CommandResult.command(iCheck.replaceInfraction()));
                 return;
@@ -125,11 +125,11 @@ public class CommandListener {
 
         SpamCheck sUtils = new SpamCheck(infractionPlayer, SourceType.COMMAND);
         sUtils.check(command);
-        if(config.getBoolean("flood.enabled") &&
+        if(config.getFloodConfig().enabled() &&
             !player.hasPermission("chatregulator.bypass.spam") &&
             sUtils.isInfraction() &&
-            (config.getBoolean("spam.cooldown.enabled") && infractionPlayer.getTimeSinceLastCommand() < config.getLong("spam.cooldown.limit") 
-            || !config.getBoolean("spam.cooldown.enabled"))
+            (config.getSpamConfig().getCooldownConfig().enabled() && infractionPlayer.getTimeSinceLastCommand() < config.getSpamConfig().getCooldownConfig().limit()
+            || !config.getSpamConfig().getCooldownConfig().enabled())
             && !callCommandViolationEvent(infractionPlayer, command, InfractionType.SPAM, sUtils)) {
 
                 event.setResult(CommandResult.denied());

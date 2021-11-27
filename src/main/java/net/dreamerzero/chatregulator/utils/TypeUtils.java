@@ -72,4 +72,15 @@ public class TypeUtils {
          */
         CHAT;
     }
+
+    public enum ControlType {
+        /**
+         * Block the entire message
+         */
+        BLOCK,
+        /**
+         * Replace the infraction
+         */
+        REPLACE
+    }
 }

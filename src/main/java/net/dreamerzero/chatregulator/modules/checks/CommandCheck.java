@@ -1,19 +1,18 @@
 package net.dreamerzero.chatregulator.modules.checks;
 
-import java.util.List;
+import java.util.Set;
 
-import de.leonhard.storage.Yaml;
+import net.dreamerzero.chatregulator.config.Configuration;
 
 public class CommandCheck extends AbstractCheck {
-    private Yaml blacklist;
+    private Set<String> blockedCommands;
 
-    public CommandCheck(Yaml blacklist){
-        this.blacklist = blacklist;
+    public CommandCheck(){
+        this.blockedCommands = Configuration.getBlacklist().getBlockedCommands();
     }
 
     @Override
     public void check(String message) {
-        List<String> blockedCommands = blacklist.getStringList("blocked-commands");
         for (String blockedCommand : blockedCommands){
             if(blockedCommand.equalsIgnoreCase(message)) {
                 super.string = message;
