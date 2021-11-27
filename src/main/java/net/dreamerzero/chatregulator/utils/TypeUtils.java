@@ -1,21 +1,9 @@
 package net.dreamerzero.chatregulator.utils;
 
-import java.util.List;
-
-import de.leonhard.storage.Yaml;
-
 /**
  * Utilities for the distinction of the detections performed
  */
 public class TypeUtils {
-    private Yaml config;
-    /**
-     * Creates an object to distinguish any detection
-     * @param config the plugin config
-     */
-    public TypeUtils(Yaml config){
-        this.config = config;
-    }
     /**
      * The warning format to be executed
      */
@@ -83,16 +71,5 @@ public class TypeUtils {
          * has written a comment in the chat.
          */
         CHAT;
-    }
-
-    /**
-     * Check if the command provided is within the list of commands to be checked.
-     * @param command the command executed
-     * @return if the command is to be checked
-     */
-    public boolean isCommand(String command){
-        List<String> commandsChecked = config.getStringList("commands-checked");
-
-        return commandsChecked.stream().anyMatch(command::contains);
     }
 }

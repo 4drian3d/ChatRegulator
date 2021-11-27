@@ -23,9 +23,9 @@ public class InfractionCheck extends AbstractCheck {
     @Override
     public void check(String string){
         List<String> blockedWords = blacklist.getStringList("blocked-words");
+        super.string = string;
         for (String blockedWord : blockedWords){
             Matcher match = Pattern.compile(blockedWord).matcher(string);
-            super.string = string;
             if(match.find()){
                 super.pattern = blockedWord;
                 super.matcher = match;
@@ -34,5 +34,9 @@ public class InfractionCheck extends AbstractCheck {
             }
         }
         super.detected = false;
+    }
+
+    public String replaceInfraction(){
+        return super.matcher.replaceAll("***");
     }
 }

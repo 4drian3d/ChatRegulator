@@ -105,4 +105,5 @@ public class GeneralUtils {
         .append(Component.newline())
         .append(Component.newline())
         .build();
+    private GeneralUtils(){}
 }

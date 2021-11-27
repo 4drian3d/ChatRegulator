@@ -10,12 +10,11 @@ import com.velocitypowered.api.event.command.CommandExecuteEvent.CommandResult;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 
-import org.slf4j.Logger;
-
 import de.leonhard.storage.Yaml;
 import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.dreamerzero.chatregulator.config.ConfigManager;
 import net.dreamerzero.chatregulator.events.CommandViolationEvent;
+import net.dreamerzero.chatregulator.modules.Statistics;
 import net.dreamerzero.chatregulator.modules.checks.AbstractCheck;
 import net.dreamerzero.chatregulator.modules.checks.CommandCheck;
 import net.dreamerzero.chatregulator.modules.checks.FloodCheck;
@@ -24,7 +23,6 @@ import net.dreamerzero.chatregulator.modules.checks.SpamCheck;
 import net.dreamerzero.chatregulator.modules.checks.UnicodeCheck;
 import net.dreamerzero.chatregulator.utils.CommandUtils;
 import net.dreamerzero.chatregulator.utils.DebugUtils;
-import net.dreamerzero.chatregulator.utils.TypeUtils;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 import net.dreamerzero.chatregulator.utils.TypeUtils.SourceType;
 import net.kyori.adventure.audience.Audience;
@@ -36,28 +34,18 @@ public class CommandListener {
     private final ProxyServer server;
     private final ConfigManager cManager;
     private final CommandUtils cUtils;
-    private final DebugUtils dUtils;
-    private final FloodCheck fUtils;
-    private final InfractionCheck iUtils;
-    private final CommandCheck cCheck;
-    private final UnicodeCheck uCheck;
-    private final TypeUtils tUtils;
     private final Yaml config;
+    private final Yaml blacklist;
 
     /**
      * CommandListener constructor
      */
-    public CommandListener(final ProxyServer server, Logger logger, Yaml config, Yaml blacklist, Yaml messages) {
+    public CommandListener(final ProxyServer server, Yaml config, Yaml blacklist, Yaml messages) {
         this.server = server;
+        this.config = config;
+        this.blacklist = blacklist;
         this.cManager = new ConfigManager(messages, config);
         this.cUtils = new CommandUtils(server, config);
-        this.dUtils = new DebugUtils(logger, config);
-        this.fUtils = new FloodCheck(config);
-        this.iUtils = new InfractionCheck(blacklist);
-        this.cCheck = new CommandCheck(blacklist);
-        this.tUtils = new TypeUtils(config);
-        this.uCheck = new UnicodeCheck();
-        this.config = config;
     }
 
     /**
@@ -74,7 +62,7 @@ public class CommandListener {
 
         String[] commandSplit = rawCommand.split(" ");
         String realCommand = commandSplit[0];
-        if(!tUtils.isCommand(realCommand)) return;
+        if(!CommandUtils.isCommand(realCommand, config)) return;
 
         StringBuilder sBuilder = new StringBuilder();
 
@@ -87,42 +75,51 @@ public class CommandListener {
         Player player = (Player)event.getCommandSource();
         InfractionPlayer infractionPlayer = InfractionPlayer.get(player);
 
+        CommandCheck cCheck = new CommandCheck(blacklist);
         cCheck.check(command);
-        if(config.getBoolean("blocked-commands.enabled") &&
-            !player.hasPermission("chatregulator.bypass.blocked-command")
+        if(config.getBoolean("blocked-commands.enabled")
+            && !player.hasPermission("chatregulator.bypass.blocked-command")
             &&cCheck.isInfraction()
             && !callCommandViolationEvent(infractionPlayer, command, InfractionType.BCOMMAND, cCheck)){
 
-                    event.setResult(CommandResult.denied());
-                    return;
+                event.setResult(CommandResult.denied());
+                return;
             }
 
+        UnicodeCheck uCheck = new UnicodeCheck();
         uCheck.check(command);
-        if(config.getBoolean("unicode-blocker.enabled") &&
-            !player.hasPermission("chatregulator.bypass.unicode")
+        if(config.getBoolean("unicode-blocker.enabled")
+            && !player.hasPermission("chatregulator.bypass.unicode")
             && uCheck.isInfraction()
             && !callCommandViolationEvent(infractionPlayer, command, InfractionType.UNICODE, uCheck)){
                     event.setResult(CommandResult.denied());
                     return;
         }
 
-        fUtils.check(command);
+        FloodCheck fCheck = new FloodCheck(config);
+        fCheck.check(command);
         if(config.getBoolean("flood.enabled") &&
             !player.hasPermission("chatregulator.bypass.flood") &&
-            fUtils.isInfraction()
-            && !callCommandViolationEvent(infractionPlayer, command, InfractionType.FLOOD, fUtils)) {
+            fCheck.isInfraction()
+            && !callCommandViolationEvent(infractionPlayer, command, InfractionType.FLOOD, fCheck)) {
 
-                event.setResult(CommandResult.denied());
+                event.setResult(config.getString("flood.control-type").equalsIgnoreCase("block") ?
+                    CommandResult.denied() :
+                    CommandResult.command(fCheck.replaceInfraction()));
+
                 return;
         }
 
-        iUtils.check(command);
+        InfractionCheck iCheck = new InfractionCheck(blacklist);
+        iCheck.check(command);
         if(config.getBoolean("infractions.enabled") &&
             !player.hasPermission("chatregulator.bypass.infractions") &&
-            iUtils.isInfraction() &&
-            !callCommandViolationEvent(infractionPlayer, command, InfractionType.REGULAR, iUtils)) {
+            iCheck.isInfraction() &&
+            !callCommandViolationEvent(infractionPlayer, command, InfractionType.REGULAR, iCheck)) {
 
-                event.setResult(CommandResult.denied());
+                event.setResult(config.getString("flood.control-type").equalsIgnoreCase("block") ?
+                    CommandResult.denied() :
+                    CommandResult.command(iCheck.replaceInfraction()));
                 return;
         }
 
@@ -157,8 +154,8 @@ public class CommandListener {
                 player.lastMessage(command);
             } else {
                 approved.set(false);
-                dUtils.debug(player, command, type, detection);
-                violationEvent.addViolationGlobal(type);
+                DebugUtils.debug(player, command, type, detection);
+                Statistics.addViolationCount(type);
                 cManager.sendWarningMessage(player, type);
 
                 cManager.sendAlertMessage(Audience.audience(

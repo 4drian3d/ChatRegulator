@@ -1,6 +1,6 @@
 package net.dreamerzero.chatregulator.utils;
 
-import java.util.Optional;
+import java.util.List;
 
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
@@ -33,9 +33,7 @@ public class CommandUtils {
      * @param infractorPlayer the {@link InfractionPlayer} involved
      */
     public void executeCommand(TypeUtils.InfractionType type, InfractionPlayer infractorPlayer){
-        Optional<Player> optionalPlayer = infractorPlayer.getPlayer();
-        if(optionalPlayer.isEmpty()) return;
-        Player infractor = optionalPlayer.get();
+        Player infractor = infractorPlayer.getPlayer().orElseThrow();
         switch(type){
             case REGULAR:
                 if(config.getBoolean("infractions.commands.execute-commands") &&
@@ -89,5 +87,16 @@ public class CommandUtils {
                 .replace("<server>", currentServer.get().getServerInfo().getName());
         }
         server.getCommandManager().executeAsync(server.getConsoleCommandSource(), commandToSend);
+    }
+
+    /**
+     * Check if the command provided is within the list of commands to be checked.
+     * @param command the command executed
+     * @return if the command is to be checked
+     */
+    public static boolean isCommand(String command, Yaml config){
+        List<String> commandsChecked = config.getStringList("commands-checked");
+
+        return commandsChecked.stream().anyMatch(command::contains);
     }
 }

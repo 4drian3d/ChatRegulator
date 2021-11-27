@@ -88,8 +88,8 @@ public class Regulator {
         if(server.getPluginManager().isLoaded("ServerUtils")){
             server.getEventManager().register(this, new PluginListener(logger));
         }
-        server.getEventManager().register(this, new ChatListener(server, logger, config, blacklist, messages));
-        server.getEventManager().register(this, new CommandListener(server, logger, config, blacklist, messages));
+        server.getEventManager().register(this, new ChatListener(server, config, blacklist, messages));
+        server.getEventManager().register(this, new CommandListener(server, config, blacklist, messages));
         server.getEventManager().register(this, new JoinListener(infractionPlayers));
         server.getEventManager().register(this, new LeaveListener());
 
@@ -134,9 +134,7 @@ public class Regulator {
                 if(iPlayer.isOnline()) continue;
                 if(iPlayer.getLastSeen() - System.currentTimeMillis() > timeToDelete){
                     infractionPlayers.remove(entry.getKey());
-                    if(config.getBoolean("general.debug")) {
-                        logger.info("The player {} was eliminated", iPlayer.username());
-                    }
+                    logger.debug("The player {} was eliminated", iPlayer.username());
                 }
             }
         })
