@@ -8,22 +8,10 @@ plugins {
 
 repositories {
     mavenLocal()
-    maven {
-        url = uri("https://nexus.velocitypowered.com/repository/maven-public/")
-    }
-
-    maven {
-        url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
-    }
-
-    maven {
-        url = uri("https://jitpack.io")
-    }
-
-    maven {
-        url = uri("https://repo.fvdh.dev/releases")
-    }
-
+    maven("https://nexus.velocitypowered.com/repository/maven-public/")
+    maven("https://oss.sonatype.org/content/repositories/snapshots/")
+    maven("https://jitpack.io")
+    maven("https://repo.fvdh.dev/releases")
 }
 
 dependencies {
@@ -35,6 +23,10 @@ dependencies {
 
     compileOnly("com.velocitypowered:velocity-api:3.1.0")
     annotationProcessor("com.velocitypowered:velocity-api:3.1.0")
+
+    testImplementation("com.github.simplix-softworks", "simplixstorage", "3.2.3")
+    testImplementation(platform("org.junit:junit-bom:5.8.1"))
+	testImplementation("org.junit.jupiter:junit-jupiter")
 }
 
 group = "net.dreamerzero.chatregulator"
@@ -64,6 +56,12 @@ tasks {
     create<ConfigureShadowRelocation>("relocateShadowJar") {
         target = shadowJar.get()
         prefix = "net.dreamerzero.chatregulator.libs"
+    }
+    test {
+        useJUnitPlatform()
+        testLogging {
+		    events("passed", "skipped", "failed")
+	    }
     }
 }
 

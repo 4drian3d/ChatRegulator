@@ -76,7 +76,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
             }
         }
     }
-    
+
     private void parseStatsCommand(Audience source, MiniMessage mm){
         for(String line : messages.getStringList("general.stats")){
             source.sendMessage(mm.deserialize(line, PlaceholderUtils.getGlobalTemplates()));
