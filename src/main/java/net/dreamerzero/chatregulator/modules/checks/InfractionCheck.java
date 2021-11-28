@@ -22,7 +22,7 @@ public class InfractionCheck extends AbstractCheck {
     public void check(String string){
         super.string = string;
         for (String blockedWord : blockedWords){
-            Matcher match = Pattern.compile(blockedWord).matcher(string);
+            Matcher match = Pattern.compile(blockedWord, Pattern.CASE_INSENSITIVE).matcher(string);
             if(match.find()){
                 super.pattern = blockedWord;
                 super.matcher = match;

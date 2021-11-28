@@ -24,7 +24,7 @@ public class InfractionTest {
     @DisplayName("Check Test")
     void detectionTest(){
         InfractionCheck iCheck = new InfractionCheck();
-        String original = "asdasdasdadad shit dadasdad";
+        String original = "asdasdasdadad sh1t dadasdad";
 
         iCheck.check(original);
 
@@ -36,12 +36,24 @@ public class InfractionTest {
     void replaceTest(){
         InfractionCheck iCheck = new InfractionCheck();
 
-        String original = "aaa fuck aaa";
+        String original = "aaa f4ck aaa";
         iCheck.check(original);
 
         String replaced = iCheck.replaceInfraction();
         String expected = "aaa *** aaa";
 
         assertEquals(expected, replaced);
+    }
+
+    @Test
+    @DisplayName("Case Insensitive Test")
+    void caseTest(){
+        InfractionCheck iCheck = new InfractionCheck();
+
+        String original = "D1cK";
+
+        iCheck.check(original);
+
+        assertTrue(iCheck.isInfraction());
     }
 }

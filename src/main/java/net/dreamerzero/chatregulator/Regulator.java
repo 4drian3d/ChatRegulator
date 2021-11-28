@@ -25,6 +25,7 @@ import net.dreamerzero.chatregulator.listener.command.CommandListener;
 import net.dreamerzero.chatregulator.listener.list.JoinListener;
 import net.dreamerzero.chatregulator.listener.list.LeaveListener;
 import net.dreamerzero.chatregulator.listener.plugin.PluginListener;
+import net.dreamerzero.chatregulator.modules.checks.FloodCheck;
 import net.dreamerzero.chatregulator.utils.Constants;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
@@ -93,6 +94,7 @@ public class Regulator {
         CommandMeta regulatorMeta = server.getCommandManager().metaBuilder("chatregulator").aliases("chatr", "cregulator").build();
         server.getCommandManager().register(regulatorMeta, new ChatRegulatorCommand(infractionPlayers, server));
 
+        FloodCheck.setFloodRegex();
         checkInfractionPlayersRunnable();
     }
 

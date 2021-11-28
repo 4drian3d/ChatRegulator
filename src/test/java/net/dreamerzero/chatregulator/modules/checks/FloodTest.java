@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.nio.file.Paths;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -23,12 +22,10 @@ public class FloodTest {
 
     @Test
     @DisplayName("Flood Check")
-    @Disabled("Broken D:")
-    //TODO: Fix this test
     void floodCheck(){
         FloodCheck fCheck = new FloodCheck();
 
-        String original = "flooooooooooood";
+        String original = "aa flooooooooooood aa";
 
         fCheck.check(original);
 
@@ -40,13 +37,25 @@ public class FloodTest {
     void replaceFlood(){
         FloodCheck fCheck = new FloodCheck();
 
-        String original = "flooooooooooood";
+        String original = "yee flooooooooooood yee";
 
         fCheck.check(original);
 
         String replaced = fCheck.replaceInfraction();
-        String expected = "fld";
+        String expected = "yee fld yee";
 
         assertEquals(replaced, expected);
+    }
+
+    @Test
+    @DisplayName("Case Insensitive Test")
+    void caseTest(){
+        FloodCheck fCheck = new FloodCheck();
+
+        String original = "floOoOoOooOooOd";
+
+        fCheck.check(original);
+
+        assertTrue(fCheck.isInfraction());
     }
 }
