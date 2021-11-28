@@ -1,6 +1,7 @@
 package net.dreamerzero.chatregulator.modules.checks;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.nio.file.Paths;
 
@@ -10,8 +11,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 import net.dreamerzero.chatregulator.config.Configuration;
 
@@ -37,7 +36,7 @@ public class FloodTest {
     }
 
     @Test
-    @DisplayName("Flood Replacement Test")
+    @DisplayName("Replacement Test")
     void replaceFlood(){
         FloodCheck fCheck = new FloodCheck();
 

@@ -6,7 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.nio.file.Paths;
 
@@ -21,7 +22,7 @@ public class InfractionTest {
 
     @Test
     @DisplayName("Check Test")
-    void detectiontest(){
+    void detectionTest(){
         InfractionCheck iCheck = new InfractionCheck();
         String original = "asdasdasdadad shit dadasdad";
 
@@ -31,7 +32,7 @@ public class InfractionTest {
     }
 
     @Test
-    @DisplayName("Infraction Replacement Test")
+    @DisplayName("Replacement Test")
     void replaceTest(){
         InfractionCheck iCheck = new InfractionCheck();
 

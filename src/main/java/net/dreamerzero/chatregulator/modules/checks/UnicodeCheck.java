@@ -7,7 +7,7 @@ public class UnicodeCheck extends AbstractCheck {
         char[] charArray = message.toCharArray();
 
         for(char character : charArray){
-            if(!((character > '\u0020' && character < '\u007E') || (character < '\u00FC' && character < '\u00BF'))){
+            if(!((character > '\u0020' && character < '\u007E') || (character < '\u00FC' && character < '\u00BF') || (character > '\u00BF' && character < '\u00FE'))){
                 super.detected = true;
                 super.pattern = String.valueOf(character);
                 return;
