@@ -1,10 +1,11 @@
 package net.dreamerzero.chatregulator.config;
 
-import java.util.Set;
+import java.util.List;
 
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 public class Messages {
+    private Messages(){}
     @ConfigSerializable
     public static class Config{
         private CommandBlacklist blacklist = new CommandBlacklist();
@@ -181,7 +182,7 @@ public class Messages {
 
     @ConfigSerializable
     public static class General{
-        private Set<String> stats = Set.of(
+        private List<String> stats = List.of(
             "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
             "<#3B4371>| <red>General Stats</red>",
             "<#3B4371>| <aqua>Regular Infractions:</aqua> <white><regular></white>",
@@ -190,7 +191,7 @@ public class Messages {
             "<#3B4371>|------------------------|"
         );
 
-        private Set<String> player = Set.of(
+        private List<String> player = List.of(
             "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
             "<#3B4371>| <gold><player></gold> <red>Stats</red>",
             "<#3B4371>| <aqua>Regular Infractions:</aqua> <white><regular></white>",
@@ -211,11 +212,11 @@ public class Messages {
 
         private General.Help help_messages = new General.Help();
 
-        public Set<String> getStatsFormat(){
+        public List<String> getStatsFormat(){
             return this.stats;
         }
 
-        public Set<String> getPlayerFormat(){
+        public List<String> getPlayerFormat(){
             return this.player;
         }
 
@@ -245,7 +246,7 @@ public class Messages {
 
         @ConfigSerializable
         public static class Help{
-            private Set<String> main = Set.of(
+            private List<String> main = List.of(
                 "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
                 "<#3B4371>| <gold>+ <hover:show_text:'<gradient:#ffd89b:#19547b>Click on a section to view its commands'><gradient:#CAC531:#F3F9A7>Command Help</gradient></hover>",
                 "<#3B4371>| <hover:show_text:'<gradient:#ff4b1f:#ff9068>This command shows you the global statistics of infractions</gradient>'><gradient:#FF5F6D:#FFC371><command> <aqua>stats</aqua></hover>",
@@ -255,14 +256,14 @@ public class Messages {
                 "<#3B4371>|----------------------|"
             );
 
-            private Set<String> player = Set.of(
+            private List<String> player = List.of(
                 "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
                 "<#3B4371>| <gold>+ <gradient:#CAC531:#F3F9A7>Player Help</gradient>",
                 "<#3B4371>| <click:suggest_command:'/chatr player <player>'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command shows you a player infractions</gradient>'><gradient:#FF5F6D:#FFC371><command> <aqua>player</aqua> <player></hover>",
                 "<#3B4371>|----------------------|"
             );
 
-            private Set<String> reset = Set.of(
+            private List<String> reset = List.of(
                 "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
                 "<#3B4371>| <gold>+ <gradient:#CAC531:#F3F9A7>Reset Help</gradient>",
                 "<#3B4371>| <click:suggest_command:'/chatr <player> reset'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will reset all infractions of a player</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <green><player> <aqua>reset</aqua></hover>",
@@ -275,7 +276,7 @@ public class Messages {
                 "<#3B4371>|----------------------|"
             );
 
-            private Set<String> clear = Set.of(
+            private List<String> clear = List.of(
                 "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
                 "<#3B4371>| <gold>+ <gradient:#CAC531:#F3F9A7>Clear Help</gradient>",
                 "<#3B4371>| <click:suggest_command:'/chatr clear'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will clear the chat of the entire network</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <aqua>clear</aqua></hover>",
@@ -284,19 +285,19 @@ public class Messages {
                 "<#3B4371>|----------------------|"
             );
 
-            public Set<String> getMainHelp(){
+            public List<String> getMainHelp(){
                 return this.main;
             }
 
-            public Set<String> getPlayerHelp(){
+            public List<String> getPlayerHelp(){
                 return this.player;
             }
 
-            public Set<String> getResethelp(){
+            public List<String> getResethelp(){
                 return this.reset;
             }
 
-            public Set<String> getClearHelp(){
+            public List<String> getClearHelp(){
                 return this.clear;
             }
         }

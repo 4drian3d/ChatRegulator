@@ -15,7 +15,7 @@ import net.dreamerzero.chatregulator.config.Configuration;
 public class CommandTest {
     @BeforeAll
     static void loadConfig(){
-        Logger logger = LoggerFactory.getLogger(FloodTest.class);
+        Logger logger = LoggerFactory.getLogger(CommandTest.class);
         Configuration.loadConfig(Paths.get("build", "reports", "tests", "test"), logger);
     }
 
