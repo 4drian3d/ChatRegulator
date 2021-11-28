@@ -54,6 +54,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
 
         if(args.length == 0){
             source.sendMessage(mm.deserialize(messages.getGeneralMessages().getInfoMessage(), commandTemplate));
+            return;
         }
         switch(args[0].toLowerCase()){
             case "info": case "help": parseHelpCommand(args, source, mm, commandTemplate); break;
