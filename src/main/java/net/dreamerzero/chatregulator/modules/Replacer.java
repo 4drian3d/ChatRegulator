@@ -1,15 +1,16 @@
 package net.dreamerzero.chatregulator.modules;
 
-import de.leonhard.storage.Yaml;
+import net.dreamerzero.chatregulator.config.Configuration;
+import net.dreamerzero.chatregulator.config.MainConfig;
 
 public class Replacer {
-    private Yaml config;
-    public Replacer(Yaml config){
-        this.config = config;
+    private MainConfig.Config config;
+    public Replacer(){
+        this.config = Configuration.getConfig();
     }
     public String firstLetterUpercase(String string){
         if(string.length() < 1 ||
-        !config.getBoolean("format.set-first-letter-uppercase")) return string;
+        !config.getFormatConfig().setFirstLetterUppercase()) return string;
 
         char firstCharacter = string.charAt(0);
         if(Character.isUpperCase(firstCharacter)) return string;
@@ -21,7 +22,7 @@ public class Replacer {
 
     public String addFinalDot(String string){
         if(string.length() <= 1 || string.charAt(string.length()-1)=='.'
-        || !config.getBoolean("format.set-final-dot")) return string;
+        || !config.getFormatConfig().setFinalDot()) return string;
 
         return string.concat(".");
     }

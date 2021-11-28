@@ -2,7 +2,7 @@ package net.dreamerzero.chatregulator.modules.checks;
 
 import java.util.regex.Pattern;
 
-import de.leonhard.storage.Yaml;
+import net.dreamerzero.chatregulator.config.Configuration;
 
 /**
  * Utilities for detecting incoherent messages containing floods
@@ -11,10 +11,9 @@ public class FloodCheck extends AbstractCheck {
 
     /**
      * Create a new flood test
-     * @param config plugin configuration
      */
-    public FloodCheck(Yaml config){
-        super.pattern = "(\\w)\\1{"+config.getString("flood.limit")+",}|(\\w{28,})|([^\\wñ]{20,})|(^.{220,}$)";
+    public FloodCheck(){
+        super.pattern = "(\\w)\\1{"+Configuration.getConfig().getFloodConfig().getLimit()+",}|(\\w{28,})|([^\\wñ]{20,})|(^.{220,}$)";
     }
 
     @Override

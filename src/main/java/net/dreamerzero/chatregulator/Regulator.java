@@ -1,5 +1,6 @@
 package net.dreamerzero.chatregulator;
 
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -12,11 +13,11 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
+import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 
 import org.slf4j.Logger;
 
-import de.leonhard.storage.Yaml;
 import net.dreamerzero.chatregulator.commands.ChatRegulatorCommand;
 import net.dreamerzero.chatregulator.config.Configuration;
 import net.dreamerzero.chatregulator.listener.chat.ChatListener;
@@ -49,11 +50,9 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 )
 public class Regulator {
     private final ProxyServer server;
-    private Yaml config;
-    private Yaml blacklist;
-    private Yaml messages;
     private final Logger logger;
     private static Regulator plugin;
+    private Path path;
 
     /**
      * InfractionPlayer list
@@ -66,11 +65,9 @@ public class Regulator {
      * @param logger logger
      */
     @Inject
-    public Regulator(final ProxyServer server, Logger logger) {
+    public Regulator(final ProxyServer server, Logger logger, @DataDirectory Path path) {
         this.server = server;
-        this.config = new Yaml("config", "plugins/ChatRegulator");
-        this.blacklist = new Yaml("blacklist", "plugins/ChatRegulator");
-        this.messages = new Yaml("messages", "plugins/ChatRegulator");
+        this.path = path;
         this.logger = logger;
     }
 
@@ -84,37 +81,23 @@ public class Regulator {
         server.getConsoleCommandSource().sendMessage(
             MiniMessage.miniMessage().parse("<gradient:#f2709c:#ff9472>ChatRegulator</gradient> <gradient:#DAE2F8:#D4D3DD>has started, have a very nice day</gradient>"));
         // Default config
-        new Configuration(config, blacklist, messages).setDefaultConfig();
+        Configuration.loadConfig(path, logger);
         if(server.getPluginManager().isLoaded("ServerUtils")){
             server.getEventManager().register(this, new PluginListener(logger));
         }
-        server.getEventManager().register(this, new ChatListener(server, config, blacklist, messages));
-        server.getEventManager().register(this, new CommandListener(server, config, blacklist, messages));
+        server.getEventManager().register(this, new ChatListener(server));
+        server.getEventManager().register(this, new CommandListener(server));
         server.getEventManager().register(this, new JoinListener(infractionPlayers));
         server.getEventManager().register(this, new LeaveListener());
 
         CommandMeta regulatorMeta = server.getCommandManager().metaBuilder("chatregulator").aliases("chatr", "cregulator").build();
-        server.getCommandManager().register(regulatorMeta, new ChatRegulatorCommand(infractionPlayers, messages, server, config));
+        server.getCommandManager().register(regulatorMeta, new ChatRegulatorCommand(infractionPlayers, server));
 
         checkInfractionPlayersRunnable();
     }
 
     public static Regulator getInstance(){
         return plugin;
-    }
-    /**
-     * Get the plugin configuration
-     * @return the plugin configuration
-     */
-    public Yaml getConfig(){
-        return this.config;
-    }
-    /**
-     * Get the configuration of the blacklist of banned words
-     * @return the blacklist configuration
-     */
-    public Yaml getBlackList(){
-        return this.blacklist;
     }
 
     public Logger getLogger(){
@@ -127,7 +110,7 @@ public class Regulator {
      * in the configured time
      */
     void checkInfractionPlayersRunnable(){
-        long timeToDelete = config.getLong("general.delete-users-after")*1000;
+        long timeToDelete = Configuration.getConfig().getGeneralConfig().deleteUsersTime()*1000;
         server.getScheduler().buildTask(this, ()->{
             for(Entry<UUID, InfractionPlayer> entry : infractionPlayers.entrySet()){
                 InfractionPlayer iPlayer = entry.getValue();

@@ -3,24 +3,27 @@ package net.dreamerzero.chatregulator.modules.checks;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import de.leonhard.storage.Yaml;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.nio.file.Paths;
+
 import net.dreamerzero.chatregulator.config.Configuration;
 
 public class InfractionTest {
-    private static Yaml config = new Yaml("config", "build/reports/tests/test/config");
-    private static Yaml blacklist = new Yaml("blacklist", "build/reports/tests/test/config");
-    private static Yaml messages = new Yaml("messages", "build/reports/tests/test/config");
     @BeforeAll
     static void loadConfig(){
-        new Configuration(config, blacklist, messages).setDefaultConfig();
+        Logger logger = LoggerFactory.getLogger(InfractionTest.class);
+        Configuration.loadConfig(Paths.get("build", "reports", "tests", "test"), logger);
     }
 
     @Test
     @DisplayName("Check Test")
-    void detectiontest(){
-        InfractionCheck iCheck = new InfractionCheck(blacklist);
+    void detectionTest(){
+        InfractionCheck iCheck = new InfractionCheck();
         String original = "asdasdasdadad shit dadasdad";
 
         iCheck.check(original);
@@ -29,9 +32,9 @@ public class InfractionTest {
     }
 
     @Test
-    @DisplayName("Infraction Replacement Test")
+    @DisplayName("Replacement Test")
     void replaceTest(){
-        InfractionCheck iCheck = new InfractionCheck(blacklist);
+        InfractionCheck iCheck = new InfractionCheck();
 
         String original = "aaa fuck aaa";
         iCheck.check(original);
