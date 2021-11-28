@@ -10,24 +10,24 @@ import net.dreamerzero.chatregulator.config.Configuration;
 public class FloodCheck extends AbstractCheck {
     // Credit: https://github.com/2lstudios-mc/ChatSentinel/blob/master/src/main/resources/config.yml#L91
     // (\\w)\\1{5,}|(\\w{28,})|([^\\wñ]{20,})|(^.{220,}$)
-    private static String stringpattern = "(\\w)\\1{5,}|(\\w{28,})|([^\\wñ]{20,})|(^.{220,}$)";
-    private static Pattern floodPattern = Pattern.compile(stringpattern, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+    private static String stringPattern = "(\\w)\\1{5,}|(\\w{28,})|([^\\wñ]{20,})|(^.{220,}$)";
+    private static Pattern floodPattern = Pattern.compile(stringPattern, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
 
     /**
      * Create a new flood test
      */
     public FloodCheck(){
-        super.pattern = stringpattern;
+        super.pattern = stringPattern;
     }
 
     public static void setFloodRegex(){
-        stringpattern = "(\\w)\\1{" + Configuration.getConfig().getFloodConfig().getLimit() + ",}|(\\w{28,})|([^\\wñ]{20,})|(^.{220,}$)";
-        floodPattern = Pattern.compile(stringpattern, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+        stringPattern = "(\\w)\\1{" + Configuration.getConfig().getFloodConfig().getLimit() + ",}|(\\w{28,})|([^\\wñ]{20,})|(^.{220,}$)";
+        floodPattern = Pattern.compile(stringPattern, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
     }
 
     public static void setFloodRegex(int limit){
-        stringpattern = "(\\w)\\1{" + limit + ",}|(\\w{28,})|([^\\wñ]{20,})|(^.{220,}$)";
-        floodPattern = Pattern.compile(stringpattern, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+        stringPattern = "(\\w)\\1{" + limit + ",}|(\\w{28,})|([^\\wñ]{20,})|(^.{220,}$)";
+        floodPattern = Pattern.compile(stringPattern, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
     }
 
     @Override
