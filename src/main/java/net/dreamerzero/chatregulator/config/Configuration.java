@@ -12,6 +12,7 @@ import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
  * The configuration paths available in the plugin
  */
 public class Configuration {
+    private Configuration(){}
     private static MainConfig.Config config;
     private static Messages.Config messages;
     private static Blacklist.Config blacklist;
@@ -28,14 +29,10 @@ public class Configuration {
             .defaultOptions(opts -> opts
                 .shouldCopyDefaults(true)
                 .header(
-                "ChatRegulator | by 4drian3d\n"+
-                "To modify the plugin messages and to use the plugin in general,\n"+
-                "I recommend that you have a basic knowledge of MiniMessage○\n"+
-                "Guide: https://docs.adventure.kyori.net/minimessage.html#format\n"+
-                "Spanish Guide: https://gist.github.com/4drian3d/9ccce0ca1774285e38becb09b73728f3\n\n"+
-
-                "Check the function of each configuration option at\n"+
-                "https://github.com/4drian3d/ChatRegulator/wiki/Configuration\n")
+                    "ChatRegulator | by 4drian3d\n"+
+                    "Check the function of each configuration option at\n"+
+                    "https://github.com/4drian3d/ChatRegulator/wiki/Configuration\n"
+                )
             )
             .path(configPath)
             .build();
@@ -55,6 +52,13 @@ public class Configuration {
         final HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
             .defaultOptions(opts -> opts
                 .shouldCopyDefaults(true)
+                .header(
+                    "ChatRegulator | by 4drian3d\n"+
+                    "To modify the plugin messages and to use the plugin in general,\n"+
+                    "I recommend that you have a basic knowledge of MiniMessage○\n"+
+                    "Guide: https://docs.adventure.kyori.net/minimessage.html#format\n"+
+                    "Spanish Guide: https://gist.github.com/4drian3d/9ccce0ca1774285e38becb09b73728f3"
+                )
             )
             .path(messagesPath)
             .build();
@@ -74,6 +78,12 @@ public class Configuration {
         final HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
             .defaultOptions(opts -> opts
                 .shouldCopyDefaults(true)
+                .header(
+                    "ChatRegulator | by 4drian3d\n"+
+                    "Blacklist of Commands and Regular Expressions\n"+
+                    "To test each regular expression, use: \n"+
+                    "https://regex101.com/"
+                )
             )
             .path(messagesPath)
             .build();

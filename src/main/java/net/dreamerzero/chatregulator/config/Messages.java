@@ -3,23 +3,31 @@ package net.dreamerzero.chatregulator.config;
 import java.util.List;
 
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
+import org.spongepowered.configurate.objectmapping.meta.Comment;
 
 public class Messages {
     private Messages(){}
     @ConfigSerializable
     public static class Config{
+        @Comment("Configuration of command blacklist module messages")
         private CommandBlacklist blacklist = new CommandBlacklist();
 
+        @Comment("Configuration of regular violation module messages")
         private Infractions infractions = new Infractions();
 
+        @Comment("Configuration of flood module messages")
         private Flood flood = new Flood();
 
+        @Comment("Configuration of spam module messages")
         private Spam spam = new Spam();
 
+        @Comment("Configuration of unicode module messages")
         private Unicode unicode = new Unicode();
 
+        @Comment("Configuration of the messages of the /chatr clear command")
         private Clear clear_chat = new Clear();
 
+        @Comment("General Messages")
         private General general = new General();
 
         public Infractions getInfractionsMessages(){

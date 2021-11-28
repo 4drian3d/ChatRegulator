@@ -253,12 +253,16 @@ public class MainConfig {
 
     @ConfigSerializable
     public static class Spam{
+        @Comment("Enable the spam module")
         private boolean enabled = true;
 
+        @Comment("Sets the form of warning\nAvailable options: TITLE, ACTIONBAR, MESSAGE")
         private WarningType warning_type = WarningType.MESSAGE;
 
+        @Comment("Cooldown subcheck configuration")
         private Spam.Cooldown cooldown = new Spam.Cooldown();
 
+        @Comment("Commands to be executed in the flood module")
         private Spam.Commands commands = new Spam.Commands();
 
         public boolean enabled(){
@@ -279,10 +283,10 @@ public class MainConfig {
 
         @ConfigSerializable
         public static class Cooldown{
-            
+            @Comment("Enables the cooldown submodule")
             private boolean enabled = true;
 
-            
+            @Comment("Set the time limit between each message (in milliseconds)")
             private int limit = 2500;
 
             public boolean enabled(){
@@ -324,10 +328,13 @@ public class MainConfig {
 
     @ConfigSerializable
     public static class Unicode{
+        @Comment("Enable the Unicode Module")
         private boolean enabled = true;
 
+        @Comment("Sets the form of warning\nAvailable options: TITLE, ACTIONBAR, MESSAGE")
         private WarningType warning_type = WarningType.MESSAGE;
 
+        @Comment("Commands to be executed in the unicode module")
         private Unicode.Commands commands = new Unicode.Commands();
 
         public boolean enabled(){
