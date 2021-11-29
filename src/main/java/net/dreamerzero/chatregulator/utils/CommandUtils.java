@@ -58,16 +58,17 @@ public class CommandUtils {
 
     private void execute(Player infractor, InfractionPlayer iPlayer, CommandsConfig config, InfractionType type){
         if(config.executeCommand() && iPlayer.getViolations(type) % config.violationsRequired() == 0){
+            var currentServer = infractor.getCurrentServer();
             config.getCommandsToExecute().forEach(cmd -> {
                 String commandToSend = cmd.replace("<player>", infractor.getUsername());
-                var currentServer = infractor.getCurrentServer();
                 if(currentServer.isPresent()){
                     commandToSend = commandToSend
                         .replace("<server>", currentServer.get().getServerInfo().getName());
                 }
-                server.getCommandManager().executeAsync(server.getConsoleCommandSource(), commandToSend).thenAcceptAsync(status -> {
+                final String cmdfinal = commandToSend;
+                server.getCommandManager().executeAsync(server.getConsoleCommandSource(), cmdfinal).thenAcceptAsync(status -> {
                     if(!status.booleanValue()){
-                        Regulator.getInstance().getLogger().info("Error executing command");
+                        Regulator.getInstance().getLogger().warn("Error executing command {}", cmdfinal);
                     }
                 });
             });
