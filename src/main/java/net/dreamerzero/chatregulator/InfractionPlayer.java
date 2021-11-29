@@ -208,43 +208,20 @@ public class InfractionPlayer {
     }
 
     /**
-     * Get the amount of flood infractions the player already has.
-     * @return the flood infractions of the player
+     * Get the ammount of violations of any type
+     * @param type the violation type
+     * @return the count
      */
-    public int getFloodInfractions(){
-        return floodViolations;
-    }
-
-    /**
-     * Get the amount of regular infractions the player already has.
-     * @return the regular infractions of the player
-     */
-    public int getRegularInfractions(){
-        return regularViolations;
-    }
-
-    /**
-     * Get the amount of spam infractions the player already has.
-     * @return the spam infractions of the player
-     */
-    public int getSpamInfractions(){
-        return spamViolations;
-    }
-
-    /**
-     * Get the amount of commands blocked the player already executed.
-     * @return the commands blocked count executed by the player
-     */
-    public int getCommandInfractions(){
-        return commandViolations;
-    }
-
-    /**
-     * Get the amount of unicode infractions the player already has.
-     * @return the unicode infractions of the player
-     */
-    public int getUnicodeInfractions(){
-        return unicodeViolations;
+    public int getViolations(InfractionType type){
+        switch(type){
+            case SPAM: return spamViolations;
+            case REGULAR: return regularViolations;
+            case FLOOD: return floodViolations;
+            case BCOMMAND: return commandViolations;
+            case UNICODE: return unicodeViolations;
+            case NONE: break;
+        }
+        return 0;
     }
 
     /**

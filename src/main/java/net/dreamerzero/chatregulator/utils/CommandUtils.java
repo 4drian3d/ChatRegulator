@@ -8,6 +8,7 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.dreamerzero.chatregulator.config.Configuration;
 import net.dreamerzero.chatregulator.config.MainConfig;
+import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 
 /**
  * Utilities for executing commands
@@ -30,54 +31,42 @@ public class CommandUtils {
      * This will check if it is possible to execute the
      * configured commands when it detects that the limit
      * of a violation has been exceeded.
-     * @param type the {@link TypeUtils.InfractionType}
+     * @param type the {@link InfractionType}
      * @param infractorPlayer the {@link InfractionPlayer} involved
      */
-    public void executeCommand(TypeUtils.InfractionType type, InfractionPlayer infractorPlayer){
+    public void executeCommand(InfractionType type, InfractionPlayer infractorPlayer){
         Player infractor = infractorPlayer.getPlayer().orElseThrow();
+        //TODO: Simplify this, getCommandsConfig, executecommand and violationRequired are common
         switch(type){
             case REGULAR:
                 var iconfig = config.getInfractionsConfig().getCommandsConfig();
-                if(iconfig.executeCommand() &&
-                    infractorPlayer.getRegularInfractions() % iconfig.violationsRequired() == 0){
-
-                        iconfig.getCommandsToExecute().forEach(command -> {
-                        String commandToSend = command
-                            .replace("<player>", infractorPlayer.username())
-                            .replace("<server>", infractor.getCurrentServer().get().getServerInfo().getName());
-                        server.getCommandManager().executeAsync(server.getConsoleCommandSource(), commandToSend);
-                    });
+                if(iconfig.executeCommand() && infractorPlayer.getViolations(type) % iconfig.violationsRequired() == 0){
+                    iconfig.getCommandsToExecute().forEach(command -> execute(command, infractor));
                 }
                 break;
             case FLOOD:
-                var fconfig = config.getFloodConfig().getCommandsConfig();
-                if(fconfig.executeCommand() &&
-                    fconfig.violationsRequired() % infractorPlayer.getFloodInfractions() == 0){
-
-                        fconfig.getCommandsToExecute().forEach(command -> execute(command, infractor));
+                var fConfig = config.getFloodConfig().getCommandsConfig();
+                if(fConfig.executeCommand() && infractorPlayer.getViolations(type) % fConfig.violationsRequired() == 0){
+                    fConfig.getCommandsToExecute().forEach(command -> execute(command, infractor));
                 }
                 break;
             case SPAM:
-                var sconfig = config.getSpamConfig().getCommandsConfig();
-                if(sconfig.executeCommand() && infractorPlayer.getSpamInfractions() % sconfig.violationsRequired() == 0) {
-
-                    sconfig.getCommandsToExecute().forEach(command -> execute(command, infractor));
+                var sConfig = config.getSpamConfig().getCommandsConfig();
+                if(sConfig.executeCommand() && infractorPlayer.getViolations(type) % sConfig.violationsRequired() == 0) {
+                    sConfig.getCommandsToExecute().forEach(command -> execute(command, infractor));
                 }
                 break;
             case BCOMMAND:
-                var cconfig = config.getCommandBlacklistConfig().getCommandsConfig();
-                if(cconfig.executeCommand() &&
-                    infractorPlayer.getRegularInfractions() % cconfig.violationsRequired() == 0){
+                var cConfig = config.getCommandBlacklistConfig().getCommandsConfig();
+                if(cConfig.executeCommand() && infractorPlayer.getViolations(type) % cConfig.violationsRequired() == 0){
 
-                    cconfig.getCommandsToExecute().forEach(command -> execute(command, infractor));
+                    cConfig.getCommandsToExecute().forEach(command -> execute(command, infractor));
                 }
                 break;
             case UNICODE:
-                var uconfig = config.getUnicodeConfig().getCommandsConfig();
-                if(uconfig.executeCommand() &&
-                    infractorPlayer.getUnicodeInfractions() % uconfig.violationsRequired() == 0){
-
-                    uconfig.getCommandsToExecute().forEach(command -> execute(command, infractor));
+                var uConfig = config.getUnicodeConfig().getCommandsConfig();
+                if(uConfig.executeCommand() && infractorPlayer.getViolations(type) % uConfig.violationsRequired() == 0){
+                    uConfig.getCommandsToExecute().forEach(command -> execute(command, infractor));
                 }
                 break;
             case NONE: return;
