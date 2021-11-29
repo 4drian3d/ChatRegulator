@@ -1,13 +1,13 @@
 package net.dreamerzero.chatregulator.utils;
 
-import java.util.Set;
-
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 
 import net.dreamerzero.chatregulator.InfractionPlayer;
+import net.dreamerzero.chatregulator.Regulator;
 import net.dreamerzero.chatregulator.config.Configuration;
 import net.dreamerzero.chatregulator.config.MainConfig;
+import net.dreamerzero.chatregulator.config.MainConfig.CommandsConfig;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 
 /**
@@ -36,51 +36,42 @@ public class CommandUtils {
      */
     public void executeCommand(InfractionType type, InfractionPlayer infractorPlayer){
         Player infractor = infractorPlayer.getPlayer().orElseThrow();
-        //TODO: Simplify this, getCommandsConfig, executecommand and violationRequired are common
         switch(type){
             case REGULAR:
-                var iconfig = config.getInfractionsConfig().getCommandsConfig();
-                if(iconfig.executeCommand() && infractorPlayer.getViolations(type) % iconfig.violationsRequired() == 0){
-                    iconfig.getCommandsToExecute().forEach(command -> execute(command, infractor));
-                }
+                execute(infractor, infractorPlayer, config.getInfractionsConfig().getCommandsConfig(), type);
                 break;
             case FLOOD:
-                var fConfig = config.getFloodConfig().getCommandsConfig();
-                if(fConfig.executeCommand() && infractorPlayer.getViolations(type) % fConfig.violationsRequired() == 0){
-                    fConfig.getCommandsToExecute().forEach(command -> execute(command, infractor));
-                }
+                execute(infractor, infractorPlayer, config.getFloodConfig().getCommandsConfig(), type);
                 break;
             case SPAM:
-                var sConfig = config.getSpamConfig().getCommandsConfig();
-                if(sConfig.executeCommand() && infractorPlayer.getViolations(type) % sConfig.violationsRequired() == 0) {
-                    sConfig.getCommandsToExecute().forEach(command -> execute(command, infractor));
-                }
+                execute(infractor, infractorPlayer, config.getSpamConfig().getCommandsConfig(), type);
                 break;
             case BCOMMAND:
-                var cConfig = config.getCommandBlacklistConfig().getCommandsConfig();
-                if(cConfig.executeCommand() && infractorPlayer.getViolations(type) % cConfig.violationsRequired() == 0){
-
-                    cConfig.getCommandsToExecute().forEach(command -> execute(command, infractor));
-                }
+                execute(infractor, infractorPlayer, config.getCommandBlacklistConfig().getCommandsConfig(), type);
                 break;
             case UNICODE:
-                var uConfig = config.getUnicodeConfig().getCommandsConfig();
-                if(uConfig.executeCommand() && infractorPlayer.getViolations(type) % uConfig.violationsRequired() == 0){
-                    uConfig.getCommandsToExecute().forEach(command -> execute(command, infractor));
-                }
+                execute(infractor, infractorPlayer, config.getUnicodeConfig().getCommandsConfig(), type);
                 break;
             case NONE: return;
         }
     }
 
-    private void execute(String command, Player infractor){
-        String commandToSend = command.replace("<player>", infractor.getUsername());
-        var currentServer = infractor.getCurrentServer();
-        if(currentServer.isPresent()){
-            commandToSend = commandToSend
-                .replace("<server>", currentServer.get().getServerInfo().getName());
+    private void execute(Player infractor, InfractionPlayer iPlayer, CommandsConfig config, InfractionType type){
+        if(config.executeCommand() && iPlayer.getViolations(type) % config.violationsRequired() == 0){
+            config.getCommandsToExecute().forEach(cmd -> {
+                String commandToSend = cmd.replace("<player>", infractor.getUsername());
+                var currentServer = infractor.getCurrentServer();
+                if(currentServer.isPresent()){
+                    commandToSend = commandToSend
+                        .replace("<server>", currentServer.get().getServerInfo().getName());
+                }
+                server.getCommandManager().executeAsync(server.getConsoleCommandSource(), commandToSend).thenAcceptAsync(status -> {
+                    if(!status.booleanValue()){
+                        Regulator.getInstance().getLogger().info("Error executing command");
+                    }
+                });
+            });
         }
-        server.getCommandManager().executeAsync(server.getConsoleCommandSource(), commandToSend);
     }
 
     /**
@@ -89,8 +80,6 @@ public class CommandUtils {
      * @return if the command is to be checked
      */
     public static boolean isCommand(String command){
-        Set<String> commandsChecked = Configuration.getBlacklist().getBlockedCommands();
-
-        return commandsChecked.stream().anyMatch(command::contains);
+        return Configuration.getBlacklist().getBlockedCommands().stream().anyMatch(command::contains);
     }
 }

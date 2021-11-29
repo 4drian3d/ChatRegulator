@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
+import org.spongepowered.configurate.objectmapping.meta.Setting;
 
 import net.dreamerzero.chatregulator.utils.TypeUtils.ControlType;
 import net.dreamerzero.chatregulator.utils.TypeUtils.WarningType;
@@ -13,6 +14,7 @@ public class MainConfig {
     @ConfigSerializable
     public static class Config {
         @Comment("Command blacklist module")
+        @Setting(value = "command-blacklist")
         private CommandBlacklist blacklist = new CommandBlacklist();
 
         @Comment("Regular violation module")
@@ -68,7 +70,8 @@ public class MainConfig {
         private boolean enabled = true;
 
         @Comment("Sets the form of warning\nAvailable options: TITLE, ACTIONBAR, MESSAGE")
-        private WarningType warning_type = WarningType.MESSAGE;
+        @Setting(value = "warning-type")
+        private WarningType warningType = WarningType.MESSAGE;
 
         @Comment("Commands to be executed in the command blacklist module")
         private CommandBlacklist.Commands commands = new Commands();
@@ -78,7 +81,7 @@ public class MainConfig {
         }
 
         public WarningType getWarningType(){
-            return this.warning_type;
+            return this.warningType;
         }
 
         public CommandBlacklist.Commands getCommandsConfig(){
@@ -86,31 +89,7 @@ public class MainConfig {
         }
 
         @ConfigSerializable
-        public static class Commands{
-            @Comment("Enable submodule")
-            private boolean execute_commands = false;
-
-            @Comment("Violations required to execute the command")
-            private int violations_required = 2;
-
-            @Comment("Commands to execute")
-            private Set<String> commands_to_execute = Set.of(
-                "mute <player> 1m You have been muted for executing blocked commands",
-                "example command"
-            );
-
-            public boolean executeCommand(){
-                return this.execute_commands;
-            }
-
-            public int violationsRequired(){
-                return this.violations_required;
-            }
-
-            public Set<String> getCommandsToExecute(){
-                return this.commands_to_execute;
-            }
-        }
+        public static class Commands extends CommandsConfig{}
     }
 
     @ConfigSerializable
@@ -119,13 +98,16 @@ public class MainConfig {
         private boolean enabled = true;
 
         @Comment("Sets the form of warning\nAvailable options: TITLE, ACTIONBAR, MESSAGE")
-        private WarningType warning_type = WarningType.MESSAGE;
+        @Setting(value = "warning_type")
+        private WarningType warningType = WarningType.MESSAGE;
 
         @Comment("Sets the control format\nAvailable options: BLOCK, REPLACE")
-        private ControlType control_type = ControlType.BLOCK;
+        @Setting(value = "control-type")
+        private ControlType controlType = ControlType.BLOCK;
 
         @Comment("Specify in which commands you want the violations to be detected\nI recommend you to put chat commands, for example: /tell")
-        private Set<String> commands_checked = Set.of(
+        @Setting(value = "commands-checked")
+        private Set<String> commandsChecked = Set.of(
             "tell",
             "etell",
             "msg",
@@ -143,15 +125,15 @@ public class MainConfig {
         }
 
         public WarningType getWarningType(){
-            return this.warning_type;
+            return this.warningType;
         }
 
         public ControlType getControlType(){
-            return this.control_type;
+            return this.controlType;
         }
 
         public Set<String> getCommandsChecked(){
-            return this.commands_checked;
+            return this.commandsChecked;
         }
 
         public Infractions.Commands getCommandsConfig(){
@@ -159,31 +141,7 @@ public class MainConfig {
         }
 
         @ConfigSerializable
-        public static class Commands{
-            @Comment("Enable submodule")
-            private boolean execute_commands = false;
-
-            @Comment("Violations required to execute the command")
-            private int violations_required = 3;
-
-            @Comment("Commands to execute")
-            private Set<String> commands_to_execute = Set.of(
-                "mute <player> 2m You have been muted for swearing on the server <server>",
-                "examplee command"
-            );
-
-            public boolean executeCommand(){
-                return this.execute_commands;
-            }
-
-            public int violationsRequired(){
-                return this.violations_required;
-            }
-
-            public Set<String> getCommandsToExecute(){
-                return this.commands_to_execute;
-            }
-        }
+        public static class Commands extends CommandsConfig{}
     }
 
     @ConfigSerializable
@@ -192,10 +150,12 @@ public class MainConfig {
         private boolean enabled = true;
 
         @Comment("Sets the form of warning\nAvailable options: TITLE, ACTIONBAR, MESSAGE")
-        private WarningType warning_type = WarningType.MESSAGE;
+        @Setting(value = "warning-type")
+        private WarningType warningType = WarningType.MESSAGE;
 
         @Comment("Sets the control format\nAvailable options: BLOCK, REPLACE")
-        private ControlType control_type = ControlType.BLOCK;
+        @Setting(value = "control-type")
+        private ControlType controlType = ControlType.BLOCK;
 
         @Comment("Sets the maximum limit of repeated characters for a word not to be considered as Flood")
         private int limit = 5;
@@ -208,11 +168,11 @@ public class MainConfig {
         }
 
         public WarningType getWarningType(){
-            return this.warning_type;
+            return this.warningType;
         }
 
         public ControlType getControlType(){
-            return this.control_type;
+            return this.controlType;
         }
 
         public int getLimit(){
@@ -224,31 +184,7 @@ public class MainConfig {
         }
 
         @ConfigSerializable
-        public static class Commands{
-            @Comment("Enable submodule")
-            private boolean execute_commands = false;
-
-            @Comment("Violations required to execute the command")
-            private int violations_required = 4;
-
-            @Comment("Commands to execute")
-            private Set<String> commands_to_execute = Set.of(
-                "mute <player> 1m You have been muted for flooding the chat on the server <server>",
-                "examplee command"
-            );
-
-            public boolean executeCommand(){
-                return this.execute_commands;
-            }
-
-            public int violationsRequired(){
-                return this.violations_required;
-            }
-
-            public Set<String> getCommandsToExecute(){
-                return this.commands_to_execute;
-            }
-        }
+        public static class Commands extends CommandsConfig{}
     }
 
     @ConfigSerializable
@@ -257,7 +193,8 @@ public class MainConfig {
         private boolean enabled = true;
 
         @Comment("Sets the form of warning\nAvailable options: TITLE, ACTIONBAR, MESSAGE")
-        private WarningType warning_type = WarningType.MESSAGE;
+        @Setting(value = "warning-type")
+        private WarningType warningType = WarningType.MESSAGE;
 
         @Comment("Cooldown subcheck configuration")
         private Spam.Cooldown cooldown = new Spam.Cooldown();
@@ -270,7 +207,7 @@ public class MainConfig {
         }
 
         public WarningType getWarningType(){
-            return this.warning_type;
+            return this.warningType;
         }
 
         public Spam.Cooldown getCooldownConfig(){
@@ -299,31 +236,7 @@ public class MainConfig {
         }
 
         @ConfigSerializable
-        public static class Commands{
-            @Comment("Enable submodule")
-            private boolean execute_commands = false;
-
-            @Comment("Violations required to execute the command")
-            private int violations_required = 4;
-
-            @Comment("Commands to execute")
-            private Set<String> commands_to_execute = Set.of(
-                "mute <player> 1m You have been muted for spam on the server <server>",
-                "examplee spam command"
-            );
-
-            public boolean executeCommand(){
-                return this.execute_commands;
-            }
-
-            public int violationsRequired(){
-                return this.violations_required;
-            }
-
-            public Set<String> getCommandsToExecute(){
-                return this.commands_to_execute;
-            }
-        }
+        public static class Commands extends CommandsConfig{}
     }
 
     @ConfigSerializable
@@ -332,7 +245,8 @@ public class MainConfig {
         private boolean enabled = true;
 
         @Comment("Sets the form of warning\nAvailable options: TITLE, ACTIONBAR, MESSAGE")
-        private WarningType warning_type = WarningType.MESSAGE;
+        @Setting(value = "warning-type")
+        private WarningType warningType = WarningType.MESSAGE;
 
         @Comment("Commands to be executed in the unicode module")
         private Unicode.Commands commands = new Unicode.Commands();
@@ -342,7 +256,7 @@ public class MainConfig {
         }
 
         public WarningType getWarningType(){
-            return this.warning_type;
+            return this.warningType;
         }
 
         public Unicode.Commands getCommandsConfig(){
@@ -350,31 +264,7 @@ public class MainConfig {
         }
 
         @ConfigSerializable
-        public static class Commands{
-            @Comment("Enable submodule")
-            private boolean execute_commands = false;
-
-            @Comment("Violations required to execute the command")
-            private int violations_required = 2;
-
-            @Comment("Commands to execute")
-            private Set<String> commands_to_execute = Set.of(
-                "mute <player> 1m You have been muted for use symbols on the server <server>",
-                "examplee unicode command"
-            );
-
-            public boolean executeCommand(){
-                return this.execute_commands;
-            }
-
-            public int violationsRequired(){
-                return this.violations_required;
-            }
-
-            public Set<String> getCommandsToExecute(){
-                return this.commands_to_execute;
-            }
-        }
+        public static class Commands extends CommandsConfig{}
     }
 
     @ConfigSerializable
@@ -383,38 +273,72 @@ public class MainConfig {
         private boolean enabled = false;
 
         @Comment("Set the first letter of a sentence in uppercase")
-        private boolean first_letter_uppercase = true;
+        @Setting(value = "first-letter-uppercase")
+        private boolean firstLetterUppercase = true;
 
         @Comment("Adds a final dot in each sentence")
-        private boolean final_dot = true;
+        @Setting(value = "final-dot")
+        private boolean finalDot = true;
 
         public boolean enabled(){
             return this.enabled;
         }
 
         public boolean setFirstLetterUppercase(){
-            return this.first_letter_uppercase;
+            return this.firstLetterUppercase;
         }
 
         public boolean setFinalDot(){
-            return this.final_dot;
+            return this.finalDot;
         }
     }
 
     @ConfigSerializable
     public static class General{
         @Comment("Set the maximum time in which a user's violations will be saved after the user leaves your server")
-        private long delete_users_after = 3000;
+        @Setting(value = "delete-users-after")
+        private long deleteUsersAfter = 3000;
 
         @Comment("Limit the ammount of users showed on autocompletion")
-        private int limit_tab_complete = 40;
+        @Setting(value = "tab-complete-limit")
+        private int limitTabComplete = 40;
 
         public long deleteUsersTime(){
-            return this.delete_users_after;
+            return this.deleteUsersAfter;
         }
 
         public int tabCompleteLimit(){
-            return this.limit_tab_complete;
+            return this.limitTabComplete;
+        }
+    }
+
+    @ConfigSerializable
+    public static class CommandsConfig{
+        @Comment("Enable submodule")
+        @Setting(value = "execute-commands")
+        private boolean executeCommands = false;
+
+        @Comment("Violations required to execute the command")
+        @Setting(value = "violations-required")
+        private int violationsRequired = 2;
+
+        @Comment("Commands to execute")
+        @Setting(value = "commands-to-execute")
+        private Set<String> commandsToExecute = Set.of(
+                "mute <player> 1m You have been muted",
+                "example command"
+        );
+
+        public boolean executeCommand(){
+            return this.executeCommands;
+        }
+
+        public int violationsRequired(){
+            return this.violationsRequired;
+        }
+
+        public Set<String> getCommandsToExecute(){
+            return this.commandsToExecute;
         }
     }
 }
