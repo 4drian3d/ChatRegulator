@@ -39,7 +39,7 @@ public class InfractionTest {
         String original = "aaa f4ck aaa";
         iCheck.check(original);
 
-        String replaced = iCheck.replaceInfraction();
+        String replaced = iCheck.replaceInfractions();
         String expected = "aaa *** aaa";
 
         assertEquals(expected, replaced);
@@ -55,5 +55,18 @@ public class InfractionTest {
         iCheck.check(original);
 
         assertTrue(iCheck.isInfraction());
+    }
+
+    @Test
+    @DisplayName("Multi Replace")
+    void replaceMultiple(){
+        InfractionCheck iCheck = new InfractionCheck();
+
+        String original = "D1cK sh1t f4ck";
+        String expected = "*** *** ***";
+
+        iCheck.check(original);
+
+        assertEquals(expected, iCheck.replaceInfractions());
     }
 }

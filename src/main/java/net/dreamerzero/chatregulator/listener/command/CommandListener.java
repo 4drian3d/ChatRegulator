@@ -98,12 +98,12 @@ public class CommandListener {
 
         FloodCheck fCheck = new FloodCheck();
         fCheck.check(command);
-        if(Configuration.getConfig().getFloodConfig().enabled() &&
-            !player.hasPermission("chatregulator.bypass.flood") &&
-            fCheck.isInfraction()
+        if(config.getFloodConfig().enabled()
+            && !player.hasPermission("chatregulator.bypass.flood")
+            && fCheck.isInfraction()
             && !callCommandViolationEvent(infractionPlayer, command, InfractionType.FLOOD, fCheck)) {
 
-                event.setResult(Configuration.getConfig().getFloodConfig().getControlType() == ControlType.BLOCK ?
+                event.setResult(config.getFloodConfig().getControlType() == ControlType.BLOCK ?
                     CommandResult.denied() :
                     CommandResult.command(fCheck.replaceInfraction()));
 
@@ -112,23 +112,23 @@ public class CommandListener {
 
         InfractionCheck iCheck = new InfractionCheck();
         iCheck.check(command);
-        if(config.getInfractionsConfig().enabled() &&
-            !player.hasPermission("chatregulator.bypass.infractions") &&
-            iCheck.isInfraction() &&
-            !callCommandViolationEvent(infractionPlayer, command, InfractionType.REGULAR, iCheck)) {
+        if(config.getInfractionsConfig().enabled()
+            && !player.hasPermission("chatregulator.bypass.infractions")
+            && iCheck.isInfraction()
+            && !callCommandViolationEvent(infractionPlayer, command, InfractionType.REGULAR, iCheck)) {
 
                 event.setResult(config.getFloodConfig().getControlType() == ControlType.BLOCK ?
                     CommandResult.denied() :
-                    CommandResult.command(iCheck.replaceInfraction()));
+                    CommandResult.command(iCheck.replaceInfractions()));
                 return;
         }
 
         SpamCheck sUtils = new SpamCheck(infractionPlayer, SourceType.COMMAND);
         sUtils.check(command);
-        if(config.getFloodConfig().enabled() &&
-            !player.hasPermission("chatregulator.bypass.spam") &&
-            sUtils.isInfraction() &&
-            (config.getSpamConfig().getCooldownConfig().enabled() && infractionPlayer.getTimeSinceLastCommand() < config.getSpamConfig().getCooldownConfig().limit()
+        if(config.getSpamConfig().enabled()
+            && !player.hasPermission("chatregulator.bypass.spam")
+            && sUtils.isInfraction()
+            && (config.getSpamConfig().getCooldownConfig().enabled() && infractionPlayer.getTimeSinceLastCommand() < config.getSpamConfig().getCooldownConfig().limit()
             || !config.getSpamConfig().getCooldownConfig().enabled())
             && !callCommandViolationEvent(infractionPlayer, command, InfractionType.SPAM, sUtils)) {
 
