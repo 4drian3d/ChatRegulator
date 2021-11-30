@@ -56,4 +56,17 @@ public class InfractionTest {
 
         assertTrue(iCheck.isInfraction());
     }
+
+    @Test
+    @DisplayName("Multi Replace")
+    void replaceMultiple(){
+        InfractionCheck iCheck = new InfractionCheck();
+
+        String original = "D1cK sh1t f4ck";
+        String expected = "* * *";
+
+        iCheck.check(original);
+
+        assertEquals(expected, iCheck.replaceInfractionss());
+    }
 }
