@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import com.google.inject.Inject;
@@ -25,6 +26,7 @@ import net.dreamerzero.chatregulator.listener.command.CommandListener;
 import net.dreamerzero.chatregulator.listener.list.JoinListener;
 import net.dreamerzero.chatregulator.listener.list.LeaveListener;
 import net.dreamerzero.chatregulator.listener.plugin.PluginListener;
+import net.dreamerzero.chatregulator.listener.plugin.ReloadListener;
 import net.dreamerzero.chatregulator.utils.Constants;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
@@ -57,7 +59,7 @@ public class Regulator {
     /**
      * InfractionPlayer list
      */
-    protected static Map<UUID, InfractionPlayer> infractionPlayers = new HashMap<>();
+    protected static Map<UUID, InfractionPlayer> infractionPlayers = new ConcurrentHashMap<>();
 
     /**
      * Constructor for ChatRegulator Plugin
@@ -89,6 +91,7 @@ public class Regulator {
         server.getEventManager().register(this, new CommandListener(server));
         server.getEventManager().register(this, new JoinListener(infractionPlayers));
         server.getEventManager().register(this, new LeaveListener());
+        server.getEventManager().register(this, new ReloadListener(path, logger));
 
         CommandMeta regulatorMeta = server.getCommandManager().metaBuilder("chatregulator").aliases("chatr", "cregulator").build();
         server.getCommandManager().register(regulatorMeta, new ChatRegulatorCommand(infractionPlayers, server));
