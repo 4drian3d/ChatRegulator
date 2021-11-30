@@ -8,6 +8,8 @@ import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 
+import net.dreamerzero.chatregulator.modules.checks.FloodCheck;
+
 /**
  * The configuration paths available in the plugin
  */
@@ -21,6 +23,8 @@ public class Configuration {
         loadMainConfig(path, logger);
         loadMessagesConfig(path, logger);
         loadBlacklistConfig(path, logger);
+
+        FloodCheck.setFloodRegex();
     }
 
     private static void loadMainConfig(Path path, Logger logger){

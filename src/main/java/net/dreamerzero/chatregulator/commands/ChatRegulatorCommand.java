@@ -13,6 +13,7 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 
 import net.dreamerzero.chatregulator.InfractionPlayer;
+import net.dreamerzero.chatregulator.Regulator;
 import net.dreamerzero.chatregulator.config.ConfigManager;
 import net.dreamerzero.chatregulator.config.Configuration;
 import net.dreamerzero.chatregulator.config.Messages;
@@ -62,6 +63,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
             case "player": parsePlayerCommand(args, source, mm); break;
             case "reset": parseResetCommand(args, source, mm); break;
             case "clear": parseClearCommand(args, source, mm); break;
+            case "reload": parseReloadCommand(source, mm); break;
             default: source.sendMessage(mm.deserialize(messages.getGeneralMessages().getUnknowMessage(), TemplateResolver.templates(Template.template("args", args[0])))); break;
         }
     }
@@ -217,6 +219,11 @@ public class ChatRegulatorCommand implements SimpleCommand {
             Audience.audience(server.getAllPlayers()).sendMessage(GeneralUtils.spacesComponent);
             source.sendMessage(mm.deserialize(clearmessages.getGlobalMessage()));
         }
+    }
+
+    private void parseReloadCommand(Audience sender, MiniMessage mm){
+        sender.sendMessage(mm.deserialize(messages.getGeneralMessages().getReloadMessage()));
+        Regulator.getInstance().reloadConfig();
     }
 
     @Override

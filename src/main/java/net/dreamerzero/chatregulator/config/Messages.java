@@ -7,6 +7,7 @@ import org.spongepowered.configurate.objectmapping.meta.Comment;
 
 public class Messages {
     private Messages(){}
+    //TODO: Add @Setting(value = "path name")
     @ConfigSerializable
     public static class Config{
         @Comment("Configuration of command blacklist module messages")
@@ -218,6 +219,8 @@ public class Messages {
 
         private String player_not_found = "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <white>The player <aqua><player></aqua> has not joined the server yet</white>";
 
+        private String reloadMessage = "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <aqua>Reloading Configuration";
+        
         private General.Help help_messages = new General.Help();
 
         public List<String> getStatsFormat(){
@@ -246,6 +249,10 @@ public class Messages {
 
         public String playerNotFound(){
             return this.player_not_found;
+        }
+
+        public String getReloadMessage(){
+            return this.reloadMessage;
         }
 
         public General.Help getHelpMessages(){

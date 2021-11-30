@@ -31,7 +31,7 @@ dependencies {
 }
 
 group = "net.dreamerzero.chatregulator"
-version = "1.5.0"
+version = "2.0.0"
 description = "A Chat regulator for you Velocity network"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
