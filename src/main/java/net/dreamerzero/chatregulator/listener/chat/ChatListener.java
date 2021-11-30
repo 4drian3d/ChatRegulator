@@ -82,28 +82,28 @@ public class ChatListener {
                 return;
         }
 
-        InfractionCheck iUtils = new InfractionCheck();
-        iUtils.check(message);
-        if(config.getInfractionsConfig().enabled() &&
-            !player.hasPermission("chatregulator.bypass.infractions") &&
-            iUtils.isInfraction() &&
-            !callChatViolationEvent(infractionPlayer, message, InfractionType.REGULAR, iUtils)) {
+        InfractionCheck iCheck = new InfractionCheck();
+        iCheck.check(message);
+        if(config.getInfractionsConfig().enabled()
+            && !player.hasPermission("chatregulator.bypass.infractions")
+            && iCheck.isInfraction()
+            && !callChatViolationEvent(infractionPlayer, message, InfractionType.REGULAR, iCheck)) {
 
                 event.setResult(config.getInfractionsConfig().getControlType() == ControlType.BLOCK ?
                     ChatResult.denied() :
-                    ChatResult.message(iUtils.replaceInfraction()));
+                    ChatResult.message(iCheck.replaceInfractions()));
                 return;
         }
 
-        SpamCheck sUtils = new SpamCheck(infractionPlayer, SourceType.CHAT);
-        sUtils.check(message);
-        if(config.getSpamConfig().enabled() &&
-            !player.hasPermission("chatregulator.bypass.spam") &&
-            sUtils.isInfraction() &&
-            (config.getSpamConfig().getCooldownConfig().enabled()
+        SpamCheck sCheck = new SpamCheck(infractionPlayer, SourceType.CHAT);
+        sCheck.check(message);
+        if(config.getSpamConfig().enabled()
+            && !player.hasPermission("chatregulator.bypass.spam")
+            && sCheck.isInfraction()
+            && (config.getSpamConfig().getCooldownConfig().enabled()
                 && infractionPlayer.getTimeSinceLastMessage() < config.getSpamConfig().getCooldownConfig().limit()
             || !config.getSpamConfig().getCooldownConfig().enabled())
-            && !callChatViolationEvent(infractionPlayer, message, InfractionType.SPAM, sUtils)) {
+            && !callChatViolationEvent(infractionPlayer, message, InfractionType.SPAM, sCheck)) {
 
                 event.setResult(ChatResult.denied());
                 return;

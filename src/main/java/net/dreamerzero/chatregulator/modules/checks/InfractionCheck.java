@@ -36,15 +36,11 @@ public class InfractionCheck extends AbstractCheck {
         }
     }
 
-    public String replaceInfractionss(){
+    public String replaceInfractions(){
         String original = string;
-        for(var pattern : patterns){
-            original = pattern.matcher(original).replaceAll("*");
+        for(Pattern pattern : patterns){
+            original = pattern.matcher(original).replaceAll("***");
         }
         return original;
-    }
-
-    public String replaceInfraction(){
-        return super.matcher.replaceAll("***");
     }
 }
