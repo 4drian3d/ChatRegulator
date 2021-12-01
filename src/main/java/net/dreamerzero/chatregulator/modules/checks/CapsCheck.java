@@ -1,5 +1,7 @@
 package net.dreamerzero.chatregulator.modules.checks;
 
+import java.util.Locale;
+
 import net.dreamerzero.chatregulator.config.Configuration;
 
 public class CapsCheck extends AbstractCheck{
@@ -20,6 +22,6 @@ public class CapsCheck extends AbstractCheck{
     }
 
     public String replaceInfraction(){
-        return super.string.toLowerCase();
+        return super.string.toLowerCase(Locale.ROOT);
     }
 }
