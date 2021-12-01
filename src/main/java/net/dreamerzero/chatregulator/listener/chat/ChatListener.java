@@ -59,54 +59,48 @@ public class ChatListener {
         String message = event.getMessage();
         InfractionPlayer infractionPlayer = InfractionPlayer.get(player);
 
-        UnicodeCheck uCheck = new UnicodeCheck();
-        uCheck.check(message);
-        if(config.getUnicodeConfig().enabled() 
-            && !player.hasPermission("chatregulator.bypass.unicode")
-            && uCheck.isInfraction()
-            && !callChatViolationEvent(infractionPlayer, message, InfractionType.UNICODE, uCheck)){
+        if(config.getUnicodeConfig().enabled() && !player.hasPermission("chatregulator.bypass.unicode")){
+            UnicodeCheck uCheck = new UnicodeCheck();
+            uCheck.check(message);
+            if(uCheck.isInfraction() && !callChatViolationEvent(infractionPlayer, message, InfractionType.UNICODE, uCheck)){
                 event.setResult(ChatResult.denied());
                 return;
+            }
         }
 
-        FloodCheck fCheck = new FloodCheck();
-        fCheck.check(message);
-        if(config.getFloodConfig().enabled()
-            && !player.hasPermission("chatregulator.bypass.flood")
-            && fCheck.isInfraction()
-            && !callChatViolationEvent(infractionPlayer, message, InfractionType.FLOOD, fCheck)) {
-
+        if(config.getFloodConfig().enabled() && !player.hasPermission("chatregulator.bypass.flood")){
+            FloodCheck fCheck = new FloodCheck();
+            fCheck.check(message);
+            if(fCheck.isInfraction() && !callChatViolationEvent(infractionPlayer, message, InfractionType.FLOOD, fCheck)) {
                 event.setResult(config.getFloodConfig().getControlType() == ControlType.BLOCK ?
                     ChatResult.denied() :
                     ChatResult.message(fCheck.replaceInfraction()));
                 return;
+            }
         }
 
-        InfractionCheck iCheck = new InfractionCheck();
-        iCheck.check(message);
-        if(config.getInfractionsConfig().enabled()
-            && !player.hasPermission("chatregulator.bypass.infractions")
-            && iCheck.isInfraction()
-            && !callChatViolationEvent(infractionPlayer, message, InfractionType.REGULAR, iCheck)) {
-
+        if(config.getInfractionsConfig().enabled() && !player.hasPermission("chatregulator.bypass.infractions")){
+            InfractionCheck iCheck = new InfractionCheck();
+            iCheck.check(message);
+            if(iCheck.isInfraction() && !callChatViolationEvent(infractionPlayer, message, InfractionType.REGULAR, iCheck)) {
                 event.setResult(config.getInfractionsConfig().getControlType() == ControlType.BLOCK ?
                     ChatResult.denied() :
                     ChatResult.message(iCheck.replaceInfractions()));
                 return;
+            }
         }
 
-        SpamCheck sCheck = new SpamCheck(infractionPlayer, SourceType.CHAT);
-        sCheck.check(message);
-        if(config.getSpamConfig().enabled()
-            && !player.hasPermission("chatregulator.bypass.spam")
-            && sCheck.isInfraction()
-            && (config.getSpamConfig().getCooldownConfig().enabled()
-                && infractionPlayer.getTimeSinceLastMessage() < config.getSpamConfig().getCooldownConfig().limit()
-            || !config.getSpamConfig().getCooldownConfig().enabled())
-            && !callChatViolationEvent(infractionPlayer, message, InfractionType.SPAM, sCheck)) {
+        if(config.getSpamConfig().enabled() && !player.hasPermission("chatregulator.bypass.spam")){
+            SpamCheck sCheck = new SpamCheck(infractionPlayer, SourceType.CHAT);
+            sCheck.check(message);
+            if(sCheck.isInfraction() && (config.getSpamConfig().getCooldownConfig().enabled()
+                    && infractionPlayer.getTimeSinceLastMessage() < config.getSpamConfig().getCooldownConfig().limit()
+                    || !config.getSpamConfig().getCooldownConfig().enabled())
+                && !callChatViolationEvent(infractionPlayer, message, InfractionType.SPAM, sCheck)) {
 
-                event.setResult(ChatResult.denied());
-                return;
+                    event.setResult(ChatResult.denied());
+                    return;
+            }
         }
 
         if(config.getFormatConfig().enabled()){

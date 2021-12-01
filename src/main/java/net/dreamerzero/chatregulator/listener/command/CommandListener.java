@@ -75,65 +75,58 @@ public class CommandListener {
         Player player = (Player)event.getCommandSource();
         InfractionPlayer infractionPlayer = InfractionPlayer.get(player);
 
-        CommandCheck cCheck = new CommandCheck();
-        cCheck.check(command);
-        if(config.getCommandBlacklistConfig().enabled()
-            && !player.hasPermission("chatregulator.bypass.blocked-command")
-            && cCheck.isInfraction()
-            && !callCommandViolationEvent(infractionPlayer, command, InfractionType.BCOMMAND, cCheck)){
-
+        if(config.getCommandBlacklistConfig().enabled() && !player.hasPermission("chatregulator.bypass.blocked-command")){
+            CommandCheck cCheck = new CommandCheck();
+            cCheck.check(command);
+            if(cCheck.isInfraction() && !callCommandViolationEvent(infractionPlayer, command, InfractionType.BCOMMAND, cCheck)){
                 event.setResult(CommandResult.denied());
                 return;
             }
-
-        UnicodeCheck uCheck = new UnicodeCheck();
-        uCheck.check(command);
-        if(config.getUnicodeConfig().enabled()
-            && !player.hasPermission("chatregulator.bypass.unicode")
-            && uCheck.isInfraction()
-            && !callCommandViolationEvent(infractionPlayer, command, InfractionType.UNICODE, uCheck)){
-                    event.setResult(CommandResult.denied());
-                    return;
         }
 
-        FloodCheck fCheck = new FloodCheck();
-        fCheck.check(command);
-        if(config.getFloodConfig().enabled()
-            && !player.hasPermission("chatregulator.bypass.flood")
-            && fCheck.isInfraction()
-            && !callCommandViolationEvent(infractionPlayer, command, InfractionType.FLOOD, fCheck)) {
+        if(config.getUnicodeConfig().enabled() && !player.hasPermission("chatregulator.bypass.unicode")){
+            UnicodeCheck uCheck = new UnicodeCheck();
+            uCheck.check(command);
+            if(uCheck.isInfraction() && !callCommandViolationEvent(infractionPlayer, command, InfractionType.UNICODE, uCheck)){
+                event.setResult(CommandResult.denied());
+                return;
+            }
+        }
 
+        if(config.getFloodConfig().enabled() && !player.hasPermission("chatregulator.bypass.flood")){
+            FloodCheck fCheck = new FloodCheck();
+            fCheck.check(command);
+            if(fCheck.isInfraction() && !callCommandViolationEvent(infractionPlayer, command, InfractionType.FLOOD, fCheck)) {
                 event.setResult(config.getFloodConfig().getControlType() == ControlType.BLOCK ?
                     CommandResult.denied() :
                     CommandResult.command(fCheck.replaceInfraction()));
-
                 return;
+            }
         }
 
-        InfractionCheck iCheck = new InfractionCheck();
-        iCheck.check(command);
-        if(config.getInfractionsConfig().enabled()
-            && !player.hasPermission("chatregulator.bypass.infractions")
-            && iCheck.isInfraction()
-            && !callCommandViolationEvent(infractionPlayer, command, InfractionType.REGULAR, iCheck)) {
-
+        if(config.getInfractionsConfig().enabled() && !player.hasPermission("chatregulator.bypass.infractions")){
+            InfractionCheck iCheck = new InfractionCheck();
+            iCheck.check(command);
+            if(iCheck.isInfraction() && !callCommandViolationEvent(infractionPlayer, command, InfractionType.REGULAR, iCheck)) {
                 event.setResult(config.getFloodConfig().getControlType() == ControlType.BLOCK ?
                     CommandResult.denied() :
                     CommandResult.command(iCheck.replaceInfractions()));
                 return;
+            }
         }
 
-        SpamCheck sUtils = new SpamCheck(infractionPlayer, SourceType.COMMAND);
-        sUtils.check(command);
-        if(config.getSpamConfig().enabled()
-            && !player.hasPermission("chatregulator.bypass.spam")
-            && sUtils.isInfraction()
-            && (config.getSpamConfig().getCooldownConfig().enabled() && infractionPlayer.getTimeSinceLastCommand() < config.getSpamConfig().getCooldownConfig().limit()
-            || !config.getSpamConfig().getCooldownConfig().enabled())
-            && !callCommandViolationEvent(infractionPlayer, command, InfractionType.SPAM, sUtils)) {
+        if(config.getSpamConfig().enabled() && !player.hasPermission("chatregulator.bypass.spam")){
+            SpamCheck sUtils = new SpamCheck(infractionPlayer, SourceType.COMMAND);
+            sUtils.check(command);
+            var cooldownconfig = config.getSpamConfig().getCooldownConfig();
+            if(sUtils.isInfraction()
+                && (cooldownconfig.enabled() && infractionPlayer.getTimeSinceLastCommand() < cooldownconfig.limit()
+                || !cooldownconfig.enabled())
+                && !callCommandViolationEvent(infractionPlayer, command, InfractionType.SPAM, sUtils)) {
 
-                event.setResult(CommandResult.denied());
-                return;
+                    event.setResult(CommandResult.denied());
+                    return;
+            }
         }
 
         infractionPlayer.lastCommand(command);
