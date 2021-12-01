@@ -193,13 +193,13 @@ public class Messages {
     @ConfigSerializable
     public static class Caps{
         @Comment("Message to be sent to the offender\nDepending on your warning-type section settings, it will be sent as Title, Actionbar or Message\nIn case you use the Title mode, put a ; to delimit the title and the subtitle")
-        private String warning = "<red>Hello, it is not allowed to use this symbols";
+        private String warning = "<red>Hello, it is not allowed to use too many caps";
 
         @Comment("Message to be sent to staff with chatregulator.notifications permission")
         private String alert = "<red>The player <aqua><player></aqua> <red>was using many caps in the chat of <aqua><server></aqua> server";
 
         @Comment("Statistics Reset Confirmation Message")
-        private String reset = "<red>The simbols sended count for <player> was reset";
+        private String reset = "<red>The caps violation count for <player> was reset";
 
         public String getWarningMessage(){
             return this.warning;
