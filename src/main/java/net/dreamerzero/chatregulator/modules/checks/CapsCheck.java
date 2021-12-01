@@ -18,4 +18,8 @@ public class CapsCheck extends AbstractCheck{
             super.pattern = message;
         }
     }
+
+    public String replaceInfraction(){
+        return super.string.toLowerCase();
+    }
 }

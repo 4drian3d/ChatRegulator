@@ -99,8 +99,14 @@ public class CommandListener {
             cCheck.check(command);
 
             if(cCheck.isInfraction() && !callCommandViolationEvent(infractionPlayer, command, InfractionType.CAPS, cCheck)){
-                event.setResult(CommandResult.denied());
-                return;
+                if(config.getCapsConfig().getControlType() == ControlType.BLOCK){
+                    event.setResult(CommandResult.denied());
+                    return;
+                } else {
+                    String commandReplaced = cCheck.replaceInfraction();
+                    event.setResult(CommandResult.command(commandReplaced));
+                    command = commandReplaced;
+                }
             }
         }
 
@@ -108,10 +114,14 @@ public class CommandListener {
             FloodCheck fCheck = new FloodCheck();
             fCheck.check(command);
             if(fCheck.isInfraction() && !callCommandViolationEvent(infractionPlayer, command, InfractionType.FLOOD, fCheck)) {
-                event.setResult(config.getFloodConfig().getControlType() == ControlType.BLOCK ?
-                    CommandResult.denied() :
-                    CommandResult.command(fCheck.replaceInfraction()));
-                return;
+                if(config.getFloodConfig().getControlType() == ControlType.BLOCK){
+                    event.setResult(CommandResult.denied());
+                    return;
+                } else {
+                    String commandReplaced = fCheck.replaceInfraction();
+                    event.setResult(CommandResult.command(commandReplaced));
+                    command = commandReplaced;
+                }
             }
         }
 
@@ -119,10 +129,14 @@ public class CommandListener {
             InfractionCheck iCheck = new InfractionCheck();
             iCheck.check(command);
             if(iCheck.isInfraction() && !callCommandViolationEvent(infractionPlayer, command, InfractionType.REGULAR, iCheck)) {
-                event.setResult(config.getFloodConfig().getControlType() == ControlType.BLOCK ?
-                    CommandResult.denied() :
-                    CommandResult.command(iCheck.replaceInfractions()));
-                return;
+                if(config.getInfractionsConfig().getControlType() == ControlType.BLOCK){
+                    event.setResult(CommandResult.denied());
+                    return;
+                } else {
+                    String commandReplaced = iCheck.replaceInfractions();
+                    event.setResult(CommandResult.command(commandReplaced));
+                    command = commandReplaced;
+                }
             }
         }
 

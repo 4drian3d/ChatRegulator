@@ -74,8 +74,14 @@ public class ChatListener {
             cCheck.check(message);
 
             if(cCheck.isInfraction() && !callChatViolationEvent(infractionPlayer, message, InfractionType.CAPS, cCheck)){
-                event.setResult(ChatResult.denied());
-                return;
+                if(config.getCapsConfig().getControlType() == ControlType.BLOCK){
+                    event.setResult(ChatResult.denied());
+                    return;
+                } else {
+                    String messageReplaced = cCheck.replaceInfraction();
+                    event.setResult(ChatResult.message(messageReplaced));
+                    message = messageReplaced;
+                }
             }
         }
 
@@ -83,10 +89,14 @@ public class ChatListener {
             FloodCheck fCheck = new FloodCheck();
             fCheck.check(message);
             if(fCheck.isInfraction() && !callChatViolationEvent(infractionPlayer, message, InfractionType.FLOOD, fCheck)) {
-                event.setResult(config.getFloodConfig().getControlType() == ControlType.BLOCK ?
-                    ChatResult.denied() :
-                    ChatResult.message(fCheck.replaceInfraction()));
-                return;
+                if(config.getFloodConfig().getControlType() == ControlType.BLOCK){
+                    event.setResult(ChatResult.denied());
+                    return;
+                } else {
+                    String messageReplaced = fCheck.replaceInfraction();
+                    event.setResult(ChatResult.message(messageReplaced));
+                    message = messageReplaced;
+                }
             }
         }
 
@@ -94,10 +104,14 @@ public class ChatListener {
             InfractionCheck iCheck = new InfractionCheck();
             iCheck.check(message);
             if(iCheck.isInfraction() && !callChatViolationEvent(infractionPlayer, message, InfractionType.REGULAR, iCheck)) {
-                event.setResult(config.getInfractionsConfig().getControlType() == ControlType.BLOCK ?
-                    ChatResult.denied() :
-                    ChatResult.message(iCheck.replaceInfractions()));
-                return;
+                if(config.getInfractionsConfig().getControlType() == ControlType.BLOCK){
+                    event.setResult(ChatResult.denied());
+                    return;
+                } else {
+                    String messageReplaced = iCheck.replaceInfractions();
+                    event.setResult(ChatResult.message(messageReplaced));
+                    message = messageReplaced;
+                }
             }
         }
 

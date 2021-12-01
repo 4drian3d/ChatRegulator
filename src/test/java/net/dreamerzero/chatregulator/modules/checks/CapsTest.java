@@ -1,5 +1,6 @@
 package net.dreamerzero.chatregulator.modules.checks;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Paths;
@@ -23,11 +24,14 @@ public class CapsTest {
     @DisplayName("Caps Test")
     void capsTest(){
         String original = "HELLO EVERYONE";
+        String expected = "hello everyone";
 
         CapsCheck cCheck = new CapsCheck();
 
         cCheck.check(original);
+        String replaced = cCheck.replaceInfraction();
 
         assertTrue(cCheck.isInfraction());
+        assertEquals(expected, replaced);
     }
 }

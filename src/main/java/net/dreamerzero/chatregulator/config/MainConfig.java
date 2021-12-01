@@ -279,6 +279,10 @@ public class MainConfig {
         @Comment("Enable the Caps limit Module")
         private boolean enabled = true;
 
+        @Comment("Sets the control format\nAvailable options: BLOCK, REPLACE")
+        @Setting(value = "control-type")
+        private ControlType controlType = ControlType.BLOCK;
+
         @Comment("Sets the form of warning\nAvailable options: TITLE, ACTIONBAR, MESSAGE")
         @Setting(value = "warning-type")
         private WarningType warningType = WarningType.MESSAGE;
@@ -291,6 +295,10 @@ public class MainConfig {
 
         public boolean enabled(){
             return this.enabled;
+        }
+
+        public ControlType getControlType(){
+            return this.controlType;
         }
 
         public WarningType getWarningType(){
