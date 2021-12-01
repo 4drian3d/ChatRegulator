@@ -105,7 +105,7 @@ public class MainConfig {
         private boolean enabled = true;
 
         @Comment("Sets the form of warning\nAvailable options: TITLE, ACTIONBAR, MESSAGE")
-        @Setting(value = "warning_type")
+        @Setting(value = "warning-type")
         private WarningType warningType = WarningType.MESSAGE;
 
         @Comment("Sets the control format\nAvailable options: BLOCK, REPLACE")
