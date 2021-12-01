@@ -4,13 +4,14 @@ import java.util.List;
 
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
+import org.spongepowered.configurate.objectmapping.meta.Setting;
 
 public class Messages {
     private Messages(){}
-    //TODO: Add @Setting(value = "path name")
     @ConfigSerializable
     public static class Config{
         @Comment("Configuration of command blacklist module messages")
+        @Setting(value = "command-blacklist")
         private CommandBlacklist blacklist = new CommandBlacklist();
 
         @Comment("Configuration of regular violation module messages")
@@ -26,7 +27,8 @@ public class Messages {
         private Unicode unicode = new Unicode();
 
         @Comment("Configuration of the messages of the /chatr clear command")
-        private Clear clear_chat = new Clear();
+        @Setting(value = "clear-chat")
+        private Clear clearChat = new Clear();
 
         @Comment("General Messages")
         private General general = new General();
@@ -52,7 +54,7 @@ public class Messages {
         }
 
         public Clear getClearMessages(){
-            return this.clear_chat;
+            return this.clearChat;
         }
 
         public General getGeneralMessages(){
@@ -169,7 +171,8 @@ public class Messages {
     public static class Clear{
         private String global = "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <aqua>The chat has been cleaned up";
         private String server = "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <aqua>The chat of the server <white><server></white> has been cleared";
-        private String server_not_found = "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <aqua>The <white><server></white> server was not found";
+        @Setting(value = "server-not-fount")
+        private String serverNotFound = "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <aqua>The <white><server></white> server was not found";
         private String player = "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <aqua>The chat of the player <white><player></white> has been cleared";
 
         public String getGlobalMessage(){
@@ -181,7 +184,7 @@ public class Messages {
         }
 
         public String getNotFoundServerMessage(){
-            return this.server_not_found;
+            return this.serverNotFound;
         }
 
         public String getPlayerMessage(){
@@ -211,17 +214,22 @@ public class Messages {
 
         private String info = "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <aqua>by</aqua> <gradient:green:gold>4drian3d";
 
-        private String unknown_command = "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <aqua>Unknown Command <white><args>";
+        @Setting(value = "unknown-command")
+        private String unknownCommand = "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <aqua>Unknown Command <white><args>";
 
-        private String all_reset = "<red>The warning count for <player> was reset";
+        @Setting(value = "all-reset")
+        private String allReset = "<red>The warning count for <player> was reset";
 
-        private String without_argument = "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <white>No argument provided</white>";
+        @Setting(value = "without-argument")
+        private String withoutArgument = "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <white>No argument provided</white>";
 
-        private String player_not_found = "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <white>The player <aqua><player></aqua> has not joined the server yet</white>";
+        @Setting(value = "player-not-found")
+        private String playerNotFound = "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <white>The player <aqua><player></aqua> has not joined the server yet</white>";
 
         private String reloadMessage = "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <aqua>Reloading Configuration";
-        
-        private General.Help help_messages = new General.Help();
+
+        @Setting(value = "help-messages")
+        private General.Help helpMessages = new General.Help();
 
         public List<String> getStatsFormat(){
             return this.stats;
@@ -234,21 +242,21 @@ public class Messages {
         public String getInfoMessage(){
             return this.info;
         }
-        
+
         public String getUnknowMessage(){
-            return this.unknown_command;
+            return this.unknownCommand;
         }
 
         public String allReset(){
-            return this.all_reset;
+            return this.allReset;
         }
 
         public String noArgument(){
-            return this.without_argument;
+            return this.withoutArgument;
         }
 
         public String playerNotFound(){
-            return this.player_not_found;
+            return this.playerNotFound;
         }
 
         public String getReloadMessage(){
@@ -256,7 +264,7 @@ public class Messages {
         }
 
         public General.Help getHelpMessages(){
-            return this.help_messages;
+            return this.helpMessages;
         }
 
         @ConfigSerializable
