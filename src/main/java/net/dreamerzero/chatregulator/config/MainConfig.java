@@ -13,11 +13,7 @@ public class MainConfig {
     private MainConfig(){}
     @ConfigSerializable
     public static class Config {
-        @Comment("Command blacklist module")
-        @Setting(value = "command-blacklist")
-        private CommandBlacklist blacklist = new CommandBlacklist();
-
-        @Comment("Regular violation module")
+        @Comment("Regular infraction module")
         private Infractions infractions = new Infractions();
 
         @Comment("Flood Module")
@@ -25,6 +21,10 @@ public class MainConfig {
 
         @Comment("Spam Module")
         private Spam spam = new Spam();
+
+        @Comment("Command blacklist module")
+        @Setting(value = "command-blacklist")
+        private CommandBlacklist blacklist = new CommandBlacklist();
 
         @Comment("Unicode Module")
         private Unicode unicode = new Unicode();

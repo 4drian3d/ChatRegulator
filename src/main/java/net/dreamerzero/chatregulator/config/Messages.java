@@ -64,10 +64,13 @@ public class Messages {
 
     @ConfigSerializable
     public static class CommandBlacklist{
+        @Comment("Message to be sent to the offender\nDepending on your warning-type section settings, it will be sent as Title, Actionbar or Message\nIn case you use the Title mode, put a ; to delimit the title and the subtitle")
         private String warning = "<red>Hello, it is not allowed to use blocked commands";
 
+        @Comment("Message to be sent to staff with chatregulator.notifications permission")
         private String alert = "<red>The player <aqua><player></aqua> <red>has executed blocked commands in <aqua><server></aqua> server";
 
+        @Comment("Statistics Reset Confirmation Message")
         private String reset = "<red>The commands infraction count for <player> was reset";
 
         public String getWarningMessage(){
@@ -85,10 +88,13 @@ public class Messages {
 
     @ConfigSerializable
     public static class Infractions{
+        @Comment("Message to be sent to the offender\nDepending on your warning-type section settings, it will be sent as Title, Actionbar or Message\nIn case you use the Title mode, put a ; to delimit the title and the subtitle")
         private String warning = "<red>Hello, it is not allowed to use dirty words on this server";
 
+        @Comment("Message to be sent to staff with chatregulator.notifications permission")
         private String alert = "<red>The player <aqua><player></aqua> <red>has said forbidden words in <aqua><server></aqua> server";
 
+        @Comment("Statistics Reset Confirmation Message")
         private String reset = "<red>The infraction warning count for <player> was reset";
 
         public String getWarningMessage(){
@@ -106,10 +112,13 @@ public class Messages {
 
     @ConfigSerializable
     public static class Flood{
+        @Comment("Message to be sent to the offender\nDepending on your warning-type section settings, it will be sent as Title, Actionbar or Message\nIn case you use the Title mode, put a ; to delimit the title and the subtitle")
         private String warning = "<red>Hello, it is not allowed to make flood on this server";
 
+        @Comment("Message to be sent to staff with chatregulator.notifications permission")
         private String alert = "<red>The player <aqua><player></aqua> <red>has make flood in <aqua><server></aqua> server";
 
+        @Comment("Statistics Reset Confirmation Message")
         private String reset = "<red>The flood warning count for <player> was reset";
 
         public String getWarningMessage(){
@@ -127,10 +136,13 @@ public class Messages {
 
     @ConfigSerializable
     public static class Spam{
+        @Comment("Message to be sent to the offender\nDepending on your warning-type section settings, it will be sent as Title, Actionbar or Message\nIn case you use the Title mode, put a ; to delimit the title and the subtitle")
         private String warning = "<red>Hello, it is not allowed to make spam on this server";
 
+        @Comment("Message to be sent to staff with chatregulator.notifications permission")
         private String alert = "<red>The player <aqua><player></aqua> <red>was spamming the chat in <aqua><server></aqua> server";
 
+        @Comment("Statistics Reset Confirmation Message")
         private String reset = "<red>The spam warning count for <player> was reset";
 
         public String getWarningMessage(){
@@ -148,10 +160,13 @@ public class Messages {
 
     @ConfigSerializable
     public static class Unicode{
+        @Comment("Message to be sent to the offender\nDepending on your warning-type section settings, it will be sent as Title, Actionbar or Message\nIn case you use the Title mode, put a ; to delimit the title and the subtitle")
         private String warning = "<red>Hello, it is not allowed to use this symbols";
 
+        @Comment("Message to be sent to staff with chatregulator.notifications permission")
         private String alert = "<red>The player <aqua><player></aqua> <red>was using unicode symbols in the chat of <aqua><server></aqua> server";
 
+        @Comment("Statistics Reset Confirmation Message")
         private String reset = "<red>The simbols sended count for <player> was reset";
 
         public String getWarningMessage(){
@@ -169,10 +184,17 @@ public class Messages {
 
     @ConfigSerializable
     public static class Clear{
+        @Comment("Confirmation of global chat cleanup")
         private String global = "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <aqua>The chat has been cleaned up";
+
+        @Comment("Confirmation of chat cleanup on a server")
         private String server = "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <aqua>The chat of the server <white><server></white> has been cleared";
+
+        @Comment("Message to send if a server was not found")
         @Setting(value = "server-not-fount")
         private String serverNotFound = "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <aqua>The <white><server></white> server was not found";
+
+        @Comment("Confirmation of chat clearing for a user")
         private String player = "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <aqua>The chat of the player <white><player></white> has been cleared";
 
         public String getGlobalMessage(){
@@ -194,6 +216,7 @@ public class Messages {
 
     @ConfigSerializable
     public static class General{
+        @Comment("Violation statistics message\nThis message will appear when using the \"/chatregulator stats\" command.")
         private List<String> stats = List.of(
             "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
             "<#3B4371>| <red>General Stats</red>",
@@ -203,6 +226,7 @@ public class Messages {
             "<#3B4371>|------------------------|"
         );
 
+        @Comment("Player statistics message\nThis message will appear when using the command \"/chatregulator player <someplayer>\"")
         private List<String> player = List.of(
             "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
             "<#3B4371>| <gold><player></gold> <red>Stats</red>",
@@ -212,22 +236,30 @@ public class Messages {
             "<#3B4371>|------------------------|"
         );
 
+        @Comment("Message to appear if no arguments are specified in the main command")
         private String info = "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <aqua>by</aqua> <gradient:green:gold>4drian3d";
 
+        @Comment("Message to send if an invalid argument was entered")
         @Setting(value = "unknown-command")
         private String unknownCommand = "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <aqua>Unknown Command <white><args>";
 
+        @Comment("Message to send when resetting all infractions of a player")
         @Setting(value = "all-reset")
         private String allReset = "<red>The warning count for <player> was reset";
 
+        @Comment("Message to be sent when no argument is entered in a subcommand requiring argument")
         @Setting(value = "without-argument")
         private String withoutArgument = "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <white>No argument provided</white>";
 
+        @Comment("Message to send on not finding the specified user")
         @Setting(value = "player-not-found")
         private String playerNotFound = "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <white>The player <aqua><player></aqua> has not joined the server yet</white>";
 
+        @Comment("Message to send when reloading the plugin configuration")
+        @Setting(value = "reload-message")
         private String reloadMessage = "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <aqua>Reloading Configuration";
 
+        @Comment("Help messages")
         @Setting(value = "help-messages")
         private General.Help helpMessages = new General.Help();
 
@@ -269,6 +301,8 @@ public class Messages {
 
         @ConfigSerializable
         public static class Help{
+            @Comment("Plugin main help message")
+            @Setting(value = "main-help")
             private List<String> main = List.of(
                 "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
                 "<#3B4371>| <gold>+ <hover:show_text:'<gradient:#ffd89b:#19547b>Click on a section to view its commands'><gradient:#CAC531:#F3F9A7>Command Help</gradient></hover>",
@@ -279,6 +313,7 @@ public class Messages {
                 "<#3B4371>|----------------------|"
             );
 
+            @Comment("Help message for \"/chatregulator player <player>\" command")
             private List<String> player = List.of(
                 "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
                 "<#3B4371>| <gold>+ <gradient:#CAC531:#F3F9A7>Player Help</gradient>",
@@ -286,6 +321,7 @@ public class Messages {
                 "<#3B4371>|----------------------|"
             );
 
+            @Comment("Help message for \"/chatregulator reset\" subcommands")
             private List<String> reset = List.of(
                 "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
                 "<#3B4371>| <gold>+ <gradient:#CAC531:#F3F9A7>Reset Help</gradient>",
@@ -299,6 +335,7 @@ public class Messages {
                 "<#3B4371>|----------------------|"
             );
 
+            @Comment("Help message for \"/chatregulator clear\" subcommands")
             private List<String> clear = List.of(
                 "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
                 "<#3B4371>| <gold>+ <gradient:#CAC531:#F3F9A7>Clear Help</gradient>",
