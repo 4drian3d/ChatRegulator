@@ -140,6 +140,10 @@ public class ChatRegulatorCommand implements SimpleCommand {
                             infractionPlayer.setViolations(InfractionType.UNICODE, 0);
                             cManager.sendResetMessage(source, InfractionType.UNICODE, infractionPlayer);
                             break;
+                        case "caps":
+                            infractionPlayer.setViolations(InfractionType.CAPS, 0);
+                            cManager.sendResetMessage(source, InfractionType.CAPS, infractionPlayer);
+                            break;
                         default: break;
                     }
                 }
@@ -260,7 +264,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
                                 .map(Player::getUsername)
                                 .collect(Collectors.toList());
                     } else {
-                        return List.of("infractions", "regular", "flood", "spam", "unicode", "all");
+                        return List.of("infractions", "regular", "flood", "spam", "unicode", "caps", "all");
                     }
                 default: return List.of();
             }

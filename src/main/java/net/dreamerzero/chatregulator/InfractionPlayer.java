@@ -26,6 +26,7 @@ public class InfractionPlayer {
     private int spamViolations;
     private int commandViolations;
     private int unicodeViolations;
+    private int capsviolations;
     private boolean isOnline;
     private final String username;
     private long lastTimeSeen;
@@ -49,6 +50,7 @@ public class InfractionPlayer {
         this.spamViolations = 0;
         this.commandViolations = 0;
         this.unicodeViolations = 0;
+        this.capsviolations = 0;
         this.isOnline = true;
         this.username = player.getUsername();
     }
@@ -71,6 +73,7 @@ public class InfractionPlayer {
         this.spamViolations = 0;
         this.commandViolations = 0;
         this.unicodeViolations = 0;
+        this.capsviolations = 0;
         this.isOnline = true;
         this.username = player.getUsername();
     }
@@ -187,6 +190,7 @@ public class InfractionPlayer {
             case FLOOD: floodViolations++; break;
             case BCOMMAND: commandViolations++; break;
             case UNICODE: unicodeViolations++; break;
+            case CAPS: capsviolations++; break;
             case NONE: return;
         }
     }
@@ -203,6 +207,7 @@ public class InfractionPlayer {
             case FLOOD: floodViolations = newViolationsCount; break;
             case BCOMMAND: commandViolations = newViolationsCount; break;
             case UNICODE: unicodeViolations = newViolationsCount; break;
+            case CAPS: capsviolations = newViolationsCount; break;
             case NONE: return;
         }
     }
@@ -219,6 +224,7 @@ public class InfractionPlayer {
             case FLOOD: return floodViolations;
             case BCOMMAND: return commandViolations;
             case UNICODE: return unicodeViolations;
+            case CAPS: return capsviolations;
             case NONE: break;
         }
         return 0;

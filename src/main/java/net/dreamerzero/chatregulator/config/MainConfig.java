@@ -29,6 +29,9 @@ public class MainConfig {
         @Comment("Unicode Module")
         private Unicode unicode = new Unicode();
 
+        @Comment("Caps Module")
+        private Caps caps = new Caps();
+
         @Comment("Format Module")
         private Format format = new Format();
 
@@ -53,6 +56,10 @@ public class MainConfig {
 
         public Unicode getUnicodeConfig(){
             return this.unicode;
+        }
+
+        public Caps getCapsConfig(){
+            return this.caps;
         }
 
         public Format getFormatConfig(){
@@ -260,6 +267,41 @@ public class MainConfig {
         }
 
         public Unicode.Commands getCommandsConfig(){
+            return this.commands;
+        }
+
+        @ConfigSerializable
+        public static class Commands extends CommandsConfig{}
+    }
+
+    @ConfigSerializable
+    public static class Caps{
+        @Comment("Enable the Caps limit Module")
+        private boolean enabled = true;
+
+        @Comment("Sets the form of warning\nAvailable options: TITLE, ACTIONBAR, MESSAGE")
+        @Setting(value = "warning-type")
+        private WarningType warningType = WarningType.MESSAGE;
+
+        @Comment("Sets the maximum limit of caps in a sentence")
+        private int limit = 5;
+
+        @Comment("Commands to be executed in the caps module")
+        private Caps.Commands commands = new Caps.Commands();
+
+        public boolean enabled(){
+            return this.enabled;
+        }
+
+        public WarningType getWarningType(){
+            return this.warningType;
+        }
+
+        public int limit(){
+            return this.limit;
+        }
+
+        public Caps.Commands getCommandsConfig(){
             return this.commands;
         }
 

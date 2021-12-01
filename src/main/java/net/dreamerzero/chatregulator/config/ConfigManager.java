@@ -39,9 +39,10 @@ public class ConfigManager {
             case SPAM: return config.getSpamConfig().getWarningType();
             case BCOMMAND: return config.getCommandBlacklistConfig().getWarningType();
             case UNICODE: return config.getUnicodeConfig().getWarningType();
+            case CAPS: return config.getCapsConfig().getWarningType();
             case NONE: return TypeUtils.WarningType.MESSAGE;
-            default: return TypeUtils.WarningType.MESSAGE;
         }
+        return TypeUtils.WarningType.MESSAGE;
     }
 
     /**
@@ -60,7 +61,6 @@ public class ConfigManager {
                 case ACTIONBAR: player.sendActionBar(mm.deserialize(message, templates)); break;
             }
         });
-        
     }
 
     /**
@@ -133,14 +133,15 @@ public class ConfigManager {
      * @param type the type of infraction
      */
     public void sendAlertMessage(Audience staff, InfractionPlayer infractor, TypeUtils.InfractionType type){
-        String message;
+        String message = "";
         switch(type){
             case FLOOD: message = messages.getFloodMessages().getAlertMessage(); break;
             case REGULAR: message = messages.getInfractionsMessages().getAlertMessage(); break;
             case SPAM: message = messages.getSpamMessages().getAlertMessage(); break;
             case BCOMMAND:  message = messages.getBlacklistMessages().getAlertMessage(); break;
             case UNICODE: message = messages.getUnicodeMessages().getAlertMessage(); break;
-            default: return;
+            case CAPS: message = messages.getCapsMessages().getAlertMessage(); break;
+            case NONE: return;
         }
 
         staff.sendMessage(
@@ -165,6 +166,7 @@ public class ConfigManager {
             case NONE: sender.sendMessage(mm.deserialize(messages.getGeneralMessages().allReset(), PlaceholderUtils.getTemplates(player))); break;
             case BCOMMAND: sender.sendMessage(mm.deserialize(messages.getBlacklistMessages().getResetMessage(), PlaceholderUtils.getTemplates(player))); break;
             case UNICODE: sender.sendMessage(mm.deserialize(messages.getUnicodeMessages().getResetMessage(), PlaceholderUtils.getTemplates(player))); break;
+            case CAPS: sender.sendMessage(mm.deserialize(messages.getCapsMessages().getResetMessage(), PlaceholderUtils.getTemplates(player))); break;
         }
     }
 }

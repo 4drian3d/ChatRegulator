@@ -52,6 +52,9 @@ public class CommandUtils {
             case UNICODE:
                 execute(infractor, infractorPlayer, config.getUnicodeConfig().getCommandsConfig(), type);
                 break;
+            case CAPS:
+                execute(infractor, infractorPlayer, config.getCapsConfig().getCommandsConfig(), type);
+                break;
             case NONE: return;
         }
     }

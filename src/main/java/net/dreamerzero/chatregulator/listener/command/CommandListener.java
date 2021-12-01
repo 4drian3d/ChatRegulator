@@ -17,6 +17,7 @@ import net.dreamerzero.chatregulator.config.MainConfig;
 import net.dreamerzero.chatregulator.events.CommandViolationEvent;
 import net.dreamerzero.chatregulator.modules.Statistics;
 import net.dreamerzero.chatregulator.modules.checks.AbstractCheck;
+import net.dreamerzero.chatregulator.modules.checks.CapsCheck;
 import net.dreamerzero.chatregulator.modules.checks.CommandCheck;
 import net.dreamerzero.chatregulator.modules.checks.FloodCheck;
 import net.dreamerzero.chatregulator.modules.checks.InfractionCheck;
@@ -88,6 +89,16 @@ public class CommandListener {
             UnicodeCheck uCheck = new UnicodeCheck();
             uCheck.check(command);
             if(uCheck.isInfraction() && !callCommandViolationEvent(infractionPlayer, command, InfractionType.UNICODE, uCheck)){
+                event.setResult(CommandResult.denied());
+                return;
+            }
+        }
+
+        if(config.getCapsConfig().enabled() && !player.hasPermission("chatregulator.bypass.caps")){
+            CapsCheck cCheck = new CapsCheck();
+            cCheck.check(command);
+
+            if(cCheck.isInfraction() && !callCommandViolationEvent(infractionPlayer, command, InfractionType.CAPS, cCheck)){
                 event.setResult(CommandResult.denied());
                 return;
             }

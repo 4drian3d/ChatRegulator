@@ -30,6 +30,11 @@ public class Statistics {
     private static int unicodeViolations;
 
     /**
+     * Global Caps violations count
+     */
+    private static int capsViolations;
+
+    /**
      * Global Violations count
      */
     private static int globalViolations;
@@ -45,6 +50,7 @@ public class Statistics {
             case REGULAR: regularCount++; break;
             case BCOMMAND: commandCount++; break;
             case UNICODE: unicodeViolations++; break;
+            case CAPS: capsViolations++; break;
             case NONE: break;
         }
         globalViolations++;
@@ -62,6 +68,7 @@ public class Statistics {
             case REGULAR: return regularCount;
             case BCOMMAND: return commandCount;
             case UNICODE: return unicodeViolations;
+            case CAPS: return capsViolations;
             case NONE: return globalViolations;
         }
         return 0;

@@ -8,6 +8,7 @@ import org.spongepowered.configurate.objectmapping.meta.Setting;
 
 public class Messages {
     private Messages(){}
+
     @ConfigSerializable
     public static class Config{
         @Comment("Configuration of command blacklist module messages")
@@ -25,6 +26,9 @@ public class Messages {
 
         @Comment("Configuration of unicode module messages")
         private Unicode unicode = new Unicode();
+
+        @Comment("Configuration of caps module messages")
+        private Caps caps = new Caps();
 
         @Comment("Configuration of the messages of the /chatr clear command")
         @Setting(value = "clear-chat")
@@ -51,6 +55,10 @@ public class Messages {
 
         public Unicode getUnicodeMessages(){
             return this.unicode;
+        }
+
+        public Caps getCapsMessages(){
+            return this.caps;
         }
 
         public Clear getClearMessages(){
@@ -165,6 +173,30 @@ public class Messages {
 
         @Comment("Message to be sent to staff with chatregulator.notifications permission")
         private String alert = "<red>The player <aqua><player></aqua> <red>was using unicode symbols in the chat of <aqua><server></aqua> server";
+
+        @Comment("Statistics Reset Confirmation Message")
+        private String reset = "<red>The simbols sended count for <player> was reset";
+
+        public String getWarningMessage(){
+            return this.warning;
+        }
+
+        public String getAlertMessage(){
+            return this.alert;
+        }
+
+        public String getResetMessage(){
+            return this.reset;
+        }
+    }
+
+    @ConfigSerializable
+    public static class Caps{
+        @Comment("Message to be sent to the offender\nDepending on your warning-type section settings, it will be sent as Title, Actionbar or Message\nIn case you use the Title mode, put a ; to delimit the title and the subtitle")
+        private String warning = "<red>Hello, it is not allowed to use this symbols";
+
+        @Comment("Message to be sent to staff with chatregulator.notifications permission")
+        private String alert = "<red>The player <aqua><player></aqua> <red>was using many caps in the chat of <aqua><server></aqua> server";
 
         @Comment("Statistics Reset Confirmation Message")
         private String reset = "<red>The simbols sended count for <player> was reset";
@@ -330,8 +362,9 @@ public class Messages {
                 "<#3B4371>| <click:suggest_command:'/chatr <player> reset infractions'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will restart a player regular infractions.</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <green><player> <aqua>reset</aqua> infractions</hover>",
                 "<#3B4371>| <click:suggest_command:'/chatr <player> reset flood'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will reset a player flood infractions</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <green><player> <aqua>reset</aqua> flood</hover>",
                 "<#3B4371>| <click:suggest_command:'/chatr <player> reset spam'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will reset a player spam violations</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <green><player> <aqua>reset</aqua> spam</hover>",
-                "<#3B4371>| <click:suggest_command:'/chatr <player> reset command'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will reset a player blocked commands executions</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <green><player> <aqua>command</aqua> spam</hover>",
-                "<#3B4371>| <click:suggest_command:'/chatr <player> reset unicode'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will reset a player unicode violations</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <green><player> <aqua>reset</aqua> spam</hover>",
+                "<#3B4371>| <click:suggest_command:'/chatr <player> reset command'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will reset a player blocked commands executions</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <green><player> <aqua>command</aqua> command</hover>",
+                "<#3B4371>| <click:suggest_command:'/chatr <player> reset unicode'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will reset a player unicode violations</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <green><player> <aqua>reset</aqua> unicode</hover>",
+                "<#3B4371>| <click:suggest_command:'/chatr <player> reset caps'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will reset a player caps violations</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <green><player> <aqua>reset</aqua> caps</hover>",
                 "<#3B4371>|----------------------|"
             );
 

@@ -24,7 +24,8 @@ public class PlaceholderUtils {
             Template.template("flood", String.valueOf(player.getViolations(InfractionType.FLOOD))),
             Template.template("spam", String.valueOf(player.getViolations(InfractionType.SPAM))),
             Template.template("regular", String.valueOf(player.getViolations(InfractionType.REGULAR))),
-            Template.template("unicode", String.valueOf(player.getViolations(InfractionType.UNICODE)))
+            Template.template("unicode", String.valueOf(player.getViolations(InfractionType.UNICODE))),
+            Template.template("caps", String.valueOf(player.getViolations(InfractionType.CAPS)))
         );
         player.getPlayer().ifPresent(p ->
             p.getCurrentServer().ifPresent(server ->
@@ -43,7 +44,8 @@ public class PlaceholderUtils {
             Template.template("spam", String.valueOf(Statistics.getViolationCount(InfractionType.SPAM))),
             Template.template("regular", String.valueOf(Statistics.getViolationCount(InfractionType.REGULAR))),
             Template.template("command", String.valueOf(Statistics.getViolationCount(InfractionType.BCOMMAND))),
-            Template.template("unicode", String.valueOf(Statistics.getViolationCount(InfractionType.UNICODE)))
+            Template.template("unicode", String.valueOf(Statistics.getViolationCount(InfractionType.UNICODE))),
+            Template.template("caps", String.valueOf(Statistics.getViolationCount(InfractionType.CAPS)))
         );
     }
 

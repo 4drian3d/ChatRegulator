@@ -16,6 +16,7 @@ import net.dreamerzero.chatregulator.events.ChatViolationEvent;
 import net.dreamerzero.chatregulator.modules.Replacer;
 import net.dreamerzero.chatregulator.modules.Statistics;
 import net.dreamerzero.chatregulator.modules.checks.AbstractCheck;
+import net.dreamerzero.chatregulator.modules.checks.CapsCheck;
 import net.dreamerzero.chatregulator.modules.checks.FloodCheck;
 import net.dreamerzero.chatregulator.modules.checks.InfractionCheck;
 import net.dreamerzero.chatregulator.modules.checks.SpamCheck;
@@ -63,6 +64,16 @@ public class ChatListener {
             UnicodeCheck uCheck = new UnicodeCheck();
             uCheck.check(message);
             if(uCheck.isInfraction() && !callChatViolationEvent(infractionPlayer, message, InfractionType.UNICODE, uCheck)){
+                event.setResult(ChatResult.denied());
+                return;
+            }
+        }
+
+        if(config.getCapsConfig().enabled() && !player.hasPermission("chatregulator.bypass.caps")){
+            CapsCheck cCheck = new CapsCheck();
+            cCheck.check(message);
+
+            if(cCheck.isInfraction() && !callChatViolationEvent(infractionPlayer, message, InfractionType.CAPS, cCheck)){
                 event.setResult(ChatResult.denied());
                 return;
             }

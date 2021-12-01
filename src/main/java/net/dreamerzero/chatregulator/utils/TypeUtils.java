@@ -51,6 +51,10 @@ public class TypeUtils {
          */
         UNICODE,
         /**
+         * Represents a Caps limit check
+         */
+        CAPS,
+        /**
          * Used internally to represent a
          * multiple warning and in other cases more
          */
