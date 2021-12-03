@@ -20,11 +20,18 @@ public class FloodCheck extends AbstractCheck {
         super.pattern = stringPattern;
     }
 
+    /**
+     * Update the Flood pattern based in the configuration
+     */
     public static void setFloodRegex(){
         stringPattern = "(\\w)\\1{" + Configuration.getConfig().getFloodConfig().getLimit() + ",}|(\\w{28,})|([^\\wñ]{20,})|(^.{220,}$)";
         floodPattern = Pattern.compile(stringPattern, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
     }
 
+    /**
+     * Update the Flood pattern based on a custom limit
+     * @param limit the custom limit
+     */
     public static void setFloodRegex(int limit){
         stringPattern = "(\\w)\\1{" + limit + ",}|(\\w{28,})|([^\\wñ]{20,})|(^.{220,}$)";
         floodPattern = Pattern.compile(stringPattern, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);

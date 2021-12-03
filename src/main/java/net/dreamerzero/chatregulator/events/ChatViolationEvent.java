@@ -14,6 +14,7 @@ public class ChatViolationEvent extends ViolationEvent {
      * Constructor of a ChatViolationEvent
      * @param infractionPlayer the player who committed the infraction
      * @param type the infraction type
+     * @param detection the detection
      * @param message the chat message in which the violation was found
      */
     public ChatViolationEvent(InfractionPlayer infractionPlayer, InfractionType type, AbstractCheck detection, String message) {

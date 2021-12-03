@@ -13,6 +13,7 @@ public abstract class AbstractCheck {
 
     /**
      * Check if the delivered string contains any infraction
+     * @param message the message to check
      */
     public abstract void check(String message);
 

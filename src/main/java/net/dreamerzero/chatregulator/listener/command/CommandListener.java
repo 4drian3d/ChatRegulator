@@ -41,6 +41,7 @@ public class CommandListener {
 
     /**
      * CommandListener constructor
+     * @param server the proxy server
      */
     public CommandListener(final ProxyServer server) {
         this.server = server;

@@ -15,6 +15,7 @@ public class CommandViolationEvent extends ViolationEvent {
      * @param infractionPlayer the player who committed the infraction
      * @param type the infraction type
      * @param command the executed command in which the violation was found
+     * @param detection the detection
      */
     public CommandViolationEvent(InfractionPlayer infractionPlayer, InfractionType type, AbstractCheck detection, String command){
         super(infractionPlayer, type, detection);

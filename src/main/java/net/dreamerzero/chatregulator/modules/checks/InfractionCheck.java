@@ -36,6 +36,10 @@ public class InfractionCheck extends AbstractCheck {
         }
     }
 
+    /**
+     * Replace the infractions
+     * @return the message without infractions
+     */
     public String replaceInfractions(){
         String original = string;
         for(Pattern pattern : patterns){

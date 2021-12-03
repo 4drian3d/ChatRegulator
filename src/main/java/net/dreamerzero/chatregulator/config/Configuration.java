@@ -19,17 +19,20 @@ public class Configuration {
     private static Messages.Config messages;
     private static Blacklist.Config blacklist;
 
+    /**
+     * Loads the plugin configuration
+     * @param path plugin path
+     * @param logger plugin logger
+     */
     public static void loadConfig(@NotNull Path path, @NotNull Logger logger){
-        loadMainConfig(path, logger);
-        loadMessagesConfig(path, logger);
-        loadBlacklistConfig(path, logger);
+        loadMainConfig(path.resolve("config.conf"), logger);
+        loadMessagesConfig(path.resolve("messages.conf"), logger);
+        loadBlacklistConfig(path.resolve("blacklist.conf"), logger);
 
         FloodCheck.setFloodRegex();
     }
 
-    
     private static void loadMainConfig(Path path, Logger logger){
-        Path configPath = path.resolve("config.conf");
         final HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
             .defaultOptions(opts -> opts
                 .shouldCopyDefaults(true)
@@ -39,7 +42,7 @@ public class Configuration {
                     "https://github.com/4drian3d/ChatRegulator/wiki/Configuration\n"
                 )
             )
-            .path(configPath)
+            .path(path)
             .build();
 
         try {
@@ -53,7 +56,6 @@ public class Configuration {
     }
 
     private static void loadMessagesConfig(Path path, Logger logger){
-        Path messagesPath = path.resolve("messages.conf");
         final HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
             .defaultOptions(opts -> opts
                 .shouldCopyDefaults(true)
@@ -65,7 +67,7 @@ public class Configuration {
                     "Spanish Guide: https://gist.github.com/4drian3d/9ccce0ca1774285e38becb09b73728f3"
                 )
             )
-            .path(messagesPath)
+            .path(path)
             .build();
 
         try {
@@ -79,7 +81,6 @@ public class Configuration {
     }
 
     private static void loadBlacklistConfig(Path path, Logger logger){
-        Path messagesPath = path.resolve("blacklist.conf");
         final HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
             .defaultOptions(opts -> opts
                 .shouldCopyDefaults(true)
@@ -90,7 +91,7 @@ public class Configuration {
                     "https://regex101.com/"
                 )
             )
-            .path(messagesPath)
+            .path(path)
             .build();
 
         try {

@@ -20,7 +20,6 @@ public class CommandUtils {
     /**
      * CommandUtils constructor
      * @param server the proxy server
-     * @param config the plugin config
      */
     public CommandUtils(ProxyServer server){
         this.server = server;

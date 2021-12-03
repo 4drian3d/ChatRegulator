@@ -9,6 +9,7 @@ public class LeaveListener {
     /**
      * In case the player leaves the server,
      * his online status is marked as false.
+     * @param event the event
      */
     @Subscribe(async = true)
     public void onLeave(DisconnectEvent event){

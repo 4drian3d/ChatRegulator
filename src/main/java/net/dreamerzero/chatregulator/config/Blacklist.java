@@ -6,6 +6,9 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
 
+/**
+ * Blacklist Configuration
+ */
 public class Blacklist {
     @ConfigSerializable
     public static class Config{

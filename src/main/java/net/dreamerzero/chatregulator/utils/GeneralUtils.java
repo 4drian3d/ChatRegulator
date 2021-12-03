@@ -3,6 +3,9 @@ package net.dreamerzero.chatregulator.utils;
 import net.kyori.adventure.text.Component;
 
 public final class GeneralUtils {
+    /**
+     * Spaces component for "/chatregulator clear" command
+     */
     public static final Component spacesComponent = Component.text()
         .append(Component.newline())
         .append(Component.newline())

@@ -28,6 +28,7 @@ public class ViolationEvent implements ResultedEvent<GenericResult> {
      * ViolationEvent Contructor
      * @param infractionPlayer the player who committed the infraction
      * @param type the infraction type
+     * @param detection the detection
      */
     public ViolationEvent(InfractionPlayer infractionPlayer, InfractionType type, AbstractCheck detection){
         this.infractionPlayer = infractionPlayer;
