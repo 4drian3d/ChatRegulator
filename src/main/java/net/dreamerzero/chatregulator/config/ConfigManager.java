@@ -1,5 +1,7 @@
 package net.dreamerzero.chatregulator.config;
 
+import com.velocitypowered.api.proxy.Player;
+
 import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.dreamerzero.chatregulator.modules.checks.FloodCheck;
 import net.dreamerzero.chatregulator.modules.checks.InfractionCheck;
@@ -51,7 +53,8 @@ public class ConfigManager {
      * @param type the type of infraction
      */
     public void sendWarningMessage(InfractionPlayer infractor, TypeUtils.InfractionType type){
-        infractor.getPlayer().ifPresent(player -> {
+        Player player = infractor.getPlayer();
+        if(player != null){
             String message = messages.getSpamMessages().getWarningMessage();
             TemplateResolver templates = PlaceholderUtils.getTemplates(infractor);
 
@@ -60,7 +63,7 @@ public class ConfigManager {
                 case MESSAGE: player.sendMessage(mm.deserialize(message, templates)); break;
                 case ACTIONBAR: player.sendActionBar(mm.deserialize(message, templates)); break;
             }
-        });
+        }
     }
 
     /**
@@ -70,7 +73,8 @@ public class ConfigManager {
      * @param fUtils the flood check
      */
     public void sendWarningMessage(InfractionPlayer infractor, TypeUtils.InfractionType type, FloodCheck fUtils){
-        infractor.getPlayer().ifPresent(player -> {
+        Player player = infractor.getPlayer();
+        if(player != null){
             String message = messages.getFloodMessages().getWarningMessage();
             TemplateResolver template = TemplateResolver.combining(
                 TemplateResolver.templates(
@@ -81,7 +85,7 @@ public class ConfigManager {
                 case MESSAGE: player.sendMessage(mm.deserialize(message, template)); break;
                 case ACTIONBAR: player.sendActionBar(mm.deserialize(message, template)); break;
             }
-        });
+        }
     }
 
     /**
@@ -91,7 +95,8 @@ public class ConfigManager {
      * @param iUtils the infractions check
      */
     public void sendWarningMessage(InfractionPlayer infractor, TypeUtils.InfractionType type, InfractionCheck iUtils){
-        infractor.getPlayer().ifPresent(player -> {
+        Player player = infractor.getPlayer();
+        if(player != null){
             String message = messages.getInfractionsMessages().getWarningMessage();
             TemplateResolver template = TemplateResolver.combining(
                 TemplateResolver.templates(
@@ -102,7 +107,7 @@ public class ConfigManager {
                 case MESSAGE: player.sendMessage(mm.deserialize(message, template)); break;
                 case ACTIONBAR: player.sendActionBar(mm.deserialize(message, template)); break;
             }
-        });
+        }
     }
 
     private void sendTitle(String message, Audience player, TemplateResolver template){

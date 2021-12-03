@@ -35,27 +35,29 @@ public class CommandUtils {
      * @param infractorPlayer the {@link InfractionPlayer} involved
      */
     public void executeCommand(InfractionType type, InfractionPlayer infractorPlayer){
-        Player infractor = infractorPlayer.getPlayer().orElseThrow();
-        switch(type){
-            case REGULAR:
-                execute(infractor, infractorPlayer, config.getInfractionsConfig().getCommandsConfig(), type);
-                break;
-            case FLOOD:
-                execute(infractor, infractorPlayer, config.getFloodConfig().getCommandsConfig(), type);
-                break;
-            case SPAM:
-                execute(infractor, infractorPlayer, config.getSpamConfig().getCommandsConfig(), type);
-                break;
-            case BCOMMAND:
-                execute(infractor, infractorPlayer, config.getCommandBlacklistConfig().getCommandsConfig(), type);
-                break;
-            case UNICODE:
-                execute(infractor, infractorPlayer, config.getUnicodeConfig().getCommandsConfig(), type);
-                break;
-            case CAPS:
-                execute(infractor, infractorPlayer, config.getCapsConfig().getCommandsConfig(), type);
-                break;
-            case NONE: return;
+        Player infractor = infractorPlayer.getPlayer();
+        if(infractor != null){
+            switch(type){
+                case REGULAR:
+                    execute(infractor, infractorPlayer, config.getInfractionsConfig().getCommandsConfig(), type);
+                    break;
+                case FLOOD:
+                    execute(infractor, infractorPlayer, config.getFloodConfig().getCommandsConfig(), type);
+                    break;
+                case SPAM:
+                    execute(infractor, infractorPlayer, config.getSpamConfig().getCommandsConfig(), type);
+                    break;
+                case BCOMMAND:
+                    execute(infractor, infractorPlayer, config.getCommandBlacklistConfig().getCommandsConfig(), type);
+                    break;
+                case UNICODE:
+                    execute(infractor, infractorPlayer, config.getUnicodeConfig().getCommandsConfig(), type);
+                    break;
+                case CAPS:
+                    execute(infractor, infractorPlayer, config.getCapsConfig().getCommandsConfig(), type);
+                    break;
+                case NONE: return;
+            }
         }
     }
 

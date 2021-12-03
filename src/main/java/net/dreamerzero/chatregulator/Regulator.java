@@ -77,7 +77,7 @@ public class Regulator {
      * Initialization of the plugin
      */
     public void onProxyInitialization(final ProxyInitializeEvent event) {
-        plugin = this;
+        Regulator.plugin = this;
         // :)
         server.getConsoleCommandSource().sendMessage(
             MiniMessage.miniMessage().parse("<gradient:#f2709c:#ff9472>ChatRegulator</gradient> <gradient:#DAE2F8:#D4D3DD>has started, have a very nice day</gradient>"));
@@ -104,6 +104,10 @@ public class Regulator {
 
     public Logger getLogger(){
         return this.logger;
+    }
+
+    public ProxyServer getProxy(){
+        return this.server;
     }
 
     /**

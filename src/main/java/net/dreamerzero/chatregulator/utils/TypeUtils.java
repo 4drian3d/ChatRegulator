@@ -3,7 +3,7 @@ package net.dreamerzero.chatregulator.utils;
 /**
  * Utilities for the distinction of the detections performed
  */
-public class TypeUtils {
+public final class TypeUtils {
     /**
      * The warning format to be executed
      */

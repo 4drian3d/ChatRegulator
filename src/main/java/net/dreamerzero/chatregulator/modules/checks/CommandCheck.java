@@ -22,7 +22,6 @@ public class CommandCheck extends AbstractCheck {
                 return;
             }
         }
-        super.detected = false;
     }
 
     @Override

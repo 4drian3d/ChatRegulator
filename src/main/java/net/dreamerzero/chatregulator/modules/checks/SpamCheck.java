@@ -21,17 +21,13 @@ public class SpamCheck extends AbstractCheck {
     @Override
     public void check(String message){
         super.string = message;
+        this.pattern = message;
         this.spamInfricted(message, type);
     }
 
     @Override
     public String getInfractionWord(){
         return super.string;
-    }
-
-    @Override
-    public String getPattern(){
-        return "This check does not require a pattern";
     }
 
     /**

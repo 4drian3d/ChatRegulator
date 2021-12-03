@@ -2,7 +2,7 @@ package net.dreamerzero.chatregulator.utils;
 
 import net.kyori.adventure.text.Component;
 
-public class GeneralUtils {
+public final class GeneralUtils {
     public static final Component spacesComponent = Component.text()
         .append(Component.newline())
         .append(Component.newline())

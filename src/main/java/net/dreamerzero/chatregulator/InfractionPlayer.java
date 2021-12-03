@@ -8,6 +8,9 @@ import java.util.UUID;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.dreamerzero.chatregulator.exception.PlayerNotAvailableException;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 
 /**
@@ -132,7 +135,7 @@ public class InfractionPlayer {
      * @return last message of the player
      */
     public String lastMessage(){
-        return lastMessage;
+        return this.lastMessage;
     }
 
     /**
@@ -140,8 +143,8 @@ public class InfractionPlayer {
      * @param newLastMessage the new last message sent by the player
      */
     public void lastMessage(String newLastMessage){
-        preLastMessage = lastMessage;
-        lastMessage = newLastMessage;
+        this.preLastMessage = this.lastMessage;
+        this.lastMessage = newLastMessage;
         this.timeSinceLastMessage = Instant.now();
     }
 
@@ -150,7 +153,7 @@ public class InfractionPlayer {
      * @return the command before the player's last command
      */
     public String preLastCommand(){
-        return preLastCommand;
+        return this.preLastCommand;
     }
 
     /**
@@ -158,7 +161,7 @@ public class InfractionPlayer {
      * @return last command of the player
      */
     public String lastCommand(){
-        return lastCommand;
+        return this.lastCommand;
     }
 
     /**
@@ -166,17 +169,17 @@ public class InfractionPlayer {
      * @param newLastCommand the new last command executed by the player
      */
     public void lastCommand(String newLastCommand){
-        preLastCommand = lastCommand;
-        lastCommand = newLastCommand;
+        this.preLastCommand = this.lastCommand;
+        this.lastCommand = newLastCommand;
         this.timeSinceLastCommand = Instant.now();
     }
 
     public long getTimeSinceLastMessage(){
-        return Duration.between(timeSinceLastMessage, Instant.now()).toMillis();
+        return Duration.between(this.timeSinceLastMessage, Instant.now()).toMillis();
     }
 
     public long getTimeSinceLastCommand(){
-        return Duration.between(timeSinceLastCommand, Instant.now()).toMillis();
+        return Duration.between(this.timeSinceLastCommand, Instant.now()).toMillis();
     }
 
     /**
@@ -185,12 +188,12 @@ public class InfractionPlayer {
      */
     public void addViolation(InfractionType type){
         switch(type){
-            case SPAM: spamViolations++; break;
-            case REGULAR: regularViolations++; break;
-            case FLOOD: floodViolations++; break;
-            case BCOMMAND: commandViolations++; break;
-            case UNICODE: unicodeViolations++; break;
-            case CAPS: capsviolations++; break;
+            case SPAM: this.spamViolations++; break;
+            case REGULAR: this.regularViolations++; break;
+            case FLOOD: this.floodViolations++; break;
+            case BCOMMAND: this.commandViolations++; break;
+            case UNICODE: this.unicodeViolations++; break;
+            case CAPS: this.capsviolations++; break;
             case NONE: return;
         }
     }
@@ -202,13 +205,23 @@ public class InfractionPlayer {
      */
     public void setViolations(InfractionType type, int newViolationsCount){
         switch(type){
-            case SPAM: spamViolations = newViolationsCount; break;
-            case REGULAR: regularViolations = newViolationsCount; break;
-            case FLOOD: floodViolations = newViolationsCount; break;
-            case BCOMMAND: commandViolations = newViolationsCount; break;
-            case UNICODE: unicodeViolations = newViolationsCount; break;
-            case CAPS: capsviolations = newViolationsCount; break;
+            case SPAM: this.spamViolations = newViolationsCount; break;
+            case REGULAR: this.regularViolations = newViolationsCount; break;
+            case FLOOD: this.floodViolations = newViolationsCount; break;
+            case BCOMMAND: this.commandViolations = newViolationsCount; break;
+            case UNICODE: this.unicodeViolations = newViolationsCount; break;
+            case CAPS: this.capsviolations = newViolationsCount; break;
             case NONE: return;
+        }
+    }
+
+    /**
+     * Reset the count of infraction of any type of this player
+     * @param types the types
+     */
+    public void resetViolations(InfractionType... types){
+        for(InfractionType type : types){
+            this.setViolations(type, 0);
         }
     }
 
@@ -219,12 +232,12 @@ public class InfractionPlayer {
      */
     public int getViolations(InfractionType type){
         switch(type){
-            case SPAM: return spamViolations;
-            case REGULAR: return regularViolations;
-            case FLOOD: return floodViolations;
-            case BCOMMAND: return commandViolations;
-            case UNICODE: return unicodeViolations;
-            case CAPS: return capsviolations;
+            case SPAM: return this.spamViolations;
+            case REGULAR: return this.regularViolations;
+            case FLOOD: return this.floodViolations;
+            case BCOMMAND: return this.commandViolations;
+            case UNICODE: return this.unicodeViolations;
+            case CAPS: return this.capsviolations;
             case NONE: break;
         }
         return 0;
@@ -238,26 +251,29 @@ public class InfractionPlayer {
      * outside of a player event or command.</strong>
      * @return the original {@link Player}
      */
-    public Optional<Player> getPlayer(){
-        return Optional.of(this.player);
+    public @Nullable Player getPlayer(){
+        return this.player;
     }
 
     /**
      * Get the {@link InfractionPlayer} based on a {@link UUID}
      * @param uuid the player uuid
-     * @param server the proxy server
      * @return the {@link InfractionPlayer}
+     * @throws PlayerNotAvailableException if the player is not available
      */
-    public static Optional<InfractionPlayer> get(final UUID uuid, final ProxyServer server){
+    public static @Nullable InfractionPlayer get(final UUID uuid) throws PlayerNotAvailableException{
         if(Regulator.infractionPlayers.containsKey(uuid)){
-            return Optional.of(Regulator.infractionPlayers.get(uuid));
-        } else if(server.getPlayer(uuid).isPresent()) {
-            InfractionPlayer infractionPlayer = new InfractionPlayer(uuid, server);
-            Regulator.infractionPlayers.put(uuid, infractionPlayer);
-            return Optional.of(infractionPlayer);
+            return Regulator.infractionPlayers.get(uuid);
         } else {
-            Regulator.getInstance().getLogger().error("An attempt has been made to obtain a player who has not joined the server yet.");
-            return Optional.of(null);
+            Regulator plugin = Regulator.getInstance();
+            Optional<Player> optionalPlayer = plugin.getProxy().getPlayer(uuid);
+            if(optionalPlayer.isPresent()){
+                InfractionPlayer iPlayer = InfractionPlayer.get(optionalPlayer.get());
+                Regulator.infractionPlayers.put(uuid, iPlayer);
+                return iPlayer;
+            } else {
+                throw new PlayerNotAvailableException(uuid);
+            }
         }
     }
 

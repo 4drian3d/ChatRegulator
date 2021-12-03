@@ -24,4 +24,9 @@ public class CapsCheck extends AbstractCheck{
     public String replaceInfraction(){
         return super.string.toLowerCase(Locale.ROOT);
     }
+
+    @Override
+    public String getInfractionWord(){
+        return this.string;
+    }
 }

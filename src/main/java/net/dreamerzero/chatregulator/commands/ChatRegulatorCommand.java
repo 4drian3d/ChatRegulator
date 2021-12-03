@@ -121,37 +121,39 @@ public class ChatRegulatorCommand implements SimpleCommand {
                 if(args.length >= 3){
                     switch(args[2].toLowerCase()){
                         case "infractions": case "regular":
-                            infractionPlayer.setViolations(InfractionType.REGULAR, 0);
+                            infractionPlayer.resetViolations(InfractionType.REGULAR);
                             cManager.sendResetMessage(source, InfractionType.REGULAR, infractionPlayer);
                             break;
                         case "flood":
-                            infractionPlayer.setViolations(InfractionType.FLOOD, 0);
+                            infractionPlayer.resetViolations(InfractionType.FLOOD);
                             cManager.sendResetMessage(source, InfractionType.FLOOD, infractionPlayer);
                             break;
                         case "spam":
-                            infractionPlayer.setViolations(InfractionType.SPAM, 0);
+                            infractionPlayer.resetViolations(InfractionType.SPAM);
                             cManager.sendResetMessage(source, InfractionType.SPAM, infractionPlayer);
                             break;
                         case "command": case "commands":
-                            infractionPlayer.setViolations(InfractionType.BCOMMAND, 0);
+                            infractionPlayer.resetViolations(InfractionType.BCOMMAND);
                             cManager.sendResetMessage(source, InfractionType.BCOMMAND, infractionPlayer);
                             break;
                         case "unicode":
-                            infractionPlayer.setViolations(InfractionType.UNICODE, 0);
+                            infractionPlayer.resetViolations(InfractionType.UNICODE);
                             cManager.sendResetMessage(source, InfractionType.UNICODE, infractionPlayer);
                             break;
                         case "caps":
-                            infractionPlayer.setViolations(InfractionType.CAPS, 0);
+                            infractionPlayer.resetViolations(InfractionType.CAPS);
                             cManager.sendResetMessage(source, InfractionType.CAPS, infractionPlayer);
                             break;
                         default: break;
                     }
                 }
-                infractionPlayer.setViolations(InfractionType.SPAM, 0);
-                infractionPlayer.setViolations(InfractionType.FLOOD, 0);
-                infractionPlayer.setViolations(InfractionType.REGULAR, 0);
-                infractionPlayer.setViolations(InfractionType.BCOMMAND, 0);
-                infractionPlayer.setViolations(InfractionType.UNICODE, 0);
+                infractionPlayer.resetViolations(
+                    InfractionType.SPAM,
+                    InfractionType.FLOOD,
+                    InfractionType.REGULAR,
+                    InfractionType.BCOMMAND,
+                    InfractionType.UNICODE
+                );
                 cManager.sendResetMessage(source, InfractionType.NONE, infractionPlayer);
             }, () -> {
                 var gmessages = messages.getGeneralMessages();

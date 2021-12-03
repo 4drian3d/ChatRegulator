@@ -2,6 +2,8 @@ package net.dreamerzero.chatregulator.utils;
 
 import java.util.Set;
 
+import com.velocitypowered.api.proxy.Player;
+
 import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.dreamerzero.chatregulator.modules.Statistics;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
@@ -27,9 +29,11 @@ public class PlaceholderUtils {
             Template.template("unicode", String.valueOf(player.getViolations(InfractionType.UNICODE))),
             Template.template("caps", String.valueOf(player.getViolations(InfractionType.CAPS)))
         );
-        player.getPlayer().ifPresent(p ->
+        Player p = player.getPlayer();
+        if(p != null){
             p.getCurrentServer().ifPresent(server ->
-                templates.add(Template.template("server", server.getServer().getServerInfo().getName()))));
+                templates.add(Template.template("server", server.getServer().getServerInfo().getName())));
+        }
 
         return TemplateResolver.templates(templates);
     }
