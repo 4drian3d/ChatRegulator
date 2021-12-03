@@ -27,13 +27,14 @@ public class Configuration {
         FloodCheck.setFloodRegex();
     }
 
+    
     private static void loadMainConfig(Path path, Logger logger){
         Path configPath = path.resolve("config.conf");
         final HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
             .defaultOptions(opts -> opts
                 .shouldCopyDefaults(true)
                 .header(
-                    "ChatRegulator | by 4drian3d\n"+
+                    "ChatRegulator | by 4drian3d\n "+
                     "Check the function of each configuration option at\n"+
                     "https://github.com/4drian3d/ChatRegulator/wiki/Configuration\n"
                 )
@@ -47,7 +48,7 @@ public class Configuration {
             node.set(MainConfig.Config.class, config);
             loader.save(node);
         } catch (ConfigurateException exception){
-            logger.error("Could not load configuration: {}", exception.getMessage());
+            logger.error("Could not load config.conf file, error: {}", exception.getMessage());
         }
     }
 
@@ -73,7 +74,7 @@ public class Configuration {
             node.set(Messages.Config.class, messages);
             loader.save(node);
         } catch (ConfigurateException exception){
-            logger.error("Could not load configuration: {}", exception.getMessage());
+            logger.error("Could not load messages.conf file, error: {}", exception.getMessage());
         }
     }
 
@@ -98,7 +99,7 @@ public class Configuration {
             node.set(Blacklist.Config.class, blacklist);
             loader.save(node);
         } catch (ConfigurateException exception){
-            logger.error("Could not load configuration: {}", exception.getMessage());
+            logger.error("Could not load blacklist.conf file, error: {}", exception.getMessage());
         }
     }
 

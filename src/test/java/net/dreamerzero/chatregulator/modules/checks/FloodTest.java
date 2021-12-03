@@ -25,37 +25,13 @@ public class FloodTest {
     void floodCheck(){
         FloodCheck fCheck = new FloodCheck();
 
-        String original = "aa flooooooooooood aa";
+        String original = "aa floOoOOOooOod aa";
+        String expected = "aa fld aa";
 
         fCheck.check(original);
-
-        assertTrue(fCheck.isInfraction());
-    }
-
-    @Test
-    @DisplayName("Replacement Test")
-    void replaceFlood(){
-        FloodCheck fCheck = new FloodCheck();
-
-        String original = "yee flooooooooooood yee";
-
-        fCheck.check(original);
-
         String replaced = fCheck.replaceInfraction();
-        String expected = "yee fld yee";
 
         assertEquals(replaced, expected);
-    }
-
-    @Test
-    @DisplayName("Case Insensitive Test")
-    void caseTest(){
-        FloodCheck fCheck = new FloodCheck();
-
-        String original = "floOoOoOooOooOd";
-
-        fCheck.check(original);
-
         assertTrue(fCheck.isInfraction());
     }
 }

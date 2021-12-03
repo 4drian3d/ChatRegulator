@@ -24,7 +24,7 @@ public class InfractionTest {
     @DisplayName("Check Test")
     void detectionTest(){
         InfractionCheck iCheck = new InfractionCheck();
-        String original = "asdasdasdadad sh1t dadasdad";
+        String original = "asdasdasdadadSh1T dadasdad";
 
         iCheck.check(original);
 
@@ -33,40 +33,15 @@ public class InfractionTest {
 
     @Test
     @DisplayName("Replacement Test")
-    void replaceTest(){
-        InfractionCheck iCheck = new InfractionCheck();
-
-        String original = "aaa f4ck aaa";
-        iCheck.check(original);
-
-        String replaced = iCheck.replaceInfractions();
-        String expected = "aaa *** aaa";
-
-        assertEquals(expected, replaced);
-    }
-
-    @Test
-    @DisplayName("Case Insensitive Test")
-    void caseTest(){
-        InfractionCheck iCheck = new InfractionCheck();
-
-        String original = "D1cK";
-
-        iCheck.check(original);
-
-        assertTrue(iCheck.isInfraction());
-    }
-
-    @Test
-    @DisplayName("Multi Replace")
     void replaceMultiple(){
         InfractionCheck iCheck = new InfractionCheck();
 
-        String original = "D1cK sh1t f4ck";
-        String expected = "*** *** ***";
+        String original = "Hello D1cK sh1t f4ck!!!";
+        String expected = "Hello *** *** ***!!!";
 
         iCheck.check(original);
+        String replaced = iCheck.replaceInfractions();
 
-        assertEquals(expected, iCheck.replaceInfractions());
+        assertEquals(expected, replaced);
     }
 }

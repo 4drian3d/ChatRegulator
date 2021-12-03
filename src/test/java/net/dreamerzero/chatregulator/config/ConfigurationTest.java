@@ -10,6 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.dreamerzero.chatregulator.utils.TypeUtils.ControlType;
+import net.dreamerzero.chatregulator.utils.TypeUtils.WarningType;
+
 public class ConfigurationTest {
     @BeforeAll
     static void loadConfig(){
@@ -20,14 +23,16 @@ public class ConfigurationTest {
     @Test
     @DisplayName("Config Values")
     void configValues(){
-        assertTrue(Configuration.getConfig().getCommandBlacklistConfig().enabled());
-        assertFalse(Configuration.getConfig().getFormatConfig().enabled());
+        var config = Configuration.getConfig();
+
+        assertTrue(config.getCommandBlacklistConfig().enabled());
+        assertFalse(config.getFormatConfig().enabled());
+
+        assertEquals(2, config.getFloodConfig().getCommandsConfig().violationsRequired());
+        assertEquals(2, config.getUnicodeConfig().getCommandsConfig().violationsRequired());
+
+        assertEquals(ControlType.BLOCK, config.getInfractionsConfig().getControlType());
+        assertEquals(WarningType.MESSAGE, config.getSpamConfig().getWarningType());
     }
 
-    @Test
-    @DisplayName("Extension Test")
-    void commonCommandsConfig(){
-        assertEquals(2, Configuration.getConfig().getFloodConfig().getCommandsConfig().violationsRequired());
-        assertEquals(2, Configuration.getConfig().getUnicodeConfig().getCommandsConfig().violationsRequired());
-    }
 }
