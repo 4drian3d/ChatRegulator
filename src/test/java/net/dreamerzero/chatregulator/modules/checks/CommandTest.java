@@ -21,7 +21,7 @@ public class CommandTest {
 
     @Test
     @DisplayName("Command Check")
-    void test(){
+    void blockedCommandsTest(){
         String command = "execute";
 
         CommandCheck cCheck = new CommandCheck();

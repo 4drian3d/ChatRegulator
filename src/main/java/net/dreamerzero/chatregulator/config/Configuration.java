@@ -88,7 +88,8 @@ public class Configuration {
                     "ChatRegulator | by 4drian3d\n"+
                     "Blacklist of Commands and Regular Expressions\n"+
                     "To test each regular expression, use: \n"+
-                    "https://regex101.com/"
+                    "https://regex101.com/"+
+                    "If you are using patterns that include '\\', replace them with '\\\\'"
                 )
             )
             .path(path)
@@ -100,7 +101,8 @@ public class Configuration {
             node.set(Blacklist.Config.class, blacklist);
             loader.save(node);
         } catch (ConfigurateException exception){
-            logger.error("Could not load blacklist.conf file, error: {}", exception.getMessage());
+            logger.error("Could not load blacklist.conf file, error:");
+            exception.printStackTrace();
         }
     }
 
