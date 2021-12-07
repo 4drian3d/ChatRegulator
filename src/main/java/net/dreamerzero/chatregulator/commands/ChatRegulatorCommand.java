@@ -22,8 +22,8 @@ import net.dreamerzero.chatregulator.utils.PlaceholderUtils;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.Template;
-import net.kyori.adventure.text.minimessage.template.TemplateResolver;
+import net.kyori.adventure.text.minimessage.placeholder.Placeholder;
+import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
 
 /**
  * Main Plugin Command
@@ -50,32 +50,32 @@ public class ChatRegulatorCommand implements SimpleCommand {
         String[] args = invocation.arguments();
         Audience source = invocation.source();
         MiniMessage mm = MiniMessage.miniMessage();
-        TemplateResolver commandTemplate = TemplateResolver.resolving("command", invocation.alias());
+        PlaceholderResolver commandPlaceholder = PlaceholderResolver.resolving("command", invocation.alias());
 
         if(args.length == 0){
-            source.sendMessage(mm.deserialize(messages.getGeneralMessages().getInfoMessage(), commandTemplate));
+            source.sendMessage(mm.deserialize(messages.getGeneralMessages().getInfoMessage(), commandPlaceholder));
             return;
         }
         switch(args[0].toLowerCase()){
-            case "info": case "help": parseHelpCommand(args, source, mm, commandTemplate); break;
+            case "info": case "help": parseHelpCommand(args, source, mm, commandPlaceholder); break;
             case "stats": parseStatsCommand(source, mm); break;
             case "player": parsePlayerCommand(args, source, mm); break;
             case "reset": parseResetCommand(args, source, mm); break;
             case "clear": parseClearCommand(args, source, mm); break;
             case "reload": parseReloadCommand(source, mm); break;
-            default: source.sendMessage(mm.deserialize(messages.getGeneralMessages().getUnknowMessage(), TemplateResolver.templates(Template.template("args", args[0])))); break;
+            default: source.sendMessage(mm.deserialize(messages.getGeneralMessages().getUnknowMessage(), PlaceholderResolver.resolving("args", args[0]))); break;
         }
     }
 
-    private void parseHelpCommand(String[] args, Audience source, MiniMessage mm, TemplateResolver commandTemplate){
+    private void parseHelpCommand(String[] args, Audience source, MiniMessage mm, PlaceholderResolver commandPlaceholder){
         var hmessages = messages.getGeneralMessages().getHelpMessages();
         if(args.length == 1){
-            hmessages.getMainHelp().forEach(line -> source.sendMessage(mm.deserialize(line, commandTemplate)));
+            hmessages.getMainHelp().forEach(line -> source.sendMessage(mm.deserialize(line, commandPlaceholder)));
         } else {
             switch(args[1]){
-                case "reset": hmessages.getResethelp().forEach(line -> source.sendMessage(mm.deserialize(line, commandTemplate))); break;
-                case "clear": hmessages.getClearHelp().forEach(line -> source.sendMessage(mm.deserialize(line, commandTemplate))); break;
-                case "player": hmessages.getPlayerHelp().forEach(line -> source.sendMessage(mm.deserialize(line, commandTemplate))); break;
+                case "reset": hmessages.getResethelp().forEach(line -> source.sendMessage(mm.deserialize(line, commandPlaceholder))); break;
+                case "clear": hmessages.getClearHelp().forEach(line -> source.sendMessage(mm.deserialize(line, commandPlaceholder))); break;
+                case "player": hmessages.getPlayerHelp().forEach(line -> source.sendMessage(mm.deserialize(line, commandPlaceholder))); break;
                 default: source.sendMessage(mm.deserialize(messages.getGeneralMessages().noArgument())); break;
             }
         }
@@ -83,7 +83,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
 
     private void parseStatsCommand(Audience source, MiniMessage mm){
         for(String line : messages.getGeneralMessages().getStatsFormat()){
-            source.sendMessage(mm.deserialize(line, PlaceholderUtils.getGlobalTemplates()));
+            source.sendMessage(mm.deserialize(line, PlaceholderUtils.getGlobalPlaceholders()));
         }
     }
 
@@ -93,20 +93,20 @@ public class ChatRegulatorCommand implements SimpleCommand {
             server.getPlayer(args[1]).ifPresentOrElse(player -> {
                 InfractionPlayer infractionPlayer = InfractionPlayer.get(player);
                 for(String line : gconfig.getPlayerFormat()){
-                    source.sendMessage(mm.deserialize(line, PlaceholderUtils.getTemplates(infractionPlayer)));
+                    source.sendMessage(mm.deserialize(line, PlaceholderUtils.getPlaceholders(infractionPlayer)));
                 }
             }, () -> {
                 for(Entry<UUID, InfractionPlayer> entry : infractionPlayers.entrySet()){
                     InfractionPlayer iPlayer = entry.getValue();
                     if(iPlayer.username().equals(args[0])){
                         for(String line : gconfig.getPlayerFormat()){
-                            source.sendMessage(mm.deserialize(line, PlaceholderUtils.getTemplates(iPlayer)));
+                            source.sendMessage(mm.deserialize(line, PlaceholderUtils.getPlaceholders(iPlayer)));
                         }
                         break;
                     }
                 }
-                TemplateResolver platerTemplate = TemplateResolver.templates(Template.template("player", args[1]));
-                source.sendMessage(mm.deserialize(gconfig.playerNotFound(), platerTemplate));
+                PlaceholderResolver playerPlaceholder = PlaceholderResolver.placeholders(Placeholder.placeholder("player", args[1]));
+                source.sendMessage(mm.deserialize(gconfig.playerNotFound(), playerPlaceholder));
             });
         } else {
             source.sendMessage(mm.deserialize(gconfig.noArgument()));
@@ -161,13 +161,13 @@ public class ChatRegulatorCommand implements SimpleCommand {
                     InfractionPlayer iPlayer = entry.getValue();
                     if(iPlayer.username().equals(args[1])){
                         for(String line : gmessages.getPlayerFormat()){
-                            source.sendMessage(mm.deserialize(line,PlaceholderUtils.getTemplates(iPlayer)));
+                            source.sendMessage(mm.deserialize(line,PlaceholderUtils.getPlaceholders(iPlayer)));
                         }
                         break;
                     }
                 }
-                TemplateResolver playerTemplate = TemplateResolver.templates(Template.template("player", args[1]));
-                source.sendMessage(mm.deserialize(gmessages.playerNotFound(), playerTemplate));
+                PlaceholderResolver playerPlaceholder = PlaceholderResolver.placeholders(Placeholder.placeholder("player", args[1]));
+                source.sendMessage(mm.deserialize(gmessages.playerNotFound(), playerPlaceholder));
             });
         } else {
             source.sendMessage(mm.deserialize(messages.getGeneralMessages().noArgument()));
@@ -180,18 +180,18 @@ public class ChatRegulatorCommand implements SimpleCommand {
             switch(args[1].toLowerCase()){
                 case "server":
                     if(args.length >= 3){
-                        TemplateResolver serverTemplate = TemplateResolver.resolving("server", args[2]);
+                        PlaceholderResolver serverPlaceholder = PlaceholderResolver.resolving("server", args[2]);
                         server.getServer(args[2]).ifPresentOrElse(serverObjetive -> {
                             serverObjetive.sendMessage(GeneralUtils.spacesComponent);
-                            source.sendMessage(mm.deserialize(clearmessages.getServerMessage(), serverTemplate));
-                        }, () -> source.sendMessage(mm.deserialize(clearmessages.getNotFoundServerMessage(), serverTemplate)));
+                            source.sendMessage(mm.deserialize(clearmessages.getServerMessage(), serverPlaceholder));
+                        }, () -> source.sendMessage(mm.deserialize(clearmessages.getNotFoundServerMessage(), serverPlaceholder)));
                         break;
                     } else if (source instanceof Player) {
                         Player player = (Player)source;
                         player.getCurrentServer().ifPresent(playerServer -> {
-                            TemplateResolver serverTemplate = TemplateResolver.resolving("server", playerServer.getServerInfo().getName());
+                            PlaceholderResolver serverPlaceholder = PlaceholderResolver.resolving("server", playerServer.getServerInfo().getName());
                             playerServer.getServer().sendMessage(GeneralUtils.spacesComponent);
-                            source.sendMessage(mm.deserialize(clearmessages.getServerMessage(), serverTemplate));
+                            source.sendMessage(mm.deserialize(clearmessages.getServerMessage(), serverPlaceholder));
                         });
                     } else {
                         source.sendMessage(mm.deserialize(messages.getGeneralMessages().noArgument()));
@@ -203,12 +203,12 @@ public class ChatRegulatorCommand implements SimpleCommand {
                             player.sendMessage(GeneralUtils.spacesComponent);
                             source.sendMessage(mm.deserialize(
                                 clearmessages.getPlayerMessage(),
-                                PlaceholderUtils.getTemplates(InfractionPlayer.get(player))));
+                                PlaceholderUtils.getPlaceholders(InfractionPlayer.get(player))));
                         }, () ->
                             source.sendMessage(
                                 mm.deserialize(
                                     messages.getGeneralMessages().playerNotFound(),
-                                    TemplateResolver.resolving("player", args[2])
+                                    PlaceholderResolver.resolving("player", args[2])
                                 )
                             )
                         );

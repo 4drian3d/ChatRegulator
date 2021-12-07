@@ -13,8 +13,8 @@ import net.dreamerzero.chatregulator.utils.TypeUtils;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.Template;
-import net.kyori.adventure.text.minimessage.template.TemplateResolver;
+import net.kyori.adventure.text.minimessage.placeholder.Placeholder;
+import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
 import net.kyori.adventure.title.Title;
 
 /**
@@ -41,36 +41,36 @@ public class ConfigManager {
         Player player = infractor.getPlayer();
         if(player != null){
             String message = type.getMessages().getWarningMessage();
-            TemplateResolver template = TemplateResolver.combining(
-                TemplateResolver.templates(
-                    Template.template("infraction", check.getInfractionWord())),
-                    PlaceholderUtils.getTemplates(infractor));
+            PlaceholderResolver placeholder = PlaceholderResolver.combining(
+                PlaceholderResolver.placeholders(
+                    Placeholder.placeholder("infraction", check.getInfractionWord())),
+                    PlaceholderUtils.getPlaceholders(infractor));
             switch(((Warning)type.getConfig()).getWarningType()){
-                case TITLE: sendTitle(message, player, template); break;
-                case MESSAGE: player.sendMessage(mm.deserialize(message, template)); break;
-                case ACTIONBAR: player.sendActionBar(mm.deserialize(message, template)); break;
+                case TITLE: sendTitle(message, player, placeholder); break;
+                case MESSAGE: player.sendMessage(mm.deserialize(message, placeholder)); break;
+                case ACTIONBAR: player.sendActionBar(mm.deserialize(message, placeholder)); break;
             }
         }
     }
 
-    private void sendTitle(String message, Audience player, TemplateResolver template){
+    private void sendTitle(String message, Audience player, PlaceholderResolver placeholder){
         if(!message.contains(";")){
             player.showTitle(
             Title.title(
                 Component.empty(),
                 mm.deserialize(
                     message,
-                    template)));
+                    placeholder)));
         } else {
             String[] titleParts = message.split(";");
             player.showTitle(
                 Title.title(
                     mm.deserialize(
                         titleParts[0],
-                        template),
+                        placeholder),
                     mm.deserialize(
                         titleParts[1],
-                        template)));
+                        placeholder)));
         }
     }
 
@@ -98,7 +98,7 @@ public class ConfigManager {
         staff.sendMessage(
             mm.deserialize(
                 message,
-                PlaceholderUtils.getTemplates(infractor)));
+                PlaceholderUtils.getPlaceholders(infractor)));
     }
 
     /**
@@ -111,13 +111,13 @@ public class ConfigManager {
      */
     public void sendResetMessage(Audience sender, TypeUtils.InfractionType type, InfractionPlayer player){
         switch(type){
-            case REGULAR: sender.sendMessage(mm.deserialize(messages.getInfractionsMessages().getResetMessage(), PlaceholderUtils.getTemplates(player))); break;
-            case FLOOD: sender.sendMessage(mm.deserialize(messages.getFloodMessages().getResetMessage(), PlaceholderUtils.getTemplates(player))); break;
-            case SPAM: sender.sendMessage(mm.deserialize(messages.getSpamMessages().getResetMessage(), PlaceholderUtils.getTemplates(player))); break;
-            case NONE: sender.sendMessage(mm.deserialize(messages.getGeneralMessages().allReset(), PlaceholderUtils.getTemplates(player))); break;
-            case BCOMMAND: sender.sendMessage(mm.deserialize(messages.getBlacklistMessages().getResetMessage(), PlaceholderUtils.getTemplates(player))); break;
-            case UNICODE: sender.sendMessage(mm.deserialize(messages.getUnicodeMessages().getResetMessage(), PlaceholderUtils.getTemplates(player))); break;
-            case CAPS: sender.sendMessage(mm.deserialize(messages.getCapsMessages().getResetMessage(), PlaceholderUtils.getTemplates(player))); break;
+            case REGULAR: sender.sendMessage(mm.deserialize(messages.getInfractionsMessages().getResetMessage(), PlaceholderUtils.getPlaceholders(player))); break;
+            case FLOOD: sender.sendMessage(mm.deserialize(messages.getFloodMessages().getResetMessage(), PlaceholderUtils.getPlaceholders(player))); break;
+            case SPAM: sender.sendMessage(mm.deserialize(messages.getSpamMessages().getResetMessage(), PlaceholderUtils.getPlaceholders(player))); break;
+            case NONE: sender.sendMessage(mm.deserialize(messages.getGeneralMessages().allReset(), PlaceholderUtils.getPlaceholders(player))); break;
+            case BCOMMAND: sender.sendMessage(mm.deserialize(messages.getBlacklistMessages().getResetMessage(), PlaceholderUtils.getPlaceholders(player))); break;
+            case UNICODE: sender.sendMessage(mm.deserialize(messages.getUnicodeMessages().getResetMessage(), PlaceholderUtils.getPlaceholders(player))); break;
+            case CAPS: sender.sendMessage(mm.deserialize(messages.getCapsMessages().getResetMessage(), PlaceholderUtils.getPlaceholders(player))); break;
         }
     }
 }

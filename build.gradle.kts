@@ -15,11 +15,11 @@ repositories {
 }
 
 dependencies {
-    shadow("net.kyori:adventure-text-minimessage:4.2.0-SNAPSHOT"){
+    shadow("net.kyori:adventure-text-minimessage:4.10.0-SNAPSHOT"){
         exclude("net.kyori", "adventure-api")
     }
     shadow("org.spongepowered:configurate-hocon:4.1.2")
-    compileOnly("net.frankheijden.serverutils:ServerUtils:3.2.0")
+    compileOnly("net.frankheijden.serverutils:ServerUtils:3.3.1")
 
     compileOnly("com.velocitypowered:velocity-api:3.1.0")
     annotationProcessor("com.velocitypowered:velocity-api:3.1.0")

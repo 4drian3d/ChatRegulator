@@ -7,8 +7,8 @@ import com.velocitypowered.api.proxy.Player;
 import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.dreamerzero.chatregulator.modules.Statistics;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
-import net.kyori.adventure.text.minimessage.Template;
-import net.kyori.adventure.text.minimessage.template.TemplateResolver;
+import net.kyori.adventure.text.minimessage.placeholder.Placeholder;
+import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
 
 /**
  * Player Data Collection Utilities
@@ -19,37 +19,37 @@ public class PlaceholderUtils {
      * @param player the {@link InfractionPlayer}
      * @return placeholders based on this player
      */
-    public static TemplateResolver getTemplates(final InfractionPlayer player){
-        Set<Template> templates = Set.of(
-            Template.template("player", player.username()),
-            Template.template("name", player.username()),
-            Template.template("flood", String.valueOf(player.getViolations().getCount(InfractionType.FLOOD))),
-            Template.template("spam", String.valueOf(player.getViolations().getCount(InfractionType.SPAM))),
-            Template.template("regular", String.valueOf(player.getViolations().getCount(InfractionType.REGULAR))),
-            Template.template("unicode", String.valueOf(player.getViolations().getCount(InfractionType.UNICODE))),
-            Template.template("caps", String.valueOf(player.getViolations().getCount(InfractionType.CAPS)))
+    public static PlaceholderResolver getPlaceholders(final InfractionPlayer player){
+        Set<Placeholder> placeholders = Set.of(
+            Placeholder.placeholder("player", player.username()),
+            Placeholder.placeholder("name", player.username()),
+            Placeholder.placeholder("flood", String.valueOf(player.getViolations().getCount(InfractionType.FLOOD))),
+            Placeholder.placeholder("spam", String.valueOf(player.getViolations().getCount(InfractionType.SPAM))),
+            Placeholder.placeholder("regular", String.valueOf(player.getViolations().getCount(InfractionType.REGULAR))),
+            Placeholder.placeholder("unicode", String.valueOf(player.getViolations().getCount(InfractionType.UNICODE))),
+            Placeholder.placeholder("caps", String.valueOf(player.getViolations().getCount(InfractionType.CAPS)))
         );
         Player p = player.getPlayer();
         if(p != null){
             p.getCurrentServer().ifPresent(server ->
-                templates.add(Template.template("server", server.getServer().getServerInfo().getName())));
+                placeholders.add(Placeholder.placeholder("server", server.getServer().getServerInfo().getName())));
         }
 
-        return TemplateResolver.templates(templates);
+        return PlaceholderResolver.placeholders(placeholders);
     }
 
     /**
      * Obtain the global placeholders
      * @return global placeholders
      */
-    public static TemplateResolver getGlobalTemplates(){
-        return TemplateResolver.templates(
-            Template.template("flood", String.valueOf(Statistics.getViolationCount(InfractionType.FLOOD))),
-            Template.template("spam", String.valueOf(Statistics.getViolationCount(InfractionType.SPAM))),
-            Template.template("regular", String.valueOf(Statistics.getViolationCount(InfractionType.REGULAR))),
-            Template.template("command", String.valueOf(Statistics.getViolationCount(InfractionType.BCOMMAND))),
-            Template.template("unicode", String.valueOf(Statistics.getViolationCount(InfractionType.UNICODE))),
-            Template.template("caps", String.valueOf(Statistics.getViolationCount(InfractionType.CAPS)))
+    public static PlaceholderResolver getGlobalPlaceholders(){
+        return PlaceholderResolver.placeholders(
+            Placeholder.placeholder("flood", String.valueOf(Statistics.getViolationCount(InfractionType.FLOOD))),
+            Placeholder.placeholder("spam", String.valueOf(Statistics.getViolationCount(InfractionType.SPAM))),
+            Placeholder.placeholder("regular", String.valueOf(Statistics.getViolationCount(InfractionType.REGULAR))),
+            Placeholder.placeholder("command", String.valueOf(Statistics.getViolationCount(InfractionType.BCOMMAND))),
+            Placeholder.placeholder("unicode", String.valueOf(Statistics.getViolationCount(InfractionType.UNICODE))),
+            Placeholder.placeholder("caps", String.valueOf(Statistics.getViolationCount(InfractionType.CAPS)))
         );
     }
 
