@@ -1,5 +1,7 @@
 package net.dreamerzero.chatregulator.listener.list;
 
+import java.time.Instant;
+
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.DisconnectEvent;
 
@@ -13,8 +15,8 @@ public class LeaveListener {
      */
     @Subscribe(async = true)
     public void onLeave(DisconnectEvent event){
-        InfractionPlayer infractionPlayer = InfractionPlayer.get(event.getPlayer());
-        infractionPlayer.isOnline(false);
-        infractionPlayer.setLastSeen();
+        InfractionPlayer.get(event.getPlayer())
+            .isOnline(false)
+            .setLastSeen(Instant.now());
     }
 }

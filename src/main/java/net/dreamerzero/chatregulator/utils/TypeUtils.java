@@ -1,5 +1,8 @@
 package net.dreamerzero.chatregulator.utils;
 
+import net.dreamerzero.chatregulator.config.Configuration;
+import net.dreamerzero.chatregulator.config.MainConfig;
+
 /**
  * Utilities for the distinction of the detections performed
  */
@@ -31,34 +34,54 @@ public final class TypeUtils {
          * Represents a regular violation, i.e.
          * detection based on the blacklist.yml file.
          */
-        REGULAR,
+        REGULAR("chatregulator.bypass.infractions", Configuration.getConfig().getInfractionsConfig()),
         /**
          * Represents an infraction for repeating
          * the same character several times in a row.
          */
-        FLOOD,
+        FLOOD("chatregulator.bypass.flood", Configuration.getConfig().getFloodConfig()),
         /**
          * Represents an infraction for repeating
          * the same word or command several times.
          */
-        SPAM,
+        SPAM("chatregulator.bypass.spam", Configuration.getConfig().getSpamConfig()),
         /**
          * Represents a blocked command
          */
-        BCOMMAND,
+        BCOMMAND("chatregulator.bypass.command", Configuration.getConfig().getCommandBlacklistConfig()),
         /**
          * Represents a Unicode check
          */
-        UNICODE,
+        UNICODE("chatregulator.bypass.unicode", Configuration.getConfig().getUnicodeConfig()),
         /**
          * Represents a Caps limit check
          */
-        CAPS,
+        CAPS("chatregulator.bypass.caps", Configuration.getConfig().getCapsConfig()),
         /**
          * Used internally to represent a
          * multiple warning and in other cases more
          */
-        NONE
+        NONE;
+
+        private String bypassPermission;
+        private MainConfig.Toggleable config;
+
+        InfractionType(String permission, MainConfig.Toggleable config){
+            this.bypassPermission = permission;
+            this.config = config;
+        }
+
+        InfractionType(){
+            this.bypassPermission = "";
+        }
+
+        public String bypassPermission(){
+            return this.bypassPermission;
+        }
+
+        public MainConfig.Toggleable getConfig(){
+            return this.config;
+        }
     }
 
     /**

@@ -1,5 +1,9 @@
 package net.dreamerzero.chatregulator.config;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.jetbrains.annotations.NotNull;
@@ -25,14 +29,15 @@ public class Configuration {
      * @param logger plugin logger
      */
     public static void loadConfig(@NotNull Path path, @NotNull Logger logger){
-        loadMainConfig(path.resolve("config.conf"), logger);
-        loadMessagesConfig(path.resolve("messages.conf"), logger);
-        loadBlacklistConfig(path.resolve("blacklist.conf"), logger);
+        loadMainConfig(path, logger);
+        loadMessagesConfig(path, logger);
+        loadBlacklistConfig(path, logger);
 
         FloodCheck.setFloodRegex();
     }
 
     private static void loadMainConfig(Path path, Logger logger){
+        Path configPath = path.resolve("config.conf");
         final HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
             .defaultOptions(opts -> opts
                 .shouldCopyDefaults(true)
@@ -42,7 +47,7 @@ public class Configuration {
                     "https://github.com/4drian3d/ChatRegulator/wiki/Configuration\n"
                 )
             )
-            .path(path)
+            .path(configPath)
             .build();
 
         try {
@@ -56,6 +61,7 @@ public class Configuration {
     }
 
     private static void loadMessagesConfig(Path path, Logger logger){
+        Path messagesConfig = path.resolve("messages.conf");
         final HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
             .defaultOptions(opts -> opts
                 .shouldCopyDefaults(true)
@@ -67,7 +73,7 @@ public class Configuration {
                     "Spanish Guide: https://gist.github.com/4drian3d/9ccce0ca1774285e38becb09b73728f3"
                 )
             )
-            .path(path)
+            .path(messagesConfig)
             .build();
 
         try {
@@ -81,6 +87,7 @@ public class Configuration {
     }
 
     private static void loadBlacklistConfig(Path path, Logger logger){
+        Path blacklistConfig = path.resolve("blacklist.conf");
         final HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
             .defaultOptions(opts -> opts
                 .shouldCopyDefaults(true)
@@ -92,7 +99,7 @@ public class Configuration {
                     "If you are using patterns that include '\\', replace them with '\\\\'"
                 )
             )
-            .path(path)
+            .path(blacklistConfig)
             .build();
 
         try {
@@ -101,8 +108,19 @@ public class Configuration {
             node.set(Blacklist.Config.class, blacklist);
             loader.save(node);
         } catch (ConfigurateException exception){
-            logger.error("Could not load blacklist.conf file, error:");
-            exception.printStackTrace();
+            if(checkConfig(path, "blacklist.conf")){
+                logger.error("Your blacklist configuration contains '\\' character. Please change all of its usage for '\\\\'");
+            }
+            logger.error("Could not load blacklist.conf file, error: {}", exception.getMessage());
+        }
+    }
+
+    private static boolean checkConfig(Path path, String name){
+        Path configFile = path.resolve(name);
+        try (BufferedReader reader = Files.newBufferedReader(configFile, StandardCharsets.UTF_8);) {
+            return reader.lines().anyMatch(s -> s.contains("\\") && !s.contains("\\\\"));
+        } catch(IOException e){
+            return false;
         }
     }
 

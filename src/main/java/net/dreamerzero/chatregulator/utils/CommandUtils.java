@@ -61,7 +61,7 @@ public class CommandUtils {
     }
 
     private void execute(Player infractor, InfractionPlayer iPlayer, CommandsConfig config, InfractionType type){
-        if(config.executeCommand() && iPlayer.getViolations(type) % config.violationsRequired() == 0){
+        if(config.executeCommand() && iPlayer.getViolations().getCount(type) % config.violationsRequired() == 0){
             var currentServer = infractor.getCurrentServer();
             config.getCommandsToExecute().forEach(cmd -> {
                 String commandToSend = cmd.replace("<player>", infractor.getUsername());

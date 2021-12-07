@@ -2,6 +2,7 @@ package net.dreamerzero.chatregulator;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.Temporal;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -11,7 +12,6 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import org.jetbrains.annotations.Nullable;
 
 import net.dreamerzero.chatregulator.exception.PlayerNotAvailableException;
-import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 
 /**
  * A player to whom the necessary warnings and variables can
@@ -24,15 +24,10 @@ public class InfractionPlayer {
     private String lastMessage;
     private String preLastCommand;
     private String lastCommand;
-    private int floodViolations;
-    private int regularViolations;
-    private int spamViolations;
-    private int commandViolations;
-    private int unicodeViolations;
-    private int capsviolations;
+    private ViolationCount violationsCount;
     private boolean isOnline;
     private final String username;
-    private long lastTimeSeen;
+    private Temporal lastTimeSeen;
     private Instant timeSinceLastMessage;
     private Instant timeSinceLastCommand;
 
@@ -48,12 +43,7 @@ public class InfractionPlayer {
         this.lastCommand = " .";
         this.timeSinceLastMessage = Instant.now();
         this.timeSinceLastCommand = Instant.now();
-        this.floodViolations = 0;
-        this.regularViolations = 0;
-        this.spamViolations = 0;
-        this.commandViolations = 0;
-        this.unicodeViolations = 0;
-        this.capsviolations = 0;
+        this.violationsCount = new ViolationCount();
         this.isOnline = true;
         this.username = player.getUsername();
     }
@@ -71,12 +61,7 @@ public class InfractionPlayer {
         this.lastCommand = " .";
         this.timeSinceLastMessage = Instant.now();
         this.timeSinceLastCommand = Instant.now();
-        this.floodViolations = 0;
-        this.regularViolations = 0;
-        this.spamViolations = 0;
-        this.commandViolations = 0;
-        this.unicodeViolations = 0;
-        this.capsviolations = 0;
+        this.violationsCount = new ViolationCount();
         this.isOnline = true;
         this.username = player.getUsername();
     }
@@ -101,8 +86,9 @@ public class InfractionPlayer {
      * Sets the player's online status
      * @param status new online status
      */
-    public void isOnline(boolean status){
+    public InfractionPlayer isOnline(boolean status){
         this.isOnline = status;
+        return this;
     }
 
     /**
@@ -112,14 +98,15 @@ public class InfractionPlayer {
      * moment when the user exited
      */
     public long getLastSeen(){
-        return this.lastTimeSeen;
+        return Duration.between(this.lastTimeSeen, Instant.now()).toMillis();
     }
 
     /**
      * Sets the time at which the player has left the server
      */
-    public void setLastSeen(){
-        this.lastTimeSeen = System.currentTimeMillis();
+    public InfractionPlayer setLastSeen(Temporal time){
+        this.lastTimeSeen = time;
+        return this;
     }
 
     /**
@@ -142,10 +129,11 @@ public class InfractionPlayer {
      * Sets the player's last sent message
      * @param newLastMessage the new last message sent by the player
      */
-    public void lastMessage(String newLastMessage){
+    public InfractionPlayer lastMessage(String newLastMessage){
         this.preLastMessage = this.lastMessage;
         this.lastMessage = newLastMessage;
         this.timeSinceLastMessage = Instant.now();
+        return this;
     }
 
     /**
@@ -168,79 +156,36 @@ public class InfractionPlayer {
      * Sets the player's last executed command
      * @param newLastCommand the new last command executed by the player
      */
-    public void lastCommand(String newLastCommand){
+    public InfractionPlayer lastCommand(String newLastCommand){
         this.preLastCommand = this.lastCommand;
         this.lastCommand = newLastCommand;
         this.timeSinceLastCommand = Instant.now();
+        return this;
     }
 
+    /**
+     * Get the time in milliseconds since the last message of the player
+     * @return time in milliseconds since the last message
+     */
     public long getTimeSinceLastMessage(){
         return Duration.between(this.timeSinceLastMessage, Instant.now()).toMillis();
     }
 
+    /**
+     * Get the time in milliseconds since the last command of the player
+     * @return time in milliseconds since the last command
+     */
     public long getTimeSinceLastCommand(){
         return Duration.between(this.timeSinceLastCommand, Instant.now()).toMillis();
     }
 
     /**
-     * Adds an infraction to the count of any type of player infraction.
-     * @param type the infraction type
+     * Get the violations count of the player
+     * @return the violations count
+     * @since 2.0.0
      */
-    public void addViolation(InfractionType type){
-        switch(type){
-            case SPAM: this.spamViolations++; break;
-            case REGULAR: this.regularViolations++; break;
-            case FLOOD: this.floodViolations++; break;
-            case BCOMMAND: this.commandViolations++; break;
-            case UNICODE: this.unicodeViolations++; break;
-            case CAPS: this.capsviolations++; break;
-            case NONE: return;
-        }
-    }
-
-    /**
-     * Sets the new number of infractions of some kind that the player will have.
-     * @param type the type of infraction
-     * @param newViolationsCount the new number of infractions
-     */
-    public void setViolations(InfractionType type, int newViolationsCount){
-        switch(type){
-            case SPAM: this.spamViolations = newViolationsCount; break;
-            case REGULAR: this.regularViolations = newViolationsCount; break;
-            case FLOOD: this.floodViolations = newViolationsCount; break;
-            case BCOMMAND: this.commandViolations = newViolationsCount; break;
-            case UNICODE: this.unicodeViolations = newViolationsCount; break;
-            case CAPS: this.capsviolations = newViolationsCount; break;
-            case NONE: return;
-        }
-    }
-
-    /**
-     * Reset the count of infraction of any type of this player
-     * @param types the types
-     */
-    public void resetViolations(InfractionType... types){
-        for(InfractionType type : types){
-            this.setViolations(type, 0);
-        }
-    }
-
-    /**
-     * Get the ammount of violations of any type
-     * @param type the violation type
-     * @return the count
-     */
-    public int getViolations(InfractionType type){
-        switch(type){
-            case SPAM: return this.spamViolations;
-            case REGULAR: return this.regularViolations;
-            case FLOOD: return this.floodViolations;
-            case BCOMMAND: return this.commandViolations;
-            case UNICODE: return this.unicodeViolations;
-            case CAPS: return this.capsviolations;
-            case NONE: break;
-        }
-        return 0;
+    public ViolationCount getViolations(){
+        return this.violationsCount;
     }
 
     /**
@@ -292,5 +237,30 @@ public class InfractionPlayer {
             playersMap.put(uuid, infractionPlayer);
             return infractionPlayer;
         }
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if(this==o) return true;
+        if(!(o instanceof InfractionPlayer)) return false;
+        InfractionPlayer other = (InfractionPlayer)o;
+        return other.getViolations().equals(this.getViolations()) || other.username.equals(this.username);
+    }
+
+    @Override
+    public int hashCode(){
+        if(this.player != null){
+            return 31 + this.player.hashCode();
+        }
+        return 31 + this.username.hashCode();
+    }
+
+    @Override
+    public String toString(){
+        return "InfractionPlayer["
+            +"name="+this.username
+            +",online="+this.isOnline
+            +",violationcount="+violationsCount.toString()
+            +"]";
     }
 }

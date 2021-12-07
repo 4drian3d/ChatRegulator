@@ -23,11 +23,11 @@ public class PlaceholderUtils {
         Set<Template> templates = Set.of(
             Template.template("player", player.username()),
             Template.template("name", player.username()),
-            Template.template("flood", String.valueOf(player.getViolations(InfractionType.FLOOD))),
-            Template.template("spam", String.valueOf(player.getViolations(InfractionType.SPAM))),
-            Template.template("regular", String.valueOf(player.getViolations(InfractionType.REGULAR))),
-            Template.template("unicode", String.valueOf(player.getViolations(InfractionType.UNICODE))),
-            Template.template("caps", String.valueOf(player.getViolations(InfractionType.CAPS)))
+            Template.template("flood", String.valueOf(player.getViolations().getCount(InfractionType.FLOOD))),
+            Template.template("spam", String.valueOf(player.getViolations().getCount(InfractionType.SPAM))),
+            Template.template("regular", String.valueOf(player.getViolations().getCount(InfractionType.REGULAR))),
+            Template.template("unicode", String.valueOf(player.getViolations().getCount(InfractionType.UNICODE))),
+            Template.template("caps", String.valueOf(player.getViolations().getCount(InfractionType.CAPS)))
         );
         Player p = player.getPlayer();
         if(p != null){

@@ -117,36 +117,37 @@ public class ChatRegulatorCommand implements SimpleCommand {
         if(args.length >= 2){
             server.getPlayer(args[1]).ifPresentOrElse(player -> {
                 InfractionPlayer infractionPlayer = InfractionPlayer.get(player);
+                var violations = infractionPlayer.getViolations();
                 if(args.length >= 3){
                     switch(args[2].toLowerCase()){
                         case "infractions": case "regular":
-                            infractionPlayer.resetViolations(InfractionType.REGULAR);
+                            violations.resetViolations(InfractionType.REGULAR);
                             cManager.sendResetMessage(source, InfractionType.REGULAR, infractionPlayer);
                             break;
                         case "flood":
-                            infractionPlayer.resetViolations(InfractionType.FLOOD);
+                            violations.resetViolations(InfractionType.FLOOD);
                             cManager.sendResetMessage(source, InfractionType.FLOOD, infractionPlayer);
                             break;
                         case "spam":
-                            infractionPlayer.resetViolations(InfractionType.SPAM);
+                            violations.resetViolations(InfractionType.SPAM);
                             cManager.sendResetMessage(source, InfractionType.SPAM, infractionPlayer);
                             break;
                         case "command": case "commands":
-                            infractionPlayer.resetViolations(InfractionType.BCOMMAND);
+                            violations.resetViolations(InfractionType.BCOMMAND);
                             cManager.sendResetMessage(source, InfractionType.BCOMMAND, infractionPlayer);
                             break;
                         case "unicode":
-                            infractionPlayer.resetViolations(InfractionType.UNICODE);
+                            violations.resetViolations(InfractionType.UNICODE);
                             cManager.sendResetMessage(source, InfractionType.UNICODE, infractionPlayer);
                             break;
                         case "caps":
-                            infractionPlayer.resetViolations(InfractionType.CAPS);
+                            violations.resetViolations(InfractionType.CAPS);
                             cManager.sendResetMessage(source, InfractionType.CAPS, infractionPlayer);
                             break;
                         default: break;
                     }
                 }
-                infractionPlayer.resetViolations(
+                violations.resetViolations(
                     InfractionType.SPAM,
                     InfractionType.FLOOD,
                     InfractionType.REGULAR,

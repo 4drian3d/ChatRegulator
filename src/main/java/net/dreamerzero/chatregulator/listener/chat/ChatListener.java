@@ -23,13 +23,12 @@ import net.dreamerzero.chatregulator.modules.checks.SpamCheck;
 import net.dreamerzero.chatregulator.modules.checks.UnicodeCheck;
 import net.dreamerzero.chatregulator.utils.CommandUtils;
 import net.dreamerzero.chatregulator.utils.DebugUtils;
+import net.dreamerzero.chatregulator.utils.GeneralUtils;
 import net.dreamerzero.chatregulator.utils.TypeUtils.ControlType;
 import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 import net.dreamerzero.chatregulator.utils.TypeUtils.SourceType;
-import net.kyori.adventure.audience.Audience;
 
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 public class ChatListener {
     private MainConfig.Config config;
@@ -60,7 +59,7 @@ public class ChatListener {
         String message = event.getMessage();
         InfractionPlayer infractionPlayer = InfractionPlayer.get(player);
 
-        if(config.getUnicodeConfig().enabled() && !player.hasPermission("chatregulator.bypass.unicode")){
+        if(GeneralUtils.allowedPlayer(player, InfractionType.UNICODE)){
             UnicodeCheck uCheck = new UnicodeCheck();
             uCheck.check(message);
             if(uCheck.isInfraction() && !callChatViolationEvent(infractionPlayer, message, InfractionType.UNICODE, uCheck)){
@@ -69,7 +68,7 @@ public class ChatListener {
             }
         }
 
-        if(config.getCapsConfig().enabled() && !player.hasPermission("chatregulator.bypass.caps")){
+        if(GeneralUtils.allowedPlayer(player, InfractionType.CAPS)){
             CapsCheck cCheck = new CapsCheck();
             cCheck.check(message);
 
@@ -85,7 +84,7 @@ public class ChatListener {
             }
         }
 
-        if(config.getFloodConfig().enabled() && !player.hasPermission("chatregulator.bypass.flood")){
+        if(GeneralUtils.allowedPlayer(player, InfractionType.FLOOD)){
             FloodCheck fCheck = new FloodCheck();
             fCheck.check(message);
             if(fCheck.isInfraction() && !callChatViolationEvent(infractionPlayer, message, InfractionType.FLOOD, fCheck)) {
@@ -100,7 +99,7 @@ public class ChatListener {
             }
         }
 
-        if(config.getInfractionsConfig().enabled() && !player.hasPermission("chatregulator.bypass.infractions")){
+        if(GeneralUtils.allowedPlayer(player, InfractionType.REGULAR)){
             InfractionCheck iCheck = new InfractionCheck();
             iCheck.check(message);
             if(iCheck.isInfraction() && !callChatViolationEvent(infractionPlayer, message, InfractionType.REGULAR, iCheck)) {
@@ -115,7 +114,7 @@ public class ChatListener {
             }
         }
 
-        if(config.getSpamConfig().enabled() && !player.hasPermission("chatregulator.bypass.spam")){
+        if(GeneralUtils.allowedPlayer(player, InfractionType.SPAM)){
             SpamCheck sCheck = new SpamCheck(infractionPlayer, SourceType.CHAT);
             sCheck.check(message);
             if(sCheck.isInfraction() && (config.getSpamConfig().getCooldownConfig().enabled()
@@ -157,17 +156,12 @@ public class ChatListener {
                 DebugUtils.debug(player, message, type, detection);
                 Statistics.addViolationCount(type);
                 cManager.sendWarningMessage(player, type);
-                cManager.sendAlertMessage(Audience.audience(
-                    server.getAllPlayers().stream()
-                        .filter(op -> op.hasPermission("chatregulator.notifications"))
-                        .collect(Collectors.toList())),
-                    player, type);
+                cManager.sendAlertMessage(server, player, type);
 
-                player.addViolation(type);
+                player.getViolations().addViolation(type);
                 cUtils.executeCommand(type, player);
             }
         });
         return approved.get();
     }
-
 }

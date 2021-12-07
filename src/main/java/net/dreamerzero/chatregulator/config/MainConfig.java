@@ -72,7 +72,7 @@ public class MainConfig {
     }
 
     @ConfigSerializable
-    public static class CommandBlacklist{
+    public static class CommandBlacklist implements Executable, Warning, Toggleable {
         @Comment("Enables command blocking")
         private boolean enabled = true;
 
@@ -83,14 +83,17 @@ public class MainConfig {
         @Comment("Commands to be executed in the command blacklist module")
         private CommandBlacklist.Commands commands = new Commands();
 
+        @Override
         public boolean enabled(){
             return this.enabled;
         }
 
+        @Override
         public WarningType getWarningType(){
             return this.warningType;
         }
 
+        @Override
         public CommandBlacklist.Commands getCommandsConfig(){
             return this.commands;
         }
@@ -100,7 +103,7 @@ public class MainConfig {
     }
 
     @ConfigSerializable
-    public static class Infractions{
+    public static class Infractions implements Toggleable, Warning, Controllable, Executable {
         @Comment("Enable violation checking in chat and commands")
         private boolean enabled = true;
 
@@ -127,14 +130,17 @@ public class MainConfig {
         @Comment("Commands to be executed in the regular infraction module")
         private Infractions.Commands commands = new Infractions.Commands();
 
+        @Override
         public boolean enabled(){
             return this.enabled;
         }
 
+        @Override
         public WarningType getWarningType(){
             return this.warningType;
         }
 
+        @Override
         public ControlType getControlType(){
             return this.controlType;
         }
@@ -143,7 +149,8 @@ public class MainConfig {
             return this.commandsChecked;
         }
 
-        public Infractions.Commands getCommandsConfig(){
+        @Override
+        public CommandsConfig getCommandsConfig(){
             return this.commands;
         }
 
@@ -152,7 +159,7 @@ public class MainConfig {
     }
 
     @ConfigSerializable
-    public static class Flood{
+    public static class Flood implements Toggleable, Warning, Controllable, Executable {
         @Comment("Enable flood check in the chat\n(e.g.: \"aaaaaaaaaaaaaaaaaaaa\")")
         private boolean enabled = true;
 
@@ -170,14 +177,17 @@ public class MainConfig {
         @Comment("Commands to be executed in the flood module")
         private Flood.Commands commands = new Flood.Commands();
 
+        @Override
         public boolean enabled(){
             return this.enabled;
         }
 
+        @Override
         public WarningType getWarningType(){
             return this.warningType;
         }
 
+        @Override
         public ControlType getControlType(){
             return this.controlType;
         }
@@ -186,6 +196,7 @@ public class MainConfig {
             return this.limit;
         }
 
+        @Override
         public Flood.Commands getCommandsConfig(){
             return this.commands;
         }
@@ -195,7 +206,8 @@ public class MainConfig {
     }
 
     @ConfigSerializable
-    public static class Spam{
+    public static class Spam implements Toggleable, Warning, Executable {
+
         @Comment("Enable the spam module")
         private boolean enabled = true;
 
@@ -209,10 +221,12 @@ public class MainConfig {
         @Comment("Commands to be executed in the flood module")
         private Spam.Commands commands = new Spam.Commands();
 
+        @Override
         public boolean enabled(){
             return this.enabled;
         }
 
+        @Override
         public WarningType getWarningType(){
             return this.warningType;
         }
@@ -221,6 +235,7 @@ public class MainConfig {
             return this.cooldown;
         }
 
+        @Override
         public Spam.Commands getCommandsConfig(){
             return this.commands;
         }
@@ -247,7 +262,7 @@ public class MainConfig {
     }
 
     @ConfigSerializable
-    public static class Unicode{
+    public static class Unicode implements Toggleable, Warning, Executable {
         @Comment("Enable the Unicode Module")
         private boolean enabled = true;
 
@@ -258,15 +273,18 @@ public class MainConfig {
         @Comment("Commands to be executed in the unicode module")
         private Unicode.Commands commands = new Unicode.Commands();
 
+        @Override
         public boolean enabled(){
             return this.enabled;
         }
 
+        @Override
         public WarningType getWarningType(){
             return this.warningType;
         }
 
-        public Unicode.Commands getCommandsConfig(){
+        @Override
+        public CommandsConfig getCommandsConfig(){
             return this.commands;
         }
 
@@ -275,7 +293,8 @@ public class MainConfig {
     }
 
     @ConfigSerializable
-    public static class Caps{
+    public static class Caps implements Warning, Toggleable, Controllable, Executable{
+
         @Comment("Enable the Caps limit Module")
         private boolean enabled = true;
 
@@ -293,23 +312,26 @@ public class MainConfig {
         @Comment("Commands to be executed in the caps module")
         private Caps.Commands commands = new Caps.Commands();
 
-        public boolean enabled(){
+        @Override
+        public boolean enabled() {
             return this.enabled;
         }
 
-        public ControlType getControlType(){
-            return this.controlType;
+        @Override
+        public WarningType getWarningType() {
+            return this.warningType;
         }
 
-        public WarningType getWarningType(){
-            return this.warningType;
+        @Override
+        public ControlType getControlType(){
+            return this.controlType;
         }
 
         public int limit(){
             return this.limit;
         }
 
-        public Caps.Commands getCommandsConfig(){
+        public CommandsConfig getCommandsConfig(){
             return this.commands;
         }
 
@@ -318,7 +340,7 @@ public class MainConfig {
     }
 
     @ConfigSerializable
-    public static class Format{
+    public static class Format implements Toggleable{
         @Comment("Enable Format Module")
         private boolean enabled = false;
 
@@ -330,6 +352,7 @@ public class MainConfig {
         @Setting(value = "final-dot")
         private boolean finalDot = true;
 
+        @Override
         public boolean enabled(){
             return this.enabled;
         }
@@ -390,5 +413,21 @@ public class MainConfig {
         public Set<String> getCommandsToExecute(){
             return this.commandsToExecute;
         }
+    }
+
+    public interface Warning{
+        WarningType getWarningType();
+    }
+
+    public interface Toggleable{
+        boolean enabled();
+    }
+
+    public interface Controllable{
+        ControlType getControlType();
+    }
+
+    public interface Executable{
+        CommandsConfig getCommandsConfig();
     }
 }

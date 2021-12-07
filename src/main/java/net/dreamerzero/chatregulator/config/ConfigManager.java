@@ -1,6 +1,9 @@
 package net.dreamerzero.chatregulator.config;
 
+import java.util.stream.Collectors;
+
 import com.velocitypowered.api.proxy.Player;
+import com.velocitypowered.api.proxy.ProxyServer;
 
 import net.dreamerzero.chatregulator.InfractionPlayer;
 import net.dreamerzero.chatregulator.modules.checks.FloodCheck;
@@ -133,11 +136,14 @@ public class ConfigManager {
 
     /**
      * Sends an alert message to users who are in the audience with the required permissions
-     * @param staff audience that has the required permission to receive the alert
+     * @param proxy the proxy
      * @param infractor the player who committed the infraction
      * @param type the type of infraction
      */
-    public void sendAlertMessage(Audience staff, InfractionPlayer infractor, TypeUtils.InfractionType type){
+    public void sendAlertMessage(ProxyServer proxy, InfractionPlayer infractor, TypeUtils.InfractionType type){
+        Audience staff = Audience.audience(proxy.getAllPlayers().stream()
+                .filter(op -> op.hasPermission("chatregulator.notifications"))
+                .collect(Collectors.toList()));
         String message = "";
         switch(type){
             case FLOOD: message = messages.getFloodMessages().getAlertMessage(); break;
