@@ -266,23 +266,29 @@ public class Messages {
 
     @ConfigSerializable
     public static class General{
-        @Comment("Violation statistics message\nThis message will appear when using the \"/chatregulator stats\" command.")
+        @Comment("Violation statistics message\nThis message will appear when using the \"/chatregulator stats\" command\nAvailable Placeholders: <flood>, <spam>, <regular>, <command>, <unicode>, <caps>")
         private List<String> stats = List.of(
             "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
             "<#3B4371>| <red>General Stats</red>",
             "<#3B4371>| <aqua>Regular Infractions:</aqua> <white><regular></white>",
             "<#3B4371>| <aqua>Flood Infractions:</aqua> <white><flood></white>",
             "<#3B4371>| <aqua>Spam Infractions:</aqua> <white><spam></white>",
+            "<#3B4371>| <aqua>Caps Infractions:</aqua> <white><caps></white>",
+            "<#3B4371>| <aqua>Unicode Infractions:</aqua> <white><command></white>",
+            "<#3B4371>| <aqua>Command Infractions:</aqua> <white><unicode></white>",
             "<#3B4371>|------------------------|"
         );
 
-        @Comment("Player statistics message\nThis message will appear when using the command \"/chatregulator player <someplayer>\"")
+        @Comment("Player statistics message\nThis message will appear when using the command \"/chatregulator player <someplayer>\"\nAvailable Placeholders: <player>, <flood>, <spam>, <regular>, <unicode>, <caps>")
         private List<String> player = List.of(
             "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
             "<#3B4371>| <gold><player></gold> <red>Stats</red>",
             "<#3B4371>| <aqua>Regular Infractions:</aqua> <white><regular></white>",
             "<#3B4371>| <aqua>Flood Infractions:</aqua> <white><flood></white>",
             "<#3B4371>| <aqua>Spam Infractions:</aqua> <white><spam></white>",
+            "<#3B4371>| <aqua>Unicode Infractions:</aqua> <white><unicode></white>",
+            "<#3B4371>| <aqua>Caps Infractions:</aqua> <white><caps></white>",
+            "<#3B4371>| <aqua>Command Infractions:</aqua> <white><command></white>",
             "<#3B4371>|------------------------|"
         );
 

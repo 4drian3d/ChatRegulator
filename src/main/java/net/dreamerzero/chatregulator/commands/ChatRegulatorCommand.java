@@ -166,8 +166,8 @@ public class ChatRegulatorCommand implements SimpleCommand {
                         break;
                     }
                 }
-                TemplateResolver platerTemplate = TemplateResolver.templates(Template.template("player", args[1]));
-                source.sendMessage(mm.deserialize(gmessages.playerNotFound(), platerTemplate));
+                TemplateResolver playerTemplate = TemplateResolver.templates(Template.template("player", args[1]));
+                source.sendMessage(mm.deserialize(gmessages.playerNotFound(), playerTemplate));
             });
         } else {
             source.sendMessage(mm.deserialize(messages.getGeneralMessages().noArgument()));
@@ -247,7 +247,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
                         .collect(Collectors.toList());
                 case "help": case "info": return List.of("clear", "player", "reset");
                 case "clear":
-                    if(args.length <= 1){
+                    if(args.length < 2){
                         return List.of("server", "player");
                     } else {
                         switch(args[1]){
