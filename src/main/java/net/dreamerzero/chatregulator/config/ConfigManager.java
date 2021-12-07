@@ -6,8 +6,8 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 
 import net.dreamerzero.chatregulator.InfractionPlayer;
-import net.dreamerzero.chatregulator.modules.checks.FloodCheck;
-import net.dreamerzero.chatregulator.modules.checks.InfractionCheck;
+import net.dreamerzero.chatregulator.config.MainConfig.Warning;
+import net.dreamerzero.chatregulator.modules.checks.AbstractCheck;
 import net.dreamerzero.chatregulator.utils.PlaceholderUtils;
 import net.dreamerzero.chatregulator.utils.TypeUtils;
 import net.kyori.adventure.audience.Audience;
@@ -22,90 +22,30 @@ import net.kyori.adventure.title.Title;
  */
 public class ConfigManager {
     private MiniMessage mm;
-    private MainConfig.Config config;
     private Messages.Config messages;
     /**
      * Constructor of the ConfigManager
      */
     public ConfigManager(){
         this.mm = MiniMessage.miniMessage();
-        this.config = Configuration.getConfig();
         this.messages = Configuration.getMessages();
     }
-    /**
-     * Get the warning format according to the configuration
-     * @param infraction the type of infraction
-     * @return the format of the warning
-     */
-    public TypeUtils.WarningType getWarningType(TypeUtils.InfractionType infraction){
-        switch(infraction){
-            case REGULAR: return config.getInfractionsConfig().getWarningType();
-            case FLOOD: return config.getFloodConfig().getWarningType();
-            case SPAM: return config.getSpamConfig().getWarningType();
-            case BCOMMAND: return config.getCommandBlacklistConfig().getWarningType();
-            case UNICODE: return config.getUnicodeConfig().getWarningType();
-            case CAPS: return config.getCapsConfig().getWarningType();
-            case NONE: return TypeUtils.WarningType.MESSAGE;
-        }
-        return TypeUtils.WarningType.MESSAGE;
-    }
 
     /**
      * Send a message of some kind to the offender.
      * @param infractor offender
      * @param type the type of infraction
+     * @param check the flood check
      */
-    public void sendWarningMessage(InfractionPlayer infractor, TypeUtils.InfractionType type){
+    public void sendWarningMessage(InfractionPlayer infractor, TypeUtils.InfractionType type, AbstractCheck check){
         Player player = infractor.getPlayer();
         if(player != null){
-            String message = messages.getSpamMessages().getWarningMessage();
-            TemplateResolver templates = PlaceholderUtils.getTemplates(infractor);
-
-            switch(getWarningType(type)){
-                case TITLE: sendTitle(message, player, templates); break;
-                case MESSAGE: player.sendMessage(mm.deserialize(message, templates)); break;
-                case ACTIONBAR: player.sendActionBar(mm.deserialize(message, templates)); break;
-            }
-        }
-    }
-
-    /**
-     * Send a message of some kind to the offender.
-     * @param infractor offender
-     * @param type the type of infraction
-     * @param fUtils the flood check
-     */
-    public void sendWarningMessage(InfractionPlayer infractor, TypeUtils.InfractionType type, FloodCheck fUtils){
-        Player player = infractor.getPlayer();
-        if(player != null){
-            String message = messages.getFloodMessages().getWarningMessage();
+            String message = type.getMessages().getWarningMessage();
             TemplateResolver template = TemplateResolver.combining(
                 TemplateResolver.templates(
-                    Template.template("infraction", fUtils.getInfractionWord())),
+                    Template.template("infraction", check.getInfractionWord())),
                     PlaceholderUtils.getTemplates(infractor));
-            switch(getWarningType(type)){
-                case TITLE: sendTitle(message, player, template); break;
-                case MESSAGE: player.sendMessage(mm.deserialize(message, template)); break;
-                case ACTIONBAR: player.sendActionBar(mm.deserialize(message, template)); break;
-            }
-        }
-    }
-
-    /**
-     * Send a message of some kind to the offender.
-     * @param infractor offender
-     * @param type the type of infraction
-     * @param iUtils the infractions check
-     */
-    public void sendWarningMessage(InfractionPlayer infractor, TypeUtils.InfractionType type, InfractionCheck iUtils){
-        Player player = infractor.getPlayer();
-        if(player != null){
-            String message = messages.getInfractionsMessages().getWarningMessage();
-            TemplateResolver template = TemplateResolver.combining(
-                TemplateResolver.templates(
-                    Template.template("infraction", iUtils.getInfractionWord())),
-                    PlaceholderUtils.getTemplates(infractor));
-            switch(getWarningType(type)){
+            switch(((Warning)type.getConfig()).getWarningType()){
                 case TITLE: sendTitle(message, player, template); break;
                 case MESSAGE: player.sendMessage(mm.deserialize(message, template)); break;
                 case ACTIONBAR: player.sendActionBar(mm.deserialize(message, template)); break;

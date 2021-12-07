@@ -155,7 +155,7 @@ public class ChatListener {
                 approved.set(false);
                 DebugUtils.debug(player, message, type, detection);
                 Statistics.addViolationCount(type);
-                cManager.sendWarningMessage(player, type);
+                cManager.sendWarningMessage(player, type, detection);
                 cManager.sendAlertMessage(server, player, type);
 
                 player.getViolations().addViolation(type);

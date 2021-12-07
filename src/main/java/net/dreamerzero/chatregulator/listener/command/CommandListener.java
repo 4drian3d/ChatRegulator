@@ -172,7 +172,7 @@ public class CommandListener {
                 approved.set(false);
                 DebugUtils.debug(player, command, type, detection);
                 Statistics.addViolationCount(type);
-                cManager.sendWarningMessage(player, type);
+                cManager.sendWarningMessage(player, type, detection);
                 cManager.sendAlertMessage(server, player, type);
 
                 player.getViolations().addViolation(type);

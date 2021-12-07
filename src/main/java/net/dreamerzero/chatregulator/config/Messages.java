@@ -71,7 +71,7 @@ public class Messages {
     }
 
     @ConfigSerializable
-    public static class CommandBlacklist{
+    public static class CommandBlacklist implements Warning, Alert, Reset{
         @Comment("Message to be sent to the offender\nDepending on your warning-type section settings, it will be sent as Title, Actionbar or Message\nIn case you use the Title mode, put a ; to delimit the title and the subtitle")
         private String warning = "<red>Hello, it is not allowed to use blocked commands";
 
@@ -81,21 +81,24 @@ public class Messages {
         @Comment("Statistics Reset Confirmation Message")
         private String reset = "<red>The commands infraction count for <player> was reset";
 
+        @Override
         public String getWarningMessage(){
             return this.warning;
         }
 
+        @Override
         public String getAlertMessage(){
             return this.alert;
         }
 
+        @Override
         public String getResetMessage(){
             return this.reset;
         }
     }
 
     @ConfigSerializable
-    public static class Infractions{
+    public static class Infractions implements Warning, Alert, Reset{
         @Comment("Message to be sent to the offender\nDepending on your warning-type section settings, it will be sent as Title, Actionbar or Message\nIn case you use the Title mode, put a ; to delimit the title and the subtitle")
         private String warning = "<red>Hello, it is not allowed to use dirty words on this server";
 
@@ -105,21 +108,24 @@ public class Messages {
         @Comment("Statistics Reset Confirmation Message")
         private String reset = "<red>The infraction warning count for <player> was reset";
 
+        @Override
         public String getWarningMessage(){
             return this.warning;
         }
 
+        @Override
         public String getAlertMessage(){
             return this.alert;
         }
 
+        @Override
         public String getResetMessage(){
             return this.reset;
         }
     }
 
     @ConfigSerializable
-    public static class Flood{
+    public static class Flood implements Warning, Alert, Reset{
         @Comment("Message to be sent to the offender\nDepending on your warning-type section settings, it will be sent as Title, Actionbar or Message\nIn case you use the Title mode, put a ; to delimit the title and the subtitle")
         private String warning = "<red>Hello, it is not allowed to make flood on this server";
 
@@ -129,21 +135,24 @@ public class Messages {
         @Comment("Statistics Reset Confirmation Message")
         private String reset = "<red>The flood warning count for <player> was reset";
 
+        @Override
         public String getWarningMessage(){
             return this.warning;
         }
 
+        @Override
         public String getAlertMessage(){
             return this.alert;
         }
 
+        @Override
         public String getResetMessage(){
             return this.reset;
         }
     }
 
     @ConfigSerializable
-    public static class Spam{
+    public static class Spam implements Warning, Alert, Reset{
         @Comment("Message to be sent to the offender\nDepending on your warning-type section settings, it will be sent as Title, Actionbar or Message\nIn case you use the Title mode, put a ; to delimit the title and the subtitle")
         private String warning = "<red>Hello, it is not allowed to make spam on this server";
 
@@ -153,21 +162,24 @@ public class Messages {
         @Comment("Statistics Reset Confirmation Message")
         private String reset = "<red>The spam warning count for <player> was reset";
 
+        @Override
         public String getWarningMessage(){
             return this.warning;
         }
 
+        @Override
         public String getAlertMessage(){
             return this.alert;
         }
 
+        @Override
         public String getResetMessage(){
             return this.reset;
         }
     }
 
     @ConfigSerializable
-    public static class Unicode{
+    public static class Unicode implements Warning, Alert, Reset{
         @Comment("Message to be sent to the offender\nDepending on your warning-type section settings, it will be sent as Title, Actionbar or Message\nIn case you use the Title mode, put a ; to delimit the title and the subtitle")
         private String warning = "<red>Hello, it is not allowed to use this symbols";
 
@@ -177,21 +189,24 @@ public class Messages {
         @Comment("Statistics Reset Confirmation Message")
         private String reset = "<red>The simbols sended count for <player> was reset";
 
+        @Override
         public String getWarningMessage(){
             return this.warning;
         }
 
+        @Override
         public String getAlertMessage(){
             return this.alert;
         }
 
+        @Override
         public String getResetMessage(){
             return this.reset;
         }
     }
 
     @ConfigSerializable
-    public static class Caps{
+    public static class Caps implements Warning, Alert, Reset{
         @Comment("Message to be sent to the offender\nDepending on your warning-type section settings, it will be sent as Title, Actionbar or Message\nIn case you use the Title mode, put a ; to delimit the title and the subtitle")
         private String warning = "<red>Hello, it is not allowed to use too many caps";
 
@@ -201,14 +216,17 @@ public class Messages {
         @Comment("Statistics Reset Confirmation Message")
         private String reset = "<red>The caps violation count for <player> was reset";
 
+        @Override
         public String getWarningMessage(){
             return this.warning;
         }
 
+        @Override
         public String getAlertMessage(){
             return this.alert;
         }
 
+        @Override
         public String getResetMessage(){
             return this.reset;
         }
@@ -394,5 +412,17 @@ public class Messages {
                 return this.clear;
             }
         }
+    }
+
+    public interface Warning{
+        String getWarningMessage();
+    }
+
+    public interface Reset{
+        String getResetMessage();
+    }
+
+    public interface Alert{
+        String getAlertMessage();
     }
 }
