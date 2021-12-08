@@ -3,7 +3,7 @@ package me.dreamerzero.chatregulator.modules.checks;
 import java.util.regex.Pattern;
 
 import me.dreamerzero.chatregulator.config.Configuration;
-import me.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
+import me.dreamerzero.chatregulator.enums.InfractionType;
 
 /**
  * Utilities for detecting incoherent messages containing floods

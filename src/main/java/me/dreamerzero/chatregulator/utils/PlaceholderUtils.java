@@ -6,7 +6,7 @@ import com.velocitypowered.api.proxy.Player;
 
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.modules.Statistics;
-import me.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
+import me.dreamerzero.chatregulator.enums.InfractionType;
 import net.kyori.adventure.text.minimessage.placeholder.Placeholder;
 import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
 

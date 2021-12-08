@@ -1,6 +1,6 @@
 package me.dreamerzero.chatregulator;
 
-import me.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
+import me.dreamerzero.chatregulator.enums.InfractionType;
 
 public class ViolationCount {
     private int floodViolations;

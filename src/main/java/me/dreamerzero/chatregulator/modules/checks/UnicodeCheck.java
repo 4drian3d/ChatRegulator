@@ -1,6 +1,6 @@
 package me.dreamerzero.chatregulator.modules.checks;
 
-import me.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
+import me.dreamerzero.chatregulator.enums.InfractionType;
 
 public class UnicodeCheck extends AbstractCheck {
 

@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import me.dreamerzero.chatregulator.utils.TypeUtils.ControlType;
-import me.dreamerzero.chatregulator.utils.TypeUtils.WarningType;
+import me.dreamerzero.chatregulator.enums.ControlType;
+import me.dreamerzero.chatregulator.enums.WarningType;
 
 public class ConfigurationTest {
     @BeforeAll

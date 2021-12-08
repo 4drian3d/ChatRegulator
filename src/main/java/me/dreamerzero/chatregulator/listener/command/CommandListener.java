@@ -25,9 +25,9 @@ import me.dreamerzero.chatregulator.modules.checks.UnicodeCheck;
 import me.dreamerzero.chatregulator.utils.CommandUtils;
 import me.dreamerzero.chatregulator.utils.DebugUtils;
 import me.dreamerzero.chatregulator.utils.GeneralUtils;
-import me.dreamerzero.chatregulator.utils.TypeUtils.ControlType;
-import me.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
-import me.dreamerzero.chatregulator.utils.TypeUtils.SourceType;
+import me.dreamerzero.chatregulator.enums.ControlType;
+import me.dreamerzero.chatregulator.enums.InfractionType;
+import me.dreamerzero.chatregulator.enums.SourceType;
 
 /**
  * Detections related to command execution by players

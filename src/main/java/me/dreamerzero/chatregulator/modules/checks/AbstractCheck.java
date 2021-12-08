@@ -2,7 +2,7 @@ package me.dreamerzero.chatregulator.modules.checks;
 
 import java.util.regex.Matcher;
 
-import me.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
+import me.dreamerzero.chatregulator.enums.InfractionType;
 
 /**
  * Base class of the checks used in the plugin

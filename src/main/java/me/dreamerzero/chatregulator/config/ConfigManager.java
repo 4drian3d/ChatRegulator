@@ -9,7 +9,7 @@ import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.config.MainConfig.Warning;
 import me.dreamerzero.chatregulator.modules.checks.AbstractCheck;
 import me.dreamerzero.chatregulator.utils.PlaceholderUtils;
-import me.dreamerzero.chatregulator.utils.TypeUtils;
+import me.dreamerzero.chatregulator.enums.InfractionType;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -37,7 +37,7 @@ public class ConfigManager {
      * @param type the type of infraction
      * @param check the flood check
      */
-    public void sendWarningMessage(InfractionPlayer infractor, TypeUtils.InfractionType type, AbstractCheck check){
+    public void sendWarningMessage(InfractionPlayer infractor, InfractionType type, AbstractCheck check){
         Player player = infractor.getPlayer();
         if(player != null){
             String message = type.getMessages().getWarningMessage();
@@ -80,7 +80,7 @@ public class ConfigManager {
      * @param infractor the player who committed the infraction
      * @param type the type of infraction
      */
-    public void sendAlertMessage(ProxyServer proxy, InfractionPlayer infractor, TypeUtils.InfractionType type){
+    public void sendAlertMessage(ProxyServer proxy, InfractionPlayer infractor, InfractionType type){
         Audience staff = Audience.audience(proxy.getAllPlayers().stream()
                 .filter(op -> op.hasPermission("chatregulator.notifications"))
                 .collect(Collectors.toList()));
@@ -109,7 +109,7 @@ public class ConfigManager {
      * @param player the infraction player
      *               whose warnings have been reset
      */
-    public void sendResetMessage(Audience sender, TypeUtils.InfractionType type, InfractionPlayer player){
+    public void sendResetMessage(Audience sender, InfractionType type, InfractionPlayer player){
         switch(type){
             case REGULAR: sender.sendMessage(mm.deserialize(messages.getInfractionsMessages().getResetMessage(), PlaceholderUtils.getPlaceholders(player))); break;
             case FLOOD: sender.sendMessage(mm.deserialize(messages.getFloodMessages().getResetMessage(), PlaceholderUtils.getPlaceholders(player))); break;

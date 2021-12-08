@@ -1,6 +1,6 @@
 package me.dreamerzero.chatregulator.modules;
 
-import me.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
+import me.dreamerzero.chatregulator.enums.InfractionType;
 
 /**
  * Manages the plugin's internal statistics

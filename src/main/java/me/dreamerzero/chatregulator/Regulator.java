@@ -3,7 +3,6 @@ package me.dreamerzero.chatregulator;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.UUID;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -119,7 +118,7 @@ public class Regulator {
     void checkInfractionPlayersRunnable(){
         long timeToDelete = Configuration.getConfig().getGeneralConfig().deleteUsersTime()*1000;
         server.getScheduler().buildTask(this, ()->{
-            for(Entry<UUID, InfractionPlayer> entry : infractionPlayers.entrySet()){
+            for(Map.Entry<UUID, InfractionPlayer> entry : infractionPlayers.entrySet()){
                 InfractionPlayer iPlayer = entry.getValue();
                 if(iPlayer.isOnline()) continue;
                 if(iPlayer.getLastSeen() - System.currentTimeMillis() > timeToDelete){

@@ -6,8 +6,8 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
 
-import me.dreamerzero.chatregulator.utils.TypeUtils.ControlType;
-import me.dreamerzero.chatregulator.utils.TypeUtils.WarningType;
+import me.dreamerzero.chatregulator.enums.ControlType;
+import me.dreamerzero.chatregulator.enums.WarningType;
 
 public class MainConfig {
     private MainConfig(){}

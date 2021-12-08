@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.Regulator;
 import me.dreamerzero.chatregulator.modules.checks.AbstractCheck;
-import me.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
+import me.dreamerzero.chatregulator.enums.InfractionType;
 
 /**
  * Utilities for bug or inconsistency resolution

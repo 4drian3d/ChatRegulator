@@ -1,8 +1,8 @@
 package me.dreamerzero.chatregulator.modules.checks;
 
 import me.dreamerzero.chatregulator.InfractionPlayer;
-import me.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
-import me.dreamerzero.chatregulator.utils.TypeUtils.SourceType;
+import me.dreamerzero.chatregulator.enums.InfractionType;
+import me.dreamerzero.chatregulator.enums.SourceType;
 
 /**
  * Detection of command/message spamming

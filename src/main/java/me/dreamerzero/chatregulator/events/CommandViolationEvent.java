@@ -2,7 +2,7 @@ package me.dreamerzero.chatregulator.events;
 
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.modules.checks.AbstractCheck;
-import me.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
+import me.dreamerzero.chatregulator.enums.InfractionType;
 
 /**
  * Event fired when recognizing an infraction in a command executed by a player.

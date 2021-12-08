@@ -8,7 +8,7 @@ import me.dreamerzero.chatregulator.Regulator;
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.config.MainConfig;
 import me.dreamerzero.chatregulator.config.MainConfig.CommandsConfig;
-import me.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
+import me.dreamerzero.chatregulator.enums.InfractionType;
 
 /**
  * Utilities for executing commands

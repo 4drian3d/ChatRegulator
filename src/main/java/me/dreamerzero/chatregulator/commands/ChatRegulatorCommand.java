@@ -19,7 +19,7 @@ import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.config.Messages;
 import me.dreamerzero.chatregulator.utils.GeneralUtils;
 import me.dreamerzero.chatregulator.utils.PlaceholderUtils;
-import me.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
+import me.dreamerzero.chatregulator.enums.InfractionType;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.placeholder.Placeholder;
