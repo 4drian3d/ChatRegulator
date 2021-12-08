@@ -1,5 +1,6 @@
 package me.dreamerzero.chatregulator.listener.chat;
 
+import com.velocitypowered.api.event.Continuation;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.player.PlayerChatEvent;
 import com.velocitypowered.api.event.player.PlayerChatEvent.ChatResult;
@@ -36,8 +37,8 @@ public class ChatListener {
      * Chat Listener for detections
      * @param event the chat event
      */
-    @Subscribe(async = true)
-    public void onChat(PlayerChatEvent event) {
+    @Subscribe
+    public void onChat(PlayerChatEvent event, Continuation continuation) {
         Player player = event.getPlayer();
         String message = event.getMessage();
         InfractionPlayer infractionPlayer = InfractionPlayer.get(player);
@@ -47,6 +48,7 @@ public class ChatListener {
             uCheck.check(message);
             if(uCheck.isInfraction() && !GeneralUtils.callViolationEvent(infractionPlayer, message, uCheck, SourceType.CHAT)){
                 event.setResult(ChatResult.denied());
+                continuation.resume();
                 return;
             }
         }
@@ -58,6 +60,7 @@ public class ChatListener {
             if(cCheck.isInfraction() && !GeneralUtils.callViolationEvent(infractionPlayer, message, cCheck, SourceType.CHAT)){
                 if(config.getCapsConfig().getControlType() == ControlType.BLOCK){
                     event.setResult(ChatResult.denied());
+                    continuation.resume();
                     return;
                 } else {
                     String messageReplaced = cCheck.replaceInfraction();
@@ -73,6 +76,7 @@ public class ChatListener {
             if(fCheck.isInfraction() && !GeneralUtils.callViolationEvent(infractionPlayer, message, fCheck, SourceType.CHAT)) {
                 if(config.getFloodConfig().getControlType() == ControlType.BLOCK){
                     event.setResult(ChatResult.denied());
+                    continuation.resume();
                     return;
                 } else {
                     String messageReplaced = fCheck.replaceInfraction();
@@ -88,6 +92,7 @@ public class ChatListener {
             if(iCheck.isInfraction() && !GeneralUtils.callViolationEvent(infractionPlayer, message, iCheck, SourceType.CHAT)) {
                 if(config.getInfractionsConfig().getControlType() == ControlType.BLOCK){
                     event.setResult(ChatResult.denied());
+                    continuation.resume();
                     return;
                 } else {
                     String messageReplaced = iCheck.replaceInfractions();
@@ -102,17 +107,17 @@ public class ChatListener {
             sCheck.check(message);
             if(GeneralUtils.spamCheck(sCheck, config, infractionPlayer) && !GeneralUtils.callViolationEvent(infractionPlayer, message, sCheck, SourceType.CHAT)) {
                 event.setResult(ChatResult.denied());
+                continuation.resume();
                 return;
             }
         }
 
         if(config.getFormatConfig().enabled()){
-            String formatted = rUtils.applyFormat(message);
-            infractionPlayer.lastMessage(formatted);
-            event.setResult(ChatResult.message(formatted));
-            return;
+            message = rUtils.applyFormat(message);
+            event.setResult(ChatResult.message(message));
         }
 
         infractionPlayer.lastMessage(message);
+        continuation.resume();
     }
 }

@@ -1,5 +1,6 @@
 package me.dreamerzero.chatregulator.listener.command;
 
+import com.velocitypowered.api.event.Continuation;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.command.CommandExecuteEvent;
 import com.velocitypowered.api.event.command.CommandExecuteEvent.CommandResult;
@@ -37,10 +38,12 @@ public class CommandListener {
      * Listener for command detections
      * @param event the command event
      */
-    @Subscribe(async = true)
-    public void onCommand(CommandExecuteEvent event){
-        if (!(event.getCommandSource() instanceof Player))
+    @Subscribe
+    public void onCommand(CommandExecuteEvent event, Continuation continuation){
+        if (!(event.getCommandSource() instanceof Player)){
+            continuation.resume();
             return;
+        }
 
         String rawCommand = event.getCommand();
 
@@ -63,6 +66,7 @@ public class CommandListener {
             cCheck.check(command);
             if(cCheck.isInfraction() && !GeneralUtils.callViolationEvent(infractionPlayer, command, cCheck, SourceType.COMMAND)){
                 event.setResult(CommandResult.denied());
+                continuation.resume();
                 return;
             }
         }
@@ -72,6 +76,7 @@ public class CommandListener {
             uCheck.check(command);
             if(uCheck.isInfraction() && !GeneralUtils.callViolationEvent(infractionPlayer, command, uCheck, SourceType.COMMAND)){
                 event.setResult(CommandResult.denied());
+                continuation.resume();
                 return;
             }
         }
@@ -83,6 +88,7 @@ public class CommandListener {
             if(cCheck.isInfraction() && !GeneralUtils.callViolationEvent(infractionPlayer, command, cCheck, SourceType.COMMAND)){
                 if(config.getCapsConfig().getControlType() == ControlType.BLOCK){
                     event.setResult(CommandResult.denied());
+                    continuation.resume();
                     return;
                 } else {
                     String commandReplaced = cCheck.replaceInfraction();
@@ -98,6 +104,7 @@ public class CommandListener {
             if(fCheck.isInfraction() && !GeneralUtils.callViolationEvent(infractionPlayer, command, fCheck, SourceType.COMMAND)) {
                 if(config.getFloodConfig().getControlType() == ControlType.BLOCK){
                     event.setResult(CommandResult.denied());
+                    continuation.resume();
                     return;
                 } else {
                     String commandReplaced = fCheck.replaceInfraction();
@@ -113,6 +120,7 @@ public class CommandListener {
             if(iCheck.isInfraction() && !GeneralUtils.callViolationEvent(infractionPlayer, command, iCheck, SourceType.COMMAND)) {
                 if(config.getInfractionsConfig().getControlType() == ControlType.BLOCK){
                     event.setResult(CommandResult.denied());
+                    continuation.resume();
                     return;
                 } else {
                     String commandReplaced = iCheck.replaceInfractions();
@@ -127,10 +135,12 @@ public class CommandListener {
             sCheck.check(command);
             if(GeneralUtils.spamCheck(sCheck, config, infractionPlayer) && !GeneralUtils.callViolationEvent(infractionPlayer, command, sCheck, SourceType.COMMAND)) {
                 event.setResult(CommandResult.denied());
+                continuation.resume();
                 return;
             }
         }
 
         infractionPlayer.lastCommand(command);
+        continuation.resume();
     }
 }
