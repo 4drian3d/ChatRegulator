@@ -32,7 +32,6 @@ public class ChatRegulatorCommand implements SimpleCommand {
     private Map<UUID, InfractionPlayer> infractionPlayers;
     private Messages.Config messages;
     private ProxyServer server;
-    private ConfigManager cManager;
     /**
      * ChatRegulatorCommand Contructor
      * @param infractionPlayers the list of infractor players
@@ -42,7 +41,6 @@ public class ChatRegulatorCommand implements SimpleCommand {
         this.infractionPlayers = infractionPlayers;
         this.messages = Configuration.getMessages();
         this.server = server;
-        this.cManager = new ConfigManager();
     }
 
     @Override
@@ -122,27 +120,27 @@ public class ChatRegulatorCommand implements SimpleCommand {
                     switch(args[2].toLowerCase()){
                         case "infractions": case "regular":
                             violations.resetViolations(InfractionType.REGULAR);
-                            cManager.sendResetMessage(source, InfractionType.REGULAR, infractionPlayer);
+                            ConfigManager.sendResetMessage(source, InfractionType.REGULAR, infractionPlayer);
                             break;
                         case "flood":
                             violations.resetViolations(InfractionType.FLOOD);
-                            cManager.sendResetMessage(source, InfractionType.FLOOD, infractionPlayer);
+                            ConfigManager.sendResetMessage(source, InfractionType.FLOOD, infractionPlayer);
                             break;
                         case "spam":
                             violations.resetViolations(InfractionType.SPAM);
-                            cManager.sendResetMessage(source, InfractionType.SPAM, infractionPlayer);
+                            ConfigManager.sendResetMessage(source, InfractionType.SPAM, infractionPlayer);
                             break;
                         case "command": case "commands":
                             violations.resetViolations(InfractionType.BCOMMAND);
-                            cManager.sendResetMessage(source, InfractionType.BCOMMAND, infractionPlayer);
+                            ConfigManager.sendResetMessage(source, InfractionType.BCOMMAND, infractionPlayer);
                             break;
                         case "unicode":
                             violations.resetViolations(InfractionType.UNICODE);
-                            cManager.sendResetMessage(source, InfractionType.UNICODE, infractionPlayer);
+                            ConfigManager.sendResetMessage(source, InfractionType.UNICODE, infractionPlayer);
                             break;
                         case "caps":
                             violations.resetViolations(InfractionType.CAPS);
-                            cManager.sendResetMessage(source, InfractionType.CAPS, infractionPlayer);
+                            ConfigManager.sendResetMessage(source, InfractionType.CAPS, infractionPlayer);
                             break;
                         default: break;
                     }
@@ -154,7 +152,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
                     InfractionType.BCOMMAND,
                     InfractionType.UNICODE
                 );
-                cManager.sendResetMessage(source, InfractionType.NONE, infractionPlayer);
+                ConfigManager.sendResetMessage(source, InfractionType.NONE, infractionPlayer);
             }, () -> {
                 var gmessages = messages.getGeneralMessages();
                 for(Entry<UUID, InfractionPlayer> entry : infractionPlayers.entrySet()){

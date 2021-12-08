@@ -6,8 +6,8 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.Regulator;
 import me.dreamerzero.chatregulator.config.Configuration;
-import me.dreamerzero.chatregulator.config.MainConfig;
 import me.dreamerzero.chatregulator.config.MainConfig.CommandsConfig;
+import me.dreamerzero.chatregulator.config.MainConfig.Executable;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 
 /**
@@ -15,17 +15,7 @@ import me.dreamerzero.chatregulator.enums.InfractionType;
  * when exceeding the set limit
  */
 public class CommandUtils {
-    private ProxyServer server;
-    private MainConfig.Config config;
-    /**
-     * CommandUtils constructor
-     * @param server the proxy server
-     */
-    public CommandUtils(ProxyServer server){
-        this.server = server;
-        this.config = Configuration.getConfig();
-    }
-
+    private CommandUtils(){}
     /**
      * This will check if it is possible to execute the
      * configured commands when it detects that the limit
@@ -33,34 +23,15 @@ public class CommandUtils {
      * @param type the {@link InfractionType}
      * @param infractorPlayer the {@link InfractionPlayer} involved
      */
-    public void executeCommand(InfractionType type, InfractionPlayer infractorPlayer){
+    public static void executeCommand(InfractionType type, InfractionPlayer infractorPlayer){
         Player infractor = infractorPlayer.getPlayer();
         if(infractor != null){
-            switch(type){
-                case REGULAR:
-                    execute(infractor, infractorPlayer, config.getInfractionsConfig().getCommandsConfig(), type);
-                    break;
-                case FLOOD:
-                    execute(infractor, infractorPlayer, config.getFloodConfig().getCommandsConfig(), type);
-                    break;
-                case SPAM:
-                    execute(infractor, infractorPlayer, config.getSpamConfig().getCommandsConfig(), type);
-                    break;
-                case BCOMMAND:
-                    execute(infractor, infractorPlayer, config.getCommandBlacklistConfig().getCommandsConfig(), type);
-                    break;
-                case UNICODE:
-                    execute(infractor, infractorPlayer, config.getUnicodeConfig().getCommandsConfig(), type);
-                    break;
-                case CAPS:
-                    execute(infractor, infractorPlayer, config.getCapsConfig().getCommandsConfig(), type);
-                    break;
-                case NONE: return;
-            }
+            execute(infractor, infractorPlayer, type);
         }
     }
 
-    private void execute(Player infractor, InfractionPlayer iPlayer, CommandsConfig config, InfractionType type){
+    private static void execute(Player infractor, InfractionPlayer iPlayer, InfractionType type){
+        CommandsConfig config = ((Executable)type.getConfig()).getCommandsConfig();
         if(config.executeCommand() && iPlayer.getViolations().getCount(type) % config.violationsRequired() == 0){
             var currentServer = infractor.getCurrentServer();
             config.getCommandsToExecute().forEach(cmd -> {
@@ -70,7 +41,8 @@ public class CommandUtils {
                         .replace("<server>", currentServer.get().getServerInfo().getName());
                 }
                 final String cmdfinal = commandToSend;
-                server.getCommandManager().executeAsync(server.getConsoleCommandSource(), cmdfinal).thenAcceptAsync(status -> {
+                ProxyServer proxy = Regulator.getInstance().getProxy();
+                proxy.getCommandManager().executeAsync(proxy.getConsoleCommandSource(), cmdfinal).thenAcceptAsync(status -> {
                     if(!status.booleanValue()){
                         Regulator.getInstance().getLogger().warn("Error executing command {}", cmdfinal);
                     }

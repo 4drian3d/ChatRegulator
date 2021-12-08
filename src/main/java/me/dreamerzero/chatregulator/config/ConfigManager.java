@@ -3,9 +3,9 @@ package me.dreamerzero.chatregulator.config;
 import java.util.stream.Collectors;
 
 import com.velocitypowered.api.proxy.Player;
-import com.velocitypowered.api.proxy.ProxyServer;
 
 import me.dreamerzero.chatregulator.InfractionPlayer;
+import me.dreamerzero.chatregulator.Regulator;
 import me.dreamerzero.chatregulator.config.MainConfig.Warning;
 import me.dreamerzero.chatregulator.modules.checks.AbstractCheck;
 import me.dreamerzero.chatregulator.utils.PlaceholderUtils;
@@ -21,25 +21,17 @@ import net.kyori.adventure.title.Title;
  * Utilities for using the configuration paths in an orderly manner
  */
 public class ConfigManager {
-    private MiniMessage mm;
-    private Messages.Config messages;
-    /**
-     * Constructor of the ConfigManager
-     */
-    public ConfigManager(){
-        this.mm = MiniMessage.miniMessage();
-        this.messages = Configuration.getMessages();
-    }
-
+    private ConfigManager(){}
     /**
      * Send a message of some kind to the offender.
      * @param infractor offender
      * @param type the type of infraction
      * @param check the flood check
      */
-    public void sendWarningMessage(InfractionPlayer infractor, InfractionType type, AbstractCheck check){
+    public static void sendWarningMessage(InfractionPlayer infractor, InfractionType type, AbstractCheck check){
         Player player = infractor.getPlayer();
         if(player != null){
+            MiniMessage mm = MiniMessage.miniMessage();
             String message = type.getMessages().getWarningMessage();
             PlaceholderResolver placeholder = PlaceholderResolver.combining(
                 PlaceholderResolver.placeholders(
@@ -53,7 +45,8 @@ public class ConfigManager {
         }
     }
 
-    private void sendTitle(String message, Audience player, PlaceholderResolver placeholder){
+    private static void sendTitle(String message, Audience player, PlaceholderResolver placeholder){
+        MiniMessage mm = MiniMessage.miniMessage();
         if(!message.contains(";")){
             player.showTitle(
             Title.title(
@@ -76,15 +69,16 @@ public class ConfigManager {
 
     /**
      * Sends an alert message to users who are in the audience with the required permissions
-     * @param proxy the proxy
      * @param infractor the player who committed the infraction
      * @param type the type of infraction
      */
-    public void sendAlertMessage(ProxyServer proxy, InfractionPlayer infractor, InfractionType type){
-        Audience staff = Audience.audience(proxy.getAllPlayers().stream()
+    public static void sendAlertMessage(InfractionPlayer infractor, InfractionType type){
+        Audience staff = Audience.audience(Regulator.getInstance().getProxy().getAllPlayers().stream()
                 .filter(op -> op.hasPermission("chatregulator.notifications"))
                 .collect(Collectors.toList()));
         String message = "";
+        Messages.Config messages = Configuration.getMessages();
+        MiniMessage mm = MiniMessage.miniMessage();
         switch(type){
             case FLOOD: message = messages.getFloodMessages().getAlertMessage(); break;
             case REGULAR: message = messages.getInfractionsMessages().getAlertMessage(); break;
@@ -109,7 +103,9 @@ public class ConfigManager {
      * @param player the infraction player
      *               whose warnings have been reset
      */
-    public void sendResetMessage(Audience sender, InfractionType type, InfractionPlayer player){
+    public static void sendResetMessage(Audience sender, InfractionType type, InfractionPlayer player){
+        Messages.Config messages = Configuration.getMessages();
+        MiniMessage mm = MiniMessage.miniMessage();
         switch(type){
             case REGULAR: sender.sendMessage(mm.deserialize(messages.getInfractionsMessages().getResetMessage(), PlaceholderUtils.getPlaceholders(player))); break;
             case FLOOD: sender.sendMessage(mm.deserialize(messages.getFloodMessages().getResetMessage(), PlaceholderUtils.getPlaceholders(player))); break;

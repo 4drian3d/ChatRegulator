@@ -71,10 +71,10 @@ public class Regulator {
         this.logger = logger;
     }
 
-    @Subscribe
     /**
      * Initialization of the plugin
      */
+    @Subscribe
     public void onProxyInitialization(final ProxyInitializeEvent event) {
         Regulator.plugin = this;
         server.getConsoleCommandSource().sendMessage(MiniMessage.miniMessage()
@@ -83,8 +83,8 @@ public class Regulator {
         if(server.getPluginManager().isLoaded("ServerUtils")){
             server.getEventManager().register(this, new PluginListener(logger));
         }
-        server.getEventManager().register(this, new ChatListener(server));
-        server.getEventManager().register(this, new CommandListener(server));
+        server.getEventManager().register(this, new ChatListener());
+        server.getEventManager().register(this, new CommandListener());
         server.getEventManager().register(this, new JoinListener(infractionPlayers));
         server.getEventManager().register(this, new LeaveListener());
         server.getEventManager().register(this, new ReloadListener(path, logger));

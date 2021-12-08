@@ -89,9 +89,8 @@ public class InfractionPlayer {
      * Sets the player's online status
      * @param status new online status
      */
-    public InfractionPlayer isOnline(boolean status){
+    public void isOnline(boolean status){
         this.isOnline = status;
-        return this;
     }
 
     /**
@@ -107,9 +106,8 @@ public class InfractionPlayer {
     /**
      * Sets the time at which the player has left the server
      */
-    public InfractionPlayer setLastSeen(Temporal time){
+    public void setLastSeen(Temporal time){
         this.lastTimeSeen = time;
-        return this;
     }
 
     /**
@@ -132,11 +130,10 @@ public class InfractionPlayer {
      * Sets the player's last sent message
      * @param newLastMessage the new last message sent by the player
      */
-    public InfractionPlayer lastMessage(String newLastMessage){
+    public void lastMessage(String newLastMessage){
         this.preLastMessage = this.lastMessage;
         this.lastMessage = newLastMessage;
         this.timeSinceLastMessage = Instant.now();
-        return this;
     }
 
     /**
@@ -159,11 +156,10 @@ public class InfractionPlayer {
      * Sets the player's last executed command
      * @param newLastCommand the new last command executed by the player
      */
-    public InfractionPlayer lastCommand(String newLastCommand){
+    public void lastCommand(String newLastCommand){
         this.preLastCommand = this.lastCommand;
         this.lastCommand = newLastCommand;
         this.timeSinceLastCommand = Instant.now();
-        return this;
     }
 
     /**
