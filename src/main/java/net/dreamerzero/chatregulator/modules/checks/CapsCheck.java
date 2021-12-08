@@ -3,6 +3,7 @@ package net.dreamerzero.chatregulator.modules.checks;
 import java.util.Locale;
 
 import net.dreamerzero.chatregulator.config.Configuration;
+import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 
 public class CapsCheck extends AbstractCheck{
 
@@ -28,5 +29,10 @@ public class CapsCheck extends AbstractCheck{
     @Override
     public String getInfractionWord(){
         return this.string;
+    }
+
+    @Override
+    public InfractionType type() {
+        return InfractionType.CAPS;
     }
 }

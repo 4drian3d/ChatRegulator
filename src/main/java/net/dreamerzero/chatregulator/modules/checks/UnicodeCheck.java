@@ -1,5 +1,7 @@
 package net.dreamerzero.chatregulator.modules.checks;
 
+import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
+
 public class UnicodeCheck extends AbstractCheck {
 
     @Override
@@ -19,5 +21,10 @@ public class UnicodeCheck extends AbstractCheck {
     @Override
     public String getInfractionWord(){
         return this.pattern;
+    }
+
+    @Override
+    public InfractionType type() {
+        return InfractionType.UNICODE;
     }
 }

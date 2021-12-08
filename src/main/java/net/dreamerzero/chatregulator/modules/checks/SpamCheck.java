@@ -1,6 +1,7 @@
 package net.dreamerzero.chatregulator.modules.checks;
 
 import net.dreamerzero.chatregulator.InfractionPlayer;
+import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 import net.dreamerzero.chatregulator.utils.TypeUtils.SourceType;
 
 /**
@@ -49,5 +50,10 @@ public class SpamCheck extends AbstractCheck {
 
             super.detected = prelastCommand.equalsIgnoreCase(lastCommand) && lastCommand.contains(string);
         }
+    }
+
+    @Override
+    public InfractionType type() {
+        return InfractionType.SPAM;
     }
 }

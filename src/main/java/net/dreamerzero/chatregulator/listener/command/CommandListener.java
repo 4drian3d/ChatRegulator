@@ -77,7 +77,7 @@ public class CommandListener {
         if(GeneralUtils.allowedPlayer(player, InfractionType.BCOMMAND)){
             CommandCheck cCheck = new CommandCheck();
             cCheck.check(command);
-            if(cCheck.isInfraction() && !callCommandViolationEvent(infractionPlayer, command, InfractionType.BCOMMAND, cCheck)){
+            if(cCheck.isInfraction() && !callCommandEvent(infractionPlayer, command, InfractionType.BCOMMAND, cCheck)){
                 event.setResult(CommandResult.denied());
                 return;
             }
@@ -86,7 +86,7 @@ public class CommandListener {
         if(GeneralUtils.allowedPlayer(player, InfractionType.UNICODE)){
             UnicodeCheck uCheck = new UnicodeCheck();
             uCheck.check(command);
-            if(uCheck.isInfraction() && !callCommandViolationEvent(infractionPlayer, command, InfractionType.UNICODE, uCheck)){
+            if(uCheck.isInfraction() && !callCommandEvent(infractionPlayer, command, InfractionType.UNICODE, uCheck)){
                 event.setResult(CommandResult.denied());
                 return;
             }
@@ -96,7 +96,7 @@ public class CommandListener {
             CapsCheck cCheck = new CapsCheck();
             cCheck.check(command);
 
-            if(cCheck.isInfraction() && !callCommandViolationEvent(infractionPlayer, command, InfractionType.CAPS, cCheck)){
+            if(cCheck.isInfraction() && !callCommandEvent(infractionPlayer, command, InfractionType.CAPS, cCheck)){
                 if(config.getCapsConfig().getControlType() == ControlType.BLOCK){
                     event.setResult(CommandResult.denied());
                     return;
@@ -111,7 +111,7 @@ public class CommandListener {
         if(GeneralUtils.allowedPlayer(player, InfractionType.FLOOD)){
             FloodCheck fCheck = new FloodCheck();
             fCheck.check(command);
-            if(fCheck.isInfraction() && !callCommandViolationEvent(infractionPlayer, command, InfractionType.FLOOD, fCheck)) {
+            if(fCheck.isInfraction() && !callCommandEvent(infractionPlayer, command, InfractionType.FLOOD, fCheck)) {
                 if(config.getFloodConfig().getControlType() == ControlType.BLOCK){
                     event.setResult(CommandResult.denied());
                     return;
@@ -126,7 +126,7 @@ public class CommandListener {
         if(GeneralUtils.allowedPlayer(player, InfractionType.REGULAR)){
             InfractionCheck iCheck = new InfractionCheck();
             iCheck.check(command);
-            if(iCheck.isInfraction() && !callCommandViolationEvent(infractionPlayer, command, InfractionType.REGULAR, iCheck)) {
+            if(iCheck.isInfraction() && !callCommandEvent(infractionPlayer, command, InfractionType.REGULAR, iCheck)) {
                 if(config.getInfractionsConfig().getControlType() == ControlType.BLOCK){
                     event.setResult(CommandResult.denied());
                     return;
@@ -139,16 +139,11 @@ public class CommandListener {
         }
 
         if(GeneralUtils.allowedPlayer(player, InfractionType.SPAM)){
-            SpamCheck sUtils = new SpamCheck(infractionPlayer, SourceType.COMMAND);
-            sUtils.check(command);
-            var cooldownconfig = config.getSpamConfig().getCooldownConfig();
-            if(sUtils.isInfraction()
-                && (cooldownconfig.enabled() && infractionPlayer.getTimeSinceLastCommand() < cooldownconfig.limit()
-                || !cooldownconfig.enabled())
-                && !callCommandViolationEvent(infractionPlayer, command, InfractionType.SPAM, sUtils)) {
-
-                    event.setResult(CommandResult.denied());
-                    return;
+            SpamCheck sCheck = new SpamCheck(infractionPlayer, SourceType.COMMAND);
+            sCheck.check(command);
+            if(GeneralUtils.spamCheck(sCheck, config, infractionPlayer) && !callCommandEvent(infractionPlayer, command, InfractionType.SPAM, sCheck)) {
+                event.setResult(CommandResult.denied());
+                return;
             }
         }
 
@@ -163,7 +158,7 @@ public class CommandListener {
      * @param type InfractionType to check
      * @return message of {@link CommandExecuteEvent} is approved
      */
-    private boolean callCommandViolationEvent(InfractionPlayer player, String command, InfractionType type, AbstractCheck detection) {
+    private boolean callCommandEvent(InfractionPlayer player, String command, InfractionType type, AbstractCheck detection) {
         AtomicBoolean approved = new AtomicBoolean(true);
         server.getEventManager().fire(new CommandViolationEvent(player, type, detection, command)).thenAccept(violationEvent -> {
             if(violationEvent.getResult() == GenericResult.denied()) {

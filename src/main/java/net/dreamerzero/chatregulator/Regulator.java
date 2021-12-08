@@ -41,7 +41,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
     authors = {
         "4drian3d"
     },
-    // The dependency is necessary only to send a warning message when reloading the plugin.
+    // This dependency is necessary only to send a warning message when reloading the plugin.
     dependencies = {
         @Dependency(
             id = "serverutils",
@@ -52,8 +52,8 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 public class Regulator {
     private final ProxyServer server;
     private final Logger logger;
+    private final Path path;
     private static Regulator plugin;
-    private Path path;
 
     /**
      * InfractionPlayer list
@@ -78,10 +78,8 @@ public class Regulator {
      */
     public void onProxyInitialization(final ProxyInitializeEvent event) {
         Regulator.plugin = this;
-        // :)
-        server.getConsoleCommandSource().sendMessage(
-            MiniMessage.miniMessage().parse("<gradient:#f2709c:#ff9472>ChatRegulator</gradient> <gradient:#DAE2F8:#D4D3DD>has started, have a very nice day</gradient>"));
-        // Default config
+        server.getConsoleCommandSource().sendMessage(MiniMessage.miniMessage()
+            .parse("<gradient:#f2709c:#ff9472>ChatRegulator</gradient> <gradient:#DAE2F8:#D4D3DD>has started, have a very nice day</gradient>"));
         Configuration.loadConfig(path, logger);
         if(server.getPluginManager().isLoaded("ServerUtils")){
             server.getEventManager().register(this, new PluginListener(logger));
@@ -92,7 +90,10 @@ public class Regulator {
         server.getEventManager().register(this, new LeaveListener());
         server.getEventManager().register(this, new ReloadListener(path, logger));
 
-        CommandMeta regulatorMeta = server.getCommandManager().metaBuilder("chatregulator").aliases("chatr", "cregulator").build();
+        CommandMeta regulatorMeta = server.getCommandManager()
+            .metaBuilder("chatregulator")
+            .aliases("chatr", "cregulator")
+            .build();
         server.getCommandManager().register(regulatorMeta, new ChatRegulatorCommand(infractionPlayers, server));
 
         checkInfractionPlayersRunnable();

@@ -19,6 +19,7 @@ dependencies {
         exclude("net.kyori", "adventure-api")
     }
     shadow("org.spongepowered:configurate-hocon:4.1.2")
+    shadow("org.jetbrains:annotations:23.0.0")
     compileOnly("net.frankheijden.serverutils:ServerUtils:3.3.1")
 
     compileOnly("com.velocitypowered:velocity-api:3.1.0")

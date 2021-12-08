@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.dreamerzero.chatregulator.config.Configuration;
+import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 
 /**
  * Utilities for the detection of restringed words
@@ -46,5 +47,10 @@ public class InfractionCheck extends AbstractCheck {
             original = pattern.matcher(original).replaceAll("***");
         }
         return original;
+    }
+
+    @Override
+    public InfractionType type() {
+        return InfractionType.REGULAR;
     }
 }

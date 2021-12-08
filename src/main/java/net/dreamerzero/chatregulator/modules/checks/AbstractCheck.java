@@ -2,6 +2,8 @@ package net.dreamerzero.chatregulator.modules.checks;
 
 import java.util.regex.Matcher;
 
+import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
+
 /**
  * Base class of the checks used in the plugin
  */
@@ -16,6 +18,12 @@ public abstract class AbstractCheck {
      * @param message the message to check
      */
     public abstract void check(String message);
+
+    /**
+     * Get the InfractionType
+     * @return the infraction type
+     */
+    public abstract InfractionType type();
 
     /**
      * Check the detection result

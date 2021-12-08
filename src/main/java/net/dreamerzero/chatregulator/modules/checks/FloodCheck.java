@@ -3,6 +3,7 @@ package net.dreamerzero.chatregulator.modules.checks;
 import java.util.regex.Pattern;
 
 import net.dreamerzero.chatregulator.config.Configuration;
+import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 
 /**
  * Utilities for detecting incoherent messages containing floods
@@ -47,5 +48,10 @@ public class FloodCheck extends AbstractCheck {
 
     public String replaceInfraction(){
         return super.matcher.replaceAll("");
+    }
+
+    @Override
+    public InfractionType type() {
+        return InfractionType.FLOOD;
     }
 }

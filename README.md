@@ -11,6 +11,7 @@ A global chat regulator for Velocity
 - Controls the number of consecutive equal characters allowed
 - Controls the repetition of the same messages or commands several times in a row.
 - Sends warning messages, actionbars o titles to the offender in MiniMessage format
+- And more...
 
 ## Commands
 

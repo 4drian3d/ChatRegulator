@@ -62,7 +62,7 @@ public class ChatListener {
         if(GeneralUtils.allowedPlayer(player, InfractionType.UNICODE)){
             UnicodeCheck uCheck = new UnicodeCheck();
             uCheck.check(message);
-            if(uCheck.isInfraction() && !callChatViolationEvent(infractionPlayer, message, InfractionType.UNICODE, uCheck)){
+            if(uCheck.isInfraction() && !callChatViolationEvent(infractionPlayer, message, uCheck)){
                 event.setResult(ChatResult.denied());
                 return;
             }
@@ -72,7 +72,7 @@ public class ChatListener {
             CapsCheck cCheck = new CapsCheck();
             cCheck.check(message);
 
-            if(cCheck.isInfraction() && !callChatViolationEvent(infractionPlayer, message, InfractionType.CAPS, cCheck)){
+            if(cCheck.isInfraction() && !callChatViolationEvent(infractionPlayer, message, cCheck)){
                 if(config.getCapsConfig().getControlType() == ControlType.BLOCK){
                     event.setResult(ChatResult.denied());
                     return;
@@ -87,7 +87,7 @@ public class ChatListener {
         if(GeneralUtils.allowedPlayer(player, InfractionType.FLOOD)){
             FloodCheck fCheck = new FloodCheck();
             fCheck.check(message);
-            if(fCheck.isInfraction() && !callChatViolationEvent(infractionPlayer, message, InfractionType.FLOOD, fCheck)) {
+            if(fCheck.isInfraction() && !callChatViolationEvent(infractionPlayer, message, fCheck)) {
                 if(config.getFloodConfig().getControlType() == ControlType.BLOCK){
                     event.setResult(ChatResult.denied());
                     return;
@@ -102,7 +102,7 @@ public class ChatListener {
         if(GeneralUtils.allowedPlayer(player, InfractionType.REGULAR)){
             InfractionCheck iCheck = new InfractionCheck();
             iCheck.check(message);
-            if(iCheck.isInfraction() && !callChatViolationEvent(infractionPlayer, message, InfractionType.REGULAR, iCheck)) {
+            if(iCheck.isInfraction() && !callChatViolationEvent(infractionPlayer, message, iCheck)) {
                 if(config.getInfractionsConfig().getControlType() == ControlType.BLOCK){
                     event.setResult(ChatResult.denied());
                     return;
@@ -117,13 +117,9 @@ public class ChatListener {
         if(GeneralUtils.allowedPlayer(player, InfractionType.SPAM)){
             SpamCheck sCheck = new SpamCheck(infractionPlayer, SourceType.CHAT);
             sCheck.check(message);
-            if(sCheck.isInfraction() && (config.getSpamConfig().getCooldownConfig().enabled()
-                    && infractionPlayer.getTimeSinceLastMessage() < config.getSpamConfig().getCooldownConfig().limit()
-                    || !config.getSpamConfig().getCooldownConfig().enabled())
-                && !callChatViolationEvent(infractionPlayer, message, InfractionType.SPAM, sCheck)) {
-
-                    event.setResult(ChatResult.denied());
-                    return;
+            if(GeneralUtils.spamCheck(sCheck, config, infractionPlayer) && !callChatViolationEvent(infractionPlayer, message, sCheck)) {
+                event.setResult(ChatResult.denied());
+                return;
             }
         }
 
@@ -142,11 +138,12 @@ public class ChatListener {
      * and approves player message
      * @param player Player who send the message
      * @param message The message
-     * @param type InfractionType to check
+     * @param detection the detection
      * @author Espryth
      * @return message of {@link PlayerChatEvent} is approved
      */
-    private boolean callChatViolationEvent(InfractionPlayer player, String message, InfractionType type, AbstractCheck detection) {
+    private boolean callChatViolationEvent(InfractionPlayer player, String message, AbstractCheck detection) {
+        InfractionType type = detection.type();
         AtomicBoolean approved = new AtomicBoolean(true);
         server.getEventManager().fire(new ChatViolationEvent(player, type, detection, message)).thenAccept(violationEvent -> {
             if(violationEvent.getResult() == GenericResult.denied()) {

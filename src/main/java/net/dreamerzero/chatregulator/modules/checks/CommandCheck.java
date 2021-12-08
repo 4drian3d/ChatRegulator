@@ -3,6 +3,7 @@ package net.dreamerzero.chatregulator.modules.checks;
 import java.util.Set;
 
 import net.dreamerzero.chatregulator.config.Configuration;
+import net.dreamerzero.chatregulator.utils.TypeUtils.InfractionType;
 
 public class CommandCheck extends AbstractCheck {
     private Set<String> blockedCommands;
@@ -27,6 +28,11 @@ public class CommandCheck extends AbstractCheck {
     @Override
     public String getInfractionWord(){
         return super.string;
+    }
+
+    @Override
+    public InfractionType type() {
+        return InfractionType.BCOMMAND;
     }
 
 }

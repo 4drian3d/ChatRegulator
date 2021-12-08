@@ -10,6 +10,7 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.ApiStatus.Internal;
 
 import net.dreamerzero.chatregulator.exception.PlayerNotAvailableException;
 
@@ -35,6 +36,7 @@ public class InfractionPlayer {
      * Constructor of an InfractorPlayer based on a {@link Player}
      * @param player the player on which it will be based
      */
+    @Internal
     public InfractionPlayer(Player player){
         this.player = player;
         this.preLastMessage = " .";
@@ -53,6 +55,7 @@ public class InfractionPlayer {
      * @param uuid the uuid on which it will be based
      * @param server the proxy server
      */
+    @Internal
     public InfractionPlayer(UUID uuid, ProxyServer server){
         this.player = server.getPlayer(uuid).orElseThrow();
         this.preLastMessage = " .";
