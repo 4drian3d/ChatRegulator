@@ -31,7 +31,7 @@ dependencies {
 	testImplementation("org.junit.jupiter:junit-jupiter")
 }
 
-group = "net.dreamerzero.chatregulator"
+group = "me.dreamerzero.chatregulator"
 version = "2.0.0"
 description = "A Chat regulator for you Velocity network"
 java.sourceCompatibility = JavaVersion.VERSION_11
@@ -57,7 +57,7 @@ tasks {
 
     create<ConfigureShadowRelocation>("relocateShadowJar") {
         target = shadowJar.get()
-        prefix = "net.dreamerzero.chatregulator.libs"
+        prefix = "me.dreamerzero.chatregulator.libs"
     }
     test {
         useJUnitPlatform()
