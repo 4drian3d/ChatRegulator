@@ -2,11 +2,10 @@ package me.dreamerzero.chatregulator.utils;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.velocitypowered.api.event.ResultedEvent.GenericResult;
 import com.velocitypowered.api.proxy.Player;
 
 import me.dreamerzero.chatregulator.InfractionPlayer;
-import me.dreamerzero.chatregulator.Regulator;
+import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.config.ConfigManager;
 import me.dreamerzero.chatregulator.config.MainConfig;
 import me.dreamerzero.chatregulator.modules.Statistics;
@@ -55,14 +54,14 @@ public final class GeneralUtils {
     public static boolean callViolationEvent(InfractionPlayer player, String string, AbstractCheck detection, SourceType stype) {
         AtomicBoolean approved = new AtomicBoolean(true);
         InfractionType type = detection.type();
-        Regulator.getInstance().getProxy().getEventManager().fire(stype == SourceType.COMMAND
+        ChatRegulator.getInstance().getProxy().getEventManager().fire(stype == SourceType.COMMAND
             ? new CommandViolationEvent(player, type, detection, string)
             : new ChatViolationEvent(player, type, detection, string))
             .thenAcceptAsync(violationEvent -> {
-                if(violationEvent.getResult() == GenericResult.denied()) {
+                if(!violationEvent.getResult().isAllowed()) {
+                    approved.set(false);
                     if(stype == SourceType.COMMAND) player.lastCommand(string); else player.lastMessage(string);
                 } else {
-                    approved.set(false);
                     DebugUtils.debug(player, string, type, detection);
                     Statistics.addViolationCount(type);
                     ConfigManager.sendWarningMessage(player, type, detection);

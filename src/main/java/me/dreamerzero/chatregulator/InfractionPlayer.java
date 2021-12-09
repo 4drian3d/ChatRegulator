@@ -54,10 +54,11 @@ public class InfractionPlayer {
      * Constructor of an InfractorPlayer based on its {@link UUID}
      * @param uuid the uuid on which it will be based
      * @param server the proxy server
+     * @throws PlayerNotAvailableException
      */
     @Internal
-    public InfractionPlayer(UUID uuid, ProxyServer server){
-        this.player = server.getPlayer(uuid).orElseThrow();
+    public InfractionPlayer(UUID uuid, ProxyServer server) throws PlayerNotAvailableException{
+        this.player = server.getPlayer(uuid).orElseThrow(PlayerNotAvailableException::new);
         this.preLastMessage = " .";
         this.lastMessage = " ";
         this.preLastCommand = " ";
@@ -206,14 +207,14 @@ public class InfractionPlayer {
      * @throws PlayerNotAvailableException if the player is not available
      */
     public static @Nullable InfractionPlayer get(final UUID uuid) throws PlayerNotAvailableException{
-        if(Regulator.infractionPlayers.containsKey(uuid)){
-            return Regulator.infractionPlayers.get(uuid);
+        if(ChatRegulator.infractionPlayers.containsKey(uuid)){
+            return ChatRegulator.infractionPlayers.get(uuid);
         } else {
-            Regulator plugin = Regulator.getInstance();
+            ChatRegulator plugin = ChatRegulator.getInstance();
             Optional<Player> optionalPlayer = plugin.getProxy().getPlayer(uuid);
             if(optionalPlayer.isPresent()){
                 InfractionPlayer iPlayer = InfractionPlayer.get(optionalPlayer.get());
-                Regulator.infractionPlayers.put(uuid, iPlayer);
+                ChatRegulator.infractionPlayers.put(uuid, iPlayer);
                 return iPlayer;
             } else {
                 throw new PlayerNotAvailableException(uuid);
@@ -228,7 +229,7 @@ public class InfractionPlayer {
      */
     public static InfractionPlayer get(final Player player){
         final UUID uuid = player.getUniqueId();
-        var playersMap = Regulator.infractionPlayers;
+        var playersMap = ChatRegulator.infractionPlayers;
         if(playersMap.containsKey(uuid)){
             return playersMap.get(uuid);
         } else {

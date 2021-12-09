@@ -13,7 +13,7 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 
 import me.dreamerzero.chatregulator.InfractionPlayer;
-import me.dreamerzero.chatregulator.Regulator;
+import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.config.ConfigManager;
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.config.Messages;
@@ -227,7 +227,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
 
     private void parseReloadCommand(Audience sender, MiniMessage mm){
         sender.sendMessage(mm.deserialize(messages.getGeneralMessages().getReloadMessage()));
-        Regulator.getInstance().reloadConfig();
+        ChatRegulator.getInstance().reloadConfig();
     }
 
     @Override

@@ -4,7 +4,7 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 
 import me.dreamerzero.chatregulator.InfractionPlayer;
-import me.dreamerzero.chatregulator.Regulator;
+import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.config.MainConfig.CommandsConfig;
 import me.dreamerzero.chatregulator.config.MainConfig.Executable;
@@ -41,10 +41,10 @@ public class CommandUtils {
                         .replace("<server>", currentServer.get().getServerInfo().getName());
                 }
                 final String cmdfinal = commandToSend;
-                ProxyServer proxy = Regulator.getInstance().getProxy();
+                ProxyServer proxy = ChatRegulator.getInstance().getProxy();
                 proxy.getCommandManager().executeAsync(proxy.getConsoleCommandSource(), cmdfinal).thenAcceptAsync(status -> {
                     if(!status.booleanValue()){
-                        Regulator.getInstance().getLogger().warn("Error executing command {}", cmdfinal);
+                        ChatRegulator.getInstance().getLogger().warn("Error executing command {}", cmdfinal);
                     }
                 });
             });

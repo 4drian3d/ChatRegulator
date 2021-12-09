@@ -48,11 +48,11 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
         )
     }
 )
-public class Regulator {
+public class ChatRegulator {
     private final ProxyServer server;
     private final Logger logger;
     private final Path path;
-    private static Regulator plugin;
+    private static ChatRegulator plugin;
 
     /**
      * InfractionPlayer list
@@ -65,7 +65,7 @@ public class Regulator {
      * @param logger logger
      */
     @Inject
-    public Regulator(final ProxyServer server, Logger logger, @DataDirectory Path path) {
+    public ChatRegulator(final ProxyServer server, Logger logger, @DataDirectory Path path) {
         this.server = server;
         this.path = path;
         this.logger = logger;
@@ -76,7 +76,7 @@ public class Regulator {
      */
     @Subscribe
     public void onProxyInitialization(final ProxyInitializeEvent event) {
-        Regulator.plugin = this;
+        ChatRegulator.plugin = this;
         server.getConsoleCommandSource().sendMessage(MiniMessage.miniMessage()
             .parse("<gradient:#f2709c:#ff9472>ChatRegulator</gradient> <gradient:#DAE2F8:#D4D3DD>has started, have a very nice day</gradient>"));
         Configuration.loadConfig(path, logger);
@@ -98,7 +98,7 @@ public class Regulator {
         checkInfractionPlayersRunnable();
     }
 
-    public static Regulator getInstance(){
+    public static ChatRegulator getInstance(){
         return plugin;
     }
 

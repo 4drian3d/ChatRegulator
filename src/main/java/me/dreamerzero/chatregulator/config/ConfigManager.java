@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import com.velocitypowered.api.proxy.Player;
 
 import me.dreamerzero.chatregulator.InfractionPlayer;
-import me.dreamerzero.chatregulator.Regulator;
+import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.config.MainConfig.Warning;
 import me.dreamerzero.chatregulator.modules.checks.AbstractCheck;
 import me.dreamerzero.chatregulator.utils.PlaceholderUtils;
@@ -73,7 +73,7 @@ public class ConfigManager {
      * @param type the type of infraction
      */
     public static void sendAlertMessage(InfractionPlayer infractor, InfractionType type){
-        Audience staff = Audience.audience(Regulator.getInstance().getProxy().getAllPlayers().stream()
+        Audience staff = Audience.audience(ChatRegulator.getInstance().getProxy().getAllPlayers().stream()
                 .filter(op -> op.hasPermission("chatregulator.notifications"))
                 .collect(Collectors.toList()));
         String message = "";
