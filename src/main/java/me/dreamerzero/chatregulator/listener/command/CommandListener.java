@@ -48,7 +48,10 @@ public class CommandListener {
         String rawCommand = event.getCommand();
 
         String[] commandSplit = rawCommand.split(" ");
-        if(!CommandUtils.isCommand(commandSplit[0])) return;
+        if(!CommandUtils.isCommand(commandSplit[0])){
+            continuation.resume();
+            return;
+        }        
 
         StringBuilder sBuilder = new StringBuilder();
 
