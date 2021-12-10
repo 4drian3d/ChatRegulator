@@ -215,6 +215,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
                     }
                     break;
                 default:
+                    //Does this exclude other audiences that should not receive the component, probably the console?    
                     Audience.audience(server.getAllPlayers()).sendMessage(GeneralUtils.spacesComponent);
                     source.sendMessage(mm.deserialize(clearmessages.getGlobalMessage()));
                     break;

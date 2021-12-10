@@ -73,9 +73,6 @@ public class ConfigManager {
      * @param type the type of infraction
      */
     public static void sendAlertMessage(InfractionPlayer infractor, InfractionType type){
-        Audience staff = Audience.audience(ChatRegulator.getInstance().getProxy().getAllPlayers().stream()
-                .filter(op -> op.hasPermission("chatregulator.notifications"))
-                .collect(Collectors.toList()));
         String message = "";
         Messages.Config messages = Configuration.getMessages();
         MiniMessage mm = MiniMessage.miniMessage();
@@ -88,6 +85,10 @@ public class ConfigManager {
             case CAPS: message = messages.getCapsMessages().getAlertMessage(); break;
             case NONE: return;
         }
+
+        Audience staff = Audience.audience(ChatRegulator.getInstance().getProxy().getAllPlayers().stream()
+                .filter(op -> op.hasPermission("chatregulator.notifications"))
+                .collect(Collectors.toList()));
 
         staff.sendMessage(
             mm.deserialize(

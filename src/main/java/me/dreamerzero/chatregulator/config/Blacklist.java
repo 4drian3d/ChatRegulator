@@ -23,7 +23,8 @@ public class Blacklist {
             "p(u|@|v)ssy",
             "(?:(?:https?|ftp|file):\\/\\/|www\\.|ftp\\.)(?:\\([-A-Z0-9+&@#\\/%=~_|$?!:,.]*\\)|[-A-Z0-9+&@#\\/%=~_|$?!:,.])*(?:\\([-A-Z0-9+&@#\\/%=~_|$?!:,.]*\\)|[A-Z0-9+&@#\\/%=~_|$])",
             "(i|@|l|j|1|y)mb(3|@|e|x)c(i|@|l|j|1|y)l",
-            "m(o|@|0|x|8)th(3|@|e|x)rf(u|@|v)ck(3|@|e|x)r"
+            "m(o|@|0|x|8)th(3|@|e|x)rf(u|@|v)ck(3|@|e|x)r",
+            "\\$\\{(jndi|log4j|sys|env|main|marker|java|base64|lower|upper|web|docker|kubernetes|spring|jvmrunargs|date|ctx)\\:.*\\}"
         );
 
         @Comment("Sets the commands that cannot be executed\n(configurable in the command module)")
