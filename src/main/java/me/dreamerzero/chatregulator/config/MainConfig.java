@@ -38,6 +38,9 @@ public class MainConfig {
         @Comment("General Configurations")
         private General general = new General();
 
+        @Comment("CommandSpy configuration")
+        private CommandSpy commandSpy = new CommandSpy();
+
         public CommandBlacklist getCommandBlacklistConfig(){
             return this.blacklist;
         }
@@ -68,6 +71,10 @@ public class MainConfig {
 
         public General getGeneralConfig(){
             return this.general;
+        }
+
+        public CommandSpy getCommandSpyConfig(){
+            return this.commandSpy;
         }
     }
 
@@ -363,6 +370,24 @@ public class MainConfig {
 
         public boolean setFinalDot(){
             return this.finalDot;
+        }
+    }
+
+    @ConfigSerializable
+    public static class CommandSpy implements Toggleable{
+        @Comment("Enable CommandSpy module")
+        private boolean enabled;
+
+        @Comment("Commands to ignore")
+        private Set<String> ignoredCommands;
+
+        @Override
+        public boolean enabled() {
+            return this.enabled;
+        }
+
+        public Set<String> ignoredCommands(){
+            return this.ignoredCommands;
         }
     }
 

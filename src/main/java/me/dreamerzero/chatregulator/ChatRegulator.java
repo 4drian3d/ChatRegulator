@@ -21,6 +21,7 @@ import me.dreamerzero.chatregulator.commands.ChatRegulatorCommand;
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.listener.chat.ChatListener;
 import me.dreamerzero.chatregulator.listener.command.CommandListener;
+import me.dreamerzero.chatregulator.listener.command.SpyListener;
 import me.dreamerzero.chatregulator.listener.list.JoinListener;
 import me.dreamerzero.chatregulator.listener.list.LeaveListener;
 import me.dreamerzero.chatregulator.listener.plugin.PluginListener;
@@ -57,7 +58,7 @@ public class ChatRegulator {
     /**
      * InfractionPlayer list
      */
-    protected static Map<UUID, InfractionPlayer> infractionPlayers = new ConcurrentHashMap<>();
+    protected static final Map<UUID, InfractionPlayer> infractionPlayers = new ConcurrentHashMap<>();
 
     /**
      * Constructor for ChatRegulator Plugin
@@ -81,13 +82,16 @@ public class ChatRegulator {
             .parse("<gradient:#f2709c:#ff9472>ChatRegulator</gradient> <gradient:#DAE2F8:#D4D3DD>has started, have a very nice day</gradient>"));
         Configuration.loadConfig(path, logger);
         if(server.getPluginManager().isLoaded("ServerUtils")){
-            server.getEventManager().register(this, new PluginListener(logger));
+            this.registerListener(new PluginListener(logger));
         }
-        server.getEventManager().register(this, new ChatListener());
-        server.getEventManager().register(this, new CommandListener());
-        server.getEventManager().register(this, new JoinListener(infractionPlayers));
-        server.getEventManager().register(this, new LeaveListener());
-        server.getEventManager().register(this, new ReloadListener(path, logger));
+        this.registerListener(
+            new ChatListener(),
+            new CommandListener(),
+            new JoinListener(infractionPlayers),
+            new LeaveListener(),
+            new ReloadListener(path, logger),
+            new SpyListener()
+        );
 
         CommandMeta regulatorMeta = server.getCommandManager()
             .metaBuilder("chatregulator")
@@ -96,6 +100,12 @@ public class ChatRegulator {
         server.getCommandManager().register(regulatorMeta, new ChatRegulatorCommand(infractionPlayers, server));
 
         checkInfractionPlayersRunnable();
+    }
+
+    private void registerListener(Object... events){
+        for(Object event : events){
+            server.getEventManager().register(this, event);
+        }
     }
 
     public static ChatRegulator getInstance(){

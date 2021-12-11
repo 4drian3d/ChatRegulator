@@ -45,21 +45,12 @@ public class CommandListener {
             return;
         }
 
-        String rawCommand = event.getCommand();
+        String command = event.getCommand();
 
-        String[] commandSplit = rawCommand.split(" ");
-        if(!CommandUtils.isCommand(commandSplit[0])){
+        if(!CommandUtils.isCommand(CommandUtils.getFirstArgument(command))){
             continuation.resume();
             return;
-        }        
-
-        StringBuilder sBuilder = new StringBuilder();
-
-        for(int i = 1; i < commandSplit.length; i++){
-            sBuilder.append(commandSplit[i]).append(" ");
         }
-
-        String command = sBuilder.toString();
 
         Player player = (Player)event.getCommandSource();
         InfractionPlayer infractionPlayer = InfractionPlayer.get(player);

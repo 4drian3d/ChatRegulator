@@ -34,6 +34,9 @@ public class Messages {
         @Setting(value = "clear-chat")
         private Clear clearChat = new Clear();
 
+        @Comment("Configuration of the messages of the command spy module")
+        private CommandSpy commandSpy = new CommandSpy();
+
         @Comment("General Messages")
         private General general = new General();
 
@@ -63,6 +66,10 @@ public class Messages {
 
         public Clear getClearMessages(){
             return this.clearChat;
+        }
+
+        public CommandSpy getCommandSpyMessages(){
+            return this.commandSpy;
         }
 
         public General getGeneralMessages(){
@@ -261,6 +268,16 @@ public class Messages {
 
         public String getPlayerMessage(){
             return this.player;
+        }
+    }
+
+    @ConfigSerializable
+    public static class CommandSpy{
+        @Comment("Message to send")
+        private String message = "<gradient:red:yellow>CommandSpy</gradient> <white>| <aqua><player> <white>| <gray><command>";
+
+        public String getMessage(){
+            return this.message;
         }
     }
 

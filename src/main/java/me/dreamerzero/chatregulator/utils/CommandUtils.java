@@ -59,4 +59,17 @@ public class CommandUtils {
     public static boolean isCommand(String command){
         return Configuration.getBlacklist().getBlockedCommands().stream().anyMatch(command::contains);
     }
+
+    /**
+     * Get the first argument of a string
+     * @param string the string
+     * @return the first argument
+     */
+    public static String getFirstArgument(String string){
+        int index = string.indexOf(" ");
+        if (index == -1) {
+            return string;
+        }
+        return string.substring(0, index);
+    }
 }
