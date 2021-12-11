@@ -27,7 +27,8 @@ public class PlaceholderUtils {
             Placeholder.placeholder("spam", String.valueOf(player.getViolations().getCount(InfractionType.SPAM))),
             Placeholder.placeholder("regular", String.valueOf(player.getViolations().getCount(InfractionType.REGULAR))),
             Placeholder.placeholder("unicode", String.valueOf(player.getViolations().getCount(InfractionType.UNICODE))),
-            Placeholder.placeholder("caps", String.valueOf(player.getViolations().getCount(InfractionType.CAPS)))
+            Placeholder.placeholder("caps", String.valueOf(player.getViolations().getCount(InfractionType.CAPS))),
+            Placeholder.placeholder("command", String.valueOf(player.getViolations().getCount(InfractionType.BCOMMAND)))
         );
         Player p = player.getPlayer();
         if(p != null){

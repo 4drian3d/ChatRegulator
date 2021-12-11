@@ -31,6 +31,7 @@ dependencies {
 	testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.mockito:mockito-core:4.1.0")
     testImplementation("com.velocitypowered:velocity-api:3.1.0")
+    testImplementation("net.kyori:adventure-text-minimessage:4.10.0-SNAPSHOT")
 
 }
 
