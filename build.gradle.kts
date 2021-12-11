@@ -29,10 +29,13 @@ dependencies {
     testImplementation("org.spongepowered:configurate-hocon:4.1.2")
     testImplementation(platform("org.junit:junit-bom:5.8.1"))
 	testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.mockito:mockito-core:4.1.0")
+    testImplementation("com.velocitypowered:velocity-api:3.1.0")
+
 }
 
 group = "me.dreamerzero.chatregulator"
-version = "2.0.1"
+version = "2.1.0"
 description = "A Chat regulator for you Velocity network"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
