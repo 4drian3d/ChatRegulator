@@ -18,6 +18,7 @@ import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
 
 public class PlaceholderTest {
 
+    //TODO: Use a sinlgeton instead of a static class
     @Test
     void playerPlaceholders(){
         MiniMessage mm = MiniMessage.miniMessage();
@@ -40,6 +41,32 @@ public class PlaceholderTest {
 
         Component expectedComponent = Component.text(
             "Player 4drian3d or 4drian3d with"
+            +" 0 regular infractions,"
+            +" 0 flood infractions,"
+            +" 0 spam infractions,"
+            +" 0 unicode infractions,"
+            +" and 0 caps infractions", NamedTextColor.AQUA);
+
+        assertEquals(expectedComponent, componentWithPlaceholders);
+    }
+
+    @Test
+    void globalPlaceholders(){
+        MiniMessage mm = MiniMessage.miniMessage();
+
+        PlaceholderResolver placeholders = PlaceholderUtils.getGlobalPlaceholders();
+
+        Component componentWithPlaceholders = mm.deserialize(
+            "<aqua>Global statistics"
+            +" <regular> regular infractions,"
+            +" <flood> flood infractions,"
+            +" <spam> spam infractions,"
+            +" <unicode> unicode infractions,"
+            +" and <caps> caps infractions",
+            placeholders);
+
+        Component expectedComponent = Component.text(
+            "Global statistics"
             +" 0 regular infractions,"
             +" 0 flood infractions,"
             +" 0 spam infractions,"
