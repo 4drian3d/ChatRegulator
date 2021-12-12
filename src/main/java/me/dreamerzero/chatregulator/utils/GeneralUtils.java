@@ -63,7 +63,7 @@ public final class GeneralUtils {
                     if(stype == SourceType.COMMAND) player.lastCommand(string); else player.lastMessage(string);
                 } else {
                     DebugUtils.debug(player, string, type, detection);
-                    Statistics.addViolationCount(type);
+                    Statistics.getStatistics().addViolationCount(type);
                     ConfigManager.sendWarningMessage(player, type, detection);
                     ConfigManager.sendAlertMessage(player, type);
 

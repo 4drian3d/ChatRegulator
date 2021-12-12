@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import com.velocitypowered.api.proxy.Player;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import me.dreamerzero.chatregulator.InfractionPlayer;
@@ -18,8 +19,8 @@ import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
 
 public class PlaceholderTest {
 
-    //TODO: Use a sinlgeton instead of a static class
     @Test
+    @DisplayName("Player Placeholders")
     void playerPlaceholders(){
         MiniMessage mm = MiniMessage.miniMessage();
         Player p = mock(Player.class);
@@ -51,6 +52,7 @@ public class PlaceholderTest {
     }
 
     @Test
+    @DisplayName("Global Placeholders")
     void globalPlaceholders(){
         MiniMessage mm = MiniMessage.miniMessage();
 

@@ -11,6 +11,7 @@ import java.util.UUID;
 import com.velocitypowered.api.proxy.Player;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +33,7 @@ public class InfractionPlayerTest {
     }
 
     @Test
+    @DisplayName("Player Violation Count")
     void countTest(){
         ViolationCount count = player.getViolations();
 
@@ -48,6 +50,7 @@ public class InfractionPlayerTest {
     }
 
     @Test
+    @DisplayName("General Tests")
     void generalTest(){
         assertTrue(player.isOnline());
 
