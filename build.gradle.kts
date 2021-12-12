@@ -37,15 +37,17 @@ dependencies {
 
 group = "me.dreamerzero.chatregulator"
 version = "2.1.0"
-description = "A Chat regulator for you Velocity network"
+description = "A global chat regulator for you Velocity network"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
+val url = "https://forums.velocitypowered.com/t/chatregulator-a-global-chat-regulator-for-velocity/962"
+
 blossom{
-	val constants = "src/main/java/net/dreamerzero/chatregulator/utils/Constants.java"
+	val constants = "src/main/java/me/dreamerzero/chatregulator/utils/Constants.java"
 	replaceToken("{name}", rootProject.name, constants)
 	replaceToken("{version}", version, constants)
 	replaceToken("{description}", description, constants)
-    replaceToken("{url}", "https://forums.velocitypowered.com/t/chatregulator-a-global-chat-regulator-for-velocity/962", constants)
+    replaceToken("{url}", url, constants)
 }
 
 tasks {
