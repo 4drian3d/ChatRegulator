@@ -28,7 +28,7 @@ dependencies {
     testImplementation("org.slf4j:slf4j-api:1.7.32")
     testImplementation("org.spongepowered:configurate-hocon:4.1.2")
     testImplementation(platform("org.junit:junit-bom:5.8.1"))
-	testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.mockito:mockito-core:4.1.0")
     testImplementation("com.velocitypowered:velocity-api:3.1.0")
     testImplementation("net.kyori:adventure-text-minimessage:4.10.0-SNAPSHOT")

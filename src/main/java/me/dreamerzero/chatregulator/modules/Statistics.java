@@ -88,6 +88,33 @@ public class Statistics {
         return 0;
     }
 
+    @Override
+    public boolean equals(Object o){
+        if(this == o) return true;
+        if(!(o instanceof Statistics)) return false;
+
+        Statistics stats = (Statistics)o;
+
+        return this.globalViolations == stats.globalViolations;
+    }
+
+    @Override
+    public int hashCode(){
+        return 31 + this.globalViolations;
+    }
+
+    @Override
+    public String toString(){
+        return "Statistics["
+            +"regular="+this.regularCount
+            +",flood="+this.floodCount
+            +",spam="+this.spamCount
+            +",caps="+this.capsViolations
+            +",command="+this.commandCount
+            +",unicode="+this.unicodeViolations
+            +"]";
+    }
+
     private Statistics(){
         this.spamCount = 0;
         this.capsViolations = 0;
