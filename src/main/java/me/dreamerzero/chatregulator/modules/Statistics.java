@@ -6,54 +6,68 @@ import me.dreamerzero.chatregulator.enums.InfractionType;
  * Manages the plugin's internal statistics
  */
 public class Statistics {
+    private static volatile Statistics statistics;
     /**
      * Global Spam warning count
      */
-    private static int spamCount;
+    private int spamCount;
     /**
      * Global Flood warning count
      */
-    private static int floodCount;
+    private int floodCount;
     /**
      * Global Regular Infractions warning count
      */
-    private static int regularCount;
+    private int regularCount;
 
     /**
      * Global commands blocked executed
      */
-    private static int commandCount;
+    private int commandCount;
 
     /**
      * Global Unicode caracters count
      */
-    private static int unicodeViolations;
+    private int unicodeViolations;
 
     /**
      * Global Caps violations count
      */
-    private static int capsViolations;
+    private int capsViolations;
 
     /**
      * Global Violations count
      */
-    private static int globalViolations;
+    private int globalViolations;
+
+    public static Statistics getStatistics(){
+        Statistics result = statistics;
+        if (result != null) {
+            return result;
+        }
+        synchronized(Statistics.class) {
+            if (statistics == null) {
+                statistics = new Statistics();
+            }
+            return statistics;
+        }
+    }
 
     /**
      * Add a violation to the overall violation count.
      * @param type the infraction type
      */
-    public static void addViolationCount(InfractionType type){
+    public void addViolationCount(InfractionType type){
         switch(type){
-            case SPAM: spamCount++; break;
-            case FLOOD: floodCount++; break;
-            case REGULAR: regularCount++; break;
-            case BCOMMAND: commandCount++; break;
-            case UNICODE: unicodeViolations++; break;
-            case CAPS: capsViolations++; break;
+            case SPAM: this.spamCount++; break;
+            case FLOOD: this.floodCount++; break;
+            case REGULAR: this.regularCount++; break;
+            case BCOMMAND: this.commandCount++; break;
+            case UNICODE: this.unicodeViolations++; break;
+            case CAPS: this.capsViolations++; break;
             case NONE: break;
         }
-        globalViolations++;
+        this.globalViolations++;
     }
 
     /**
@@ -61,18 +75,53 @@ public class Statistics {
      * @param type the infraction type
      * @return count of the respective infraction type
      */
-    public static int getViolationCount(InfractionType type){
+    public int getViolationCount(InfractionType type){
         switch(type){
-            case SPAM: return spamCount;
-            case FLOOD: return floodCount;
-            case REGULAR: return regularCount;
-            case BCOMMAND: return commandCount;
-            case UNICODE: return unicodeViolations;
-            case CAPS: return capsViolations;
-            case NONE: return globalViolations;
+            case SPAM: return this.spamCount;
+            case FLOOD: return this.floodCount;
+            case REGULAR: return this.regularCount;
+            case BCOMMAND: return this.commandCount;
+            case UNICODE: return this.unicodeViolations;
+            case CAPS: return this.capsViolations;
+            case NONE: return this.globalViolations;
         }
         return 0;
     }
 
-    private Statistics(){}
+    @Override
+    public boolean equals(Object o){
+        if(this == o) return true;
+        if(!(o instanceof Statistics)) return false;
+
+        Statistics stats = (Statistics)o;
+
+        return this.globalViolations == stats.globalViolations;
+    }
+
+    @Override
+    public int hashCode(){
+        return 31 + this.globalViolations;
+    }
+
+    @Override
+    public String toString(){
+        return "Statistics["
+            +"regular="+this.regularCount
+            +",flood="+this.floodCount
+            +",spam="+this.spamCount
+            +",caps="+this.capsViolations
+            +",command="+this.commandCount
+            +",unicode="+this.unicodeViolations
+            +"]";
+    }
+
+    private Statistics(){
+        this.spamCount = 0;
+        this.capsViolations = 0;
+        this.commandCount = 0;
+        this.floodCount = 0;
+        this.globalViolations = 0;
+        this.regularCount = 0;
+        this.unicodeViolations = 0;
+    }
 }

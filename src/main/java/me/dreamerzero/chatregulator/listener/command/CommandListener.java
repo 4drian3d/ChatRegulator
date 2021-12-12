@@ -47,7 +47,7 @@ public class CommandListener {
 
         String command = event.getCommand();
 
-        if(!CommandUtils.isCommand(CommandUtils.getFirstArgument(command))){
+        if(!CommandUtils.isCommand(command)){
             continuation.resume();
             return;
         }

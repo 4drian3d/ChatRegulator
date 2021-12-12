@@ -7,6 +7,7 @@ import me.dreamerzero.chatregulator.utils.CommandUtils;
 
 public class CommandSpy {
     private CommandSpy(){}
+
     public static boolean shouldAnnounce(CommandSource source, String command, MainConfig.CommandSpy config){
         return config.ignoredCommands().contains(CommandUtils.getFirstArgument(command))
             && source.hasPermission("chatregulator.bypass.commandspy");

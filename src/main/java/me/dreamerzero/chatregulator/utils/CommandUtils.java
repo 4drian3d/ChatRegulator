@@ -57,7 +57,9 @@ public class CommandUtils {
      * @return if the command is to be checked
      */
     public static boolean isCommand(String command){
-        return Configuration.getBlacklist().getBlockedCommands().stream().anyMatch(command::contains);
+        final String firstArgument = getFirstArgument(command);
+        return Configuration.getBlacklist().getBlockedCommands().stream()
+            .anyMatch(firstArgument::equalsIgnoreCase);
     }
 
     /**
