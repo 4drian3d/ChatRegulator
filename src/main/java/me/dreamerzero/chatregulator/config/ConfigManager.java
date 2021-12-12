@@ -35,7 +35,7 @@ public class ConfigManager {
             String message = type.getMessages().getWarningMessage();
             PlaceholderResolver placeholder = PlaceholderResolver.combining(
                 PlaceholderResolver.placeholders(
-                    Placeholder.placeholder("infraction", check.getInfractionWord())),
+                    Placeholder.miniMessage("infraction", check.getInfractionWord())),
                     PlaceholderUtils.getPlaceholders(infractor));
             switch(((Warning)type.getConfig()).getWarningType()){
                 case TITLE: sendTitle(message, player, placeholder); break;

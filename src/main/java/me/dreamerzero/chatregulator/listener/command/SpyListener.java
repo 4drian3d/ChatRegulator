@@ -13,6 +13,7 @@ import me.dreamerzero.chatregulator.config.MainConfig;
 import me.dreamerzero.chatregulator.config.Messages;
 import me.dreamerzero.chatregulator.modules.CommandSpy;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.placeholder.Placeholder;
 import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
 
 public class SpyListener {
@@ -41,9 +42,9 @@ public class SpyListener {
                 .forEach(p -> p.sendMessage(
                     mm.deserialize(
                         messages.getMessage(),
-                        PlaceholderResolver.resolving(
-                            "command", command,
-                            "player", ((Player)source).getUsername()
+                        PlaceholderResolver.placeholders(
+                            Placeholder.miniMessage("command", command),
+                            Placeholder.miniMessage("player", ((Player)source).getUsername())
                         )
                     )
                 ));
