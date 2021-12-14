@@ -33,7 +33,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
  * Plugin main class
  */
 @Plugin(
-    id = "chatregulator",
+    id = Constants.ID,
     name = Constants.NAME,
     version = Constants.VERSION,
     description = Constants.DESCRIPTION,

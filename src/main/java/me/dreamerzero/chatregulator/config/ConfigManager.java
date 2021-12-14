@@ -15,6 +15,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.placeholder.Placeholder;
 import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
+import net.kyori.adventure.text.minimessage.transformation.TransformationType;
 import net.kyori.adventure.title.Title;
 
 /**
@@ -45,23 +46,34 @@ public class ConfigManager {
         }
     }
 
+    private static final MiniMessage titleMiniMessage = MiniMessage.builder().transformations(tr ->
+        tr.clear()
+            .add(TransformationType.COLOR)
+            .add(TransformationType.DECORATION)
+            .add(TransformationType.FONT)
+            .add(TransformationType.GRADIENT)
+            .add(TransformationType.KEYBIND)
+            .add(TransformationType.RAINBOW)
+            .add(TransformationType.TRANSLATABLE)
+        .build()
+    ).build();
+
     private static void sendTitle(String message, Audience player, PlaceholderResolver placeholder){
-        MiniMessage mm = MiniMessage.miniMessage();
         if(!message.contains(";")){
             player.showTitle(
             Title.title(
                 Component.empty(),
-                mm.deserialize(
+                titleMiniMessage.deserialize(
                     message,
                     placeholder)));
         } else {
             String[] titleParts = message.split(";");
             player.showTitle(
                 Title.title(
-                    mm.deserialize(
+                    titleMiniMessage.deserialize(
                         titleParts[0],
                         placeholder),
-                    mm.deserialize(
+                    titleMiniMessage.deserialize(
                         titleParts[1],
                         placeholder)));
         }
