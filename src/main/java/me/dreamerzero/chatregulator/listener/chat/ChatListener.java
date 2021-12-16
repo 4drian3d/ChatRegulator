@@ -1,11 +1,11 @@
 package me.dreamerzero.chatregulator.listener.chat;
 
 import com.velocitypowered.api.event.Continuation;
+import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.player.PlayerChatEvent;
 import com.velocitypowered.api.event.player.PlayerChatEvent.ChatResult;
 import com.velocitypowered.api.proxy.Player;
-
 
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.config.Configuration;
@@ -17,7 +17,6 @@ import me.dreamerzero.chatregulator.modules.checks.InfractionCheck;
 import me.dreamerzero.chatregulator.modules.checks.SpamCheck;
 import me.dreamerzero.chatregulator.modules.checks.UnicodeCheck;
 import me.dreamerzero.chatregulator.utils.GeneralUtils;
-import me.dreamerzero.chatregulator.enums.ControlType;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.enums.SourceType;
 
@@ -37,16 +36,20 @@ public class ChatListener {
      * Chat Listener for detections
      * @param event the chat event
      */
-    @Subscribe
+    @Subscribe(order = PostOrder.FIRST)
     public void onChat(PlayerChatEvent event, Continuation continuation) {
-        Player player = event.getPlayer();
+        if(!event.getResult().isAllowed()){
+            continuation.resume();
+            return;
+        }
+        final Player player = event.getPlayer();
         String message = event.getMessage();
-        InfractionPlayer infractionPlayer = InfractionPlayer.get(player);
+        final InfractionPlayer infractor = InfractionPlayer.get(player);
 
         if(GeneralUtils.allowedPlayer(player, InfractionType.UNICODE)){
             UnicodeCheck uCheck = new UnicodeCheck();
             uCheck.check(message);
-            if(uCheck.isInfraction() && !GeneralUtils.callViolationEvent(infractionPlayer, message, uCheck, SourceType.CHAT)){
+            if(uCheck.isInfraction() && !GeneralUtils.callViolationEvent(infractor, message, uCheck, SourceType.CHAT)){
                 event.setResult(ChatResult.denied());
                 continuation.resume();
                 return;
@@ -57,8 +60,8 @@ public class ChatListener {
             CapsCheck cCheck = new CapsCheck();
             cCheck.check(message);
 
-            if(cCheck.isInfraction() && !GeneralUtils.callViolationEvent(infractionPlayer, message, cCheck, SourceType.CHAT)){
-                if(config.getCapsConfig().getControlType() == ControlType.BLOCK){
+            if(cCheck.isInfraction() && !GeneralUtils.callViolationEvent(infractor, message, cCheck, SourceType.CHAT)){
+                if(config.getCapsConfig().isBlockable()){
                     event.setResult(ChatResult.denied());
                     continuation.resume();
                     return;
@@ -73,39 +76,37 @@ public class ChatListener {
         if(GeneralUtils.allowedPlayer(player, InfractionType.FLOOD)){
             FloodCheck fCheck = new FloodCheck();
             fCheck.check(message);
-            if(fCheck.isInfraction() && !GeneralUtils.callViolationEvent(infractionPlayer, message, fCheck, SourceType.CHAT)) {
-                if(config.getFloodConfig().getControlType() == ControlType.BLOCK){
+            if(fCheck.isInfraction() && !GeneralUtils.callViolationEvent(infractor, message, fCheck, SourceType.CHAT)) {
+                if(config.getFloodConfig().isBlockable()){
                     event.setResult(ChatResult.denied());
                     continuation.resume();
                     return;
-                } else {
-                    String messageReplaced = fCheck.replaceInfraction();
-                    event.setResult(ChatResult.message(messageReplaced));
-                    message = messageReplaced;
                 }
+                String messageReplaced = fCheck.replaceInfraction();
+                event.setResult(ChatResult.message(messageReplaced));
+                message = messageReplaced;
             }
         }
 
         if(GeneralUtils.allowedPlayer(player, InfractionType.REGULAR)){
             InfractionCheck iCheck = new InfractionCheck();
             iCheck.check(message);
-            if(iCheck.isInfraction() && !GeneralUtils.callViolationEvent(infractionPlayer, message, iCheck, SourceType.CHAT)) {
-                if(config.getInfractionsConfig().getControlType() == ControlType.BLOCK){
+            if(iCheck.isInfraction() && !GeneralUtils.callViolationEvent(infractor, message, iCheck, SourceType.CHAT)) {
+                if(config.getInfractionsConfig().isBlockable()){
                     event.setResult(ChatResult.denied());
                     continuation.resume();
                     return;
-                } else {
-                    String messageReplaced = iCheck.replaceInfractions();
-                    event.setResult(ChatResult.message(messageReplaced));
-                    message = messageReplaced;
                 }
+                String messageReplaced = iCheck.replaceInfractions();
+                event.setResult(ChatResult.message(messageReplaced));
+                message = messageReplaced;
             }
         }
 
         if(GeneralUtils.allowedPlayer(player, InfractionType.SPAM)){
-            SpamCheck sCheck = new SpamCheck(infractionPlayer, SourceType.CHAT);
+            SpamCheck sCheck = new SpamCheck(infractor, SourceType.CHAT);
             sCheck.check(message);
-            if(GeneralUtils.spamCheck(sCheck, config, infractionPlayer) && !GeneralUtils.callViolationEvent(infractionPlayer, message, sCheck, SourceType.CHAT)) {
+            if(GeneralUtils.spamCheck(sCheck, config, infractor) && !GeneralUtils.callViolationEvent(infractor, message, sCheck, SourceType.CHAT)) {
                 event.setResult(ChatResult.denied());
                 continuation.resume();
                 return;
@@ -117,7 +118,7 @@ public class ChatListener {
             event.setResult(ChatResult.message(message));
         }
 
-        infractionPlayer.lastMessage(message);
+        infractor.lastMessage(message);
         continuation.resume();
     }
 }

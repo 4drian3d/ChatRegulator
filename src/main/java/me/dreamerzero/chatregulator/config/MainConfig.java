@@ -450,6 +450,10 @@ public class MainConfig {
 
     public interface Controllable{
         ControlType getControlType();
+
+        default boolean isBlockable(){
+            return getControlType() == ControlType.BLOCK;
+        }
     }
 
     public interface Executable{
