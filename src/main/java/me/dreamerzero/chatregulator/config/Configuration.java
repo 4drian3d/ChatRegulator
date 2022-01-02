@@ -116,9 +116,13 @@ public class Configuration {
     }
 
     private static boolean checkConfig(Path path, String name){
-        Path configFile = path.resolve(name);
-        try (BufferedReader reader = Files.newBufferedReader(configFile, StandardCharsets.UTF_8);) {
-            return reader.lines().anyMatch(s -> s.contains("\\") && !s.contains("\\\\"));
+        final Path configFile = path.resolve(name);
+        try (BufferedReader reader = Files.newBufferedReader(configFile, StandardCharsets.UTF_8)) {
+            while(true){
+                String line = reader.readLine();
+                if(line == null) return false;
+                if(line.contains("\\") && !line.contains("\\\\")) return true;
+            }
         } catch(IOException e){
             return false;
         }
