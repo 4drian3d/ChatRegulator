@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -29,6 +30,8 @@ public class Configuration {
      * @param logger plugin logger
      */
     public static void loadConfig(@NotNull Path path, @NotNull Logger logger){
+        Objects.requireNonNull(path, "plugin path");
+        Objects.requireNonNull(logger, "plugin logger");
         loadMainConfig(path, logger);
         loadMessagesConfig(path, logger);
         loadBlacklistConfig(path, logger);

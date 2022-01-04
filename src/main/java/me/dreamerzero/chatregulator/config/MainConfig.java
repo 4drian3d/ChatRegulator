@@ -167,7 +167,7 @@ public class MainConfig {
 
     @ConfigSerializable
     public static class Flood implements Toggleable, Warning, Controllable, Executable {
-        @Comment("Enable flood check in the chat\n(e.g.: \"aaaaaaaaaaaaaaaaaaaa\")")
+        @Comment("Enable flood check in the chat\n(e.g.: \"aaaaaaaa\")")
         private boolean enabled = true;
 
         @Comment("Sets the form of warning\nAvailable options: TITLE, ACTIONBAR, MESSAGE")

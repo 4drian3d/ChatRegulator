@@ -34,17 +34,13 @@ public class CommandUtils {
         CommandsConfig config = ((Executable)type.getConfig()).getCommandsConfig();
         if(config.executeCommand() && iPlayer.getViolations().getCount(type) % config.violationsRequired() == 0){
             var currentServer = infractor.getCurrentServer();
+            final String servername = currentServer.isPresent() ? currentServer.get().getServerInfo().getName() :"";
             config.getCommandsToExecute().forEach(cmd -> {
-                String commandToSend = cmd.replace("<player>", infractor.getUsername());
-                if(currentServer.isPresent()){
-                    commandToSend = commandToSend
-                        .replace("<server>", currentServer.get().getServerInfo().getName());
-                }
-                final String cmdfinal = commandToSend;
-                ProxyServer proxy = ChatRegulator.getInstance().getProxy();
-                proxy.getCommandManager().executeAsync(proxy.getConsoleCommandSource(), cmdfinal).thenAcceptAsync(status -> {
+                final String commandToSend = cmd.replace("<player>", infractor.getUsername()).replace("<server>", servername);
+                final ProxyServer proxy = ChatRegulator.getInstance().getProxy();
+                proxy.getCommandManager().executeAsync(proxy.getConsoleCommandSource(), commandToSend).thenAcceptAsync(status -> {
                     if(!status.booleanValue()){
-                        ChatRegulator.getInstance().getLogger().warn("Error executing command {}", cmdfinal);
+                        ChatRegulator.getInstance().getLogger().warn("Error executing command {}", commandToSend);
                     }
                 });
             });
