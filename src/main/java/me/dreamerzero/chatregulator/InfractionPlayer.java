@@ -207,8 +207,9 @@ public class InfractionPlayer {
      * @throws PlayerNotAvailableException if the player is not available
      */
     public static @Nullable InfractionPlayer get(final UUID uuid) throws PlayerNotAvailableException{
-        if(ChatRegulator.infractionPlayers.containsKey(uuid)){
-            return ChatRegulator.infractionPlayers.get(uuid);
+        InfractionPlayer p = ChatRegulator.infractionPlayers.get(uuid);
+        if(p != null){
+            return p;
         } else {
             ChatRegulator plugin = ChatRegulator.getInstance();
             Optional<Player> optionalPlayer = plugin.getProxy().getPlayer(uuid);
