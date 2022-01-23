@@ -12,7 +12,7 @@ import me.dreamerzero.chatregulator.enums.InfractionType;
 /**
  * Utilities for bug or inconsistency resolution
  */
-public class DebugUtils {
+public final class DebugUtils {
 
     /**
      * Debug message

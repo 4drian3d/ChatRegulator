@@ -4,12 +4,12 @@ import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.config.MainConfig;
 
 public class Replacer {
-    private MainConfig.Config config;
+    private final MainConfig.Format config;
     public Replacer(){
-        this.config = Configuration.getConfig();
+        this.config = Configuration.getConfig().getFormatConfig();
     }
-    public String firstLetterUpercase(String string){
-        if(!config.getFormatConfig().setFirstLetterUppercase() || string.length() < 1)
+    public String firstLetterUpercase(final String string){
+        if(!config.setFirstLetterUppercase() || string.length() < 1)
             return string;
 
         char firstCharacter = string.charAt(0);
@@ -20,14 +20,14 @@ public class Replacer {
         return builder.toString();
     }
 
-    public String addFinalDot(String string){
-        if(!config.getFormatConfig().setFinalDot() || string.charAt(string.length()-1)=='.' || string.length() <= 1)
+    public String addFinalDot(final String string){
+        if(!config.setFinalDot() || string.charAt(string.length()-1)=='.' || string.length() <= 1)
             return string;
 
         return string.concat(".");
     }
 
-    public String applyFormat(String string){
-        return firstLetterUpercase(addFinalDot(string));
+    public String applyFormat(final String string){
+        return this.firstLetterUpercase(this.addFinalDot(string));
     }
 }

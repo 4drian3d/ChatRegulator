@@ -16,7 +16,7 @@ import me.dreamerzero.chatregulator.enums.InfractionType;
  * Utilities for executing commands
  * when exceeding the set limit
  */
-public class CommandUtils {
+public final class CommandUtils {
     private CommandUtils(){}
     /**
      * This will check if it is possible to execute the
