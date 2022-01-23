@@ -49,7 +49,7 @@ public class ChatListener {
         if(GeneralUtils.allowedPlayer(player, InfractionType.UNICODE)){
             UnicodeCheck uCheck = new UnicodeCheck();
             uCheck.check(message);
-            if(uCheck.isInfraction() && !GeneralUtils.callViolationEvent(infractor, message, uCheck, SourceType.CHAT)){
+            if(GeneralUtils.checkAndCall(infractor, message, uCheck, SourceType.CHAT)){
                 event.setResult(ChatResult.denied());
                 continuation.resume();
                 return;
@@ -60,7 +60,7 @@ public class ChatListener {
             CapsCheck cCheck = new CapsCheck();
             cCheck.check(message);
 
-            if(cCheck.isInfraction() && !GeneralUtils.callViolationEvent(infractor, message, cCheck, SourceType.CHAT)){
+            if(GeneralUtils.checkAndCall(infractor, message, cCheck, SourceType.CHAT)){
                 if(config.getCapsConfig().isBlockable()){
                     event.setResult(ChatResult.denied());
                     continuation.resume();
@@ -76,7 +76,7 @@ public class ChatListener {
         if(GeneralUtils.allowedPlayer(player, InfractionType.FLOOD)){
             FloodCheck fCheck = new FloodCheck();
             fCheck.check(message);
-            if(fCheck.isInfraction() && !GeneralUtils.callViolationEvent(infractor, message, fCheck, SourceType.CHAT)) {
+            if(GeneralUtils.checkAndCall(infractor, message, fCheck, SourceType.CHAT)) {
                 if(config.getFloodConfig().isBlockable()){
                     event.setResult(ChatResult.denied());
                     continuation.resume();
@@ -91,7 +91,7 @@ public class ChatListener {
         if(GeneralUtils.allowedPlayer(player, InfractionType.REGULAR)){
             InfractionCheck iCheck = new InfractionCheck();
             iCheck.check(message);
-            if(iCheck.isInfraction() && !GeneralUtils.callViolationEvent(infractor, message, iCheck, SourceType.CHAT)) {
+            if(GeneralUtils.checkAndCall(infractor, message, iCheck, SourceType.CHAT)) {
                 if(config.getInfractionsConfig().isBlockable()){
                     event.setResult(ChatResult.denied());
                     continuation.resume();
@@ -106,7 +106,7 @@ public class ChatListener {
         if(GeneralUtils.allowedPlayer(player, InfractionType.SPAM)){
             SpamCheck sCheck = new SpamCheck(infractor, SourceType.CHAT);
             sCheck.check(message);
-            if(GeneralUtils.spamCheck(sCheck, config, infractor) && !GeneralUtils.callViolationEvent(infractor, message, sCheck, SourceType.CHAT)) {
+            if(GeneralUtils.spamCheck(sCheck, config, infractor) && GeneralUtils.callViolationEvent(infractor, message, sCheck, SourceType.CHAT)) {
                 event.setResult(ChatResult.denied());
                 continuation.resume();
                 return;

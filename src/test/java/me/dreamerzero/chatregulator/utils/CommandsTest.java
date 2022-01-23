@@ -2,6 +2,7 @@ package me.dreamerzero.chatregulator.utils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.nio.file.Paths;
 
@@ -35,5 +36,27 @@ public class CommandsTest {
         boolean isCommand = CommandUtils.isCommand(command);
 
         assertTrue(isCommand);
+    }
+
+    @Test
+    @DisplayName("Starting String")
+    void isStartingCommand(){
+        String firstcommand = "lp group Owner";
+        String firstconfig = "lp group";
+
+        assertTrue(CommandUtils.isStartingString(firstcommand, firstconfig));
+
+        String secondcommand = "lp group";
+        String secondconfusion = "lpermission";
+        String secondconfig = "lp";
+
+        assertTrue(CommandUtils.isStartingString(secondcommand, secondconfig));
+        assertFalse(CommandUtils.isStartingString(secondconfusion, secondconfig));
+
+        String thirdcommand = "lppermissions";
+
+        String thirdconfig = "lp*";
+
+        assertTrue(CommandUtils.isStartingString(thirdcommand, thirdconfig));
     }
 }

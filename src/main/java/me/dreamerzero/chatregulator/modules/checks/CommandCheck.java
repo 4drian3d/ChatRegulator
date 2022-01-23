@@ -4,9 +4,10 @@ import java.util.Set;
 
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.enums.InfractionType;
+import me.dreamerzero.chatregulator.utils.CommandUtils;
 
 public class CommandCheck extends AbstractCheck {
-    private Set<String> blockedCommands;
+    private final Set<String> blockedCommands;
 
     public CommandCheck(){
         this.blockedCommands = Configuration.getBlacklist().getBlockedCommands();
@@ -15,7 +16,7 @@ public class CommandCheck extends AbstractCheck {
     @Override
     public void check(String message) {
         for (String blockedCommand : blockedCommands){
-            if(blockedCommand.equalsIgnoreCase(message)) {
+            if(CommandUtils.isStartingString(message, blockedCommand)){
                 super.string = message;
                 super.pattern = blockedCommand;
                 super.matcher = null;

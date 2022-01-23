@@ -75,6 +75,18 @@ public final class GeneralUtils {
     }
 
     /**
+     * Call an event and check if it was not cancelled
+     * @param player the {@link InfractionPlayer}
+     * @param string the string of the event (Command/Chat Message executed)
+     * @param detection the detection
+     * @param stype the source type
+     * @return if the event was not cancelled
+     */
+    public static boolean checkAndCall(InfractionPlayer player, String string, AbstractCheck detection, SourceType stype){
+        return detection.isInfraction() && GeneralUtils.callViolationEvent(player, string, detection, stype);
+    }
+
+    /**
      * Spaces component for "/chatregulator clear" command
      */
     public static final Component spacesComponent = Component.text()
