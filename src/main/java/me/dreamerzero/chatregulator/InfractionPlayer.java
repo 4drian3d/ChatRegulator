@@ -3,6 +3,7 @@ package me.dreamerzero.chatregulator;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.Temporal;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -250,10 +251,7 @@ public class InfractionPlayer {
 
     @Override
     public int hashCode(){
-        if(this.player != null){
-            return 31 + this.player.hashCode();
-        }
-        return 31 + this.username.hashCode();
+        return Objects.hash(this.player, this.username);
     }
 
     @Override

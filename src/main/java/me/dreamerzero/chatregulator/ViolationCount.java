@@ -1,5 +1,7 @@
 package me.dreamerzero.chatregulator;
 
+import java.util.Objects;
+
 import me.dreamerzero.chatregulator.enums.InfractionType;
 
 public class ViolationCount {
@@ -86,13 +88,14 @@ public class ViolationCount {
 
     @Override
     public int hashCode(){
-        return 31
-            + this.spamViolations
-            + this.regularViolations
-            + this.capsviolations
-            + this.commandViolations
-            + this.unicodeViolations
-            + this.floodViolations;
+        return Objects.hash(
+            this.spamViolations,
+            this.regularViolations,
+            this.capsviolations,
+            this.commandViolations,
+            this.unicodeViolations,
+            this.floodViolations
+        );
     }
 
     @Override

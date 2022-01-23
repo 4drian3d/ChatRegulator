@@ -1,11 +1,13 @@
 package me.dreamerzero.chatregulator.modules;
 
+import java.util.Objects;
+
 import me.dreamerzero.chatregulator.enums.InfractionType;
 
 /**
  * Manages the plugin's internal statistics
  */
-public class Statistics {
+public final class Statistics {
     private static volatile Statistics statistics;
     /**
      * Global Spam warning count
@@ -100,7 +102,7 @@ public class Statistics {
 
     @Override
     public int hashCode(){
-        return 31 + this.globalViolations;
+        return Objects.hash(this.globalViolations);
     }
 
     @Override
