@@ -376,10 +376,14 @@ public class MainConfig {
     @ConfigSerializable
     public static class CommandSpy implements Toggleable{
         @Comment("Enable CommandSpy module")
-        private boolean enabled;
+        private boolean enabled = false;
 
         @Comment("Commands to ignore")
-        private Set<String> ignoredCommands;
+        private Set<String> ignoredCommands = Set.of(
+            "login",
+            "register",
+            "changepassword"
+        );
 
         @Override
         public boolean enabled() {
