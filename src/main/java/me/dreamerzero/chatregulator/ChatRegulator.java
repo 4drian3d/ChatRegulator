@@ -79,7 +79,7 @@ public class ChatRegulator {
     public void onProxyInitialization(final ProxyInitializeEvent event) {
         ChatRegulator.plugin = this;
         server.getConsoleCommandSource().sendMessage(MiniMessage.miniMessage()
-            .parse("<gradient:#f2709c:#ff9472>ChatRegulator</gradient> <gradient:#DAE2F8:#D4D3DD>has started, have a very nice day</gradient>"));
+            .deserialize("<gradient:#f2709c:#ff9472>ChatRegulator</gradient> <gradient:#DAE2F8:#D4D3DD>has started, have a very nice day</gradient>"));
         Configuration.loadConfig(path, logger);
         if(server.getPluginManager().isLoaded("ServerUtils")){
             this.registerListener(new PluginListener(logger));
