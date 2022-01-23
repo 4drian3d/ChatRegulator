@@ -11,6 +11,7 @@ import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.config.MainConfig;
 import me.dreamerzero.chatregulator.config.Messages;
+import me.dreamerzero.chatregulator.enums.Permissions;
 import me.dreamerzero.chatregulator.modules.CommandSpy;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.placeholder.Placeholder;
@@ -30,7 +31,10 @@ public class SpyListener {
     @Subscribe(order = PostOrder.LAST)
     public void onCommand(CommandExecuteEvent event, Continuation continuation){
         CommandSource source = event.getCommandSource();
-        if(!event.getResult().isAllowed() || !(source instanceof Player) || !config.enabled()){
+        if(!event.getResult().isAllowed()
+            || !(source instanceof Player)
+            || !config.enabled()
+            || source.hasPermission(Permissions.BYPASS_COMMANDSPY)){
             continuation.resume();
             return;
         }
@@ -38,10 +42,11 @@ public class SpyListener {
 
         if(CommandSpy.shouldAnnounce(source, command, config)){
             ChatRegulator.getInstance().getProxy().getAllPlayers().stream()
-                .filter(p -> p.hasPermission("chatregulator.commandspy.alert"))
+                .filter(p -> p.hasPermission(Permissions.COMMANDSPY_ALERT))
                 .forEach(p -> p.sendMessage(
                     mm.deserialize(
                         messages.getMessage(),
+                        //TODO: Raw placeholder
                         PlaceholderResolver.placeholders(
                             Placeholder.miniMessage("command", command),
                             Placeholder.miniMessage("player", ((Player)source).getUsername())

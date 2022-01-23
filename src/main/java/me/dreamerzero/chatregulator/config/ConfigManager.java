@@ -10,6 +10,7 @@ import me.dreamerzero.chatregulator.config.MainConfig.Warning;
 import me.dreamerzero.chatregulator.modules.checks.AbstractCheck;
 import me.dreamerzero.chatregulator.utils.PlaceholderUtils;
 import me.dreamerzero.chatregulator.enums.InfractionType;
+import me.dreamerzero.chatregulator.enums.Permissions;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -99,7 +100,7 @@ public class ConfigManager {
         }
 
         Audience staff = Audience.audience(ChatRegulator.getInstance().getProxy().getAllPlayers().stream()
-                .filter(op -> op.hasPermission("chatregulator.notifications"))
+                .filter(op -> op.hasPermission(Permissions.NOTIFICATIONS))
                 .collect(Collectors.toList()));
 
         staff.sendMessage(

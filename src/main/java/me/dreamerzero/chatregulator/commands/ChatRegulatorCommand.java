@@ -20,6 +20,7 @@ import me.dreamerzero.chatregulator.config.Messages;
 import me.dreamerzero.chatregulator.utils.GeneralUtils;
 import me.dreamerzero.chatregulator.utils.PlaceholderUtils;
 import me.dreamerzero.chatregulator.enums.InfractionType;
+import me.dreamerzero.chatregulator.enums.Permissions;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.placeholder.Placeholder;
@@ -291,7 +292,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
 
     @Override
     public boolean hasPermission(final Invocation invocation) {
-        return invocation.source().getPermissionValue("chatregulator.command") == Tristate.TRUE;
+        return invocation.source().getPermissionValue(Permissions.COMMAND) == Tristate.TRUE;
     }
 
 }
