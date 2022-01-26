@@ -3,7 +3,7 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocatio
 plugins {
     java
     id("net.kyori.blossom") version "1.3.0"
-    id("com.github.johnrengelman.shadow") version "7.1.0"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 repositories {
@@ -20,7 +20,7 @@ dependencies {
         exclude("net.kyori", "adventure-api")
     }
 
-    compileOnly("net.frankheijden.serverutils:ServerUtils:3.3.1")
+    compileOnly("net.frankheijden.serverutils:ServerUtils:3.4.0")
 
     compileOnly("com.velocitypowered:velocity-api:3.1.1")
     annotationProcessor("com.velocitypowered:velocity-api:3.1.1")

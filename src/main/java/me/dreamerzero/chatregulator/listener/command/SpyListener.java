@@ -46,10 +46,9 @@ public class SpyListener {
                 .forEach(p -> p.sendMessage(
                     mm.deserialize(
                         messages.getMessage(),
-                        //TODO: Raw placeholder
                         PlaceholderResolver.placeholders(
                             Placeholder.miniMessage("command", command),
-                            Placeholder.miniMessage("player", ((Player)source).getUsername())
+                            Placeholder.raw("player", ((Player)source).getUsername())
                         )
                     )
                 ));
