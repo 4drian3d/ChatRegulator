@@ -2,13 +2,16 @@ package me.dreamerzero.chatregulator.modules.checks;
 
 import java.util.regex.Pattern;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 
 /**
  * Utilities for detecting incoherent messages containing floods
  */
-public class FloodCheck extends AbstractCheck {
+public class FloodCheck extends PatternCheck {
     // Credit: https://github.com/2lstudios-mc/ChatSentinel/blob/master/src/main/resources/config.yml#L91
     // (\\w)\\1{5,}|(\\w{28,})|([^\\wñ]{20,})|(^.{220,}$)
     private static String stringPattern = "(\\w)\\1{5,}|(\\w{28,})|([^\\wñ]{20,})|(^.{220,}$)";
@@ -18,7 +21,7 @@ public class FloodCheck extends AbstractCheck {
      * Create a new flood test
      */
     public FloodCheck(){
-        super.pattern = stringPattern;
+        super.pattern = floodPattern;
     }
 
     /**
@@ -39,19 +42,20 @@ public class FloodCheck extends AbstractCheck {
     }
 
     @Override
-    public void check(String message){
+    public void check(@NotNull String message){
         super.string = message;
 
         super.matcher = floodPattern.matcher(message);
         super.detected = matcher.find();
     }
 
-    public String replaceInfraction(){
+    @Override
+    public @Nullable String replaceInfraction(){
         return super.matcher.replaceAll("");
     }
 
     @Override
-    public InfractionType type() {
+    public @NotNull InfractionType type() {
         return InfractionType.FLOOD;
     }
 }

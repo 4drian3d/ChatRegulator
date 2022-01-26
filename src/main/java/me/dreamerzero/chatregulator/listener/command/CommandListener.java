@@ -7,6 +7,8 @@ import com.velocitypowered.api.event.command.CommandExecuteEvent;
 import com.velocitypowered.api.event.command.CommandExecuteEvent.CommandResult;
 import com.velocitypowered.api.proxy.Player;
 
+import org.jetbrains.annotations.ApiStatus.Internal;
+
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.config.MainConfig;
@@ -23,6 +25,7 @@ import me.dreamerzero.chatregulator.enums.SourceType;
 /**
  * Detections related to command execution by players
  */
+@Internal
 public class CommandListener {
     private final MainConfig.Config config;
 
@@ -108,7 +111,7 @@ public class CommandListener {
                     continuation.resume();
                     return;
                 }
-                String commandReplaced = iCheck.replaceInfractions();
+                String commandReplaced = iCheck.replaceInfraction();
                 event.setResult(CommandResult.command(commandReplaced));
                 command = commandReplaced;
             }

@@ -8,8 +8,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import com.velocitypowered.api.proxy.Player;
-import com.velocitypowered.api.proxy.ProxyServer;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.ApiStatus.Internal;
 
@@ -38,7 +38,7 @@ public class InfractionPlayer {
      * @param player the player on which it will be based
      */
     @Internal
-    public InfractionPlayer(Player player){
+    public InfractionPlayer(@NotNull Player player){
         this.player = player;
         this.preLastMessage = " .";
         this.lastMessage = " ";
@@ -54,12 +54,11 @@ public class InfractionPlayer {
     /**
      * Constructor of an InfractorPlayer based on its {@link UUID}
      * @param uuid the uuid on which it will be based
-     * @param server the proxy server
      * @throws PlayerNotAvailableException
      */
     @Internal
-    public InfractionPlayer(UUID uuid, ProxyServer server) throws PlayerNotAvailableException{
-        this.player = server.getPlayer(uuid).orElseThrow(PlayerNotAvailableException::new);
+    InfractionPlayer(@NotNull UUID uuid) throws PlayerNotAvailableException{
+        this.player = ChatRegulator.getInstance().getProxy().getPlayer(uuid).orElseThrow(PlayerNotAvailableException::new);
         this.preLastMessage = " .";
         this.lastMessage = " ";
         this.preLastCommand = " ";
@@ -75,7 +74,7 @@ public class InfractionPlayer {
      * A simple method to obtain the player's name
      * @return infraction player name
      */
-    public String username(){
+    public @NotNull String username(){
         return this.username;
     }
 
@@ -116,7 +115,7 @@ public class InfractionPlayer {
      * Get the message prior to the player's last message
      * @return the message before the player's last message
      */
-    public String preLastMessage(){
+    public @NotNull String preLastMessage(){
         return preLastMessage;
     }
 
@@ -124,7 +123,7 @@ public class InfractionPlayer {
      * Get the last message sent by the player
      * @return last message of the player
      */
-    public String lastMessage(){
+    public @NotNull String lastMessage(){
         return this.lastMessage;
     }
 
@@ -142,7 +141,7 @@ public class InfractionPlayer {
      * Get the command prior to the player's last command
      * @return the command before the player's last command
      */
-    public String preLastCommand(){
+    public @NotNull String preLastCommand(){
         return this.preLastCommand;
     }
 
@@ -150,7 +149,7 @@ public class InfractionPlayer {
      * Get the last command executed by the player
      * @return last command of the player
      */
-    public String lastCommand(){
+    public @NotNull String lastCommand(){
         return this.lastCommand;
     }
 
@@ -185,7 +184,7 @@ public class InfractionPlayer {
      * @return the violations count
      * @since 2.0.0
      */
-    public ViolationCount getViolations(){
+    public @NotNull ViolationCount getViolations(){
         return this.violationsCount;
     }
 
@@ -229,8 +228,8 @@ public class InfractionPlayer {
      * @param player the player uuid
      * @return the {@link InfractionPlayer}
      */
-    public static InfractionPlayer get(final Player player){
-        final UUID uuid = player.getUniqueId();
+    public static @NotNull InfractionPlayer get(@NotNull final Player player){
+        final UUID uuid = Objects.requireNonNull(player).getUniqueId();
         var playersMap = ChatRegulator.infractionPlayers;
         if(playersMap.containsKey(uuid)){
             return playersMap.get(uuid);

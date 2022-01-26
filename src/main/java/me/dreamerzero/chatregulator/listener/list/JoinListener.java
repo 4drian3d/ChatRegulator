@@ -8,13 +8,16 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.PostLoginEvent;
 import com.velocitypowered.api.proxy.Player;
 
+import org.jetbrains.annotations.ApiStatus.Internal;
+
 import me.dreamerzero.chatregulator.InfractionPlayer;
 
 /**
  * Join Listener for creation of InfractionPlayers
  */
+@Internal
 public class JoinListener {
-    private Map<UUID, InfractionPlayer> infractionPlayers;
+    private final Map<UUID, InfractionPlayer> infractionPlayers;
     public JoinListener(Map<UUID, InfractionPlayer> infractionPlayers){
         this.infractionPlayers = infractionPlayers;
     }

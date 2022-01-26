@@ -7,6 +7,8 @@ import com.velocitypowered.api.event.player.PlayerChatEvent;
 import com.velocitypowered.api.event.player.PlayerChatEvent.ChatResult;
 import com.velocitypowered.api.proxy.Player;
 
+import org.jetbrains.annotations.ApiStatus.Internal;
+
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.config.MainConfig;
@@ -20,6 +22,7 @@ import me.dreamerzero.chatregulator.utils.GeneralUtils;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.enums.SourceType;
 
+@Internal
 public class ChatListener {
     private MainConfig.Config config;
     private final Replacer rUtils;
@@ -27,6 +30,7 @@ public class ChatListener {
     /**
      * ChatListener Constructor
      */
+    
     public ChatListener() {
         this.config = Configuration.getConfig();
         this.rUtils = new Replacer();
@@ -97,7 +101,7 @@ public class ChatListener {
                     continuation.resume();
                     return;
                 }
-                String messageReplaced = iCheck.replaceInfractions();
+                String messageReplaced = iCheck.replaceInfraction();
                 event.setResult(ChatResult.message(messageReplaced));
                 message = messageReplaced;
             }

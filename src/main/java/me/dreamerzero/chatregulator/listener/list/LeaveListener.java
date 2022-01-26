@@ -6,8 +6,11 @@ import com.velocitypowered.api.event.EventTask;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.DisconnectEvent;
 
+import org.jetbrains.annotations.ApiStatus.Internal;
+
 import me.dreamerzero.chatregulator.InfractionPlayer;
 
+@Internal
 public class LeaveListener {
     /**
      * In case the player leaves the server,

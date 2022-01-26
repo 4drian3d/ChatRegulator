@@ -2,6 +2,8 @@ package me.dreamerzero.chatregulator;
 
 import java.util.Objects;
 
+import org.jetbrains.annotations.NotNull;
+
 import me.dreamerzero.chatregulator.enums.InfractionType;
 
 public class ViolationCount {
@@ -16,7 +18,7 @@ public class ViolationCount {
      * Adds an infraction to the count of any type of player infraction.
      * @param type the infraction type
      */
-    public void addViolation(InfractionType type){
+    public void addViolation(@NotNull InfractionType type){
         switch(type){
             case SPAM: this.spamViolations++; break;
             case REGULAR: this.regularViolations++; break;
@@ -33,7 +35,7 @@ public class ViolationCount {
      * @param type the type of infraction
      * @param newViolationsCount the new number of infractions
      */
-    public void setViolations(InfractionType type, int newViolationsCount){
+    public void setViolations(@NotNull InfractionType type, int newViolationsCount){
         switch(type){
             case SPAM: this.spamViolations = newViolationsCount; break;
             case REGULAR: this.regularViolations = newViolationsCount; break;
@@ -49,7 +51,7 @@ public class ViolationCount {
      * Reset the count of infraction of any type of this player
      * @param types the types
      */
-    public void resetViolations(InfractionType... types){
+    public void resetViolations(@NotNull InfractionType @NotNull... types){
         for(InfractionType type : types){
             this.setViolations(type, 0);
         }
@@ -60,7 +62,7 @@ public class ViolationCount {
      * @param type the violation type
      * @return the count
      */
-    public int getCount(InfractionType type){
+    public int getCount(@NotNull InfractionType type){
         switch(type){
             case SPAM: return this.spamViolations;
             case REGULAR: return this.regularViolations;
@@ -76,7 +78,7 @@ public class ViolationCount {
     @Override
     public boolean equals(Object o){
         if(this==o) return true;
-        if(!(o instanceof ViolationCount)) return false;
+        if(o == null || this.getClass() != o.getClass()) return false;
         ViolationCount other = (ViolationCount)o;
         return this.spamViolations == other.spamViolations
             && this.capsviolations == other.capsviolations

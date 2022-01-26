@@ -1,5 +1,9 @@
 package me.dreamerzero.chatregulator.events;
 
+import java.util.Objects;
+
+import org.jetbrains.annotations.NotNull;
+
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.modules.checks.AbstractCheck;
 import me.dreamerzero.chatregulator.enums.InfractionType;
@@ -17,10 +21,14 @@ public class CommandViolationEvent extends ViolationEvent {
      * @param command the executed command in which the violation was found
      * @param detection the detection
      */
-    public CommandViolationEvent(InfractionPlayer infractionPlayer, InfractionType type, AbstractCheck detection, String command){
-        super(infractionPlayer, type, detection);
-        this.command = command;
+    public CommandViolationEvent(
+        @NotNull InfractionPlayer infractionPlayer,
+        @NotNull InfractionType type,
+        @NotNull AbstractCheck detection,
+        @NotNull String command){
 
+            super(Objects.requireNonNull(infractionPlayer), type, Objects.requireNonNull(detection));
+            this.command = command;
     }
 
     /**
@@ -28,7 +36,7 @@ public class CommandViolationEvent extends ViolationEvent {
      * @return the infraction command
      * @since 1.1.0
      */
-    public String getCommand(){
+    public @NotNull String getCommand(){
         return this.command;
     }
 }

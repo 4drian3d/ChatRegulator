@@ -1,8 +1,11 @@
 package me.dreamerzero.chatregulator.utils;
 
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.velocitypowered.api.proxy.Player;
+
+import org.jetbrains.annotations.NotNull;
 
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.ChatRegulator;
@@ -25,8 +28,8 @@ public final class GeneralUtils {
      * @param type the infractiontype
      * @return if the player can be checked
      */
-    public static boolean allowedPlayer(Player player, InfractionType type){
-        return type.getConfig().enabled() && !player.hasPermission(type.bypassPermission());
+    public static boolean allowedPlayer(@NotNull Player player, @NotNull InfractionType type){
+        return type.getConfig().enabled() && !Objects.requireNonNull(player).hasPermission(type.bypassPermission());
     }
 
     /**
@@ -51,7 +54,7 @@ public final class GeneralUtils {
      * @param stype the source type
      * @return if the event is approved
      */
-    public static boolean callViolationEvent(InfractionPlayer player, String string, AbstractCheck detection, SourceType stype) {
+    public static boolean callViolationEvent(@NotNull InfractionPlayer player, @NotNull String string, @NotNull AbstractCheck detection, @NotNull SourceType stype) {
         AtomicBoolean approved = new AtomicBoolean(true);
         InfractionType type = detection.type();
         ChatRegulator.getInstance().getProxy().getEventManager().fire(stype == SourceType.COMMAND
@@ -82,7 +85,7 @@ public final class GeneralUtils {
      * @param stype the source type
      * @return if the event was not cancelled
      */
-    public static boolean checkAndCall(InfractionPlayer player, String string, AbstractCheck detection, SourceType stype){
+    public static boolean checkAndCall(@NotNull InfractionPlayer player, @NotNull String string, @NotNull AbstractCheck detection, @NotNull SourceType stype){
         return detection.isInfraction() && GeneralUtils.callViolationEvent(player, string, detection, stype);
     }
 

@@ -5,11 +5,13 @@ import java.nio.file.Path;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyReloadEvent;
 
+import org.jetbrains.annotations.ApiStatus.Internal;
 import org.slf4j.Logger;
 
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.modules.checks.FloodCheck;
 
+@Internal
 public class ReloadListener {
     private final Path path;
     private final Logger logger;

@@ -4,6 +4,8 @@ import java.util.Set;
 
 import com.velocitypowered.api.proxy.Player;
 
+import org.jetbrains.annotations.NotNull;
+
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.ViolationCount;
 import me.dreamerzero.chatregulator.modules.Statistics;
@@ -20,7 +22,7 @@ public class PlaceholderUtils {
      * @param player the {@link InfractionPlayer}
      * @return placeholders based on this player
      */
-    public static PlaceholderResolver getPlaceholders(final InfractionPlayer player){
+    public static PlaceholderResolver getPlaceholders(@NotNull final InfractionPlayer player){
         ViolationCount count = player.getViolations();
         Set<Placeholder<String>> placeholders = Set.of(
             Placeholder.miniMessage("player", player.username()),

@@ -40,7 +40,7 @@ public class InfractionTest {
         String expected = "Hello *** *** ***!!!";
 
         iCheck.check(original);
-        String replaced = iCheck.replaceInfractions();
+        String replaced = iCheck.replaceInfraction();
 
         assertEquals(expected, replaced);
     }

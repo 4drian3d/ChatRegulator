@@ -2,6 +2,8 @@ package me.dreamerzero.chatregulator.modules;
 
 import java.util.Objects;
 
+import org.jetbrains.annotations.NotNull;
+
 import me.dreamerzero.chatregulator.enums.InfractionType;
 
 /**
@@ -42,6 +44,10 @@ public final class Statistics {
      */
     private int globalViolations;
 
+    /**
+     * Get the global violation statistics
+     * @return the global statistics
+     */
     public static Statistics getStatistics(){
         Statistics result = statistics;
         if (result != null) {
@@ -59,7 +65,7 @@ public final class Statistics {
      * Add a violation to the overall violation count.
      * @param type the infraction type
      */
-    public void addViolationCount(InfractionType type){
+    public void addViolationCount(@NotNull InfractionType type){
         switch(type){
             case SPAM: this.spamCount++; break;
             case FLOOD: this.floodCount++; break;
@@ -77,7 +83,7 @@ public final class Statistics {
      * @param type the infraction type
      * @return count of the respective infraction type
      */
-    public int getViolationCount(InfractionType type){
+    public int getViolationCount(@NotNull InfractionType type){
         switch(type){
             case SPAM: return this.spamCount;
             case FLOOD: return this.floodCount;
@@ -93,7 +99,7 @@ public final class Statistics {
     @Override
     public boolean equals(Object o){
         if(this == o) return true;
-        if(!(o instanceof Statistics)) return false;
+        if(o == null || o.getClass() != this.getClass()) return false;
 
         Statistics stats = (Statistics)o;
 

@@ -16,6 +16,7 @@ import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
 import me.dreamerzero.chatregulator.commands.ChatRegulatorCommand;
@@ -103,7 +104,7 @@ public class ChatRegulator {
         checkInfractionPlayersRunnable();
     }
 
-    private void registerListener(Object... events){
+    private void registerListener(@NotNull Object @NotNull... events){
         for(Object event : events){
             server.getEventManager().register(this, event);
         }
@@ -113,11 +114,11 @@ public class ChatRegulator {
         return plugin;
     }
 
-    public Logger getLogger(){
+    public @NotNull Logger getLogger(){
         return this.logger;
     }
 
-    public ProxyServer getProxy(){
+    public @NotNull ProxyServer getProxy(){
         return this.server;
     }
 
@@ -126,7 +127,7 @@ public class ChatRegulator {
      * left the server and have not re-entered
      * in the configured time
      */
-    void checkInfractionPlayersRunnable(){
+    private void checkInfractionPlayersRunnable(){
         long timeToDelete = Configuration.getConfig().getGeneralConfig().deleteUsersTime()*1000;
         server.getScheduler().buildTask(this, ()->{
             for(Entry<UUID, InfractionPlayer> entry : infractionPlayers.entrySet()){

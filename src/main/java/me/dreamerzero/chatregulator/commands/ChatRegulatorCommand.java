@@ -12,6 +12,9 @@ import com.velocitypowered.api.permission.Tristate;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.ApiStatus.Internal;
+
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.config.ConfigManager;
@@ -29,6 +32,7 @@ import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
 /**
  * Main Plugin Command
  */
+@Internal
 public class ChatRegulatorCommand implements SimpleCommand {
     private Map<UUID, InfractionPlayer> infractionPlayers;
     private Messages.Config messages;
@@ -38,14 +42,14 @@ public class ChatRegulatorCommand implements SimpleCommand {
      * @param infractionPlayers the list of infractor players
      * @param server the proxy server
      */
-    public ChatRegulatorCommand(Map<UUID, InfractionPlayer> infractionPlayers, ProxyServer server){
+    public ChatRegulatorCommand(@NotNull Map<UUID, InfractionPlayer> infractionPlayers, @NotNull ProxyServer server){
         this.infractionPlayers = infractionPlayers;
         this.messages = Configuration.getMessages();
         this.server = server;
     }
 
     @Override
-    public void execute(Invocation invocation) {
+    public void execute(final Invocation invocation) {
         String[] args = invocation.arguments();
         Audience source = invocation.source();
         MiniMessage mm = MiniMessage.miniMessage();

@@ -1,5 +1,7 @@
 package me.dreamerzero.chatregulator.events;
 
+import org.jetbrains.annotations.NotNull;
+
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.modules.checks.AbstractCheck;
 import me.dreamerzero.chatregulator.enums.InfractionType;
@@ -17,9 +19,14 @@ public class ChatViolationEvent extends ViolationEvent {
      * @param detection the detection
      * @param message the chat message in which the violation was found
      */
-    public ChatViolationEvent(InfractionPlayer infractionPlayer, InfractionType type, AbstractCheck detection, String message) {
-        super(infractionPlayer, type, detection);
-        this.message = message;
+    public ChatViolationEvent(
+        @NotNull InfractionPlayer infractionPlayer,
+        @NotNull InfractionType type,
+        @NotNull AbstractCheck detection,
+        @NotNull String message) {
+
+            super(infractionPlayer, type, detection);
+            this.message = message;
     }
 
     /**
@@ -27,7 +34,7 @@ public class ChatViolationEvent extends ViolationEvent {
      * @return the infraction message
      * @since 1.1.0
      */
-    public String getMessage(){
+    public @NotNull String getMessage(){
         return this.message;
     }
 }

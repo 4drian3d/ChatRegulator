@@ -1,9 +1,12 @@
 package me.dreamerzero.chatregulator.utils;
 
 import java.util.Locale;
+import java.util.Objects;
 
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
+
+import org.jetbrains.annotations.NotNull;
 
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.ChatRegulator;
@@ -25,14 +28,14 @@ public final class CommandUtils {
      * @param type the {@link InfractionType}
      * @param infractorPlayer the {@link InfractionPlayer} involved
      */
-    public static void executeCommand(InfractionType type, InfractionPlayer infractorPlayer){
-        Player infractor = infractorPlayer.getPlayer();
+    public static void executeCommand(@NotNull InfractionType type, @NotNull InfractionPlayer infractorPlayer){
+        Player infractor = Objects.requireNonNull(infractorPlayer).getPlayer();
         if(infractor != null){
             execute(infractor, infractorPlayer, type);
         }
     }
 
-    private static void execute(Player infractor, InfractionPlayer iPlayer, InfractionType type){
+    private static void execute(@NotNull Player infractor, @NotNull InfractionPlayer iPlayer, @NotNull InfractionType type){
         CommandsConfig config = ((Executable)type.getConfig()).getCommandsConfig();
         if(config.executeCommand() && iPlayer.getViolations().getCount(type) % config.violationsRequired() == 0){
             var currentServer = infractor.getCurrentServer();
@@ -54,8 +57,8 @@ public final class CommandUtils {
      * @param command the command executed
      * @return if the command is to be checked
      */
-    public static boolean isCommand(String command){
-        final String firstArgument = getFirstArgument(command);
+    public static boolean isCommand(@NotNull String command){
+        final String firstArgument = getFirstArgument(Objects.requireNonNull(command));
         return Configuration.getBlacklist().getBlockedCommands().stream()
             .anyMatch(firstArgument::equalsIgnoreCase);
     }
@@ -65,8 +68,8 @@ public final class CommandUtils {
      * @param string the string
      * @return the first argument
      */
-    public static String getFirstArgument(String string){
-        int index = string.indexOf(" ");
+    public static @NotNull String getFirstArgument(@NotNull String string){
+        int index = Objects.requireNonNull(string).indexOf(" ");
         if (index == -1) {
             return string;
         }
@@ -81,8 +84,8 @@ public final class CommandUtils {
      * @param startingString the starting string
      * @return if a string starts with another string
      */
-    public static boolean isStartingString(String string, String startingString){
-        if(string.length() < startingString.length()){
+    public static boolean isStartingString(@NotNull String string, @NotNull String startingString){
+        if(Objects.requireNonNull(string).length() < Objects.requireNonNull(startingString).length()){
             return false;
         }
         startingString = startingString.toLowerCase(Locale.ROOT);
@@ -100,7 +103,7 @@ public final class CommandUtils {
      * @param string the string
      * @return the last character
      */
-    public static char getLastChar(String string){
+    public static char getLastChar(@NotNull String string){
         return string.charAt(string.length()-1);
     }
 }

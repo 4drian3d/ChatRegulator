@@ -14,7 +14,5 @@ public final class Permissions {
     public static final String COMMANDSPY_ALERT = "";
     public static final String BYPASS_COMMANDSPY = "chatregulator.bypass.commandspy";
 
-    
-
     private Permissions(){}
 }

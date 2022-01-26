@@ -5,6 +5,9 @@ import java.util.Objects;
 import com.velocitypowered.api.event.ResultedEvent;
 import com.velocitypowered.api.event.ResultedEvent.GenericResult;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.ApiStatus.Internal;
+
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.modules.checks.AbstractCheck;
 import me.dreamerzero.chatregulator.enums.InfractionType;
@@ -21,7 +24,7 @@ public class ViolationEvent implements ResultedEvent<GenericResult> {
      * Type of detection
      */
     private final InfractionType type;
-    private AbstractCheck detection;
+    private final AbstractCheck detection;
     private GenericResult result = GenericResult.allowed();
 
     /**
@@ -30,7 +33,8 @@ public class ViolationEvent implements ResultedEvent<GenericResult> {
      * @param type the infraction type
      * @param detection the detection
      */
-    public ViolationEvent(InfractionPlayer infractionPlayer, InfractionType type, AbstractCheck detection){
+    @Internal
+    public ViolationEvent(@NotNull InfractionPlayer infractionPlayer, @NotNull InfractionType type, @NotNull AbstractCheck detection){
         this.infractionPlayer = infractionPlayer;
         this.type = type;
         this.detection = detection;
@@ -42,7 +46,7 @@ public class ViolationEvent implements ResultedEvent<GenericResult> {
      * @return the infractor
      * @since 1.1.0
      */
-    public InfractionPlayer getInfractionPlayer(){
+    public @NotNull InfractionPlayer getInfractionPlayer(){
         return this.infractionPlayer;
     }
 
@@ -51,7 +55,7 @@ public class ViolationEvent implements ResultedEvent<GenericResult> {
      * @return the infraction committed
      * @since 1.1.0
      */
-    public InfractionType getType(){
+    public @NotNull InfractionType getType(){
         return this.type;
     }
 
@@ -61,7 +65,7 @@ public class ViolationEvent implements ResultedEvent<GenericResult> {
      * the detected string and more.
      * @return the detection performed
      */
-    public AbstractCheck getDetection(){
+    public @NotNull AbstractCheck getDetection(){
         return this.detection;
     }
 

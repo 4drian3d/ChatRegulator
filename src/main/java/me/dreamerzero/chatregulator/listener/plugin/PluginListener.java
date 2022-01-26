@@ -3,6 +3,7 @@ package me.dreamerzero.chatregulator.listener.plugin;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 
+import org.jetbrains.annotations.ApiStatus.Internal;
 import org.slf4j.Logger;
 
 import net.frankheijden.serverutils.common.events.PluginEvent.Stage;
@@ -11,6 +12,7 @@ import net.frankheijden.serverutils.velocity.events.VelocityPluginEnableEvent;
 /**
  * ServerUtils Listener in case ChatRegulator is reloaded
  */
+@Internal
 public class PluginListener {
     private final Logger logger;
     private static final String PLNAME = "chatregulator";

@@ -1,5 +1,10 @@
 package me.dreamerzero.chatregulator.modules.checks;
 
+import java.util.Objects;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.enums.SourceType;
@@ -15,19 +20,18 @@ public class SpamCheck extends AbstractCheck {
      * @param infractionPlayer the infractionPlayer involucred
      */
     public SpamCheck(InfractionPlayer infractionPlayer, SourceType type){
-        this.infractionPlayer = infractionPlayer;
-        this.type = type;
+        this.infractionPlayer = Objects.requireNonNull(infractionPlayer);
+        this.type = Objects.requireNonNull(type);
     }
 
     @Override
-    public void check(String message){
-        super.string = message;
-        this.pattern = message;
-        this.spamInfricted(message, type);
+    public void check(@NotNull String message){
+        super.string = Objects.requireNonNull(message);
+        this.spamInfricted();
     }
 
     @Override
-    public String getInfractionWord(){
+    public @Nullable String getInfractionWord(){
         return super.string;
     }
 
@@ -35,10 +39,8 @@ public class SpamCheck extends AbstractCheck {
      * Check if the {@link InfractionPlayer} is spamming
      * based on his 3 previous messages/commands.
      * If the {@link InfractionPlayer} is spamming, it will set detectec as true
-     * @param string the ultimate command/message
-     * @param type the source type
      */
-    private void spamInfricted(String string, SourceType type){
+    private void spamInfricted(){
         if(type == SourceType.CHAT){
             String prelastMessage = infractionPlayer.preLastMessage();
             String lastMessage = infractionPlayer.lastMessage();
@@ -53,7 +55,7 @@ public class SpamCheck extends AbstractCheck {
     }
 
     @Override
-    public InfractionType type() {
+    public @NotNull InfractionType type() {
         return InfractionType.SPAM;
     }
 }

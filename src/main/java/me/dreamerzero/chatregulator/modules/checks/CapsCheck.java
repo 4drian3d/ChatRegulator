@@ -1,15 +1,19 @@
 package me.dreamerzero.chatregulator.modules.checks;
 
 import java.util.Locale;
+import java.util.Objects;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 
-public class CapsCheck extends AbstractCheck{
+public class CapsCheck extends AbstractCheck implements ReplaceableCheck{
 
     @Override
-    public void check(String message) {
-        super.string = message;
+    public void check(@NotNull String message) {
+        super.string = Objects.requireNonNull(message);
         char[] chararray = message.toCharArray();
         int capcount = 0;
         for(char c : chararray){
@@ -18,21 +22,21 @@ public class CapsCheck extends AbstractCheck{
 
         if(capcount >= Configuration.getConfig().getCapsConfig().limit()){
             super.detected = true;
-            super.pattern = message;
         }
     }
 
-    public String replaceInfraction(){
+    @Override
+    public @Nullable String replaceInfraction(){
         return super.string.toLowerCase(Locale.ROOT);
     }
 
     @Override
-    public String getInfractionWord(){
+    public @Nullable String getInfractionWord(){
         return this.string;
     }
 
     @Override
-    public InfractionType type() {
+    public @NotNull InfractionType type() {
         return InfractionType.CAPS;
     }
 }

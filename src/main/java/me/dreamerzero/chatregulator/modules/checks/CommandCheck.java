@@ -2,6 +2,8 @@ package me.dreamerzero.chatregulator.modules.checks;
 
 import java.util.Set;
 
+import org.jetbrains.annotations.NotNull;
+
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.utils.CommandUtils;
@@ -14,12 +16,10 @@ public class CommandCheck extends AbstractCheck {
     }
 
     @Override
-    public void check(String message) {
+    public void check(@NotNull String message) {
         for (String blockedCommand : blockedCommands){
             if(CommandUtils.isStartingString(message, blockedCommand)){
-                super.string = message;
-                super.pattern = blockedCommand;
-                super.matcher = null;
+                super.string = blockedCommand;
                 super.detected = true;
                 return;
             }
@@ -27,12 +27,7 @@ public class CommandCheck extends AbstractCheck {
     }
 
     @Override
-    public String getInfractionWord(){
-        return super.string;
-    }
-
-    @Override
-    public InfractionType type() {
+    public @NotNull InfractionType type() {
         return InfractionType.BCOMMAND;
     }
 
