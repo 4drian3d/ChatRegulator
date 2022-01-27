@@ -8,6 +8,9 @@ import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.utils.CommandUtils;
 
+/**
+ * Check for verification of executed commands
+ */
 public class CommandCheck extends AbstractCheck {
     private final Set<String> blockedCommands;
 

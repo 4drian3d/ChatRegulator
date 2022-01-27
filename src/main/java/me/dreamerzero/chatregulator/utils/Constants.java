@@ -1,5 +1,8 @@
 package me.dreamerzero.chatregulator.utils;
 
+import org.jetbrains.annotations.ApiStatus.Internal;
+
+@Internal
 public final class Constants {
     public static final String VERSION = "{version}";
     public static final String NAME = "{name}";

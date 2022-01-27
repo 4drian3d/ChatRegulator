@@ -6,6 +6,9 @@ import org.jetbrains.annotations.NotNull;
 
 import me.dreamerzero.chatregulator.enums.InfractionType;
 
+/**
+ * Check for invalid characters
+ */
 public class UnicodeCheck extends AbstractCheck {
 
     @Override

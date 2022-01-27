@@ -5,6 +5,9 @@ import java.util.regex.Pattern;
 
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Checks that work by using a {@link Pattern}
+ */
 public abstract class PatternCheck extends AbstractCheck implements ReplaceableCheck {
     protected Pattern pattern;
     protected Matcher matcher;

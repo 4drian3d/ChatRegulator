@@ -34,12 +34,14 @@ public class InfractionTest {
     @Test
     @DisplayName("Replacement Test")
     void replaceMultiple(){
-        InfractionCheck iCheck = new InfractionCheck();
+        InfractionCheck iCheck = new InfractionCheck(true);
 
         String original = "Hello D1cK sh1t f4ck!!!";
         String expected = "Hello *** *** ***!!!";
 
         iCheck.check(original);
+
+        assertTrue(iCheck.isInfraction());
         String replaced = iCheck.replaceInfraction();
 
         assertEquals(expected, replaced);

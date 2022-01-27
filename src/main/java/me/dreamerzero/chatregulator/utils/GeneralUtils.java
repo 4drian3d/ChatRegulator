@@ -20,6 +20,9 @@ import me.dreamerzero.chatregulator.events.ChatViolationEvent;
 import me.dreamerzero.chatregulator.events.CommandViolationEvent;
 import net.kyori.adventure.text.Component;
 
+/**
+ * General utils
+ */
 public final class GeneralUtils {
 
     /**

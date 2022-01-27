@@ -106,6 +106,7 @@ public class InfractionPlayer {
 
     /**
      * Sets the time at which the player has left the server
+     * @param time the time when the player was last seen
      */
     public void setLastSeen(Temporal time){
         this.lastTimeSeen = time;

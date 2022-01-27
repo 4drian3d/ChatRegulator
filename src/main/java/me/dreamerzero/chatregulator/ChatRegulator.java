@@ -17,6 +17,7 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.ApiStatus.Internal;
 import org.slf4j.Logger;
 
 import me.dreamerzero.chatregulator.commands.ChatRegulatorCommand;
@@ -68,6 +69,7 @@ public class ChatRegulator {
      * @param logger logger
      */
     @Inject
+    @Internal
     public ChatRegulator(final ProxyServer server, Logger logger, @DataDirectory Path path) {
         this.server = server;
         this.path = path;
@@ -78,6 +80,7 @@ public class ChatRegulator {
      * Initialization of the plugin
      */
     @Subscribe
+    @Internal
     public void onProxyInitialization(final ProxyInitializeEvent event) {
         ChatRegulator.plugin = this;
         server.getConsoleCommandSource().sendMessage(MiniMessage.miniMessage()
@@ -110,14 +113,25 @@ public class ChatRegulator {
         }
     }
 
+    /**
+     * Get the plugin instance
+     */
     public static ChatRegulator getInstance(){
         return plugin;
     }
 
+    /**
+     * Get the plugin logger
+     */
+    @Internal
     public @NotNull Logger getLogger(){
         return this.logger;
     }
 
+    /**
+     * Get the proxy
+     */
+    @Internal
     public @NotNull ProxyServer getProxy(){
         return this.server;
     }

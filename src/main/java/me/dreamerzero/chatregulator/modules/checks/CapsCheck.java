@@ -9,6 +9,9 @@ import org.jetbrains.annotations.Nullable;
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 
+/**
+ * Check for compliance with uppercase character limit in a string
+ */
 public class CapsCheck extends AbstractCheck implements ReplaceableCheck{
 
     @Override
