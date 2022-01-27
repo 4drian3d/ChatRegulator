@@ -2,6 +2,7 @@ package me.dreamerzero.chatregulator.modules.checks;
 
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.nio.file.Paths;
@@ -36,12 +37,17 @@ public class UnicodeTest {
     @Test
     @DisplayName("Illegal Check")
     void illegalTest(){
-        String illegal = "ƕƘ";
+        String illegal = "ƕƘaea";
 
         UnicodeCheck uCheck = new UnicodeCheck();
 
         uCheck.check(illegal);
 
         assertTrue(uCheck.isInfraction());
+
+        String replaced = uCheck.replaceInfraction();
+        String expected = "  aea";
+
+        assertEquals(expected, replaced);
     }
 }

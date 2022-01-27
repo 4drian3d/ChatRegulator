@@ -65,9 +65,14 @@ public class CommandListener {
             UnicodeCheck uCheck = new UnicodeCheck();
             uCheck.check(command);
             if(GeneralUtils.checkAndCall(infractionPlayer, command, uCheck, SourceType.COMMAND)){
-                event.setResult(CommandResult.denied());
-                continuation.resume();
-                return;
+                if(config.getUnicodeConfig().isBlockable()){
+                    event.setResult(CommandResult.denied());
+                    continuation.resume();
+                    return;
+                }
+                String commandReplaced = uCheck.replaceInfraction();
+                event.setResult(CommandResult.command(commandReplaced));
+                command = commandReplaced;
             }
         }
 

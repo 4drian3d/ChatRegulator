@@ -269,13 +269,17 @@ public class MainConfig {
     }
 
     @ConfigSerializable
-    public static class Unicode implements Toggleable, Warning, Executable {
+    public static class Unicode implements Toggleable, Warning, Executable, Controllable {
         @Comment("Enable the Unicode Module")
         private boolean enabled = true;
 
         @Comment("Sets the form of warning\nAvailable options: TITLE, ACTIONBAR, MESSAGE")
         @Setting(value = "warning-type")
         private WarningType warningType = WarningType.MESSAGE;
+
+        @Comment("Sets the control format\nAvailable options: BLOCK, REPLACE")
+        @Setting(value = "control-type")
+        private ControlType controlType = ControlType.BLOCK;
 
         @Comment("Commands to be executed in the unicode module")
         private Unicode.Commands commands = new Unicode.Commands();
@@ -293,6 +297,11 @@ public class MainConfig {
         @Override
         public CommandsConfig getCommandsConfig(){
             return this.commands;
+        }
+
+        @Override
+        public ControlType getControlType() {
+            return controlType;
         }
 
         @ConfigSerializable

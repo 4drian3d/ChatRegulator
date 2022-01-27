@@ -30,7 +30,6 @@ public class ChatListener {
     /**
      * ChatListener Constructor
      */
-    
     public ChatListener() {
         this.config = Configuration.getConfig();
         this.rUtils = new Replacer();
@@ -54,9 +53,15 @@ public class ChatListener {
             UnicodeCheck uCheck = new UnicodeCheck();
             uCheck.check(message);
             if(GeneralUtils.checkAndCall(infractor, message, uCheck, SourceType.CHAT)){
-                event.setResult(ChatResult.denied());
-                continuation.resume();
-                return;
+                if(config.getUnicodeConfig().isBlockable()){
+                    event.setResult(ChatResult.denied());
+                    continuation.resume();
+                    return;
+                }
+                String messageReplaced = uCheck.replaceInfraction();
+                event.setResult(ChatResult.message(messageReplaced));
+                message = messageReplaced;
+
             }
         }
 
@@ -69,11 +74,10 @@ public class ChatListener {
                     event.setResult(ChatResult.denied());
                     continuation.resume();
                     return;
-                } else {
-                    String messageReplaced = cCheck.replaceInfraction();
-                    event.setResult(ChatResult.message(messageReplaced));
-                    message = messageReplaced;
                 }
+                String messageReplaced = cCheck.replaceInfraction();
+                event.setResult(ChatResult.message(messageReplaced));
+                message = messageReplaced;
             }
         }
 

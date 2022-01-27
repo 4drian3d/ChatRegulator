@@ -1,5 +1,6 @@
 package me.dreamerzero.chatregulator.modules.checks;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import org.jetbrains.annotations.NotNull;
@@ -43,7 +44,7 @@ public class FloodCheck extends PatternCheck {
 
     @Override
     public void check(@NotNull String message){
-        super.string = message;
+        super.string = Objects.requireNonNull(message);
 
         super.matcher = floodPattern.matcher(message);
         super.detected = matcher.find();
