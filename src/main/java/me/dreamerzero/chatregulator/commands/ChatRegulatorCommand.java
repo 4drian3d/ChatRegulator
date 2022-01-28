@@ -2,7 +2,6 @@ package me.dreamerzero.chatregulator.commands;
 
 import java.util.Map;
 import java.util.UUID;
-import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.List;
@@ -53,7 +52,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
         String[] args = invocation.arguments();
         Audience source = invocation.source();
         MiniMessage mm = MiniMessage.miniMessage();
-        PlaceholderResolver commandPlaceholder = PlaceholderResolver.placeholders(Placeholder.miniMessage("command", invocation.alias()));
+        PlaceholderResolver commandPlaceholder = PlaceholderResolver.placeholders(Placeholder.raw("command", invocation.alias()));
 
         if(args.length == 0){
             source.sendMessage(mm.deserialize(messages.getGeneralMessages().getInfoMessage(), commandPlaceholder));
@@ -68,7 +67,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
             case "reload": parseReloadCommand(source, mm); break;
             default: source.sendMessage(mm.deserialize(
                 messages.getGeneralMessages().getUnknowMessage(),
-                PlaceholderResolver.placeholders(Placeholder.miniMessage("args", args[0]))));
+                PlaceholderResolver.placeholders(Placeholder.raw("args", args[0]))));
                 break;
         }
     }
@@ -88,9 +87,8 @@ public class ChatRegulatorCommand implements SimpleCommand {
     }
 
     private void parseStatsCommand(Audience source, MiniMessage mm){
-        for(String line : messages.getGeneralMessages().getStatsFormat()){
-            source.sendMessage(mm.deserialize(line, PlaceholderUtils.getGlobalPlaceholders()));
-        }
+        var placeholders = PlaceholderUtils.getGlobalPlaceholders();
+        messages.getGeneralMessages().getStatsFormat().forEach(ln -> source.sendMessage(mm.deserialize(ln, placeholders)));
     }
 
     private void parsePlayerCommand(String[] args, Audience source, MiniMessage mm){
@@ -98,23 +96,24 @@ public class ChatRegulatorCommand implements SimpleCommand {
         if(args.length >= 2){
             server.getPlayer(args[1]).ifPresentOrElse(player -> {
                 InfractionPlayer infractionPlayer = InfractionPlayer.get(player);
+                var placeholders = PlaceholderUtils.getPlaceholders(infractionPlayer);
                 for(String line : gconfig.getPlayerFormat()){
-                    source.sendMessage(mm.deserialize(line, PlaceholderUtils.getPlaceholders(infractionPlayer)));
+                    source.sendMessage(mm.deserialize(line, placeholders));
                 }
             }, () -> {
-                for(Entry<UUID, InfractionPlayer> entry : infractionPlayers.entrySet()){
-                    InfractionPlayer iPlayer = entry.getValue();
+                infractionPlayers.forEach((uuid, iPlayer) -> {
                     if(iPlayer.username().equals(args[0])){
+                        var placeholders = PlaceholderUtils.getPlaceholders(iPlayer);
                         for(String line : gconfig.getPlayerFormat()){
-                            source.sendMessage(mm.deserialize(line, PlaceholderUtils.getPlaceholders(iPlayer)));
+                            source.sendMessage(mm.deserialize(line, placeholders));
                         }
-                        break;
+                        return;
                     }
-                }
+                });
                 source.sendMessage(mm.deserialize(
                     gconfig.playerNotFound(),
                     PlaceholderResolver.placeholders(
-                        Placeholder.miniMessage("player", args[1])
+                        Placeholder.raw("player", args[1])
                     )
                 ));
             });
@@ -167,19 +166,17 @@ public class ChatRegulatorCommand implements SimpleCommand {
                 ConfigManager.sendResetMessage(source, InfractionType.NONE, infractionPlayer);
             }, () -> {
                 var gmessages = messages.getGeneralMessages();
-                for(Entry<UUID, InfractionPlayer> entry : infractionPlayers.entrySet()){
-                    InfractionPlayer iPlayer = entry.getValue();
+                infractionPlayers.forEach((uuid, iPlayer)->{
                     if(iPlayer.username().equals(args[1])){
-                        for(String line : gmessages.getPlayerFormat()){
-                            source.sendMessage(mm.deserialize(line,PlaceholderUtils.getPlaceholders(iPlayer)));
-                        }
-                        break;
+                        var placeholders = PlaceholderUtils.getPlaceholders(iPlayer);
+                        gmessages.getPlayerFormat().forEach(ln -> source.sendMessage(mm.deserialize(ln, placeholders)));
+                        return;
                     }
-                }
+                });
                 source.sendMessage(mm.deserialize(
                     gmessages.playerNotFound(),
                     PlaceholderResolver.placeholders(
-                        Placeholder.miniMessage("player", args[1])
+                        Placeholder.raw("player", args[1])
                     )
                 ));
             });
@@ -194,7 +191,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
             switch(args[1].toLowerCase()){
                 case "server":
                     if(args.length >= 3){
-                        PlaceholderResolver serverPlaceholder = PlaceholderResolver.placeholders(Placeholder.miniMessage("server", args[2]));
+                        PlaceholderResolver serverPlaceholder = PlaceholderResolver.placeholders(Placeholder.raw("server", args[2]));
                         server.getServer(args[2]).ifPresentOrElse(serverObjetive -> {
                             serverObjetive.sendMessage(GeneralUtils.spacesComponent);
                             source.sendMessage(mm.deserialize(clearmessages.getServerMessage(), serverPlaceholder));
@@ -207,7 +204,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
                             source.sendMessage(mm.deserialize(
                                 clearmessages.getServerMessage(),
                                 PlaceholderResolver.placeholders(
-                                    Placeholder.miniMessage("server", playerServer.getServerInfo().getName())
+                                    Placeholder.raw("server", playerServer.getServerInfo().getName())
                                 )
                             ));
                         });
@@ -227,7 +224,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
                                 mm.deserialize(
                                     messages.getGeneralMessages().playerNotFound(),
                                     PlaceholderResolver.placeholders(
-                                        Placeholder.miniMessage("player", args[2])
+                                        Placeholder.raw("player", args[2])
                                     )
                                 )
                             )

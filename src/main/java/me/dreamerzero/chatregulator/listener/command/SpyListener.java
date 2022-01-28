@@ -50,7 +50,7 @@ public class SpyListener {
                     mm.deserialize(
                         messages.getMessage(),
                         PlaceholderResolver.placeholders(
-                            Placeholder.miniMessage("command", command),
+                            Placeholder.raw("command", command),
                             Placeholder.raw("player", ((Player)source).getUsername())
                         )
                     )
