@@ -10,6 +10,8 @@ A global chat regulator for Velocity
 - Control of messages sent in specific commands
 - Controls the number of consecutive equal characters allowed
 - Controls the repetition of the same messages or commands several times in a row.
+- Block the execution of the commands you want to execute
+- Check the commands executed by players on your server
 - Sends warning messages, actionbars o titles to the offender in MiniMessage format
 - And more...
 
