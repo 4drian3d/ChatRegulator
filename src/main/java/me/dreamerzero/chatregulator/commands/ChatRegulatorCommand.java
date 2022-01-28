@@ -253,11 +253,13 @@ public class ChatRegulatorCommand implements SimpleCommand {
         ChatRegulator.getInstance().reloadConfig();
     }
 
+    private static final List<String> subCommandsCompletions = List.of("info", "help", "clear", "stats", "player");
+
     @Override
     public CompletableFuture<List<String>> suggestAsync(final Invocation invocation) {
         String[] args = invocation.arguments();
         if(args.length == 0){
-            return CompletableFuture.supplyAsync(() -> List.of("info", "help", "clear", "stats", "player"));
+            return CompletableFuture.supplyAsync(() -> subCommandsCompletions);
         }
         return CompletableFuture.supplyAsync(() -> {
             switch(args[0]){
@@ -287,7 +289,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
                                 .map(Player::getUsername)
                                 .collect(Collectors.toList());
                     } else {
-                        return List.of("infractions", "regular", "flood", "spam", "unicode", "caps", "all");
+                        return subCommandsCompletions;
                     }
                 default: return List.of();
             }
