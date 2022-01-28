@@ -11,7 +11,7 @@ public final class Permissions {
     public static final String BYPASS_UNICODE = "chatregulator.bypass.unicode";
     public static final String BYPASS_CAPS = "chatregulator.bypass.caps";
 
-    public static final String COMMANDSPY_ALERT = "";
+    public static final String COMMANDSPY_ALERT = "chatregulator.commandspy.alert";
     public static final String BYPASS_COMMANDSPY = "chatregulator.bypass.commandspy";
 
     private Permissions(){}
