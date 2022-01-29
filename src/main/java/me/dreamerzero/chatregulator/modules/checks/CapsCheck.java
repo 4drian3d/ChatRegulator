@@ -2,20 +2,22 @@ package me.dreamerzero.chatregulator.modules.checks;
 
 import java.util.Locale;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.enums.InfractionType;
+import me.dreamerzero.chatregulator.result.Result;
+import me.dreamerzero.chatregulator.result.ReplaceableResult;
 
 /**
  * Check for compliance with uppercase character limit in a string
  */
-public class CapsCheck extends AbstractCheck implements ReplaceableCheck{
+public class CapsCheck extends AbstractCheck {
 
     @Override
-    public void check(@NotNull String message) {
+    public CompletableFuture<? extends Result> check(@NotNull String message) {
         super.string = Objects.requireNonNull(message);
         char[] chararray = message.toCharArray();
         int capcount = 0;
@@ -24,18 +26,14 @@ public class CapsCheck extends AbstractCheck implements ReplaceableCheck{
         }
 
         if(capcount >= Configuration.getConfig().getCapsConfig().limit()){
-            super.detected = true;
+            return CompletableFuture.completedFuture(new Result(message, true));
         }
-    }
-
-    @Override
-    public @Nullable String replaceInfraction(){
-        return super.string.toLowerCase(Locale.ROOT);
-    }
-
-    @Override
-    public @Nullable String getInfractionWord(){
-        return this.string;
+        return CompletableFuture.completedFuture(new ReplaceableResult(message, false){
+            @Override
+            public String replaceInfraction(){
+                return message.toLowerCase(Locale.ROOT);
+            }
+        });
     }
 
     @Override

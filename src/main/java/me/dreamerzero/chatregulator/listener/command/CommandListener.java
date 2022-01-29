@@ -18,6 +18,8 @@ import me.dreamerzero.chatregulator.modules.checks.FloodCheck;
 import me.dreamerzero.chatregulator.modules.checks.InfractionCheck;
 import me.dreamerzero.chatregulator.modules.checks.SpamCheck;
 import me.dreamerzero.chatregulator.modules.checks.UnicodeCheck;
+import me.dreamerzero.chatregulator.result.IReplaceable;
+import me.dreamerzero.chatregulator.utils.AtomicString;
 import me.dreamerzero.chatregulator.utils.GeneralUtils;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.enums.SourceType;
@@ -47,92 +49,91 @@ public class CommandListener {
             return;
         }
 
-        String command = event.getCommand();
+        final AtomicString command = new AtomicString(event.getCommand());
         final Player player = (Player)event.getCommandSource();
         final InfractionPlayer infractionPlayer = InfractionPlayer.get(player);
 
         if(GeneralUtils.allowedPlayer(player, InfractionType.BCOMMAND)){
-            CommandCheck cCheck = new CommandCheck();
-            cCheck.check(command);
-            if(GeneralUtils.checkAndCall(infractionPlayer, command, cCheck, SourceType.COMMAND)){
-                event.setResult(CommandResult.denied());
-                continuation.resume();
-                return;
-            }
+            new CommandCheck().check(command.get()).thenAccept(result -> {
+                if(GeneralUtils.checkAndCall(infractionPlayer, command.get(), InfractionType.BCOMMAND, result, SourceType.COMMAND)){
+                    event.setResult(CommandResult.denied());
+                    continuation.resume();
+                    return;
+                }
+            }).join();
         }
 
         if(GeneralUtils.allowedPlayer(player, InfractionType.UNICODE)){
-            UnicodeCheck uCheck = new UnicodeCheck();
-            uCheck.check(command);
-            if(GeneralUtils.checkAndCall(infractionPlayer, command, uCheck, SourceType.COMMAND)){
-                if(config.getUnicodeConfig().isBlockable()){
-                    event.setResult(CommandResult.denied());
-                    continuation.resume();
-                    return;
+            new UnicodeCheck().check(command.get()).thenAccept(result -> {
+                if(GeneralUtils.checkAndCall(infractionPlayer, command.get(), InfractionType.UNICODE, result, SourceType.COMMAND)){
+                    if(config.getUnicodeConfig().isBlockable()){
+                        event.setResult(CommandResult.denied());
+                        continuation.resume();
+                        return;
+                    }
+                    String commandReplaced = ((IReplaceable)result).replaceInfraction();
+                    event.setResult(CommandResult.command(commandReplaced));
+                    command.set(commandReplaced);
                 }
-                String commandReplaced = uCheck.replaceInfraction();
-                event.setResult(CommandResult.command(commandReplaced));
-                command = commandReplaced;
-            }
+            }).join();
         }
 
         if(GeneralUtils.allowedPlayer(player, InfractionType.CAPS)){
-            CapsCheck cCheck = new CapsCheck();
-            cCheck.check(command);
-
-            if(cCheck.isInfraction() && GeneralUtils.callViolationEvent(infractionPlayer, command, cCheck, SourceType.COMMAND)){
-                if(config.getCapsConfig().isBlockable()){
-                    event.setResult(CommandResult.denied());
-                    continuation.resume();
-                    return;
+            new CapsCheck().check(command.get()).thenAccept(result -> {
+                if(GeneralUtils.checkAndCall(infractionPlayer, command.get(),InfractionType.CAPS, result, SourceType.COMMAND)){
+                    if(config.getCapsConfig().isBlockable()){
+                        event.setResult(CommandResult.denied());
+                        continuation.resume();
+                        return;
+                    }
+                    String commandReplaced = ((IReplaceable)result).replaceInfraction();
+                    event.setResult(CommandResult.command(commandReplaced));
+                    command.set(commandReplaced);
                 }
-                String commandReplaced = cCheck.replaceInfraction();
-                event.setResult(CommandResult.command(commandReplaced));
-                command = commandReplaced;
-            }
+            }).join();
         }
 
         if(GeneralUtils.allowedPlayer(player, InfractionType.FLOOD)){
-            FloodCheck fCheck = new FloodCheck();
-            fCheck.check(command);
-            if(fCheck.isInfraction() && GeneralUtils.checkAndCall(infractionPlayer, command, fCheck, SourceType.COMMAND)) {
-                if(config.getFloodConfig().isBlockable()){
-                    event.setResult(CommandResult.denied());
-                    continuation.resume();
-                    return;
+            new FloodCheck().check(command.get()).thenAccept(result -> {
+                if(GeneralUtils.checkAndCall(infractionPlayer, command.get(), InfractionType.FLOOD, result, SourceType.COMMAND)) {
+                    if(config.getFloodConfig().isBlockable()){
+                        event.setResult(CommandResult.denied());
+                        continuation.resume();
+                        return;
+                    }
+                    String commandReplaced = ((IReplaceable)result).replaceInfraction();
+                    event.setResult(CommandResult.command(commandReplaced));
+                    command.set(commandReplaced);
                 }
-                String commandReplaced = fCheck.replaceInfraction();
-                event.setResult(CommandResult.command(commandReplaced));
-                command = commandReplaced;
-            }
+            }).join();
         }
 
         if(GeneralUtils.allowedPlayer(player, InfractionType.REGULAR)){
-            InfractionCheck iCheck = new InfractionCheck();
-            iCheck.check(command);
-            if(GeneralUtils.checkAndCall(infractionPlayer, command, iCheck, SourceType.COMMAND)) {
-                if(config.getInfractionsConfig().isBlockable()){
+            new InfractionCheck().check(command.get()).thenAccept(result -> {
+                if(GeneralUtils.checkAndCall(infractionPlayer, command.get(), InfractionType.REGULAR, result, SourceType.COMMAND)) {
+                    if(config.getInfractionsConfig().isBlockable()){
+                        event.setResult(CommandResult.denied());
+                        continuation.resume();
+                        return;
+                    }
+                    String commandReplaced = ((IReplaceable)result).replaceInfraction();
+                    event.setResult(CommandResult.command(commandReplaced));
+                    command.set(commandReplaced);
+                }
+            }).join();
+        }
+
+        if(GeneralUtils.allowedPlayer(player, InfractionType.SPAM)){
+            new SpamCheck(infractionPlayer, SourceType.COMMAND).check(command.get()).thenAccept(result -> {
+                if(GeneralUtils.spamCheck(result, config, infractionPlayer) && GeneralUtils.callViolationEvent(infractionPlayer, command.get(), InfractionType.SPAM, result, SourceType.COMMAND)) {
                     event.setResult(CommandResult.denied());
                     continuation.resume();
                     return;
                 }
-                String commandReplaced = iCheck.replaceInfraction();
-                event.setResult(CommandResult.command(commandReplaced));
-                command = commandReplaced;
-            }
+            }).join();
         }
 
-        if(GeneralUtils.allowedPlayer(player, InfractionType.SPAM)){
-            SpamCheck sCheck = new SpamCheck(infractionPlayer, SourceType.COMMAND);
-            sCheck.check(command);
-            if(GeneralUtils.spamCheck(sCheck, config, infractionPlayer) && GeneralUtils.callViolationEvent(infractionPlayer, command, sCheck, SourceType.COMMAND)) {
-                event.setResult(CommandResult.denied());
-                continuation.resume();
-                return;
-            }
-        }
-
-        infractionPlayer.lastCommand(command);
+        infractionPlayer.lastCommand(command.get());
         continuation.resume();
     }
 }

@@ -26,8 +26,8 @@ public class CommandTest {
 
         CommandCheck cCheck = new CommandCheck();
 
-        cCheck.check(command);
-
-        assertTrue(cCheck.isInfraction());
+        cCheck.check(command).thenAccept(result -> {
+            assertTrue(result.isInfraction());
+        });
     }
 }

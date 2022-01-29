@@ -1,13 +1,14 @@
 package me.dreamerzero.chatregulator.modules.checks;
 
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.enums.SourceType;
+import me.dreamerzero.chatregulator.result.Result;
 
 /**
  * Detection of command/message spamming
@@ -25,14 +26,10 @@ public class SpamCheck extends AbstractCheck {
     }
 
     @Override
-    public void check(@NotNull String message){
+    public CompletableFuture<? extends Result> check(@NotNull String message){
         super.string = Objects.requireNonNull(message);
-        this.spamInfricted();
-    }
-
-    @Override
-    public @Nullable String getInfractionWord(){
-        return super.string;
+        boolean infricted = this.spamInfricted();
+        return CompletableFuture.completedFuture(new Result(message, infricted));
     }
 
     /**
@@ -40,17 +37,17 @@ public class SpamCheck extends AbstractCheck {
      * based on his 3 previous messages/commands.
      * If the {@link InfractionPlayer} is spamming, it will set detectec as true
      */
-    private void spamInfricted(){
+    private boolean spamInfricted(){
         if(type == SourceType.CHAT){
             String prelastMessage = infractionPlayer.preLastMessage();
             String lastMessage = infractionPlayer.lastMessage();
 
-            super.detected = prelastMessage.equalsIgnoreCase(lastMessage) && lastMessage.contains(string);
+            return prelastMessage.equalsIgnoreCase(lastMessage) && lastMessage.contains(string);
         } else {
             String prelastCommand = infractionPlayer.preLastCommand();
             String lastCommand = infractionPlayer.lastCommand();
 
-            super.detected = prelastCommand.equalsIgnoreCase(lastCommand) && lastCommand.contains(string);
+            return prelastCommand.equalsIgnoreCase(lastCommand) && lastCommand.contains(string);
         }
     }
 

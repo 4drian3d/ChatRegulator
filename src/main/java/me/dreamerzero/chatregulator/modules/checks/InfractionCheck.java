@@ -3,15 +3,18 @@ package me.dreamerzero.chatregulator.modules.checks;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.enums.InfractionType;
+import me.dreamerzero.chatregulator.result.Result;
+import me.dreamerzero.chatregulator.result.PatternReplaceableResult;
+import me.dreamerzero.chatregulator.result.PatternResult;
 
 /**
  * Utilities for the detection of restringed words
@@ -35,7 +38,7 @@ public class InfractionCheck extends PatternCheck {
     }
 
     @Override
-    public void check(String string){
+    public CompletableFuture<? extends Result> check(@NotNull String string){
         originalString = string;
         for (String blockedWord : blockedWords){
             Pattern wordpattern = Pattern.compile(blockedWord, Pattern.CASE_INSENSITIVE);
@@ -45,23 +48,25 @@ public class InfractionCheck extends PatternCheck {
                 super.detected = true;
                 super.pattern = wordpattern;
                 if(blockable) {
-                    super.string = match.group();
-                    return;
+                    return CompletableFuture.completedFuture(new PatternResult(match.group(), true, pattern, matcher));
                 }
                 patterns.add(wordpattern);
             }
         }
-        if(detected)
-            super.string = patterns.toString();
-    }
-
-    @Override
-    public @Nullable String replaceInfraction(){
-        String original = originalString;
-        for(Pattern pattern : patterns){
-            original = pattern.matcher(original).replaceAll("***");
+        if(detected){
+            return CompletableFuture.completedFuture(new PatternReplaceableResult(patterns.toString(), true, pattern, matcher){
+                @Override
+                public String replaceInfraction(){
+                    String original = originalString;
+                    for(Pattern pattern : patterns){
+                        original = pattern.matcher(original).replaceAll("***");
+                    }
+                    return original;
+                }
+            });
         }
-        return original;
+
+        return CompletableFuture.completedFuture(new Result(string, false));
     }
 
     @Override

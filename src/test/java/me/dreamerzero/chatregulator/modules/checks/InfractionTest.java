@@ -12,6 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.nio.file.Paths;
 
 import me.dreamerzero.chatregulator.config.Configuration;
+import me.dreamerzero.chatregulator.result.PatternReplaceableResult;
+import me.dreamerzero.chatregulator.result.ReplaceableResult;
 
 public class InfractionTest {
     @BeforeAll
@@ -26,9 +28,11 @@ public class InfractionTest {
         InfractionCheck iCheck = new InfractionCheck();
         String original = "asdasdasdadadSh1T dadasdad";
 
-        iCheck.check(original);
+        iCheck.check(original).thenAccept(result -> {
+            assertTrue(result instanceof ReplaceableResult);
+        });
 
-        assertTrue(iCheck.isInfraction());
+        
     }
 
     @Test
@@ -39,11 +43,16 @@ public class InfractionTest {
         String original = "Hello D1cK sh1t f4ck!!!";
         String expected = "Hello *** *** ***!!!";
 
-        iCheck.check(original);
+        iCheck.check(original).thenAccept(result -> {
+            assertTrue(result.isInfraction());
+            boolean isInstanceOfReplaceable = result instanceof PatternReplaceableResult;
+            assertTrue(isInstanceOfReplaceable);
 
-        assertTrue(iCheck.isInfraction());
-        String replaced = iCheck.replaceInfraction();
+            String replaced = ((PatternReplaceableResult)result).replaceInfraction();
 
-        assertEquals(expected, replaced);
+            assertEquals(expected, replaced);
+        });
+
+        
     }
 }

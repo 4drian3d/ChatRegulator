@@ -3,7 +3,6 @@ package me.dreamerzero.chatregulator.events;
 import org.jetbrains.annotations.NotNull;
 
 import me.dreamerzero.chatregulator.InfractionPlayer;
-import me.dreamerzero.chatregulator.modules.checks.AbstractCheck;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 
 /**
@@ -22,10 +21,10 @@ public class ChatViolationEvent extends ViolationEvent {
     public ChatViolationEvent(
         @NotNull InfractionPlayer infractionPlayer,
         @NotNull InfractionType type,
-        @NotNull AbstractCheck detection,
+        @NotNull me.dreamerzero.chatregulator.result.Result detectionResult,
         @NotNull String message) {
 
-            super(infractionPlayer, type, detection);
+            super(infractionPlayer, type, detectionResult);
             this.message = message;
     }
 

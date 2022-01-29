@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import me.dreamerzero.chatregulator.config.Configuration;
+import me.dreamerzero.chatregulator.result.IReplaceable;
 
 public class CapsTest {
     @BeforeAll
@@ -28,10 +29,12 @@ public class CapsTest {
 
         CapsCheck cCheck = new CapsCheck();
 
-        cCheck.check(original);
-        String replaced = cCheck.replaceInfraction();
+        cCheck.check(original).thenAccept(result -> {
+            assertTrue(result.isInfraction());
+            assertTrue(result instanceof IReplaceable);
+            String replaced = ((IReplaceable)result).replaceInfraction();
 
-        assertTrue(cCheck.isInfraction());
-        assertEquals(expected, replaced);
+            assertEquals(expected, replaced);
+        });
     }
 }

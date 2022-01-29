@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import me.dreamerzero.chatregulator.config.Configuration;
+import me.dreamerzero.chatregulator.result.IReplaceable;
 
 public class UnicodeTest {
     @BeforeAll
@@ -29,9 +30,9 @@ public class UnicodeTest {
 
         UnicodeCheck uCheck = new UnicodeCheck();
 
-        uCheck.check(legal);
-
-        assertFalse(uCheck.isInfraction());
+        uCheck.check(legal).thenAccept(result -> {
+            assertFalse(result.isInfraction());
+        });
     }
 
     @Test
@@ -41,13 +42,15 @@ public class UnicodeTest {
 
         UnicodeCheck uCheck = new UnicodeCheck();
 
-        uCheck.check(illegal);
+        uCheck.check(illegal).thenAccept(result -> {
+            assertTrue(result.isInfraction());
 
-        assertTrue(uCheck.isInfraction());
+            assertTrue(result instanceof IReplaceable);
 
-        String replaced = uCheck.replaceInfraction();
-        String expected = "  aea";
+            String replaced = ((IReplaceable)result).replaceInfraction();
+            String expected = "  aea";
 
-        assertEquals(expected, replaced);
+            assertEquals(expected, replaced);
+        });
     }
 }

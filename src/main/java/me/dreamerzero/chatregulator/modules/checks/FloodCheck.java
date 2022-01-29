@@ -1,29 +1,25 @@
 package me.dreamerzero.chatregulator.modules.checks;
 
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.enums.InfractionType;
+import me.dreamerzero.chatregulator.result.Result;
+import me.dreamerzero.chatregulator.result.PatternReplaceableResult;
 
 /**
  * Utilities for detecting incoherent messages containing floods
  */
-public class FloodCheck extends PatternCheck {
+public class FloodCheck extends AbstractCheck {
     // Credit: https://github.com/2lstudios-mc/ChatSentinel/blob/master/src/main/resources/config.yml#L91
     // (\\w)\\1{5,}|(\\w{28,})|([^\\wñ]{20,})|(^.{220,}$)
     private static String stringPattern = "(\\w)\\1{5,}|(\\w{28,})|([^\\wñ]{20,})|(^.{220,}$)";
     private static Pattern floodPattern = Pattern.compile(stringPattern, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
-
-    /**
-     * Create a new flood test
-     */
-    public FloodCheck(){
-        super.pattern = floodPattern;
-    }
 
     /**
      * Update the Flood pattern based in the configuration
@@ -43,16 +39,16 @@ public class FloodCheck extends PatternCheck {
     }
 
     @Override
-    public void check(@NotNull String message){
+    public CompletableFuture<? extends Result> check(@NotNull String message){
         super.string = Objects.requireNonNull(message);
-
-        super.matcher = floodPattern.matcher(message);
-        super.detected = matcher.find();
-    }
-
-    @Override
-    public @Nullable String replaceInfraction(){
-        return super.matcher.replaceAll("");
+        Matcher matcher = floodPattern.matcher(message);
+        boolean result = matcher.find();
+        return CompletableFuture.completedFuture(new PatternReplaceableResult(message, result, floodPattern, matcher){
+            @Override
+            public String replaceInfraction(){
+                return matcher.replaceAll("");
+            }
+        });
     }
 
     @Override

@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import me.dreamerzero.chatregulator.config.Configuration;
+import me.dreamerzero.chatregulator.result.IReplaceable;
 
 public class FloodTest {
     @BeforeAll
@@ -28,10 +29,12 @@ public class FloodTest {
         String original = "aa floOoOOOooOod aa";
         String expected = "aa fld aa";
 
-        fCheck.check(original);
-        String replaced = fCheck.replaceInfraction();
+        fCheck.check(original).thenAccept(result->{
+            assertTrue(result.isInfraction());
+            assertTrue(result instanceof IReplaceable);
+            String replaced = ((IReplaceable)result).replaceInfraction();
 
-        assertEquals(replaced, expected);
-        assertTrue(fCheck.isInfraction());
+            assertEquals(replaced, expected);
+        });
     }
 }

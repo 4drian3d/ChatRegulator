@@ -5,7 +5,6 @@ import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 
 import me.dreamerzero.chatregulator.InfractionPlayer;
-import me.dreamerzero.chatregulator.modules.checks.AbstractCheck;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 
 /**
@@ -24,10 +23,10 @@ public class CommandViolationEvent extends ViolationEvent {
     public CommandViolationEvent(
         @NotNull InfractionPlayer infractionPlayer,
         @NotNull InfractionType type,
-        @NotNull AbstractCheck detection,
+        @NotNull me.dreamerzero.chatregulator.result.Result result,
         @NotNull String command){
 
-            super(Objects.requireNonNull(infractionPlayer), type, Objects.requireNonNull(detection));
+            super(Objects.requireNonNull(infractionPlayer), type, Objects.requireNonNull(result));
             this.command = command;
     }
 

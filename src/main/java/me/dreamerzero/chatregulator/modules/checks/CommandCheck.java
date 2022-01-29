@@ -1,11 +1,13 @@
 package me.dreamerzero.chatregulator.modules.checks;
 
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 import org.jetbrains.annotations.NotNull;
 
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.enums.InfractionType;
+import me.dreamerzero.chatregulator.result.Result;
 import me.dreamerzero.chatregulator.utils.CommandUtils;
 
 /**
@@ -19,14 +21,13 @@ public class CommandCheck extends AbstractCheck {
     }
 
     @Override
-    public void check(@NotNull String message) {
+    public CompletableFuture<? extends Result> check(@NotNull String message) {
         for (String blockedCommand : blockedCommands){
             if(CommandUtils.isStartingString(message, blockedCommand)){
-                super.string = blockedCommand;
-                super.detected = true;
-                return;
+                return CompletableFuture.completedFuture(new Result(message, true));
             }
         }
+        return CompletableFuture.completedFuture(new Result(message, false));
     }
 
     @Override

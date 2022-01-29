@@ -9,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.ApiStatus.Internal;
 
 import me.dreamerzero.chatregulator.InfractionPlayer;
-import me.dreamerzero.chatregulator.modules.checks.AbstractCheck;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 
 /**
@@ -24,7 +23,7 @@ public class ViolationEvent implements ResultedEvent<GenericResult> {
      * Type of detection
      */
     private final InfractionType type;
-    private final AbstractCheck detection;
+    private final me.dreamerzero.chatregulator.result.Result detectionResult;
     private GenericResult result = GenericResult.allowed();
 
     /**
@@ -34,10 +33,10 @@ public class ViolationEvent implements ResultedEvent<GenericResult> {
      * @param detection the detection
      */
     @Internal
-    public ViolationEvent(@NotNull InfractionPlayer infractionPlayer, @NotNull InfractionType type, @NotNull AbstractCheck detection){
+    public ViolationEvent(@NotNull InfractionPlayer infractionPlayer, @NotNull InfractionType type, @NotNull me.dreamerzero.chatregulator.result.Result detectionResult){
         this.infractionPlayer = infractionPlayer;
         this.type = type;
-        this.detection = detection;
+        this.detectionResult = detectionResult;
     }
 
     /**
@@ -65,8 +64,8 @@ public class ViolationEvent implements ResultedEvent<GenericResult> {
      * the detected string and more.
      * @return the detection performed
      */
-    public @NotNull AbstractCheck getDetection(){
-        return this.detection;
+    public @NotNull me.dreamerzero.chatregulator.result.Result getDetectionResult(){
+        return this.detectionResult;
     }
 
     @Override

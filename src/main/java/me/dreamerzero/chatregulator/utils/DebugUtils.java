@@ -6,8 +6,8 @@ import org.slf4j.Logger;
 
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.ChatRegulator;
-import me.dreamerzero.chatregulator.modules.checks.AbstractCheck;
-import me.dreamerzero.chatregulator.modules.checks.PatternCheck;
+import me.dreamerzero.chatregulator.result.PatternResult;
+import me.dreamerzero.chatregulator.result.Result;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 
 /**
@@ -22,17 +22,17 @@ public final class DebugUtils {
      * @param detection the detection type
      * @param check the check
      */
-    public static void debug(InfractionPlayer infractor, String string, InfractionType detection, AbstractCheck check){
+    public static void debug(InfractionPlayer infractor, String string, InfractionType detection, Result result){
 
         final Logger logger = ChatRegulator.getInstance().getLogger();
         Player player = infractor.getPlayer();
         if(player != null) logger.debug("User Detected: {}", player.getUsername());
         logger.debug("Detection: {}", detection);
         logger.debug("String: {}", string);
-        if(check instanceof PatternCheck){
-            var pattern = ((PatternCheck)check).getPattern();
-            if(pattern == null) return;
-            logger.debug("Pattern: {}", pattern.pattern());
+        if(result instanceof PatternResult){
+            var pattern = ((PatternResult)result).getPattern();
+            if(pattern != null)
+                logger.debug("Pattern: {}", pattern.pattern());
         }
     }
 
