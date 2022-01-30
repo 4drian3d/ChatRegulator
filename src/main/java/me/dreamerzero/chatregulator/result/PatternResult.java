@@ -1,5 +1,6 @@
 package me.dreamerzero.chatregulator.result;
 
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,5 +34,30 @@ public class PatternResult extends Result {
      */
     public @Nullable Matcher getMatcher(){
         return this.matcher;
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if(this == o) return true;
+        if(o == null || o.getClass() != this.getClass()) return false;
+        PatternResult that = (PatternResult) o;
+        return that.getInfractionString().equals(this.getInfractionString()) && that.isInfraction() == this.isInfraction();
+    }
+
+    @Override
+    public int hashCode(){
+        return Objects.hash(this.getInfractionString(), this.isInfraction());
+    }
+
+    @Override
+    public String toString(){
+        StringBuilder builder = new StringBuilder();
+        if(pattern != null) builder.append(pattern.toString());
+        if(matcher != null) builder.append(matcher.toString());
+        String string = builder.toString();
+        if(string.isBlank()){
+            return super.toString();
+        }
+        return "PatternResult["+ super.toString() + string + "]";
     }
 }

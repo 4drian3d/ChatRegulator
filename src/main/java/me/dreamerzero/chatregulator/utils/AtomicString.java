@@ -65,4 +65,22 @@ public final class AtomicString {
     public String get(){
         return this.string;
     }
+
+    @Override
+    public boolean equals(Object o){
+        if(this == o) return true;
+        if(o == null || this.getClass() != o.getClass()) return false;
+        AtomicString that = (AtomicString)o;
+        return that.string.equals(this.string);
+    }
+
+    @Override
+    public int hashCode(){
+        return Objects.hash(this.string);
+    }
+
+    @Override
+    public String toString(){
+        return this.string;
+    }
 }

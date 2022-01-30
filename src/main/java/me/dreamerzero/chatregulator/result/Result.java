@@ -1,5 +1,7 @@
 package me.dreamerzero.chatregulator.result;
 
+import java.util.Objects;
+
 import org.jetbrains.annotations.Nullable;
 
 public class Result {
@@ -24,5 +26,23 @@ public class Result {
      */
     public @Nullable String getInfractionString(){
         return this.infractionString;
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if(this == o) return true;
+        if(o == null || o.getClass() != this.getClass()) return false;
+        Result that = (Result) o;
+        return that.infractionString.equals(this.infractionString) && that.infricted == this.infricted;
+    }
+
+    @Override
+    public int hashCode(){
+        return Objects.hash(this.infractionString, this.infricted);
+    }
+
+    @Override
+    public String toString(){
+        return "Result[infractionString="+this.infractionString+",infricted="+this.infricted+"]";
     }
 }

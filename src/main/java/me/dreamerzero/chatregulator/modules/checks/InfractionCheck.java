@@ -34,7 +34,17 @@ public class InfractionCheck implements ICheck {
         this.blockable = blockable;
     }
 
-    //TODO: Specify return
+
+    /**
+     * {@inheritDoc}
+     * @param string the string
+     * @return May return a {@link PatternResult} if the result was successful
+     * and the check was set to only block the message.
+     * Or a {@link ReplaceableResult} if the check was successful
+     * and is configured to replace multiple violations.
+     * Or a {@link Result} if the check was not successful
+     * @see {@link ICheck}
+     */
     @Override
     public CompletableFuture<Result> check(@NotNull String string){
         final List<Pattern> patterns = new ArrayList<>();
@@ -109,7 +119,7 @@ public class InfractionCheck implements ICheck {
             if(!edited){
                 this.replaceable = Configuration.getConfig().getInfractionsConfig().getControlType() == ControlType.REPLACE;
             }
-            return new InfractionCheck(replaceable, blockedWords);
+            return new InfractionCheck(!replaceable, blockedWords);
         }
     }
 }

@@ -13,8 +13,11 @@ import me.dreamerzero.chatregulator.result.Result;
 public interface ICheck {
     /**
      * Check if the delivered string contains any infraction
-     * ans returns a CompletableFuture with the correspondient
+     * ans returns a CompletableFuture with the correspondient Result
      * @param message the message to check
+     * @apiNote To see what check has returned, perform a result instanceof ReplaceableResult
+     * @see {@link Result}
+     * @since 3.0.0
      */
     public abstract CompletableFuture<Result> check(@NotNull String message);
 

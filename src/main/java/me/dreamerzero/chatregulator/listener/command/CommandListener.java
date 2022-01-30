@@ -1,5 +1,7 @@
 package me.dreamerzero.chatregulator.listener.command;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import com.velocitypowered.api.event.Continuation;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
@@ -46,15 +48,20 @@ public class CommandListener {
         final AtomicString command = new AtomicString(event.getCommand());
         final Player player = (Player)event.getCommandSource();
         final InfractionPlayer infractionPlayer = InfractionPlayer.get(player);
+        final AtomicBoolean returning = new AtomicBoolean(false);
 
         if(GeneralUtils.allowedPlayer(player, config.getCommandBlacklistConfig(), InfractionType.BCOMMAND)){
             new CommandCheck().check(command.get()).thenAccept(result -> {
                 if(GeneralUtils.checkAndCall(infractionPlayer, command.get(), InfractionType.BCOMMAND, result, SourceType.COMMAND, config.getCommandBlacklistConfig(), messages.getBlacklistMessages())){
                     event.setResult(CommandResult.denied());
                     continuation.resume();
+                    returning.set(true);
                     return;
                 }
             }).join();
+        }
+        if(returning.get()){
+            return;
         }
 
         if(GeneralUtils.allowedPlayer(player, config.getUnicodeConfig(), InfractionType.UNICODE)){
@@ -63,6 +70,7 @@ public class CommandListener {
                     if(config.getUnicodeConfig().isBlockable()){
                         event.setResult(CommandResult.denied());
                         continuation.resume();
+                        returning.set(true);
                         return;
                     }
                     String commandReplaced = ((IReplaceable)result).replaceInfraction();
@@ -70,6 +78,9 @@ public class CommandListener {
                     command.set(commandReplaced);
                 }
             }).join();
+        }
+        if(returning.get()){
+            return;
         }
 
         if(GeneralUtils.allowedPlayer(player, config.getCapsConfig(), InfractionType.CAPS)){
@@ -78,6 +89,7 @@ public class CommandListener {
                     if(config.getCapsConfig().isBlockable()){
                         event.setResult(CommandResult.denied());
                         continuation.resume();
+                        returning.set(true);
                         return;
                     }
                     String commandReplaced = ((IReplaceable)result).replaceInfraction();
@@ -85,6 +97,9 @@ public class CommandListener {
                     command.set(commandReplaced);
                 }
             }).join();
+        }
+        if(returning.get()){
+            return;
         }
 
         if(GeneralUtils.allowedPlayer(player, config.getFloodConfig(), InfractionType.FLOOD)){
@@ -93,6 +108,7 @@ public class CommandListener {
                     if(config.getFloodConfig().isBlockable()){
                         event.setResult(CommandResult.denied());
                         continuation.resume();
+                        returning.set(true);
                         return;
                     }
                     String commandReplaced = ((IReplaceable)result).replaceInfraction();
@@ -100,6 +116,9 @@ public class CommandListener {
                     command.set(commandReplaced);
                 }
             }).join();
+        }
+        if(returning.get()){
+            return;
         }
 
         if(GeneralUtils.allowedPlayer(player, config.getInfractionsConfig(), InfractionType.REGULAR)){
@@ -108,6 +127,7 @@ public class CommandListener {
                     if(config.getInfractionsConfig().isBlockable()){
                         event.setResult(CommandResult.denied());
                         continuation.resume();
+                        returning.set(true);
                         return;
                     }
                     String commandReplaced = ((IReplaceable)result).replaceInfraction();
@@ -116,16 +136,23 @@ public class CommandListener {
                 }
             }).join();
         }
+        if(returning.get()){
+            return;
+        }
 
         if(GeneralUtils.allowedPlayer(player, config.getSpamConfig(), InfractionType.SPAM)){
-            new SpamCheck(infractionPlayer, SourceType.COMMAND).check(command.get()).thenAccept(result -> {
+            SpamCheck.createCheck(infractionPlayer, command.get(), SourceType.COMMAND).thenAccept(result -> {
                 if(GeneralUtils.spamCheck(result, config, infractionPlayer)
                 && GeneralUtils.callViolationEvent(infractionPlayer, command.get(), InfractionType.SPAM, result, SourceType.COMMAND, config.getSpamConfig(), messages.getSpamMessages())) {
                     event.setResult(CommandResult.denied());
                     continuation.resume();
+                    returning.set(true);
                     return;
                 }
             }).join();
+        }
+        if(returning.get()){
+            return;
         }
 
         infractionPlayer.lastCommand(command.get());

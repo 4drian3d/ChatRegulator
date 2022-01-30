@@ -16,16 +16,16 @@ import me.dreamerzero.chatregulator.result.Result;
 public class SpamCheck implements ICheck {
     private final InfractionPlayer infractionPlayer;
     private final SourceType type;
-    /**
-     * Create a new spam test
-     * @param infractionPlayer the infractionPlayer involucred
-     * @param type the source type
-     */
-    public SpamCheck(@NotNull InfractionPlayer infractionPlayer, @NotNull SourceType type){
+    //TODO: Add SpamTest tests
+    SpamCheck(@NotNull InfractionPlayer infractionPlayer, @NotNull SourceType type){
         this.infractionPlayer = Objects.requireNonNull(infractionPlayer);
         this.type = Objects.requireNonNull(type);
     }
 
+    /**
+     * {@inheritDoc}
+     * @return A {@link Result} of this check
+     */
     @Override
     public CompletableFuture<Result> check(@NotNull String string){
         boolean infricted = this.spamInfricted(Objects.requireNonNull(string));
@@ -54,5 +54,15 @@ public class SpamCheck implements ICheck {
     @Override
     public @NotNull InfractionType type() {
         return InfractionType.SPAM;
+    }
+
+    /**
+     * Create a new spam check
+     * @param player the infractionPlayer involucred
+     * @param type the source type
+     * @param string the string
+     */
+    public static CompletableFuture<Result> createCheck(InfractionPlayer player, String string, SourceType type){
+        return new SpamCheck(player, type).check(string);
     }
 }

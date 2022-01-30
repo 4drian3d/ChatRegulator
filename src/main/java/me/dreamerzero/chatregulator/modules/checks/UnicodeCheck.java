@@ -16,16 +16,11 @@ import me.dreamerzero.chatregulator.result.Result;
  * Check for invalid characters
  */
 public class UnicodeCheck implements ICheck {
-    private final List<Character> results;
-
-    public UnicodeCheck(){
-        results = new ArrayList<>();
-    }
-
     @Override
     public CompletableFuture<Result> check(@NotNull String message) {
         char[] charArray = Objects.requireNonNull(message).toCharArray();
         boolean blockable = Configuration.getConfig().getUnicodeConfig().isBlockable();
+        final List<Character> results = new ArrayList<>();
 
         for(char character : charArray){
             if(!((character > '\u0020' && character < '\u007E') || (character < '\u00FC' && character < '\u00BF') || (character > '\u00BF' && character < '\u00FE'))){
