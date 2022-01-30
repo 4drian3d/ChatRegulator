@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.nio.file.Paths;
+import java.nio.file.Path;
 
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.result.PatternReplaceableResult;
@@ -19,7 +19,7 @@ public class InfractionTest {
     @BeforeAll
     static void loadConfig(){
         Logger logger = LoggerFactory.getLogger(InfractionTest.class);
-        Configuration.loadConfig(Paths.get("build", "reports", "tests", "test"), logger);
+        Configuration.loadConfig(Path.of("build", "reports", "tests", "test"), logger);
     }
 
     @Test
@@ -31,8 +31,6 @@ public class InfractionTest {
         iCheck.check(original).thenAccept(result -> {
             assertTrue(result instanceof ReplaceableResult);
         });
-
-        
     }
 
     @Test

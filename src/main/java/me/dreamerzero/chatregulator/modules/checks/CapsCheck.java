@@ -17,7 +17,7 @@ import me.dreamerzero.chatregulator.result.ReplaceableResult;
 public class CapsCheck extends AbstractCheck {
 
     @Override
-    public CompletableFuture<? extends Result> check(@NotNull String message) {
+    public CompletableFuture<Result> check(@NotNull String message) {
         super.string = Objects.requireNonNull(message);
         char[] chararray = message.toCharArray();
         int capcount = 0;

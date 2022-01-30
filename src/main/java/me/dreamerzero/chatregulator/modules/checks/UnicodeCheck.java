@@ -23,7 +23,7 @@ public class UnicodeCheck extends AbstractCheck {
     }
 
     @Override
-    public CompletableFuture<? extends Result> check(@NotNull String message) {
+    public CompletableFuture<Result> check(@NotNull String message) {
         char[] charArray = Objects.requireNonNull(message).toCharArray();
         boolean blockable = Configuration.getConfig().getUnicodeConfig().isBlockable();
 

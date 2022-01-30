@@ -20,11 +20,12 @@ public final class DebugUtils {
      * @param infractor the {@link InfractionPlayer} involved
      * @param string the message/command
      * @param detection the detection type
-     * @param check the check
+     * @param result the result
      */
     public static void debug(InfractionPlayer infractor, String string, InfractionType detection, Result result){
 
         final Logger logger = ChatRegulator.getInstance().getLogger();
+        if(!logger.isDebugEnabled()) return;
         Player player = infractor.getPlayer();
         if(player != null) logger.debug("User Detected: {}", player.getUsername());
         logger.debug("Detection: {}", detection);

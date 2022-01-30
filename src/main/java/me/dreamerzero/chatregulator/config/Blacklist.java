@@ -9,8 +9,11 @@ import org.spongepowered.configurate.objectmapping.meta.Setting;
 /**
  * Blacklist Configuration
  */
-public class Blacklist {
+public final class Blacklist {
     @ConfigSerializable
+    /**
+     * Blacklist configuration subclass
+     */
     public static class Config{
         @Comment("Sets the expressions to be checked in the\nInfractions module in commands and general chat")
         @Setting(value = "blocked-words")
@@ -40,10 +43,18 @@ public class Blacklist {
             "multiverse"
         );
 
+        /**
+         * Get the blocked regex strings
+         * @return the blocked regex strings
+         */
         public Set<String> getBlockedWord(){
             return this.blockedWords;
         }
 
+        /**
+         * Get the blocked commands
+         * @return the blocked commands
+         */
         public Set<String> getBlockedCommands(){
             return this.blockedCommands;
         }

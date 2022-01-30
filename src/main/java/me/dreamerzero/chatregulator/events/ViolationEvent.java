@@ -30,7 +30,7 @@ public class ViolationEvent implements ResultedEvent<GenericResult> {
      * ViolationEvent Contructor
      * @param infractionPlayer the player who committed the infraction
      * @param type the infraction type
-     * @param detection the detection
+     * @param detectionResult the result of the detection
      */
     @Internal
     public ViolationEvent(@NotNull InfractionPlayer infractionPlayer, @NotNull InfractionType type, @NotNull me.dreamerzero.chatregulator.result.Result detectionResult){

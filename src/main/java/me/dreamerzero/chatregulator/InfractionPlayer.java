@@ -208,7 +208,7 @@ public class InfractionPlayer {
      * @throws PlayerNotAvailableException if the player is not available
      */
     public static @Nullable InfractionPlayer get(final UUID uuid) throws PlayerNotAvailableException{
-        InfractionPlayer p = ChatRegulator.infractionPlayers.get(uuid);
+        InfractionPlayer p = ChatRegulator.infractionPlayers.get(Objects.requireNonNull(uuid));
         if(p != null){
             return p;
         } else {

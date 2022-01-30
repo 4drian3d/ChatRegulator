@@ -1,8 +1,6 @@
 package me.dreamerzero.chatregulator.enums;
 
-import me.dreamerzero.chatregulator.config.Configuration;
-import me.dreamerzero.chatregulator.config.MainConfig;
-import me.dreamerzero.chatregulator.config.Messages;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Infraction Types
@@ -12,58 +10,46 @@ public enum InfractionType {
      * Represents a regular violation, i.e.
      * detection based on the blacklist.yml file.
      */
-    REGULAR(Permissions.BYPASS_INFRACTIONS, Configuration.getConfig().getInfractionsConfig(), Configuration.getMessages().getInfractionsMessages()),
+    REGULAR(Permissions.BYPASS_INFRACTIONS),
     /**
      * Represents an infraction for repeating
      * the same character several times in a row.
      */
-    FLOOD(Permissions.BYPASS_FLOOD, Configuration.getConfig().getFloodConfig(), Configuration.getMessages().getFloodMessages()),
+    FLOOD(Permissions.BYPASS_FLOOD),
     /**
      * Represents an infraction for repeating
      * the same word or command several times.
      */
-    SPAM(Permissions.BYPASS_SPAM, Configuration.getConfig().getSpamConfig(), Configuration.getMessages().getSpamMessages()),
+    SPAM(Permissions.BYPASS_SPAM),
     /**
      * Represents a blocked command
      */
-    BCOMMAND(Permissions.BYPASS_BCOMMAND, Configuration.getConfig().getCommandBlacklistConfig(), Configuration.getMessages().getBlacklistMessages()),
+    BCOMMAND(Permissions.BYPASS_BCOMMAND),
     /**
      * Represents a Unicode check
      */
-    UNICODE(Permissions.BYPASS_UNICODE, Configuration.getConfig().getUnicodeConfig(), Configuration.getMessages().getUnicodeMessages()),
+    UNICODE(Permissions.BYPASS_UNICODE),
     /**
      * Represents a Caps limit check
      */
-    CAPS(Permissions.BYPASS_CAPS, Configuration.getConfig().getCapsConfig(), Configuration.getMessages().getCapsMessages()),
+    CAPS(Permissions.BYPASS_CAPS),
     /**
      * Used internally to represent a
      * multiple warning and in other cases more
      */
-    NONE;
+    NONE("chatregulator.no-permission");
 
-    private String bypassPermission;
-    private MainConfig.Toggleable config;
-    private Messages.Warning messages;
+    private final String bypassPermission;
 
-    InfractionType(String permission, MainConfig.Toggleable config, Messages.Warning messages){
+    InfractionType(String permission){
         this.bypassPermission = permission;
-        this.config = config;
-        this.messages = messages;
     }
 
-    InfractionType(){
-        this.bypassPermission = "";
-    }
-
-    public String bypassPermission(){
+    /**
+     * Get the bypass permission of this type
+     * @return the bypass permission
+     */
+    public @NotNull String bypassPermission(){
         return this.bypassPermission;
-    }
-
-    public MainConfig.Toggleable getConfig(){
-        return this.config;
-    }
-
-    public Messages.Warning getMessages(){
-        return this.messages;
     }
 }

@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import java.nio.file.Paths;
+import java.nio.file.Path;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,7 @@ public class CommandsTest {
     @DisplayName("Command Blacklisted")
     void isCommandBlacklisted(){
         Logger logger = LoggerFactory.getLogger(CommandsTest.class);
-        Configuration.loadConfig(Paths.get("build", "reports", "tests", "test"), logger);
+        Configuration.loadConfig(Path.of("build", "reports", "tests", "test"), logger);
 
         String command = "execute for all";
         boolean isCommand = CommandUtils.isCommand(command);

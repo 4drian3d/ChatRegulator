@@ -1,6 +1,6 @@
 package me.dreamerzero.chatregulator.modules;
 
-import java.nio.file.Paths;
+import java.nio.file.Path;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +16,7 @@ public class ReplacerTest {
     @BeforeAll
     static void loadConfig(){
         Logger logger = LoggerFactory.getLogger(ReplacerTest.class);
-        Configuration.loadConfig(Paths.get("build", "reports", "tests", "test"), logger);
+        Configuration.loadConfig(Path.of("build", "reports", "tests", "test"), logger);
     }
 
     @Test

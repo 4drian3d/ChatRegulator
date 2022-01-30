@@ -14,14 +14,9 @@ import me.dreamerzero.chatregulator.utils.CommandUtils;
  * Check for verification of executed commands
  */
 public class CommandCheck extends AbstractCheck {
-    private final Set<String> blockedCommands;
-
-    public CommandCheck(){
-        this.blockedCommands = Configuration.getBlacklist().getBlockedCommands();
-    }
-
     @Override
-    public CompletableFuture<? extends Result> check(@NotNull String message) {
+    public CompletableFuture<Result> check(@NotNull String message) {
+        final Set<String> blockedCommands = Configuration.getBlacklist().getBlockedCommands();
         for (String blockedCommand : blockedCommands){
             if(CommandUtils.isStartingString(message, blockedCommand)){
                 return CompletableFuture.completedFuture(new Result(message, true));

@@ -26,7 +26,7 @@ public class SpamCheck extends AbstractCheck {
     }
 
     @Override
-    public CompletableFuture<? extends Result> check(@NotNull String message){
+    public CompletableFuture<Result> check(@NotNull String message){
         super.string = Objects.requireNonNull(message);
         boolean infricted = this.spamInfricted();
         return CompletableFuture.completedFuture(new Result(message, infricted));

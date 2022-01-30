@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.UUID;
 
 import com.velocitypowered.api.proxy.Player;
@@ -25,7 +25,7 @@ public class InfractionPlayerTest {
     @BeforeAll
     static void createPlayer(){
         Logger logger = LoggerFactory.getLogger(InfractionPlayerTest.class);
-        Configuration.loadConfig(Paths.get("build", "reports", "tests", "test"), logger);
+        Configuration.loadConfig(Path.of("build", "reports", "tests", "test"), logger);
         Player p = mock(Player.class);
         when(p.getUsername()).thenReturn("4drian3d");
         when(p.getUniqueId()).thenReturn(UUID.randomUUID());

@@ -29,18 +29,10 @@ import me.dreamerzero.chatregulator.enums.SourceType;
  */
 @Internal
 public class CommandListener {
-    private final MainConfig.Config config;
-
-    /**
-     * CommandListener constructor
-     */
-    public CommandListener() {
-        this.config = Configuration.getConfig();
-    }
-
     /**
      * Listener for command detections
      * @param event the command event
+     * @param continuation the event cycle
      */
     @Subscribe(order = PostOrder.FIRST)
     public void onCommand(CommandExecuteEvent event, Continuation continuation){
@@ -48,14 +40,16 @@ public class CommandListener {
             continuation.resume();
             return;
         }
+        final MainConfig.Config config = Configuration.getConfig();
+        final var messages = Configuration.getMessages();
 
         final AtomicString command = new AtomicString(event.getCommand());
         final Player player = (Player)event.getCommandSource();
         final InfractionPlayer infractionPlayer = InfractionPlayer.get(player);
 
-        if(GeneralUtils.allowedPlayer(player, InfractionType.BCOMMAND)){
+        if(GeneralUtils.allowedPlayer(player, config.getCommandBlacklistConfig(), InfractionType.BCOMMAND)){
             new CommandCheck().check(command.get()).thenAccept(result -> {
-                if(GeneralUtils.checkAndCall(infractionPlayer, command.get(), InfractionType.BCOMMAND, result, SourceType.COMMAND)){
+                if(GeneralUtils.checkAndCall(infractionPlayer, command.get(), InfractionType.BCOMMAND, result, SourceType.COMMAND, config.getCommandBlacklistConfig(), messages.getBlacklistMessages())){
                     event.setResult(CommandResult.denied());
                     continuation.resume();
                     return;
@@ -63,9 +57,9 @@ public class CommandListener {
             }).join();
         }
 
-        if(GeneralUtils.allowedPlayer(player, InfractionType.UNICODE)){
+        if(GeneralUtils.allowedPlayer(player, config.getUnicodeConfig(), InfractionType.UNICODE)){
             new UnicodeCheck().check(command.get()).thenAccept(result -> {
-                if(GeneralUtils.checkAndCall(infractionPlayer, command.get(), InfractionType.UNICODE, result, SourceType.COMMAND)){
+                if(GeneralUtils.checkAndCall(infractionPlayer, command.get(), InfractionType.UNICODE, result, SourceType.COMMAND, config.getUnicodeConfig(), messages.getUnicodeMessages())){
                     if(config.getUnicodeConfig().isBlockable()){
                         event.setResult(CommandResult.denied());
                         continuation.resume();
@@ -78,9 +72,9 @@ public class CommandListener {
             }).join();
         }
 
-        if(GeneralUtils.allowedPlayer(player, InfractionType.CAPS)){
+        if(GeneralUtils.allowedPlayer(player, config.getCapsConfig(), InfractionType.CAPS)){
             new CapsCheck().check(command.get()).thenAccept(result -> {
-                if(GeneralUtils.checkAndCall(infractionPlayer, command.get(),InfractionType.CAPS, result, SourceType.COMMAND)){
+                if(GeneralUtils.checkAndCall(infractionPlayer, command.get(),InfractionType.CAPS, result, SourceType.COMMAND, config.getCapsConfig(), messages.getCapsMessages())){
                     if(config.getCapsConfig().isBlockable()){
                         event.setResult(CommandResult.denied());
                         continuation.resume();
@@ -93,9 +87,9 @@ public class CommandListener {
             }).join();
         }
 
-        if(GeneralUtils.allowedPlayer(player, InfractionType.FLOOD)){
+        if(GeneralUtils.allowedPlayer(player, config.getFloodConfig(), InfractionType.FLOOD)){
             new FloodCheck().check(command.get()).thenAccept(result -> {
-                if(GeneralUtils.checkAndCall(infractionPlayer, command.get(), InfractionType.FLOOD, result, SourceType.COMMAND)) {
+                if(GeneralUtils.checkAndCall(infractionPlayer, command.get(), InfractionType.FLOOD, result, SourceType.COMMAND, config.getFloodConfig(), messages.getFloodMessages())) {
                     if(config.getFloodConfig().isBlockable()){
                         event.setResult(CommandResult.denied());
                         continuation.resume();
@@ -108,9 +102,9 @@ public class CommandListener {
             }).join();
         }
 
-        if(GeneralUtils.allowedPlayer(player, InfractionType.REGULAR)){
+        if(GeneralUtils.allowedPlayer(player, config.getInfractionsConfig(), InfractionType.REGULAR)){
             new InfractionCheck().check(command.get()).thenAccept(result -> {
-                if(GeneralUtils.checkAndCall(infractionPlayer, command.get(), InfractionType.REGULAR, result, SourceType.COMMAND)) {
+                if(GeneralUtils.checkAndCall(infractionPlayer, command.get(), InfractionType.REGULAR, result, SourceType.COMMAND, config.getInfractionsConfig(), messages.getInfractionsMessages())) {
                     if(config.getInfractionsConfig().isBlockable()){
                         event.setResult(CommandResult.denied());
                         continuation.resume();
@@ -123,9 +117,10 @@ public class CommandListener {
             }).join();
         }
 
-        if(GeneralUtils.allowedPlayer(player, InfractionType.SPAM)){
+        if(GeneralUtils.allowedPlayer(player, config.getSpamConfig(), InfractionType.SPAM)){
             new SpamCheck(infractionPlayer, SourceType.COMMAND).check(command.get()).thenAccept(result -> {
-                if(GeneralUtils.spamCheck(result, config, infractionPlayer) && GeneralUtils.callViolationEvent(infractionPlayer, command.get(), InfractionType.SPAM, result, SourceType.COMMAND)) {
+                if(GeneralUtils.spamCheck(result, config, infractionPlayer)
+                && GeneralUtils.callViolationEvent(infractionPlayer, command.get(), InfractionType.SPAM, result, SourceType.COMMAND, config.getSpamConfig(), messages.getSpamMessages())) {
                     event.setResult(CommandResult.denied());
                     continuation.resume();
                     return;

@@ -13,13 +13,13 @@ import org.jetbrains.annotations.VisibleForTesting;
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.result.Result;
-import me.dreamerzero.chatregulator.result.PatternReplaceableResult;
 import me.dreamerzero.chatregulator.result.PatternResult;
+import me.dreamerzero.chatregulator.result.ReplaceableResult;
 
 /**
  * Utilities for the detection of restringed words
  */
-public class InfractionCheck extends PatternCheck {
+public class InfractionCheck extends AbstractCheck {
     private final Set<String> blockedWords;
     private final List<Pattern> patterns = new ArrayList<>();
     private final boolean blockable;
@@ -37,24 +37,23 @@ public class InfractionCheck extends PatternCheck {
         this.blockable = false;
     }
 
+    //TODO: Specify return
     @Override
-    public CompletableFuture<? extends Result> check(@NotNull String string){
+    public CompletableFuture<Result> check(@NotNull String string){
         originalString = string;
         for (String blockedWord : blockedWords){
             Pattern wordpattern = Pattern.compile(blockedWord, Pattern.CASE_INSENSITIVE);
             Matcher match = wordpattern.matcher(string);
             if(match.find()){
-                super.matcher = match;
                 super.detected = true;
-                super.pattern = wordpattern;
                 if(blockable) {
-                    return CompletableFuture.completedFuture(new PatternResult(match.group(), true, pattern, matcher));
+                    return CompletableFuture.completedFuture(new PatternResult(match.group(), true, wordpattern, match));
                 }
                 patterns.add(wordpattern);
             }
         }
         if(detected){
-            return CompletableFuture.completedFuture(new PatternReplaceableResult(patterns.toString(), true, pattern, matcher){
+            return CompletableFuture.completedFuture(new ReplaceableResult(patterns.toString(), true){
                 @Override
                 public String replaceInfraction(){
                     String original = originalString;

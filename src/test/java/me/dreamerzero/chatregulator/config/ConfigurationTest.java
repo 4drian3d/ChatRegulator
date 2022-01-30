@@ -1,6 +1,6 @@
 package me.dreamerzero.chatregulator.config;
 
-import java.nio.file.Paths;
+import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,7 +17,7 @@ public class ConfigurationTest {
     @BeforeAll
     static void loadConfig(){
         Logger logger = LoggerFactory.getLogger(ConfigurationTest.class);
-        Configuration.loadConfig(Paths.get("build", "reports", "tests", "test"), logger);
+        Configuration.loadConfig(Path.of("build", "reports", "tests", "test"), logger);
     }
 
     @Test

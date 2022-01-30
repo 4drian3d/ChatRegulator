@@ -6,7 +6,6 @@ import com.velocitypowered.api.proxy.Player;
 
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.ChatRegulator;
-import me.dreamerzero.chatregulator.config.MainConfig.Warning;
 import me.dreamerzero.chatregulator.result.Result;
 import me.dreamerzero.chatregulator.utils.PlaceholderUtils;
 import me.dreamerzero.chatregulator.enums.InfractionType;
@@ -28,18 +27,18 @@ public class ConfigManager {
      * Send a message of some kind to the offender.
      * @param infractor offender
      * @param type the type of infraction
-     * @param check the flood check
+     * @param result the check result
      */
-    public static void sendWarningMessage(InfractionPlayer infractor, InfractionType type, Result result){
+    public static void sendWarningMessage(InfractionPlayer infractor, Result result, Messages.Warning messages, MainConfig.Warning config){
         Player player = infractor.getPlayer();
         if(player != null){
             MiniMessage mm = MiniMessage.miniMessage();
-            String message = type.getMessages().getWarningMessage();
+            String message = messages.getWarningMessage();
             PlaceholderResolver placeholder = PlaceholderResolver.combining(
                 PlaceholderResolver.placeholders(
                     Placeholder.raw("infraction", result.getInfractionString())),
                     PlaceholderUtils.getPlaceholders(infractor));
-            switch(((Warning)type.getConfig()).getWarningType()){
+            switch(config.getWarningType()){
                 case TITLE: sendTitle(message, player, placeholder); break;
                 case MESSAGE: player.sendMessage(mm.deserialize(message, placeholder)); break;
                 case ACTIONBAR: player.sendActionBar(mm.deserialize(message, placeholder)); break;

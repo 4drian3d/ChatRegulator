@@ -67,6 +67,7 @@ public class ChatRegulator {
      * Constructor for ChatRegulator Plugin
      * @param server the proxy server
      * @param logger logger
+     * @param path the plugin path
      */
     @Inject
     @Internal
@@ -78,6 +79,7 @@ public class ChatRegulator {
 
     /**
      * Initialization of the plugin
+     * @param event the Initialize Event
      */
     @Subscribe
     @Internal
@@ -115,6 +117,7 @@ public class ChatRegulator {
 
     /**
      * Get the plugin instance
+     * @return ChatRegulator instance
      */
     public static ChatRegulator getInstance(){
         return plugin;
@@ -122,6 +125,7 @@ public class ChatRegulator {
 
     /**
      * Get the plugin logger
+     * @return the plugin logger
      */
     @Internal
     public @NotNull Logger getLogger(){
@@ -130,6 +134,7 @@ public class ChatRegulator {
 
     /**
      * Get the proxy
+     * @return the proxy server
      */
     @Internal
     public @NotNull ProxyServer getProxy(){
@@ -157,6 +162,9 @@ public class ChatRegulator {
         .schedule();
     }
 
+    /**
+     * Reload the plugin configuration
+     */
     public void reloadConfig(){
         Configuration.loadConfig(path, logger);
     }

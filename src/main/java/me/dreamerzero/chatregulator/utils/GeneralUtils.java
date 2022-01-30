@@ -11,6 +11,9 @@ import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.config.ConfigManager;
 import me.dreamerzero.chatregulator.config.MainConfig;
+import me.dreamerzero.chatregulator.config.Messages;
+import me.dreamerzero.chatregulator.config.MainConfig.Executable;
+import me.dreamerzero.chatregulator.config.MainConfig.Toggleable;
 import me.dreamerzero.chatregulator.modules.Statistics;
 import me.dreamerzero.chatregulator.result.Result;
 import me.dreamerzero.chatregulator.enums.SourceType;
@@ -27,16 +30,17 @@ public final class GeneralUtils {
     /**
      * Check if the player can be checked
      * @param player the infraction player
-     * @param type the infractiontype
+     * @param toggleable the toggleable config
+     * @param type the infraction type
      * @return if the player can be checked
      */
-    public static boolean allowedPlayer(@NotNull Player player, @NotNull InfractionType type){
-        return type.getConfig().enabled() && !Objects.requireNonNull(player).hasPermission(type.bypassPermission());
+    public static boolean allowedPlayer(@NotNull Player player, @NotNull Toggleable toggleable, InfractionType type){
+        return toggleable.enabled() && !Objects.requireNonNull(player).hasPermission(type.bypassPermission());
     }
 
     /**
      * Check if a player has spammed
-     * @param check the check
+     * @param result the result
      * @param config the config
      * @param iplayer the infraction player
      * @return if the player has flagged for spam
@@ -52,11 +56,19 @@ public final class GeneralUtils {
      * Call violation event
      * @param player detected player
      * @param string the string of the event
-     * @param detection the detection
+     * @param infractionType the infraction type
+     * @param result the result
      * @param stype the source type
      * @return if the event is approved
      */
-    public static boolean callViolationEvent(@NotNull InfractionPlayer player, @NotNull String string,@NotNull InfractionType infractionType, @NotNull Result result, @NotNull SourceType stype) {
+    public static boolean callViolationEvent(
+        @NotNull InfractionPlayer player,
+        @NotNull String string,
+        @NotNull InfractionType infractionType,
+        @NotNull Result result,
+        @NotNull SourceType stype,
+        MainConfig.Warning config,
+        Messages.Warning messages) {
         AtomicBoolean approved = new AtomicBoolean(true);
         ChatRegulator.getInstance().getProxy().getEventManager().fire(stype == SourceType.COMMAND
             ? new CommandViolationEvent(player, infractionType, result, string)
@@ -68,11 +80,11 @@ public final class GeneralUtils {
                 } else {
                     DebugUtils.debug(player, string, infractionType, result);
                     Statistics.getStatistics().addViolationCount(infractionType);
-                    ConfigManager.sendWarningMessage(player, infractionType, result);
+                    ConfigManager.sendWarningMessage(player, result, messages, config);
                     ConfigManager.sendAlertMessage(player, infractionType);
 
                     player.getViolations().addViolation(infractionType);
-                    CommandUtils.executeCommand(infractionType, player);
+                    CommandUtils.executeCommand(infractionType, player, (Executable)config);
                 }
         });
         return approved.get();
@@ -82,12 +94,20 @@ public final class GeneralUtils {
      * Call an event and check if it was not cancelled
      * @param player the {@link InfractionPlayer}
      * @param string the string of the event (Command/Chat Message executed)
-     * @param detection the detection
+     * @param type the infraction type
+     * @param result the result of the detection
      * @param stype the source type
      * @return if the event was not cancelled
      */
-    public static boolean checkAndCall(@NotNull InfractionPlayer player, @NotNull String string,@NotNull InfractionType type, @NotNull Result result, @NotNull SourceType stype){
-        return result.isInfraction() && GeneralUtils.callViolationEvent(player, string, type, result, stype);
+    public static boolean checkAndCall(
+        @NotNull InfractionPlayer player,
+        @NotNull String string,
+        @NotNull InfractionType type,
+        @NotNull Result result,
+        @NotNull SourceType stype,
+        MainConfig.Warning config,
+        Messages.Warning messages){
+        return result.isInfraction() && GeneralUtils.callViolationEvent(player, string, type, result, stype, config, messages);
     }
 
     /**

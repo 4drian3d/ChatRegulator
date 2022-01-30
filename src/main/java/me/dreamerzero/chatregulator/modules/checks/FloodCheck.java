@@ -39,7 +39,7 @@ public class FloodCheck extends AbstractCheck {
     }
 
     @Override
-    public CompletableFuture<? extends Result> check(@NotNull String message){
+    public CompletableFuture<Result> check(@NotNull String message){
         super.string = Objects.requireNonNull(message);
         Matcher matcher = floodPattern.matcher(message);
         boolean result = matcher.find();

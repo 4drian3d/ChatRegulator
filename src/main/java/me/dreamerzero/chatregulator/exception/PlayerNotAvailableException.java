@@ -7,7 +7,7 @@ import com.velocitypowered.api.proxy.Player;
 
 import org.jetbrains.annotations.NotNull;
 
-public class PlayerNotAvailableException extends Exception{
+public class PlayerNotAvailableException extends RuntimeException{
     public PlayerNotAvailableException(){
         super("This player is not available");
     }

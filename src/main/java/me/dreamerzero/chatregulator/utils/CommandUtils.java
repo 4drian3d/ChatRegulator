@@ -28,15 +28,15 @@ public final class CommandUtils {
      * @param type the {@link InfractionType}
      * @param infractorPlayer the {@link InfractionPlayer} involved
      */
-    public static void executeCommand(@NotNull InfractionType type, @NotNull InfractionPlayer infractorPlayer){
+    public static void executeCommand(@NotNull InfractionType type, @NotNull InfractionPlayer infractorPlayer, Executable config){
         Player infractor = Objects.requireNonNull(infractorPlayer).getPlayer();
         if(infractor != null){
-            execute(infractor, infractorPlayer, type);
+            execute(infractor, infractorPlayer, type, config);
         }
     }
 
-    private static void execute(@NotNull Player infractor, @NotNull InfractionPlayer iPlayer, @NotNull InfractionType type){
-        CommandsConfig config = ((Executable)type.getConfig()).getCommandsConfig();
+    private static void execute(@NotNull Player infractor, @NotNull InfractionPlayer iPlayer, @NotNull InfractionType type, Executable executable){
+        CommandsConfig config = executable.getCommandsConfig();
         if(config.executeCommand() && iPlayer.getViolations().getCount(type) % config.violationsRequired() == 0){
             var currentServer = infractor.getCurrentServer();
             final String servername = currentServer.isPresent() ? currentServer.get().getServerInfo().getName() :"";

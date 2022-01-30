@@ -131,14 +131,26 @@ public class Configuration {
         }
     }
 
+    /**
+     * Get the main Configuration
+     * @return the general configuration
+     */
     public static MainConfig.Config getConfig(){
         return config;
     }
 
+    /**
+     * Get the Blacklist configuration
+     * @return the Blacklist configuration
+     */
     public static Blacklist.Config getBlacklist(){
         return blacklist;
     }
 
+    /**
+     * Get the Messages Configuration
+     * @return the MEssages configuration
+     */
     public static Messages.Config getMessages(){
         return messages;
     }
