@@ -15,7 +15,7 @@ import me.dreamerzero.chatregulator.result.Result;
 /**
  * Check for invalid characters
  */
-public class UnicodeCheck extends AbstractCheck {
+public class UnicodeCheck implements ICheck {
     private final List<Character> results;
 
     public UnicodeCheck(){
@@ -37,8 +37,7 @@ public class UnicodeCheck extends AbstractCheck {
         }
 
         if(!results.isEmpty()){
-            super.string = results.toString();
-            return CompletableFuture.completedFuture(new ReplaceableResult(message, detected){
+            return CompletableFuture.completedFuture(new ReplaceableResult(results.toString(), true){
                 @Override
                 public String replaceInfraction(){
                     String replaced = message;

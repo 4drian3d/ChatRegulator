@@ -76,7 +76,7 @@ public class ChatListener {
         }
 
         if(GeneralUtils.allowedPlayer(player, config.getCapsConfig(), InfractionType.CAPS)){
-            new CapsCheck().check(message.get()).thenAccept(result -> {
+            CapsCheck.createCheck(message.get()).thenAccept(result -> {
                 if(GeneralUtils.checkAndCall(infractor, message.get(), InfractionType.CAPS, result, SourceType.CHAT, config.getCapsConfig(), messages.getCapsMessages())){
                     if(config.getCapsConfig().isBlockable()){
                         event.setResult(ChatResult.denied());
@@ -91,7 +91,7 @@ public class ChatListener {
         }
 
         if(GeneralUtils.allowedPlayer(player, config.getFloodConfig(), InfractionType.FLOOD)){
-            new FloodCheck().check(message.get()).thenAccept(result -> {
+            FloodCheck.createCheck(message.get()).thenAccept(result -> {
                 if(GeneralUtils.checkAndCall(infractor, message.get(), InfractionType.FLOOD, result, SourceType.CHAT, config.getFloodConfig(), messages.getFloodMessages())) {
                     if(config.getFloodConfig().isBlockable()){
                         event.setResult(ChatResult.denied());
@@ -106,7 +106,7 @@ public class ChatListener {
         }
 
         if(GeneralUtils.allowedPlayer(player, config.getInfractionsConfig(),InfractionType.REGULAR)){
-            new InfractionCheck().check(message.get()).thenAccept(result -> {
+            InfractionCheck.createCheck(message.get()).thenAccept(result -> {
                 if(GeneralUtils.checkAndCall(infractor, message.get(),InfractionType.REGULAR, result, SourceType.CHAT, config.getInfractionsConfig(), messages.getInfractionsMessages())) {
                     if(config.getInfractionsConfig().isBlockable()){
                         event.setResult(ChatResult.denied());

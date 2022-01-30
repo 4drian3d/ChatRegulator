@@ -25,7 +25,7 @@ public class InfractionTest {
     @Test
     @DisplayName("Check Test")
     void detectionTest(){
-        InfractionCheck iCheck = new InfractionCheck();
+        InfractionCheck iCheck = InfractionCheck.builder().replaceable(true).build();
         String original = "asdasdasdadadSh1T dadasdad";
 
         iCheck.check(original).thenAccept(result -> {
@@ -36,7 +36,7 @@ public class InfractionTest {
     @Test
     @DisplayName("Replacement Test")
     void replaceMultiple(){
-        InfractionCheck iCheck = new InfractionCheck(true);
+        InfractionCheck iCheck = InfractionCheck.builder().replaceable(true).build();
 
         String original = "Hello D1cK sh1t f4ck!!!";
         String expected = "Hello *** *** ***!!!";

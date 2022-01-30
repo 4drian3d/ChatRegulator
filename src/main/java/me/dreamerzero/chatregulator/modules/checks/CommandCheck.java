@@ -13,7 +13,7 @@ import me.dreamerzero.chatregulator.utils.CommandUtils;
 /**
  * Check for verification of executed commands
  */
-public class CommandCheck extends AbstractCheck {
+public class CommandCheck implements ICheck {
     @Override
     public CompletableFuture<Result> check(@NotNull String message) {
         final Set<String> blockedCommands = Configuration.getBlacklist().getBlockedCommands();

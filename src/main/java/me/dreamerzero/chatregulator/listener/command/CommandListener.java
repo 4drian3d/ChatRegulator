@@ -73,7 +73,7 @@ public class CommandListener {
         }
 
         if(GeneralUtils.allowedPlayer(player, config.getCapsConfig(), InfractionType.CAPS)){
-            new CapsCheck().check(command.get()).thenAccept(result -> {
+            CapsCheck.createCheck(command.get()).thenAccept(result -> {
                 if(GeneralUtils.checkAndCall(infractionPlayer, command.get(),InfractionType.CAPS, result, SourceType.COMMAND, config.getCapsConfig(), messages.getCapsMessages())){
                     if(config.getCapsConfig().isBlockable()){
                         event.setResult(CommandResult.denied());
@@ -88,7 +88,7 @@ public class CommandListener {
         }
 
         if(GeneralUtils.allowedPlayer(player, config.getFloodConfig(), InfractionType.FLOOD)){
-            new FloodCheck().check(command.get()).thenAccept(result -> {
+            FloodCheck.createCheck(command.get()).thenAccept(result -> {
                 if(GeneralUtils.checkAndCall(infractionPlayer, command.get(), InfractionType.FLOOD, result, SourceType.COMMAND, config.getFloodConfig(), messages.getFloodMessages())) {
                     if(config.getFloodConfig().isBlockable()){
                         event.setResult(CommandResult.denied());
@@ -103,7 +103,7 @@ public class CommandListener {
         }
 
         if(GeneralUtils.allowedPlayer(player, config.getInfractionsConfig(), InfractionType.REGULAR)){
-            new InfractionCheck().check(command.get()).thenAccept(result -> {
+            InfractionCheck.createCheck(command.get()).thenAccept(result -> {
                 if(GeneralUtils.checkAndCall(infractionPlayer, command.get(), InfractionType.REGULAR, result, SourceType.COMMAND, config.getInfractionsConfig(), messages.getInfractionsMessages())) {
                     if(config.getInfractionsConfig().isBlockable()){
                         event.setResult(CommandResult.denied());

@@ -10,12 +10,7 @@ import me.dreamerzero.chatregulator.result.Result;
 /**
  * Base class of the checks used in the plugin
  */
-public abstract class AbstractCheck {
-    /**If it was detected */
-    protected boolean detected;
-    /**The detected string */
-    protected String string;
-
+public interface ICheck {
     /**
      * Check if the delivered string contains any infraction
      * ans returns a CompletableFuture with the correspondient

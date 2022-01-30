@@ -13,23 +13,23 @@ import me.dreamerzero.chatregulator.result.Result;
 /**
  * Detection of command/message spamming
  */
-public class SpamCheck extends AbstractCheck {
+public class SpamCheck implements ICheck {
     private final InfractionPlayer infractionPlayer;
     private final SourceType type;
     /**
      * Create a new spam test
      * @param infractionPlayer the infractionPlayer involucred
+     * @param type the source type
      */
-    public SpamCheck(InfractionPlayer infractionPlayer, SourceType type){
+    public SpamCheck(@NotNull InfractionPlayer infractionPlayer, @NotNull SourceType type){
         this.infractionPlayer = Objects.requireNonNull(infractionPlayer);
         this.type = Objects.requireNonNull(type);
     }
 
     @Override
-    public CompletableFuture<Result> check(@NotNull String message){
-        super.string = Objects.requireNonNull(message);
-        boolean infricted = this.spamInfricted();
-        return CompletableFuture.completedFuture(new Result(message, infricted));
+    public CompletableFuture<Result> check(@NotNull String string){
+        boolean infricted = this.spamInfricted(Objects.requireNonNull(string));
+        return CompletableFuture.completedFuture(new Result(string, infricted));
     }
 
     /**
@@ -37,7 +37,7 @@ public class SpamCheck extends AbstractCheck {
      * based on his 3 previous messages/commands.
      * If the {@link InfractionPlayer} is spamming, it will set detectec as true
      */
-    private boolean spamInfricted(){
+    private boolean spamInfricted(String string){
         if(type == SourceType.CHAT){
             String prelastMessage = infractionPlayer.preLastMessage();
             String lastMessage = infractionPlayer.lastMessage();

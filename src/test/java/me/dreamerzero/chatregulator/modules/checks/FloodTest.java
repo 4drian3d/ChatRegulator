@@ -24,12 +24,10 @@ public class FloodTest {
     @Test
     @DisplayName("Flood Check")
     void floodCheck(){
-        FloodCheck fCheck = new FloodCheck();
-
         String original = "aa floOoOOOooOod aa";
         String expected = "aa fld aa";
 
-        fCheck.check(original).thenAccept(result->{
+        FloodCheck.createCheck(original).thenAccept(result->{
             assertTrue(result.isInfraction());
             assertTrue(result instanceof IReplaceable);
             String replaced = ((IReplaceable)result).replaceInfraction();
