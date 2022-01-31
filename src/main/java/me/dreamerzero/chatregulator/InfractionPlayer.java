@@ -14,13 +14,15 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.ApiStatus.Internal;
 
 import me.dreamerzero.chatregulator.exception.PlayerNotAvailableException;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.audience.ForwardingAudience;
 
 /**
  * A player to whom the necessary warnings and variables can
  * be assigned in order to be sanctioned correctly.
  * To get the real player, check {@link #getPlayer()}
  */
-public class InfractionPlayer {
+public class InfractionPlayer implements ForwardingAudience.Single{
     private final Player player;
     private String preLastMessage;
     private String lastMessage;
@@ -261,5 +263,10 @@ public class InfractionPlayer {
             +",online="+this.isOnline
             +",violationcount="+violationsCount.toString()
             +"]";
+    }
+
+    @Override
+    public @NotNull Audience audience() {
+        return isOnline ? player : Audience.empty();
     }
 }

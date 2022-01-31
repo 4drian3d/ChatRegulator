@@ -2,8 +2,6 @@ package me.dreamerzero.chatregulator.config;
 
 import java.util.stream.Collectors;
 
-import com.velocitypowered.api.proxy.Player;
-
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.result.Result;
@@ -30,19 +28,16 @@ public class ConfigManager {
      * @param result the check result
      */
     public static void sendWarningMessage(InfractionPlayer infractor, Result result, Messages.Warning messages, MainConfig.Warning config){
-        Player player = infractor.getPlayer();
-        if(player != null){
-            MiniMessage mm = MiniMessage.miniMessage();
-            String message = messages.getWarningMessage();
-            PlaceholderResolver placeholder = PlaceholderResolver.combining(
-                PlaceholderResolver.placeholders(
-                    Placeholder.raw("infraction", result.getInfractionString())),
-                    PlaceholderUtils.getPlaceholders(infractor));
-            switch(config.getWarningType()){
-                case TITLE: sendTitle(message, player, placeholder); break;
-                case MESSAGE: player.sendMessage(mm.deserialize(message, placeholder)); break;
-                case ACTIONBAR: player.sendActionBar(mm.deserialize(message, placeholder)); break;
-            }
+        MiniMessage mm = MiniMessage.miniMessage();
+        String message = messages.getWarningMessage();
+        PlaceholderResolver placeholder = PlaceholderResolver.combining(
+            PlaceholderResolver.placeholders(
+                Placeholder.raw("infraction", result.getInfractionString())),
+                PlaceholderUtils.getPlaceholders(infractor));
+        switch(config.getWarningType()){
+            case TITLE: sendTitle(message, infractor, placeholder); break;
+            case MESSAGE: infractor.sendMessage(mm.deserialize(message, placeholder)); break;
+            case ACTIONBAR: infractor.sendActionBar(mm.deserialize(message, placeholder)); break;
         }
     }
 
