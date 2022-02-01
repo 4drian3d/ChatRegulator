@@ -1,7 +1,5 @@
 package me.dreamerzero.chatregulator.listener.chat;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import com.velocitypowered.api.event.Continuation;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
@@ -58,16 +56,14 @@ public class ChatListener {
         final Player player = event.getPlayer();
         final AtomicString message = new AtomicString(event.getMessage());
         final InfractionPlayer infractor = InfractionPlayer.get(player);
-        final AtomicBoolean returning = new AtomicBoolean(false);
 
-        if(GeneralUtils.allowedPlayer(player, config.getUnicodeConfig(), InfractionType.UNICODE)){
-            UnicodeCheck.createCheck(message.get()).thenAcceptAsync(result -> {
+        if(GeneralUtils.allowedPlayer(player, config.getUnicodeConfig(), InfractionType.UNICODE)
+            && UnicodeCheck.createCheck(message.get()).thenApplyAsync(result -> {
                 if(GeneralUtils.callViolationEvent(infractor, message.get(), InfractionType.UNICODE, result, SourceType.CHAT, config.getUnicodeConfig(), messages.getUnicodeMessages())){
                     if(config.getUnicodeConfig().isBlockable()){
                         event.setResult(ChatResult.denied());
                         continuation.resume();
-                        returning.set(true);
-                        return;
+                        return true;
                     }
                     if(result instanceof ReplaceableResult){
                         ReplaceableResult replaceableResult = (ReplaceableResult)result;
@@ -76,83 +72,75 @@ public class ChatListener {
                         message.set(messageReplaced);
                     }
                 }
-            }).join();
-        }
-        if(returning.get()){
-            return;
-        }
+                return false;
+            }).join().booleanValue()){
+                return;
+            }
 
-        if(GeneralUtils.allowedPlayer(player, config.getCapsConfig(), InfractionType.CAPS)){
-            CapsCheck.createCheck(message.get()).thenAccept(result -> {
+        if(GeneralUtils.allowedPlayer(player, config.getCapsConfig(), InfractionType.CAPS)
+            && CapsCheck.createCheck(message.get()).thenApply(result -> {
                 if(GeneralUtils.checkAndCall(infractor, message.get(), InfractionType.CAPS, result, SourceType.CHAT, config.getCapsConfig(), messages.getCapsMessages())){
                     if(config.getCapsConfig().isBlockable()){
                         event.setResult(ChatResult.denied());
                         continuation.resume();
-                        returning.set(true);
-                        return;
+                        return true;
                     }
                     String messageReplaced = ((IReplaceable)result).replaceInfraction();
                     event.setResult(ChatResult.message(messageReplaced));
                     message.set(messageReplaced);
                 }
-            }).join();
-        }
-        if(returning.get()){
-            return;
-        }
+                return false;
+            }).join().booleanValue()){
+                return;
+            }
 
-        if(GeneralUtils.allowedPlayer(player, config.getFloodConfig(), InfractionType.FLOOD)){
-            FloodCheck.createCheck(message.get()).thenAccept(result -> {
+
+        if(GeneralUtils.allowedPlayer(player, config.getFloodConfig(), InfractionType.FLOOD)
+            && FloodCheck.createCheck(message.get()).thenApply(result -> {
                 if(GeneralUtils.checkAndCall(infractor, message.get(), InfractionType.FLOOD, result, SourceType.CHAT, config.getFloodConfig(), messages.getFloodMessages())) {
                     if(config.getFloodConfig().isBlockable()){
                         event.setResult(ChatResult.denied());
                         continuation.resume();
-                        returning.set(true);
-                        return;
+                        return true;
                     }
                     String messageReplaced = ((IReplaceable)result).replaceInfraction();
                     event.setResult(ChatResult.message(messageReplaced));
                     message.set(messageReplaced);
                 }
-            }).join();
-        }
-        if(returning.get()){
-            return;
-        }
+                return false;
+            }).join().booleanValue()){
+                return;
+            }
 
-        if(GeneralUtils.allowedPlayer(player, config.getInfractionsConfig(),InfractionType.REGULAR)){
-            InfractionCheck.createCheck(message.get()).thenAccept(result -> {
+
+        if(GeneralUtils.allowedPlayer(player, config.getInfractionsConfig(),InfractionType.REGULAR)
+            && InfractionCheck.createCheck(message.get()).thenApply(result -> {
                 if(GeneralUtils.checkAndCall(infractor, message.get(),InfractionType.REGULAR, result, SourceType.CHAT, config.getInfractionsConfig(), messages.getInfractionsMessages())) {
                     if(config.getInfractionsConfig().isBlockable()){
                         event.setResult(ChatResult.denied());
                         continuation.resume();
-                        returning.set(true);
-                        return;
+                        return true;
                     }
                     String messageReplaced = ((IReplaceable)result).replaceInfraction();
                     event.setResult(ChatResult.message(messageReplaced));
                     message.set(messageReplaced);
                 }
-            }).join();
-        }
-        if(returning.get()){
-            return;
-        }
+                return false;
+            }).join().booleanValue()){
+                return;
+            }
 
-        if(GeneralUtils.allowedPlayer(player, config.getSpamConfig(), InfractionType.SPAM)){
-            SpamCheck.createCheck(infractor, message.get(), SourceType.CHAT).thenAccept(result -> {
-                if(GeneralUtils.spamCheck(result, config, infractor)
-                    && GeneralUtils.callViolationEvent(infractor, message.get(), InfractionType.SPAM,result, SourceType.CHAT, config.getSpamConfig(), messages.getSpamMessages())) {
-                    event.setResult(ChatResult.denied());
-                    continuation.resume();
-                    returning.set(true);
-                    return;
-                }
-            }).join();
-        }
-        if(returning.get()){
-            return;
-        }
+
+        if(GeneralUtils.allowedPlayer(player, config.getSpamConfig(), InfractionType.SPAM)
+            && SpamCheck.createCheck(infractor, message.get(), SourceType.CHAT).thenApply(result ->
+                GeneralUtils.spamCheck(result, config, infractor)
+                && GeneralUtils.callViolationEvent(infractor, message.get(), InfractionType.SPAM,result, SourceType.CHAT, config.getSpamConfig(), messages.getSpamMessages())
+            ).join().booleanValue()){
+                event.setResult(ChatResult.denied());
+                continuation.resume();
+                return;
+            }
+
 
         if(config.getFormatConfig().enabled()){
             message.set(rUtils.applyFormat(message.get()));
