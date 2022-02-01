@@ -201,7 +201,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
                         Player player = (Player)source;
                         player.getCurrentServer().ifPresent(playerServer -> {
                             playerServer.getServer().sendMessage(GeneralUtils.spacesComponent);
-                            source.sendMessage(mm.deserialize(
+                            player.sendMessage(mm.deserialize(
                                 clearmessages.getServerMessage(),
                                 PlaceholderResolver.placeholders(
                                     Placeholder.raw("server", playerServer.getServerInfo().getName())
@@ -234,13 +234,12 @@ public class ChatRegulatorCommand implements SimpleCommand {
                     }
                     break;
                 default:
-                    //Does this exclude other audiences that should not receive the component, probably the console?    
-                    Audience.audience(server.getAllPlayers()).sendMessage(GeneralUtils.spacesComponent);
+                    server.sendMessage(GeneralUtils.spacesComponent);
                     source.sendMessage(mm.deserialize(clearmessages.getGlobalMessage()));
                     break;
             }
         } else {
-            Audience.audience(server.getAllPlayers()).sendMessage(GeneralUtils.spacesComponent);
+            server.sendMessage(GeneralUtils.spacesComponent);
             source.sendMessage(mm.deserialize(clearmessages.getGlobalMessage()));
         }
     }

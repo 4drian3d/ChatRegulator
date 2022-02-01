@@ -1,4 +1,4 @@
-package me.dreamerzero.chatregulator.utils;
+package me.dreamerzero.chatregulator.objects;
 
 import java.util.Objects;
 

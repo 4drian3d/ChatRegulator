@@ -1,4 +1,4 @@
-package me.dreamerzero.chatregulator.utils;
+package me.dreamerzero.chatregulator.objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 public class StringTest {
     @Test
-    @DisplayName(value = "AtomicString Basic Test")
+    @DisplayName("AtomicString Basic Test")
     void testString(){
         AtomicString astring = new AtomicString("test");
         assertEquals("test", astring.get());

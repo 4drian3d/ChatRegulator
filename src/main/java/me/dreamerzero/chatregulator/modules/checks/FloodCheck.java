@@ -18,13 +18,9 @@ import me.dreamerzero.chatregulator.result.PatternReplaceableResult;
 public class FloodCheck implements ICheck {
     // Credit: https://github.com/2lstudios-mc/ChatSentinel/blob/master/src/main/resources/config.yml#L91
     // (\\w)\\1{5,}|(\\w{28,})|([^\\wñ]{20,})|(^.{220,}$)
-    private static final String stringPattern = "(\\w)\\1{5,}|(\\w{28,})|([^\\wñ]{20,})|(^.{220,}$)";
-    private static Pattern floodPattern = Pattern.compile(stringPattern, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+    private static final String STANDART_PATTERN = "(\\w)\\1{5,}|(\\w{28,})|([^\\wñ]{20,})|(^.{220,}$)";
+    private static Pattern floodPattern = Pattern.compile(STANDART_PATTERN, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
     private final Pattern realPattern;
-
-    static {
-        floodPattern = Pattern.compile(stringPattern, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
-    }
 
     private FloodCheck(){
         this(floodPattern);
@@ -34,12 +30,11 @@ public class FloodCheck implements ICheck {
         this.realPattern = pattern;
     }
 
-
     /**
      * Update the Flood pattern based in the configuration
      */
     public static void setFloodRegex(){
-        floodPattern = Pattern.compile(stringPattern.replace(5+"", Configuration.getConfig().getFloodConfig().getLimit()+""), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+        floodPattern = Pattern.compile(STANDART_PATTERN.replace(5+"", Configuration.getConfig().getFloodConfig().getLimit()+""), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
     }
 
     @Override
@@ -79,7 +74,7 @@ public class FloodCheck implements ICheck {
 
         public Builder limit(int limit){
             if(pattern == null){
-                this.pattern = Pattern.compile(stringPattern.replace(5+"", limit+""), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+                this.pattern = Pattern.compile(STANDART_PATTERN.replace(5+"", limit+""), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
             }
             return this;
         }

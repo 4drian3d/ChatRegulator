@@ -13,6 +13,7 @@ import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 
+import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.modules.checks.FloodCheck;
 
 /**
@@ -136,6 +137,8 @@ public class Configuration {
      * @return the general configuration
      */
     public static MainConfig.Config getConfig(){
+        if(config == null)
+            ChatRegulator.getInstance().reloadConfig();
         return config;
     }
 
@@ -144,14 +147,18 @@ public class Configuration {
      * @return the Blacklist configuration
      */
     public static Blacklist.Config getBlacklist(){
+        if(blacklist == null)
+            ChatRegulator.getInstance().reloadConfig();
         return blacklist;
     }
 
     /**
      * Get the Messages Configuration
-     * @return the MEssages configuration
+     * @return the Messages configuration
      */
     public static Messages.Config getMessages(){
+        if(messages == null)
+            ChatRegulator.getInstance().reloadConfig();
         return messages;
     }
 }
