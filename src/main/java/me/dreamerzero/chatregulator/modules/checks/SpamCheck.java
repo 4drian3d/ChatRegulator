@@ -16,7 +16,7 @@ import me.dreamerzero.chatregulator.result.Result;
 public class SpamCheck implements ICheck {
     private final InfractionPlayer infractionPlayer;
     private final SourceType type;
-    //TODO: Add SpamTest tests
+
     private SpamCheck(@NotNull InfractionPlayer infractionPlayer, @NotNull SourceType type){
         this.infractionPlayer = Objects.requireNonNull(infractionPlayer);
         this.type = Objects.requireNonNull(type);
