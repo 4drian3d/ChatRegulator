@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.velocitypowered.api.command.SimpleCommand;
@@ -255,7 +256,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
     public CompletableFuture<List<String>> suggestAsync(final Invocation invocation) {
         String[] args = invocation.arguments();
         if(args.length == 0){
-            return CompletableFuture.supplyAsync(() -> subCommandsCompletions);
+            return CompletableFuture.completedFuture(subCommandsCompletions);
         }
         return CompletableFuture.supplyAsync(() -> {
             switch(args[0]){
@@ -270,26 +271,32 @@ public class ChatRegulatorCommand implements SimpleCommand {
                         return List.of("server", "player");
                     } else {
                         switch(args[1]){
-                            case "server": return server.getAllServers().stream()
-                                .map(sv -> sv.getServerInfo().getName())
-                                .collect(Collectors.toList());
-                            case "player": return server.getAllPlayers().stream()
-                                .map(Player::getUsername)
-                                .collect(Collectors.toList());
+                            case "server": return getServerNames();
+                            case "player": return this.getPlayerNames();
                             default: return List.of();
                         }
                     }
                 case "reset":
-                    if(args.length == 1){
-                        return server.getAllPlayers().stream()
-                                .map(Player::getUsername)
-                                .collect(Collectors.toList());
-                    } else {
-                        return subCommandsCompletions;
-                    }
+                    return args.length == 1 ? this.getPlayerNames() : subCommandsCompletions;
                 default: return List.of();
             }
         });
+    }
+
+    private List<String> getPlayerNames(){
+        List<String> players = new ArrayList<>();
+        for(var player : server.getAllPlayers()){
+            players.add(player.getUsername());
+        }
+        return players;
+    }
+
+    private List<String> getServerNames(){
+        List<String> servers = new ArrayList<>();
+        for(var sv : server.getAllServers()){
+            servers.add(sv.getServerInfo().getName());
+        }
+        return servers;
     }
 
     @Override

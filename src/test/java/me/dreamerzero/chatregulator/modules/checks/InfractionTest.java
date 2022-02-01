@@ -57,7 +57,5 @@ public class InfractionTest {
 
             assertEquals(expected, replaced);
         });
-
-        
     }
 }

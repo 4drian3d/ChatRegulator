@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Predicate;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -51,7 +52,7 @@ public class UnicodeCheck implements ICheck {
             }
         } else {
             for(char character : charArray){
-                if(!((character > '\u0020' && character < '\u007E') || (character < '\u00FC' && character < '\u00BF') || (character > '\u00BF' && character < '\u00FE'))){
+                if(charTest.test(character)){
                     if(blockable){
                         return CompletableFuture.completedFuture(new Result(string, true));
                     }
@@ -74,6 +75,8 @@ public class UnicodeCheck implements ICheck {
         }
         return CompletableFuture.completedFuture(new Result(string, false));
     }
+
+    private static final Predicate<Character> charTest = c -> !((c > '\u0020' && c < '\u007E') || (c < '\u00FC' && c < '\u00BF') || (c > '\u00BF' && c < '\u00FE'));
 
     @Override
     public @NotNull InfractionType type() {
