@@ -10,6 +10,13 @@ public class PatternResult extends Result {
     private final Matcher matcher;
     private final Pattern pattern;
 
+    /**
+     * Creates a new PatternResult
+     * @param infractionString the infraction string
+     * @param infricted if it was infricted
+     * @param pattern the pattern
+     * @param matcher the matcher
+     */
     public PatternResult(String infractionString, boolean infricted, Pattern pattern, Matcher matcher){
         super(infractionString, infricted);
         this.matcher = matcher;
