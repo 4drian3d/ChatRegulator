@@ -36,7 +36,14 @@ public class InfractionTest {
     @Test
     @DisplayName("Replacement Test")
     void replaceMultiple(){
-        InfractionCheck iCheck = InfractionCheck.builder().replaceable(true).build();
+        InfractionCheck iCheck = InfractionCheck.builder()
+            .replaceable(true)
+            .blockedStrings(
+                "sh(i|@|l|j|1|y)t",
+                "d(i|@|l|j|1|y)c(k)?",
+                "f(u|v|4)ck"
+            )
+            .build();
 
         String original = "Hello D1cK sh1t f4ck!!!";
         String expected = "Hello *** *** ***!!!";

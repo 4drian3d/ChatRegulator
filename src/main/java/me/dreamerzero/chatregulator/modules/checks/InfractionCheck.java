@@ -1,9 +1,9 @@
 package me.dreamerzero.chatregulator.modules.checks;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,15 +25,13 @@ public class InfractionCheck implements ICheck {
     private final boolean blockable;
 
     private InfractionCheck(){
-        this.blockedWords  = Configuration.getBlacklist().getBlockedWord();
-        this.blockable = Configuration.getConfig().getInfractionsConfig().isBlockable();
+        this(Configuration.getConfig().getInfractionsConfig().isBlockable(), Configuration.getBlacklist().getBlockedWord());
     }
 
-    InfractionCheck(boolean blockable, Collection<String> blockedWords){
+    private InfractionCheck(boolean blockable, Collection<String> blockedWords){
         this.blockedWords = blockedWords;
         this.blockable = blockable;
     }
-
 
     /**
      * {@inheritDoc}
@@ -46,8 +44,8 @@ public class InfractionCheck implements ICheck {
      * @see {@link ICheck}
      */
     @Override
-    public CompletableFuture<Result> check(@NotNull String string){
-        final List<Pattern> patterns = new ArrayList<>();
+    public CompletableFuture<Result> check(@NotNull final String string){
+        final Set<Pattern> patterns = new HashSet<>();
         boolean detected = false;
         for (String blockedWord : blockedWords){
             Pattern wordpattern = Pattern.compile(blockedWord, Pattern.CASE_INSENSITIVE);
@@ -81,11 +79,11 @@ public class InfractionCheck implements ICheck {
         return InfractionType.REGULAR;
     }
 
-    public static CompletableFuture<Result> createCheck(String string){
+    public static @NotNull CompletableFuture<Result> createCheck(String string){
         return new InfractionCheck().check(string);
     }
 
-    public static InfractionCheck.Builder builder(){
+    public static @NotNull InfractionCheck.Builder builder(){
         return new InfractionCheck.Builder();
     }
 

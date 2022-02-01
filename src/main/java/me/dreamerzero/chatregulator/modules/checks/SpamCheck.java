@@ -17,7 +17,7 @@ public class SpamCheck implements ICheck {
     private final InfractionPlayer infractionPlayer;
     private final SourceType type;
     //TODO: Add SpamTest tests
-    SpamCheck(@NotNull InfractionPlayer infractionPlayer, @NotNull SourceType type){
+    private SpamCheck(@NotNull InfractionPlayer infractionPlayer, @NotNull SourceType type){
         this.infractionPlayer = Objects.requireNonNull(infractionPlayer);
         this.type = Objects.requireNonNull(type);
     }
@@ -27,7 +27,7 @@ public class SpamCheck implements ICheck {
      * @return A {@link Result} of this check
      */
     @Override
-    public CompletableFuture<Result> check(@NotNull String string){
+    public CompletableFuture<Result> check(@NotNull final String string){
         boolean infricted = this.spamInfricted(Objects.requireNonNull(string));
         return CompletableFuture.completedFuture(new Result(string, infricted));
     }
@@ -62,7 +62,7 @@ public class SpamCheck implements ICheck {
      * @param type the source type
      * @param string the string
      */
-    public static CompletableFuture<Result> createCheck(InfractionPlayer player, String string, SourceType type){
+    public static @NotNull CompletableFuture<Result> createCheck(InfractionPlayer player, String string, SourceType type){
         return new SpamCheck(player, type).check(string);
     }
 }

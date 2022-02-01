@@ -67,10 +67,7 @@ public class CapsCheck implements ICheck {
         }
 
         public CapsCheck build(){
-            if(limit == 0){
-                limit = Configuration.getConfig().getCapsConfig().limit();
-            }
-            return new CapsCheck(limit);
+            return limit == 0 ? new CapsCheck() : new CapsCheck(limit);
         }
     }
 }

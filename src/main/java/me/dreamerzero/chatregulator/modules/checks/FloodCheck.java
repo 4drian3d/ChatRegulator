@@ -27,10 +27,10 @@ public class FloodCheck implements ICheck {
     }
 
     private FloodCheck(){
-        this.realPattern = floodPattern;
+        this(floodPattern);
     }
 
-    FloodCheck(Pattern pattern){
+    private FloodCheck(Pattern pattern){
         this.realPattern = pattern;
     }
 
@@ -43,10 +43,10 @@ public class FloodCheck implements ICheck {
     }
 
     @Override
-    public CompletableFuture<Result> check(@NotNull String message){
-        Matcher matcher = realPattern.matcher(Objects.requireNonNull(message));
+    public CompletableFuture<Result> check(@NotNull final String string){
+        Matcher matcher = realPattern.matcher(Objects.requireNonNull(string));
         boolean result = matcher.find();
-        return CompletableFuture.completedFuture(new PatternReplaceableResult(message, result, realPattern, matcher){
+        return CompletableFuture.completedFuture(new PatternReplaceableResult(string, result, realPattern, matcher){
             @Override
             public String replaceInfraction(){
                 return matcher.replaceAll("");
@@ -80,11 +80,8 @@ public class FloodCheck implements ICheck {
             return this;
         }
 
-        public FloodCheck build(){
-            if(pattern == null){
-                return new FloodCheck();
-            }
-            return new FloodCheck(pattern);
+        public @NotNull FloodCheck build(){
+            return pattern == null ? new FloodCheck() : new FloodCheck(pattern);
         }
     }
 }

@@ -19,7 +19,7 @@ public interface ICheck {
      * @see {@link Result}
      * @since 3.0.0
      */
-    public abstract CompletableFuture<Result> check(@NotNull String message);
+    public abstract CompletableFuture<Result> check(@NotNull final String message);
 
     /**
      * Get the {@link InfractionType} of this check
