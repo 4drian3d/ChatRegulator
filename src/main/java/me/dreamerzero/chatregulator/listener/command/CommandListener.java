@@ -51,7 +51,7 @@ public class CommandListener {
         final AtomicBoolean returning = new AtomicBoolean(false);
 
         if(GeneralUtils.allowedPlayer(player, config.getCommandBlacklistConfig(), InfractionType.BCOMMAND)){
-            new CommandCheck().check(command.get()).thenAccept(result -> {
+            CommandCheck.createCheck(command.get()).thenAccept(result -> {
                 if(GeneralUtils.checkAndCall(infractionPlayer, command.get(), InfractionType.BCOMMAND, result, SourceType.COMMAND, config.getCommandBlacklistConfig(), messages.getBlacklistMessages())){
                     event.setResult(CommandResult.denied());
                     continuation.resume();
@@ -65,7 +65,7 @@ public class CommandListener {
         }
 
         if(GeneralUtils.allowedPlayer(player, config.getUnicodeConfig(), InfractionType.UNICODE)){
-            new UnicodeCheck().check(command.get()).thenAccept(result -> {
+            UnicodeCheck.createCheck(command.get()).thenAccept(result -> {
                 if(GeneralUtils.checkAndCall(infractionPlayer, command.get(), InfractionType.UNICODE, result, SourceType.COMMAND, config.getUnicodeConfig(), messages.getUnicodeMessages())){
                     if(config.getUnicodeConfig().isBlockable()){
                         event.setResult(CommandResult.denied());
