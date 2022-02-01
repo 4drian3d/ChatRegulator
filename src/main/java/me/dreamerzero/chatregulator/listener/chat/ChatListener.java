@@ -31,15 +31,6 @@ import me.dreamerzero.chatregulator.enums.SourceType;
  * ChatRegulator's Chat Listener
  */
 public class ChatListener {
-    private final Replacer rUtils;
-
-    /**
-     * ChatListener Constructor
-     */
-    public ChatListener() {
-        this.rUtils = new Replacer();
-    }
-
     /**
      * Chat Listener for detections
      * @param event the chat event
@@ -143,7 +134,7 @@ public class ChatListener {
 
 
         if(config.getFormatConfig().enabled()){
-            message.set(rUtils.applyFormat(message.get()));
+            message.set(Replacer.applyFormat(message.get()));
             event.setResult(ChatResult.message(message.get()));
         }
 

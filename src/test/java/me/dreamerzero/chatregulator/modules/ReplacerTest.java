@@ -24,9 +24,8 @@ public class ReplacerTest {
     void firstLetterUppercase(){
         String original = "peruviankkit";
         String expected = "Peruviankkit";
-        Replacer r = new Replacer();
 
-        String replaced = r.firstLetterUpercase(original);
+        String replaced = Replacer.firstLetterUpercase(original);
         assertEquals(replaced, expected);
     }
 
@@ -36,9 +35,7 @@ public class ReplacerTest {
         String original = "peruviankkit";
         String expected = "peruviankkit.";
 
-        Replacer r = new Replacer();
-
-        String replaced = r.addFinalDot(original);
+        String replaced = Replacer.addFinalDot(original);
 
         assertEquals(replaced, expected);
     }
@@ -49,9 +46,7 @@ public class ReplacerTest {
         String original = "peruviankkit";
         String expected = "Peruviankkit.";
 
-        Replacer r = new Replacer();
-
-        String replaced = r.applyFormat(original);
+        String replaced = Replacer.applyFormat(original);
 
         assertEquals(replaced, expected);
     }
