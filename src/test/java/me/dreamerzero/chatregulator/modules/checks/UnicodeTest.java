@@ -3,7 +3,6 @@ package me.dreamerzero.chatregulator.modules.checks;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.nio.file.Path;
 
@@ -24,33 +23,17 @@ public class UnicodeTest {
     }
 
     @Test
-    @DisplayName("Legal Check")
-    void legalCheck(){
-        String legal = "ñandú";
-
-        UnicodeCheck uCheck = new UnicodeCheck();
-
-        uCheck.check(legal).thenAccept(result -> {
-            assertFalse(result.isInfraction());
-        });
-    }
-
-    @Test
     @DisplayName("Illegal Check")
     void illegalTest(){
         String illegal = "ƕƘaea";
+        String expected = "  aea";
 
-        UnicodeCheck uCheck = new UnicodeCheck();
-
-        uCheck.check(illegal).thenAccept(result -> {
+        assertEquals(expected, UnicodeCheck.builder().replaceable(true).build().check(illegal).thenApply(result -> {
             assertTrue(result.isInfraction());
 
             assertTrue(result instanceof IReplaceable);
 
-            String replaced = ((IReplaceable)result).replaceInfraction();
-            String expected = "  aea";
-
-            assertEquals(expected, replaced);
-        });
+            return ((IReplaceable)result).replaceInfraction();
+        }).join());
     }
 }

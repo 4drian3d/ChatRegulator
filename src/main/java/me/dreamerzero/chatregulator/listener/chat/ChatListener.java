@@ -61,7 +61,7 @@ public class ChatListener {
         final AtomicBoolean returning = new AtomicBoolean(false);
 
         if(GeneralUtils.allowedPlayer(player, config.getUnicodeConfig(), InfractionType.UNICODE)){
-            new UnicodeCheck().check(message.get()).thenAcceptAsync(result -> {
+            UnicodeCheck.createCheck(message.get()).thenAcceptAsync(result -> {
                 if(GeneralUtils.callViolationEvent(infractor, message.get(), InfractionType.UNICODE, result, SourceType.CHAT, config.getUnicodeConfig(), messages.getUnicodeMessages())){
                     if(config.getUnicodeConfig().isBlockable()){
                         event.setResult(ChatResult.denied());
@@ -76,7 +76,7 @@ public class ChatListener {
                         message.set(messageReplaced);
                     }
                 }
-            });
+            }).join();
         }
         if(returning.get()){
             return;
@@ -148,7 +148,7 @@ public class ChatListener {
                     returning.set(true);
                     return;
                 }
-            });
+            }).join();
         }
         if(returning.get()){
             return;
