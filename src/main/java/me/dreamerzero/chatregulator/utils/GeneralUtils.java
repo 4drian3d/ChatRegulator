@@ -1,7 +1,6 @@
 package me.dreamerzero.chatregulator.utils;
 
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.velocitypowered.api.proxy.Player;
 
@@ -69,14 +68,14 @@ public final class GeneralUtils {
         @NotNull SourceType stype,
         MainConfig.Warning config,
         Messages.Warning messages) {
-        AtomicBoolean approved = new AtomicBoolean(true);
-        ChatRegulator.getInstance().getProxy().getEventManager().fire(stype == SourceType.COMMAND
+
+        return ChatRegulator.getInstance().getProxy().getEventManager().fire(stype == SourceType.COMMAND
             ? new CommandViolationEvent(player, infractionType, result, string)
             : new ChatViolationEvent(player, infractionType, result, string))
-            .thenAcceptAsync(violationEvent -> {
+            .thenApplyAsync(violationEvent -> {
                 if(!violationEvent.getResult().isAllowed()) {
-                    approved.set(false);
                     if(stype == SourceType.COMMAND) player.lastCommand(string); else player.lastMessage(string);
+                    return false;
                 } else {
                     DebugUtils.debug(player, string, infractionType, result);
                     Statistics.getStatistics().addViolationCount(infractionType);
@@ -85,9 +84,9 @@ public final class GeneralUtils {
 
                     player.getViolations().addViolation(infractionType);
                     CommandUtils.executeCommand(infractionType, player, (Executable)config);
+                    return true;
                 }
-        });
-        return approved.get();
+        }).join();
     }
 
     /**
