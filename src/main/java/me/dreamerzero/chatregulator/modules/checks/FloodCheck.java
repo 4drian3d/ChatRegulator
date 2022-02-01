@@ -63,6 +63,10 @@ public class FloodCheck implements ICheck {
         return InfractionType.FLOOD;
     }
 
+    public static FloodCheck.Builder builder(){
+        return new FloodCheck.Builder();
+    }
+
     public static class Builder{
         private Pattern pattern;
 
