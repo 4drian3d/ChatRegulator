@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.modules.checks.FloodCheck;
 
+/**Proxy reload listener */
 @Internal
 public class ReloadListener {
     private final Path path;
@@ -19,6 +20,11 @@ public class ReloadListener {
         this.path = path;
         this.logger = logger;
     }
+
+    /**
+     * On proxy reload
+     * @param event the event
+     */
     @Subscribe
     public void onReload(ProxyReloadEvent event){
         Configuration.loadConfig(path, logger);

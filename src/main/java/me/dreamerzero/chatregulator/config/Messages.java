@@ -207,6 +207,7 @@ public class Messages {
         }
     }
 
+    /**Spam Messages */
     @ConfigSerializable
     public static class Spam implements Warning, Alert, Reset{
         @Comment("Message to be sent to the offender\nDepending on your warning-type section settings, it will be sent as Title, Actionbar or Message\nIn case you use the Title mode, put a ; to delimit the title and the subtitle")

@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 
 import org.jetbrains.annotations.Nullable;
 
+/**A Result derived from a specific pattern */
 public class PatternResult extends Result {
     private final Matcher matcher;
     private final Pattern pattern;

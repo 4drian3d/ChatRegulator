@@ -18,7 +18,7 @@ public class PluginListener {
     private static final String PLNAME = "chatregulator";
     /**
      * Plugin Listener constructor
-     * @param logger
+     * @param logger the logger
      */
     public PluginListener(Logger logger){
         this.logger = logger;

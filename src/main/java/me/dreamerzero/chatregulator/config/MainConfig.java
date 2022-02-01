@@ -11,6 +11,7 @@ import me.dreamerzero.chatregulator.enums.WarningType;
 
 public class MainConfig {
     private MainConfig(){}
+    /**Main Configuration */
     @ConfigSerializable
     public static class Config {
         @Comment("Regular infraction module")
@@ -41,43 +42,80 @@ public class MainConfig {
         @Comment("CommandSpy configuration")
         private CommandSpy commandSpy = new CommandSpy();
 
+        /**
+         * Get the command blacklist configuration
+         * @return the command blacklist configuration
+         */
         public CommandBlacklist getCommandBlacklistConfig(){
             return this.blacklist;
         }
 
+        /**
+         * Get the infractions configuration
+         * @return the command blacklist configuration
+         */
         public Infractions getInfractionsConfig(){
             return this.infractions;
         }
 
+        /**
+         * Get the flood configuration
+         * @return the flood configuration
+         */
         public Flood getFloodConfig(){
             return this.flood;
         }
 
+        /**
+         * Get the spam configuration
+         * @return the spam configuration
+         */
         public Spam getSpamConfig(){
             return this.spam;
         }
 
+        /**
+         * Get the unicode configuration
+         * @return the unicode configuration
+         */
         public Unicode getUnicodeConfig(){
             return this.unicode;
         }
 
+        /**
+         * Get the caps configuration
+         * @return the caps configuration
+         */
         public Caps getCapsConfig(){
             return this.caps;
         }
 
+        /**
+         * Get the formats configuration
+         * @return the formats configuration
+         */
         public Format getFormatConfig(){
             return this.format;
         }
 
+        /**
+         * Get the general configuration
+         * @return the general configuration
+         */
         public General getGeneralConfig(){
             return this.general;
         }
 
+        /**
+         * Get the command spy configuration
+         * @return the command spy configuration
+         */
         public CommandSpy getCommandSpyConfig(){
             return this.commandSpy;
         }
     }
 
+    /**CommandBlacklist configuration */
     @ConfigSerializable
     public static class CommandBlacklist implements Executable, Warning, Toggleable {
         @Comment("Enables command blocking")
@@ -105,10 +143,12 @@ public class MainConfig {
             return this.commands;
         }
 
+        /**Command Blacklist commands configuration */
         @ConfigSerializable
         public static class Commands extends CommandsConfig{}
     }
 
+    /**Infractions configuration */
     @ConfigSerializable
     public static class Infractions implements Toggleable, Warning, Controllable, Executable {
         @Comment("Enable violation checking in chat and commands")
@@ -152,6 +192,10 @@ public class MainConfig {
             return this.controlType;
         }
 
+        /**
+         * Get the commands checked
+         * @return the commands checked
+         */
         public Set<String> getCommandsChecked(){
             return this.commandsChecked;
         }
@@ -161,10 +205,12 @@ public class MainConfig {
             return this.commands;
         }
 
+        /**Infraction commands configuration */
         @ConfigSerializable
         public static class Commands extends CommandsConfig{}
     }
 
+    /**Flood Configuration */
     @ConfigSerializable
     public static class Flood implements Toggleable, Warning, Controllable, Executable {
         @Comment("Enable flood check in the chat\n(e.g.: \"aaaaaaaa\")")
@@ -199,6 +245,10 @@ public class MainConfig {
             return this.controlType;
         }
 
+        /**
+         * Get the flood limit
+         * @return the flood limit
+         */
         public int getLimit(){
             return this.limit;
         }
@@ -208,10 +258,12 @@ public class MainConfig {
             return this.commands;
         }
 
+        /**Flood Commands configuration */
         @ConfigSerializable
         public static class Commands extends CommandsConfig{}
     }
 
+    /**Spam Configuration */
     @ConfigSerializable
     public static class Spam implements Toggleable, Warning, Executable {
 
@@ -238,6 +290,10 @@ public class MainConfig {
             return this.warningType;
         }
 
+        /**
+         * Get the cooldown config
+         * @return the cooldown config
+         */
         public Spam.Cooldown getCooldownConfig(){
             return this.cooldown;
         }
@@ -247,6 +303,7 @@ public class MainConfig {
             return this.commands;
         }
 
+        /**Spam cooldown configuration */
         @ConfigSerializable
         public static class Cooldown{
             @Comment("Enables the cooldown submodule")
@@ -264,10 +321,12 @@ public class MainConfig {
             }
         }
 
+        /**Spam Commands configuration */
         @ConfigSerializable
         public static class Commands extends CommandsConfig{}
     }
 
+    /**Unicode Configuration */
     @ConfigSerializable
     public static class Unicode implements Toggleable, Warning, Executable, Controllable {
         @Comment("Enable the Unicode Module")
@@ -304,10 +363,12 @@ public class MainConfig {
             return controlType;
         }
 
+        /**Unicode Commands configuration */
         @ConfigSerializable
         public static class Commands extends CommandsConfig{}
     }
 
+    /**Caps Configuration */
     @ConfigSerializable
     public static class Caps implements Warning, Toggleable, Controllable, Executable{
 
