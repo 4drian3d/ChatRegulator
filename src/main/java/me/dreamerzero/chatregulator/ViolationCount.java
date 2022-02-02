@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import me.dreamerzero.chatregulator.enums.InfractionType;
 
+/**Global Violation Count */
 public class ViolationCount {
     private int floodViolations;
     private int regularViolations;

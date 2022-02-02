@@ -31,7 +31,7 @@ public final class AtomicString {
 
     /**
      * Replace the value of this string
-     * @param string
+     * @param string the new string
      */
     public void set(@NotNull String string){
         this.string = Objects.requireNonNull(string);

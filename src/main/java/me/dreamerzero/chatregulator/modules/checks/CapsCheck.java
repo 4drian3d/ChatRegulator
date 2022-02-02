@@ -53,14 +53,24 @@ public class CapsCheck implements ICheck {
         return InfractionType.CAPS;
     }
 
+    /**
+     * Create a builder
+     * @return a new CapsCheck.Builder
+     */
     public static CapsCheck.Builder builder(){
         return new CapsCheck.Builder();
     }
 
+    /**Caps Check Builder */
     public static class Builder{
         private int limit;
         Builder(){}
 
+        /**
+         * Set the new caps limit
+         * @param limit the new limit
+         * @return this
+         */
         public Builder limit(int limit){
             this.limit = limit;
             return this;

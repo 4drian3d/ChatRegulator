@@ -62,11 +62,17 @@ public class FloodCheck implements ICheck {
         return new FloodCheck.Builder();
     }
 
+    /**Floood Check Builder */
     public static class Builder{
         private Pattern pattern;
 
         Builder(){}
 
+        /**
+         * 
+         * @param pattern
+         * @return
+         */
         public Builder pattern(Pattern pattern){
             this.pattern = pattern;
             return this;

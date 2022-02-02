@@ -97,11 +97,21 @@ public class UnicodeCheck implements ICheck {
 
         private Builder(){}
 
+        /**
+         * Set the blocked characters
+         * @param chars the characters
+         * @return this
+         */
         public Builder blockedCharacters(char... chars){
             this.chars = chars;
             return this;
         }
 
+        /**
+         * Set if the check can replace the infraction
+         * @param replaceable replaceable or blockable
+         * @return this
+         */
         public Builder replaceable(boolean replaceable){
             this.replaceable = replaceable;
             return this;

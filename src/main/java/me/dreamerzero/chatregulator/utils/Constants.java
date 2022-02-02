@@ -2,8 +2,8 @@ package me.dreamerzero.chatregulator.utils;
 
 import org.jetbrains.annotations.ApiStatus.Internal;
 
-@Internal
 /**Plugin Constants */
+@Internal
 public final class Constants {
     /**Plugin Version */
     public static final String VERSION = "{version}";

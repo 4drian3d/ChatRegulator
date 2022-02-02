@@ -24,8 +24,8 @@ public class ConfigManager {
     /**
      * Send a message of some kind to the offender.
      * @param infractor offender
-     * @param type the type of infraction
-     * @param result the check result
+     * @param result the result of the infraction
+     * @param messages the messages
      */
     public static void sendWarningMessage(InfractionPlayer infractor, Result result, Messages.Warning messages, MainConfig.Warning config){
         MiniMessage mm = MiniMessage.miniMessage();

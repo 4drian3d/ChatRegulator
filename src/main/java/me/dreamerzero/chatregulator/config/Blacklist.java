@@ -10,10 +10,10 @@ import org.spongepowered.configurate.objectmapping.meta.Setting;
  * Blacklist Configuration
  */
 public final class Blacklist {
-    @ConfigSerializable
     /**
      * Blacklist configuration subclass
      */
+    @ConfigSerializable
     public static class Config{
         @Comment("Sets the expressions to be checked in the\nInfractions module in commands and general chat")
         @Setting(value = "blocked-words")
