@@ -410,7 +410,7 @@ public class Messages {
     @ConfigSerializable
     public static class General{
         @Comment("Violation statistics message\nThis message will appear when using the \"/chatregulator stats\" command\nAvailable Placeholders: <flood>, <spam>, <regular>, <command>, <unicode>, <caps>")
-        private List<String> stats = List.of(
+        private List<String> stats = List.<String>of(
             "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
             "<#3B4371>| <red>General Stats</red>",
             "<#3B4371>| <aqua>Regular Infractions:</aqua> <white><regular></white>",
@@ -424,7 +424,7 @@ public class Messages {
         );
 
         @Comment("Player statistics message\nThis message will appear when using the command \"/chatregulator player <someplayer>\"\nAvailable Placeholders: <player>, <flood>, <spam>, <regular>, <unicode>, <caps>")
-        private List<String> player = List.of(
+        private List<String> player = List.<String>of(
             "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
             "<#3B4371>| <gold><player></gold> <red>Stats</red>",
             "<#3B4371>| <aqua>Regular Infractions:</aqua> <white><regular></white>",
@@ -544,7 +544,7 @@ public class Messages {
         public static class Help{
             @Comment("Plugin main help message")
             @Setting(value = "main-help")
-            private List<String> main = List.of(
+            private List<String> main = List.<String>of(
                 "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
                 "<#3B4371>| <gold>+ <hover:show_text:'<gradient:#ffd89b:#19547b>Click on a section to view its commands'><gradient:#CAC531:#F3F9A7>Command Help</gradient></hover>",
                 "<#3B4371>| <hover:show_text:'<gradient:#ff4b1f:#ff9068>This command shows you the global statistics of infractions</gradient>'><gradient:#FF5F6D:#FFC371><command> <aqua>stats</aqua></hover>",
@@ -555,7 +555,7 @@ public class Messages {
             );
 
             @Comment("Help message for \"/chatregulator player <player>\" command")
-            private List<String> player = List.of(
+            private List<String> player = List.<String>of(
                 "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
                 "<#3B4371>| <gold>+ <gradient:#CAC531:#F3F9A7>Player Help</gradient>",
                 "<#3B4371>| <click:suggest_command:'/chatr player <player>'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command shows you a player infractions</gradient>'><gradient:#FF5F6D:#FFC371><command> <aqua>player</aqua> <player></hover>",
@@ -563,7 +563,7 @@ public class Messages {
             );
 
             @Comment("Help message for \"/chatregulator reset\" subcommands")
-            private List<String> reset = List.of(
+            private List<String> reset = List.<String>of(
                 "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
                 "<#3B4371>| <gold>+ <gradient:#CAC531:#F3F9A7>Reset Help</gradient>",
                 "<#3B4371>| <click:suggest_command:'/chatr <player> reset'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will reset all infractions of a player</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <green><player> <aqua>reset</aqua></hover>",
@@ -579,7 +579,7 @@ public class Messages {
             );
 
             @Comment("Help message for \"/chatregulator clear\" subcommands")
-            private List<String> clear = List.of(
+            private List<String> clear = List.<String>of(
                 "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
                 "<#3B4371>| <gold>+ <gradient:#CAC531:#F3F9A7>Clear Help</gradient>",
                 "<#3B4371>| <click:suggest_command:'/chatr clear'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will clear the chat of the entire network</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <aqua>clear</aqua></hover>",

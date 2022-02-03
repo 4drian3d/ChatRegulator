@@ -1,5 +1,7 @@
 package me.dreamerzero.chatregulator.utils;
 
+import java.util.regex.Pattern;
+
 import org.slf4j.Logger;
 
 import me.dreamerzero.chatregulator.InfractionPlayer;
@@ -28,7 +30,7 @@ public final class DebugUtils {
             logger.debug("Detection: {}", detection);
             logger.debug("String: {}", string);
             if(result instanceof PatternResult){
-                var pattern = ((PatternResult)result).getPattern();
+                Pattern pattern = ((PatternResult)result).getPattern();
                 if(pattern != null)
                     logger.debug("Pattern: {}", pattern.pattern());
             }

@@ -1,5 +1,7 @@
 package me.dreamerzero.chatregulator.listener.command;
 
+import java.util.Set;
+
 import com.velocitypowered.api.event.Continuation;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
@@ -75,8 +77,6 @@ public class CommandListener {
             && UnicodeCheck.createCheck(command.get()).thenApply(result -> {
                 if(GeneralUtils.checkAndCall(infractionPlayer, command.get(), InfractionType.UNICODE, result, SourceType.COMMAND, config.getUnicodeConfig(), messages.getUnicodeMessages())){
                     if(config.getUnicodeConfig().isBlockable()){
-                        event.setResult(CommandResult.denied());
-                        continuation.resume();
                         return true;
                     }
                     if(result instanceof IReplaceable){
@@ -87,6 +87,8 @@ public class CommandListener {
                 }
                 return false;
             }).join().booleanValue()){
+                event.setResult(CommandResult.denied());
+                continuation.resume();
                 return;
             }
 
@@ -94,8 +96,6 @@ public class CommandListener {
             && CapsCheck.createCheck(command.get()).thenApply(result -> {
                 if(GeneralUtils.checkAndCall(infractionPlayer, command.get(),InfractionType.CAPS, result, SourceType.COMMAND, config.getCapsConfig(), messages.getCapsMessages())){
                     if(config.getCapsConfig().isBlockable()){
-                        event.setResult(CommandResult.denied());
-                        continuation.resume();
                         return true;
                     }
                     if(result instanceof IReplaceable) {
@@ -106,6 +106,8 @@ public class CommandListener {
                 }
                 return false;
             }).join().booleanValue()){
+                event.setResult(CommandResult.denied());
+                continuation.resume();
                 return;
             }
 
@@ -114,8 +116,6 @@ public class CommandListener {
             && FloodCheck.createCheck(command.get()).thenApply(result -> {
                 if(GeneralUtils.checkAndCall(infractionPlayer, command.get(), InfractionType.FLOOD, result, SourceType.COMMAND, config.getFloodConfig(), messages.getFloodMessages())) {
                     if(config.getFloodConfig().isBlockable()){
-                        event.setResult(CommandResult.denied());
-                        continuation.resume();
                         return true;
                     }
                     if(result instanceof IReplaceable){
@@ -126,6 +126,8 @@ public class CommandListener {
                 }
                 return false;
             }).join().booleanValue()){
+                event.setResult(CommandResult.denied());
+                continuation.resume();
                 return;
             }
 
@@ -134,8 +136,6 @@ public class CommandListener {
             && InfractionCheck.createCheck(command.get()).thenApply(result -> {
                 if(GeneralUtils.checkAndCall(infractionPlayer, command.get(), InfractionType.REGULAR, result, SourceType.COMMAND, config.getInfractionsConfig(), messages.getInfractionsMessages())) {
                     if(config.getInfractionsConfig().isBlockable()){
-                        event.setResult(CommandResult.denied());
-                        continuation.resume();
                         return true;
                     }
                     if(result instanceof IReplaceable){
@@ -146,6 +146,8 @@ public class CommandListener {
                 }
                 return false;
             }).join().booleanValue()){
+                event.setResult(CommandResult.denied());
+                continuation.resume();
                 return;
             }
 
@@ -164,8 +166,8 @@ public class CommandListener {
     }
 
     private boolean checkIfCanCheck(final String command, final MainConfig.Config config){
-        var values = config.getCommandsChecked();
-        for(var cmd : values){
+        Set<String> values = config.getCommandsChecked();
+        for(String cmd : values){
             if(CommandUtils.isStartingString(command, cmd))
                 return true;
         }

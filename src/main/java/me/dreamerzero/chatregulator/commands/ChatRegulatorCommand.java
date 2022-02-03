@@ -11,11 +11,13 @@ import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.permission.Tristate;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
+import com.velocitypowered.api.proxy.server.RegisteredServer;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.ApiStatus.Internal;
 
 import me.dreamerzero.chatregulator.InfractionPlayer;
+import me.dreamerzero.chatregulator.ViolationCount;
 import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.config.ConfigManager;
 import me.dreamerzero.chatregulator.config.Configuration;
@@ -36,7 +38,7 @@ import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
 public class ChatRegulatorCommand implements SimpleCommand {
     private Map<UUID, InfractionPlayer> infractionPlayers;
     private Messages.Config messages;
-    private ProxyServer server;
+    private final ProxyServer server;
     /**
      * ChatRegulatorCommand Contructor
      * @param infractionPlayers the list of infractor players
@@ -127,7 +129,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
         if(args.length >= 2){
             server.getPlayer(args[1]).ifPresentOrElse(player -> {
                 InfractionPlayer infractionPlayer = InfractionPlayer.get(player);
-                var violations = infractionPlayer.getViolations();
+                ViolationCount violations = infractionPlayer.getViolations();
                 if(args.length >= 3){
                     switch(args[2].toLowerCase()){
                         case "infractions": case "regular":
@@ -256,8 +258,8 @@ public class ChatRegulatorCommand implements SimpleCommand {
         ChatRegulator.getInstance().reloadConfig();
     }
 
-    private static final List<String> subCommandsCompletions = List.of("info", "help", "clear", "stats", "player");
-    private static final List<String> resetCompletions = List.of("regular", "infractions", "flood", "spam", "command", "unicode", "syntax");
+    private static final List<String> subCommandsCompletions = List.<String>of("info", "help", "clear", "stats", "player");
+    private static final List<String> resetCompletions = List.<String>of("regular", "infractions", "flood", "spam", "command", "unicode", "syntax");
 
     @Override
     public CompletableFuture<List<String>> suggestAsync(final Invocation invocation) {
@@ -272,35 +274,35 @@ public class ChatRegulatorCommand implements SimpleCommand {
                         .limit(Configuration.getConfig().getGeneralConfig().tabCompleteLimit())
                         .map(x -> x.getValue().username())
                         .collect(Collectors.toList());
-                case "help": case "info": return List.of("clear", "player", "reset");
+                case "help": case "info": return List.<String>of("clear", "player", "reset");
                 case "clear":
                     if(args.length < 2){
-                        return List.of("server", "player");
+                        return List.<String>of("server", "player");
                     } else {
                         switch(args[1]){
                             case "server": return getServerNames();
                             case "player": return this.getPlayerNames();
-                            default: return List.of();
+                            default: return List.<String>of();
                         }
                     }
                 case "reset":
                     return args.length == 1 ? this.getPlayerNames() : resetCompletions;
-                default: return List.of();
+                default: return List.<String>of();
             }
         });
     }
 
     private List<String> getPlayerNames(){
-        List<String> players = new ArrayList<>();
-        for(var player : server.getAllPlayers()){
+        final List<String> players = new ArrayList<>();
+        for(Player player : server.getAllPlayers()){
             players.add(player.getUsername());
         }
         return players;
     }
 
     private List<String> getServerNames(){
-        List<String> servers = new ArrayList<>();
-        for(var sv : server.getAllServers()){
+        final List<String> servers = new ArrayList<>();
+        for(RegisteredServer sv : server.getAllServers()){
             servers.add(sv.getServerInfo().getName());
         }
         return servers;

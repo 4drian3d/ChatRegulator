@@ -23,7 +23,7 @@ public class ConfigurationTest {
     @Test
     @DisplayName("Config Values")
     void configValues(){
-        var config = Configuration.getConfig();
+        MainConfig.Config config = Configuration.getConfig();
 
         assertTrue(config.getCommandBlacklistConfig().enabled());
         assertFalse(config.getFormatConfig().enabled());

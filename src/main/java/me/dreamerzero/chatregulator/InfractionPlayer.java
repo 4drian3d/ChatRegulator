@@ -3,6 +3,7 @@ package me.dreamerzero.chatregulator;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.Temporal;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -41,7 +42,7 @@ public class InfractionPlayer implements ForwardingAudience.Single{
      */
     @Internal
     public InfractionPlayer(@NotNull Player player){
-        this.player = player;
+        this.player = Objects.requireNonNull(player);
         this.preLastMessage = " .";
         this.lastMessage = " ";
         this.preLastCommand = " ";
@@ -233,7 +234,7 @@ public class InfractionPlayer implements ForwardingAudience.Single{
      */
     public static @NotNull InfractionPlayer get(@NotNull final Player player){
         final UUID uuid = Objects.requireNonNull(player).getUniqueId();
-        var playersMap = ChatRegulator.infractionPlayers;
+        final Map<UUID, InfractionPlayer> playersMap = ChatRegulator.infractionPlayers;
         if(playersMap.containsKey(uuid)){
             return playersMap.get(uuid);
         } else {
