@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.result.IReplaceable;
+import me.dreamerzero.chatregulator.result.Result;
 
 public class UnicodeTest {
     @BeforeAll
@@ -35,5 +36,19 @@ public class UnicodeTest {
 
             return ((IReplaceable)result).replaceInfraction();
         }).join());
+    }
+
+    @Test
+    @DisplayName("Custom Check")
+    void custom(){
+        String illegal = "ñn't";
+
+        assertTrue(UnicodeCheck.builder()
+            .blockedCharacters('ñ')
+            .build()
+            .check(illegal)
+            .thenApply(Result::isInfraction)
+            .join()
+        );
     }
 }

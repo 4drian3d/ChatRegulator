@@ -13,7 +13,6 @@ import java.nio.file.Path;
 
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.result.PatternReplaceableResult;
-import me.dreamerzero.chatregulator.result.ReplaceableResult;
 
 public class InfractionTest {
     @BeforeAll
@@ -25,12 +24,9 @@ public class InfractionTest {
     @Test
     @DisplayName("Check Test")
     void detectionTest(){
-        InfractionCheck iCheck = InfractionCheck.builder().replaceable(true).build();
         String original = "asdasdasdadadSh1T dadasdad";
 
-        iCheck.check(original).thenAccept(result -> {
-            assertTrue(result instanceof ReplaceableResult);
-        });
+        assertTrue(InfractionCheck.createCheck(original).join().isInfraction());
     }
 
     @Test
@@ -50,8 +46,7 @@ public class InfractionTest {
 
         iCheck.check(original).thenAccept(result -> {
             assertTrue(result.isInfraction());
-            boolean isInstanceOfReplaceable = result instanceof PatternReplaceableResult;
-            assertTrue(isInstanceOfReplaceable);
+            assertTrue(result instanceof PatternReplaceableResult);
 
             String replaced = ((PatternReplaceableResult)result).replaceInfraction();
 
