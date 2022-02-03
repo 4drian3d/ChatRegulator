@@ -6,6 +6,7 @@ import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.result.Result;
 import me.dreamerzero.chatregulator.utils.PlaceholderUtils;
+import me.dreamerzero.chatregulator.enums.Components;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.enums.Permissions;
 import net.kyori.adventure.audience.Audience;
@@ -28,7 +29,6 @@ public class ConfigManager {
      * @param messages the messages
      */
     public static void sendWarningMessage(InfractionPlayer infractor, Result result, Messages.Warning messages, MainConfig.Warning config){
-        MiniMessage mm = MiniMessage.miniMessage();
         String message = messages.getWarningMessage();
         PlaceholderResolver placeholder = PlaceholderResolver.combining(
             PlaceholderResolver.placeholders(
@@ -36,8 +36,8 @@ public class ConfigManager {
                 PlaceholderUtils.getPlaceholders(infractor));
         switch(config.getWarningType()){
             case TITLE: sendTitle(message, infractor, placeholder); break;
-            case MESSAGE: infractor.sendMessage(mm.deserialize(message, placeholder)); break;
-            case ACTIONBAR: infractor.sendActionBar(mm.deserialize(message, placeholder)); break;
+            case MESSAGE: infractor.sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(message, placeholder)); break;
+            case ACTIONBAR: infractor.sendActionBar(Components.SPECIAL_MINIMESSAGE.deserialize(message, placeholder)); break;
         }
     }
 
@@ -82,7 +82,7 @@ public class ConfigManager {
     public static void sendAlertMessage(InfractionPlayer infractor, InfractionType type){
         String message = "";
         Messages.Config messages = Configuration.getMessages();
-        MiniMessage mm = MiniMessage.miniMessage();
+        MiniMessage mm = Components.MESSAGE_MINIMESSAGE;
         switch(type){
             case FLOOD: message = messages.getFloodMessages().getAlertMessage(); break;
             case REGULAR: message = messages.getInfractionsMessages().getAlertMessage(); break;
@@ -114,7 +114,7 @@ public class ConfigManager {
      */
     public static void sendResetMessage(Audience sender, InfractionType type, InfractionPlayer player){
         Messages.Config messages = Configuration.getMessages();
-        MiniMessage mm = MiniMessage.miniMessage();
+        MiniMessage mm = Components.MESSAGE_MINIMESSAGE;
         PlaceholderResolver resolver = PlaceholderUtils.getPlaceholders(player);
         switch(type){
             case REGULAR: sender.sendMessage(mm.deserialize(messages.getInfractionsMessages().getResetMessage(), resolver)); break;

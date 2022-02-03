@@ -22,8 +22,8 @@ import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.config.ConfigManager;
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.config.Messages;
-import me.dreamerzero.chatregulator.utils.GeneralUtils;
 import me.dreamerzero.chatregulator.utils.PlaceholderUtils;
+import me.dreamerzero.chatregulator.enums.Components;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.enums.Permissions;
 import net.kyori.adventure.audience.Audience;
@@ -54,7 +54,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
     public void execute(final Invocation invocation) {
         String[] args = invocation.arguments();
         Audience source = invocation.source();
-        MiniMessage mm = MiniMessage.miniMessage();
+        MiniMessage mm = Components.MESSAGE_MINIMESSAGE;
         PlaceholderResolver commandPlaceholder = PlaceholderResolver.placeholders(Placeholder.raw("command", invocation.alias()));
 
         if(args.length == 0){
@@ -202,14 +202,14 @@ public class ChatRegulatorCommand implements SimpleCommand {
                     if(args.length >= 3){
                         PlaceholderResolver serverPlaceholder = PlaceholderResolver.placeholders(Placeholder.raw("server", args[2]));
                         server.getServer(args[2]).ifPresentOrElse(serverObjetive -> {
-                            serverObjetive.sendMessage(GeneralUtils.spacesComponent);
+                            serverObjetive.sendMessage(Components.SPACES_COMPONENT);
                             source.sendMessage(mm.deserialize(clearmessages.getServerMessage(), serverPlaceholder));
                         }, () -> source.sendMessage(mm.deserialize(clearmessages.getNotFoundServerMessage(), serverPlaceholder)));
                         break;
                     } else if (source instanceof Player) {
                         Player player = (Player)source;
                         player.getCurrentServer().ifPresent(playerServer -> {
-                            playerServer.getServer().sendMessage(GeneralUtils.spacesComponent);
+                            playerServer.getServer().sendMessage(Components.SPACES_COMPONENT);
                             player.sendMessage(mm.deserialize(
                                 clearmessages.getServerMessage(),
                                 PlaceholderResolver.placeholders(
@@ -224,7 +224,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
                 case "player":
                     if(args.length >= 3){
                         server.getPlayer(args[2]).ifPresentOrElse(player -> {
-                            player.sendMessage(GeneralUtils.spacesComponent);
+                            player.sendMessage(Components.SPACES_COMPONENT);
                             source.sendMessage(mm.deserialize(
                                 clearmessages.getPlayerMessage(),
                                 PlaceholderUtils.getPlaceholders(InfractionPlayer.get(player))));
@@ -243,12 +243,12 @@ public class ChatRegulatorCommand implements SimpleCommand {
                     }
                     break;
                 default:
-                    server.sendMessage(GeneralUtils.spacesComponent);
+                    server.sendMessage(Components.SPACES_COMPONENT);
                     source.sendMessage(mm.deserialize(clearmessages.getGlobalMessage()));
                     break;
             }
         } else {
-            server.sendMessage(GeneralUtils.spacesComponent);
+            server.sendMessage(Components.SPACES_COMPONENT);
             source.sendMessage(mm.deserialize(clearmessages.getGlobalMessage()));
         }
     }

@@ -11,19 +11,19 @@ import me.dreamerzero.chatregulator.InfractionPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
 
 public class PlaceholderTest {
 
     @Test
     @DisplayName("Player Placeholders")
     void playerPlaceholders(){
-        MiniMessage mm = MiniMessage.miniMessage();
         Player p = TestsUtils.createNormalPlayer("Adrianed_04yt");
 
         InfractionPlayer player = InfractionPlayer.get(p);
 
-        PlaceholderResolver placeholders = PlaceholderUtils.getPlaceholders(player);
+        MiniMessage mm = MiniMessage.builder()
+            .placeholderResolver(PlaceholderUtils.getPlaceholders(player))
+            .build();
 
         Component componentWithPlaceholders = mm.deserialize(
             "<aqua>Player <player> or <name> with"
@@ -31,8 +31,7 @@ public class PlaceholderTest {
             +" <flood> flood infractions,"
             +" <spam> spam infractions,"
             +" <unicode> unicode infractions,"
-            +" and <caps> caps infractions",
-            placeholders);
+            +" and <caps> caps infractions");
 
         Component expectedComponent = Component.text(
             "Player Adrianed_04yt or Adrianed_04yt with"
@@ -48,9 +47,9 @@ public class PlaceholderTest {
     @Test
     @DisplayName("Global Placeholders")
     void globalPlaceholders(){
-        MiniMessage mm = MiniMessage.miniMessage();
-
-        PlaceholderResolver placeholders = PlaceholderUtils.getGlobalPlaceholders();
+        MiniMessage mm = MiniMessage.builder()
+            .placeholderResolver(PlaceholderUtils.getGlobalPlaceholders())
+            .build();
 
         Component componentWithPlaceholders = mm.deserialize(
             "<aqua>Global statistics"
@@ -58,8 +57,7 @@ public class PlaceholderTest {
             +" <flood> flood infractions,"
             +" <spam> spam infractions,"
             +" <unicode> unicode infractions,"
-            +" and <caps> caps infractions",
-            placeholders);
+            +" and <caps> caps infractions");
 
         Component expectedComponent = Component.text(
             "Global statistics"

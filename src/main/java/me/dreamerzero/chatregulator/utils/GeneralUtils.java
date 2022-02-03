@@ -19,8 +19,6 @@ import me.dreamerzero.chatregulator.enums.SourceType;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.events.ChatViolationEvent;
 import me.dreamerzero.chatregulator.events.CommandViolationEvent;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 
 /**
  * General utils
@@ -108,19 +106,6 @@ public final class GeneralUtils {
         MainConfig.Warning config,
         Messages.Warning messages){
         return result.isInfraction() && GeneralUtils.callViolationEvent(player, string, type, result, stype, config, messages);
-    }
-
-    /**
-     * Spaces component for "/chatregulator clear" command
-     */
-    public static final Component spacesComponent;
-
-    static {
-        TextComponent.Builder builder = Component.text();
-        for(int i = 0; i < 100; i++){
-            builder.append(Component.newline());
-        }
-        spacesComponent = builder.build();
     }
     private GeneralUtils(){}
 }

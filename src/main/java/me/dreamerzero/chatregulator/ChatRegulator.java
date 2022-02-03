@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 
 import me.dreamerzero.chatregulator.commands.ChatRegulatorCommand;
 import me.dreamerzero.chatregulator.config.Configuration;
+import me.dreamerzero.chatregulator.enums.Components;
 import me.dreamerzero.chatregulator.listener.chat.ChatListener;
 import me.dreamerzero.chatregulator.listener.command.CommandListener;
 import me.dreamerzero.chatregulator.listener.command.SpyListener;
@@ -30,7 +31,6 @@ import me.dreamerzero.chatregulator.listener.list.LeaveListener;
 import me.dreamerzero.chatregulator.listener.plugin.PluginListener;
 import me.dreamerzero.chatregulator.listener.plugin.ReloadListener;
 import me.dreamerzero.chatregulator.utils.Constants;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 
 /**
  * Plugin main class
@@ -77,6 +77,8 @@ public class ChatRegulator {
         this.logger = logger;
     }
 
+    private static final void setPlugin(final ChatRegulator pl){plugin = pl;}
+
     /**
      * Initialization of the plugin
      * @param event the Initialize Event
@@ -84,8 +86,8 @@ public class ChatRegulator {
     @Subscribe
     @Internal
     public void onProxyInitialization(final ProxyInitializeEvent event) {
-        ChatRegulator.plugin = this;
-        server.getConsoleCommandSource().sendMessage(MiniMessage.miniMessage()
+        setPlugin(this);
+        server.getConsoleCommandSource().sendMessage(Components.MESSAGE_MINIMESSAGE
             .deserialize("<gradient:#f2709c:#ff9472>ChatRegulator</gradient> <gradient:#DAE2F8:#D4D3DD>has started, have a very nice day</gradient>"));
         Configuration.loadConfig(path, logger);
         if(server.getPluginManager().isLoaded("ServerUtils")){

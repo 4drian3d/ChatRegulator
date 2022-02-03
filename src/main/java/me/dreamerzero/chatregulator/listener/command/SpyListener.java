@@ -14,6 +14,7 @@ import org.jetbrains.annotations.ApiStatus.Internal;
 import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.config.MainConfig;
+import me.dreamerzero.chatregulator.enums.Components;
 import me.dreamerzero.chatregulator.enums.Permissions;
 import me.dreamerzero.chatregulator.modules.CommandSpy;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -25,7 +26,7 @@ public class SpyListener {
     private final MiniMessage mm;
 
     public SpyListener(){
-        this.mm = MiniMessage.miniMessage();
+        this.mm = Components.MESSAGE_MINIMESSAGE;
     }
 
     @Subscribe(order = PostOrder.LAST)
