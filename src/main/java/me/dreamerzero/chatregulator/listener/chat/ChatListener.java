@@ -76,9 +76,11 @@ public class ChatListener {
                         continuation.resume();
                         return true;
                     }
-                    String messageReplaced = ((IReplaceable)result).replaceInfraction();
-                    event.setResult(ChatResult.message(messageReplaced));
-                    message.set(messageReplaced);
+                    if(result instanceof IReplaceable){
+                        String messageReplaced = ((IReplaceable)result).replaceInfraction();
+                        event.setResult(ChatResult.message(messageReplaced));
+                        message.set(messageReplaced);
+                    }
                 }
                 return false;
             }).join().booleanValue()){
@@ -94,9 +96,12 @@ public class ChatListener {
                         continuation.resume();
                         return true;
                     }
-                    String messageReplaced = ((IReplaceable)result).replaceInfraction();
-                    event.setResult(ChatResult.message(messageReplaced));
-                    message.set(messageReplaced);
+                    if(result instanceof IReplaceable){
+                        String messageReplaced = ((IReplaceable)result).replaceInfraction();
+                        event.setResult(ChatResult.message(messageReplaced));
+                        message.set(messageReplaced);
+                    }
+
                 }
                 return false;
             }).join().booleanValue()){
@@ -112,9 +117,12 @@ public class ChatListener {
                         continuation.resume();
                         return true;
                     }
-                    String messageReplaced = ((IReplaceable)result).replaceInfraction();
-                    event.setResult(ChatResult.message(messageReplaced));
-                    message.set(messageReplaced);
+                    if(result instanceof IReplaceable){
+                        String messageReplaced = ((IReplaceable)result).replaceInfraction();
+                        event.setResult(ChatResult.message(messageReplaced));
+                        message.set(messageReplaced);
+                    }
+
                 }
                 return false;
             }).join().booleanValue()){

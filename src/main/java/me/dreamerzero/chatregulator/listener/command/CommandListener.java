@@ -68,7 +68,8 @@ public class CommandListener {
                         event.setResult(CommandResult.denied());
                         continuation.resume();
                         return true;
-                    } else {
+                    }
+                    if(result instanceof IReplaceable){
                         String commandReplaced = ((IReplaceable)result).replaceInfraction();
                         event.setResult(CommandResult.command(commandReplaced));
                         command.set(commandReplaced);
@@ -86,7 +87,8 @@ public class CommandListener {
                         event.setResult(CommandResult.denied());
                         continuation.resume();
                         return true;
-                    } else {
+                    }
+                    if(result instanceof IReplaceable) {
                         String commandReplaced = ((IReplaceable)result).replaceInfraction();
                         event.setResult(CommandResult.command(commandReplaced));
                         command.set(commandReplaced);
@@ -106,9 +108,11 @@ public class CommandListener {
                         continuation.resume();
                         return true;
                     }
-                    String commandReplaced = ((IReplaceable)result).replaceInfraction();
-                    event.setResult(CommandResult.command(commandReplaced));
-                    command.set(commandReplaced);
+                    if(result instanceof IReplaceable){
+                        String commandReplaced = ((IReplaceable)result).replaceInfraction();
+                        event.setResult(CommandResult.command(commandReplaced));
+                        command.set(commandReplaced);
+                    }
                 }
                 return false;
             }).join().booleanValue()){
@@ -124,9 +128,12 @@ public class CommandListener {
                         continuation.resume();
                         return true;
                     }
-                    String commandReplaced = ((IReplaceable)result).replaceInfraction();
-                    event.setResult(CommandResult.command(commandReplaced));
-                    command.set(commandReplaced);
+                    if(result instanceof IReplaceable){
+                        String commandReplaced = ((IReplaceable)result).replaceInfraction();
+                        event.setResult(CommandResult.command(commandReplaced));
+                        command.set(commandReplaced);
+                    }
+                    
                 }
                 return false;
             }).join().booleanValue()){
