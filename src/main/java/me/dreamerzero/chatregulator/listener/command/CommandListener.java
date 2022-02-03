@@ -20,6 +20,7 @@ import me.dreamerzero.chatregulator.modules.checks.SpamCheck;
 import me.dreamerzero.chatregulator.modules.checks.UnicodeCheck;
 import me.dreamerzero.chatregulator.objects.AtomicString;
 import me.dreamerzero.chatregulator.result.IReplaceable;
+import me.dreamerzero.chatregulator.utils.CommandUtils;
 import me.dreamerzero.chatregulator.utils.GeneralUtils;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.enums.SourceType;
@@ -41,6 +42,10 @@ public class CommandListener {
             return;
         }
         final MainConfig.Config config = Configuration.getConfig();
+        if(this.checkIfCanCheck(event.getCommand(), config)){
+            continuation.resume();
+            return;
+        }
         final var messages = Configuration.getMessages();
 
         final AtomicString command = new AtomicString(event.getCommand());
@@ -51,10 +56,10 @@ public class CommandListener {
             && CommandCheck.createCheck(command.get()).thenApply(result ->
                 GeneralUtils.checkAndCall(infractionPlayer, command.get(), InfractionType.BCOMMAND, result, SourceType.COMMAND, config.getCommandBlacklistConfig(), messages.getBlacklistMessages()))
                 .join().booleanValue()){
-                event.setResult(CommandResult.denied());
+                    event.setResult(CommandResult.denied());
                     continuation.resume();
-                return;
-            }
+                    return;
+                }
 
         if(GeneralUtils.allowedPlayer(player, config.getUnicodeConfig(), InfractionType.UNICODE)
             && UnicodeCheck.createCheck(command.get()).thenApply(result -> {
@@ -63,10 +68,11 @@ public class CommandListener {
                         event.setResult(CommandResult.denied());
                         continuation.resume();
                         return true;
+                    } else {
+                        String commandReplaced = ((IReplaceable)result).replaceInfraction();
+                        event.setResult(CommandResult.command(commandReplaced));
+                        command.set(commandReplaced);
                     }
-                    String commandReplaced = ((IReplaceable)result).replaceInfraction();
-                    event.setResult(CommandResult.command(commandReplaced));
-                    command.set(commandReplaced);
                 }
                 return false;
             }).join().booleanValue()){
@@ -80,10 +86,11 @@ public class CommandListener {
                         event.setResult(CommandResult.denied());
                         continuation.resume();
                         return true;
+                    } else {
+                        String commandReplaced = ((IReplaceable)result).replaceInfraction();
+                        event.setResult(CommandResult.command(commandReplaced));
+                        command.set(commandReplaced);
                     }
-                    String commandReplaced = ((IReplaceable)result).replaceInfraction();
-                    event.setResult(CommandResult.command(commandReplaced));
-                    command.set(commandReplaced);
                 }
                 return false;
             }).join().booleanValue()){
@@ -138,5 +145,14 @@ public class CommandListener {
 
         infractionPlayer.lastCommand(command.get());
         continuation.resume();
+    }
+
+    private boolean checkIfCanCheck(final String command, final MainConfig.Config config){
+        var values = config.getCommandsChecked();
+        for(var cmd : values){
+            if(CommandUtils.isStartingString(command, cmd))
+                return true;
+        }
+        return false;
     }
 }

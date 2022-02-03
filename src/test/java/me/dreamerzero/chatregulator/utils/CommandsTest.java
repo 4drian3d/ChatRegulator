@@ -59,4 +59,14 @@ public class CommandsTest {
 
         assertTrue(CommandUtils.isStartingString(thirdcommand, thirdconfig));
     }
+
+    @Test
+    @DisplayName("Last Char")
+    void lastChar(){
+        final String string = "Holaaaaaaa!";
+        final char lastChar = '!';
+
+        final char theLastChar = CommandUtils.getLastChar(string);
+        assertEquals(lastChar, theLastChar);
+    }
 }

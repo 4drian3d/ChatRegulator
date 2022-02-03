@@ -42,6 +42,26 @@ public class MainConfig {
         @Comment("CommandSpy configuration")
         private CommandSpy commandSpy = new CommandSpy();
 
+        @Comment("Specify in which commands you want the violations to be detected\nI recommend you to put chat commands, for example: /tell")
+        @Setting(value = "commands-checked")
+        private Set<String> commandsChecked = Set.of(
+            "tell",
+            "etell",
+            "msg",
+            "emsg",
+            "chat",
+            "global",
+            "reply"
+        );
+
+        /**
+         * Get the commands checked
+         * @return the commands checked
+         */
+        public Set<String> getCommandsChecked(){
+            return this.commandsChecked;
+        }
+
         /**
          * Get the command blacklist configuration
          * @return the command blacklist configuration
@@ -162,17 +182,7 @@ public class MainConfig {
         @Setting(value = "control-type")
         private ControlType controlType = ControlType.BLOCK;
 
-        @Comment("Specify in which commands you want the violations to be detected\nI recommend you to put chat commands, for example: /tell")
-        @Setting(value = "commands-checked")
-        private Set<String> commandsChecked = Set.of(
-            "tell",
-            "etell",
-            "msg",
-            "emsg",
-            "chat",
-            "global",
-            "reply"
-        );
+        
 
         @Comment("Commands to be executed in the regular infraction module")
         private Infractions.Commands commands = new Infractions.Commands();
@@ -190,14 +200,6 @@ public class MainConfig {
         @Override
         public ControlType getControlType(){
             return this.controlType;
-        }
-
-        /**
-         * Get the commands checked
-         * @return the commands checked
-         */
-        public Set<String> getCommandsChecked(){
-            return this.commandsChecked;
         }
 
         @Override
