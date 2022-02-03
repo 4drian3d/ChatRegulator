@@ -34,6 +34,11 @@ public enum InfractionType {
      */
     CAPS(Permissions.BYPASS_CAPS),
     /**
+     * Represents a Syntax check
+     * <p>/minecraft:tp
+     */
+    SYNTAX(Permissions.BYPASS_SYNTAX),
+    /**
      * Used internally to represent a
      * multiple warning and in other cases more
      */

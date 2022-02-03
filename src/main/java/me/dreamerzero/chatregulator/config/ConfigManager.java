@@ -90,6 +90,7 @@ public class ConfigManager {
             case BCOMMAND:  message = messages.getBlacklistMessages().getAlertMessage(); break;
             case UNICODE: message = messages.getUnicodeMessages().getAlertMessage(); break;
             case CAPS: message = messages.getCapsMessages().getAlertMessage(); break;
+            case SYNTAX: message = messages.getSyntaxMessages().getAlertMessage(); break;
             case NONE: return;
         }
 
@@ -114,14 +115,16 @@ public class ConfigManager {
     public static void sendResetMessage(Audience sender, InfractionType type, InfractionPlayer player){
         Messages.Config messages = Configuration.getMessages();
         MiniMessage mm = MiniMessage.miniMessage();
+        PlaceholderResolver resolver = PlaceholderUtils.getPlaceholders(player);
         switch(type){
-            case REGULAR: sender.sendMessage(mm.deserialize(messages.getInfractionsMessages().getResetMessage(), PlaceholderUtils.getPlaceholders(player))); break;
-            case FLOOD: sender.sendMessage(mm.deserialize(messages.getFloodMessages().getResetMessage(), PlaceholderUtils.getPlaceholders(player))); break;
-            case SPAM: sender.sendMessage(mm.deserialize(messages.getSpamMessages().getResetMessage(), PlaceholderUtils.getPlaceholders(player))); break;
-            case NONE: sender.sendMessage(mm.deserialize(messages.getGeneralMessages().allReset(), PlaceholderUtils.getPlaceholders(player))); break;
-            case BCOMMAND: sender.sendMessage(mm.deserialize(messages.getBlacklistMessages().getResetMessage(), PlaceholderUtils.getPlaceholders(player))); break;
-            case UNICODE: sender.sendMessage(mm.deserialize(messages.getUnicodeMessages().getResetMessage(), PlaceholderUtils.getPlaceholders(player))); break;
-            case CAPS: sender.sendMessage(mm.deserialize(messages.getCapsMessages().getResetMessage(), PlaceholderUtils.getPlaceholders(player))); break;
+            case REGULAR: sender.sendMessage(mm.deserialize(messages.getInfractionsMessages().getResetMessage(), resolver)); break;
+            case FLOOD: sender.sendMessage(mm.deserialize(messages.getFloodMessages().getResetMessage(), resolver)); break;
+            case SPAM: sender.sendMessage(mm.deserialize(messages.getSpamMessages().getResetMessage(), resolver)); break;
+            case NONE: sender.sendMessage(mm.deserialize(messages.getGeneralMessages().allReset(), resolver)); break;
+            case BCOMMAND: sender.sendMessage(mm.deserialize(messages.getBlacklistMessages().getResetMessage(), resolver)); break;
+            case UNICODE: sender.sendMessage(mm.deserialize(messages.getUnicodeMessages().getResetMessage(), resolver)); break;
+            case CAPS: sender.sendMessage(mm.deserialize(messages.getCapsMessages().getResetMessage(), resolver)); break;
+            case SYNTAX: sender.sendMessage(mm.deserialize(messages.getSyntaxMessages().getResetMessage(), resolver)); break;
         }
     }
 }

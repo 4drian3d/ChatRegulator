@@ -25,6 +25,8 @@ public final class Permissions {
     public static final String BYPASS_CAPS = "chatregulator.bypass.caps";
     /**Command Spy Bypass */
     public static final String BYPASS_COMMANDSPY = "chatregulator.bypass.commandspy";
+    /**Syntax Check Bypass */
+    public static final String BYPASS_SYNTAX = "chatregulator.bypass.syntax";
 
     private Permissions(){}
 }

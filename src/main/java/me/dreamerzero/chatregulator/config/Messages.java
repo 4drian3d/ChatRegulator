@@ -34,6 +34,9 @@ public class Messages {
         @Comment("Configuration of caps module messages")
         private Caps caps = new Caps();
 
+        @Comment("Configuration of syntax blocker module messages")
+        private Syntax syntax = new Syntax();
+
         @Comment("Configuration of the messages of the /chatr clear command")
         @Setting(value = "clear-chat")
         private Clear clearChat = new Clear();
@@ -61,7 +64,7 @@ public class Messages {
         }
 
         /**
-         * Get the flood messages
+         * Get the floooood messages
          * @return the flood messages
          */
         public Flood getFloodMessages(){
@@ -90,6 +93,14 @@ public class Messages {
          */
         public Caps getCapsMessages(){
             return this.caps;
+        }
+
+        /**
+         * Get the syntax:blocker messages
+         * @return the syntax messages
+         */
+        public Syntax getSyntaxMessages(){
+            return this.syntax;
         }
 
         /**
@@ -295,6 +306,35 @@ public class Messages {
         }
     }
 
+    /**Syntax Messages */
+    @ConfigSerializable
+    public static class Syntax implements Warning, Alert, Reset{
+        @Comment("Message to be sent to the offender\nDepending on your warning-type section settings, it will be sent as Title, Actionbar or Message\nIn case you use the Title mode, put a ; to delimit the title and the subtitle")
+        private String warning = "<red>Hello, it is not allowed to use this type of commands";
+
+        @Comment("Message to be sent to staff with chatregulator.notifications permission")
+        private String alert = "<red>The player <aqua><player></aqua> <red>was using commands with \"/minecraft:ban\" syntax in the server <aqua><server></aqua>";
+
+        @Comment("Statistics Reset Confirmation Message")
+        private String reset = "<red>The syntax violation count for <player> was reset";
+
+        @Override
+        public String getResetMessage() {
+            return this.reset;
+        }
+
+        @Override
+        public String getAlertMessage() {
+            return this.alert;
+        }
+
+        @Override
+        public String getWarningMessage() {
+            return this.warning;
+        }
+
+    }
+
     /**
      * Clear chat Messages
      */
@@ -379,6 +419,7 @@ public class Messages {
             "<#3B4371>| <aqua>Caps Infractions:</aqua> <white><caps></white>",
             "<#3B4371>| <aqua>Unicode Infractions:</aqua> <white><command></white>",
             "<#3B4371>| <aqua>Command Infractions:</aqua> <white><unicode></white>",
+            "<#3B4371>| <aqua>Syntax Infractions:</aqua> <white><syntax></white>",
             "<#3B4371>|------------------------|"
         );
 
@@ -392,6 +433,7 @@ public class Messages {
             "<#3B4371>| <aqua>Unicode Infractions:</aqua> <white><unicode></white>",
             "<#3B4371>| <aqua>Caps Infractions:</aqua> <white><caps></white>",
             "<#3B4371>| <aqua>Command Infractions:</aqua> <white><command></white>",
+            "<#3B4371>| <aqua>Syntax Infractions:</aqua> <white><syntax></white>",
             "<#3B4371>|------------------------|"
         );
 
@@ -532,6 +574,7 @@ public class Messages {
                 "<#3B4371>| <click:suggest_command:'/chatr <player> reset command'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will reset a player blocked commands executions</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <green><player> <aqua>command</aqua> command</hover>",
                 "<#3B4371>| <click:suggest_command:'/chatr <player> reset unicode'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will reset a player unicode violations</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <green><player> <aqua>reset</aqua> unicode</hover>",
                 "<#3B4371>| <click:suggest_command:'/chatr <player> reset caps'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will reset a player caps violations</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <green><player> <aqua>reset</aqua> caps</hover>",
+                "<#3B4371>| <click:suggest_command:'/chatr <player> reset syntax'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will reset a player syntax violations</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <green><player> <aqua>reset</aqua> syntax</hover>",
                 "<#3B4371>|----------------------|"
             );
 

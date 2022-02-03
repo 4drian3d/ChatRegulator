@@ -42,6 +42,9 @@ public class MainConfig {
         @Comment("CommandSpy configuration")
         private CommandSpy commandSpy = new CommandSpy();
 
+        @Comment("Syntax blocker configuration")
+        private Syntax syntax = new Syntax();
+
         @Comment("Specify in which commands you want the violations to be detected\nI recommend you to put chat commands, for example: /tell")
         @Setting(value = "commands-checked")
         private Set<String> commandsChecked = Set.of(
@@ -132,6 +135,14 @@ public class MainConfig {
          */
         public CommandSpy getCommandSpyConfig(){
             return this.commandSpy;
+        }
+
+        /**
+         * Get the syntax blocker configuration
+         * @return the syntax configuration
+         */
+        public Syntax getSyntaxConfig(){
+            return this.syntax;
         }
     }
 
@@ -416,6 +427,39 @@ public class MainConfig {
 
         @ConfigSerializable
         public static class Commands extends CommandsConfig{}
+    }
+
+    @ConfigSerializable
+    public static class Syntax implements Warning, Toggleable, Executable {
+
+        @Comment("Commands to be executed in the syntax module")
+        private Syntax.Commands commands = new Syntax.Commands();
+
+        @Comment("Enable the Syntax blocker Module")
+        private boolean enabled = true;
+
+        @Comment("Sets the form of warning\nAvailable options: TITLE, ACTIONBAR, MESSAGE")
+        @Setting(value = "warning-type")
+        private WarningType warningType = WarningType.MESSAGE;
+
+        @Override
+        public CommandsConfig getCommandsConfig() {
+            return this.commands;
+        }
+
+        @Override
+        public boolean enabled() {
+            return this.enabled;
+        }
+
+        @Override
+        public WarningType getWarningType() {
+            return this.warningType;
+        }
+
+        @ConfigSerializable
+        public static class Commands extends CommandsConfig{}
+
     }
 
     @ConfigSerializable

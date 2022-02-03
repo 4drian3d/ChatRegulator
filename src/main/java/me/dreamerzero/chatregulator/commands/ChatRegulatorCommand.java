@@ -154,6 +154,10 @@ public class ChatRegulatorCommand implements SimpleCommand {
                             violations.resetViolations(InfractionType.CAPS);
                             ConfigManager.sendResetMessage(source, InfractionType.CAPS, infractionPlayer);
                             break;
+                        case "syntax":
+                            violations.resetViolations(InfractionType.SYNTAX);
+                            ConfigManager.sendResetMessage(source, InfractionType.SYNTAX, infractionPlayer);
+                            break;
                         default: break;
                     }
                 }
@@ -162,7 +166,9 @@ public class ChatRegulatorCommand implements SimpleCommand {
                     InfractionType.FLOOD,
                     InfractionType.REGULAR,
                     InfractionType.BCOMMAND,
-                    InfractionType.UNICODE
+                    InfractionType.UNICODE,
+                    InfractionType.CAPS,
+                    InfractionType.SYNTAX
                 );
                 ConfigManager.sendResetMessage(source, InfractionType.NONE, infractionPlayer);
             }, () -> {
@@ -251,6 +257,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
     }
 
     private static final List<String> subCommandsCompletions = List.of("info", "help", "clear", "stats", "player");
+    private static final List<String> resetCompletions = List.of("regular", "infractions", "flood", "spam", "command", "unicode", "syntax");
 
     @Override
     public CompletableFuture<List<String>> suggestAsync(final Invocation invocation) {
@@ -277,7 +284,7 @@ public class ChatRegulatorCommand implements SimpleCommand {
                         }
                     }
                 case "reset":
-                    return args.length == 1 ? this.getPlayerNames() : subCommandsCompletions;
+                    return args.length == 1 ? this.getPlayerNames() : resetCompletions;
                 default: return List.of();
             }
         });

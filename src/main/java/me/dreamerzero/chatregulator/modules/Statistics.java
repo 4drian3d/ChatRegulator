@@ -44,6 +44,8 @@ public final class Statistics {
      */
     private int globalViolations;
 
+    private int syntaxViolations;
+
     /**
      * Get the global violation statistics
      * @return the global statistics
@@ -73,6 +75,7 @@ public final class Statistics {
             case BCOMMAND: this.commandCount++; break;
             case UNICODE: this.unicodeViolations++; break;
             case CAPS: this.capsViolations++; break;
+            case SYNTAX: this.syntaxViolations++; break;
             case NONE: break;
         }
         this.globalViolations++;
@@ -91,6 +94,7 @@ public final class Statistics {
             case BCOMMAND: return this.commandCount;
             case UNICODE: return this.unicodeViolations;
             case CAPS: return this.capsViolations;
+            case SYNTAX: return this.syntaxViolations;
             case NONE: return this.globalViolations;
         }
         return 0;
@@ -120,6 +124,7 @@ public final class Statistics {
             +",caps="+this.capsViolations
             +",command="+this.commandCount
             +",unicode="+this.unicodeViolations
+            +",syntax="+this.syntaxViolations
             +"]";
     }
 
@@ -131,5 +136,6 @@ public final class Statistics {
         this.globalViolations = 0;
         this.regularCount = 0;
         this.unicodeViolations = 0;
+        this.syntaxViolations = 0;
     }
 }

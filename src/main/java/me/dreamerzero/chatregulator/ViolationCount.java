@@ -14,6 +14,7 @@ public class ViolationCount {
     private int commandViolations;
     private int unicodeViolations;
     private int capsviolations;
+    private int syntaxviolations;
 
     /**
      * Adds an infraction to the count of any type of player infraction.
@@ -27,6 +28,7 @@ public class ViolationCount {
             case BCOMMAND: this.commandViolations++; break;
             case UNICODE: this.unicodeViolations++; break;
             case CAPS: this.capsviolations++; break;
+            case SYNTAX: this.syntaxviolations++; break;
             case NONE: return;
         }
     }
@@ -44,6 +46,7 @@ public class ViolationCount {
             case BCOMMAND: this.commandViolations = newViolationsCount; break;
             case UNICODE: this.unicodeViolations = newViolationsCount; break;
             case CAPS: this.capsviolations = newViolationsCount; break;
+            case SYNTAX: this.syntaxviolations = newViolationsCount; break;
             case NONE: return;
         }
     }
@@ -71,6 +74,7 @@ public class ViolationCount {
             case BCOMMAND: return this.commandViolations;
             case UNICODE: return this.unicodeViolations;
             case CAPS: return this.capsviolations;
+            case SYNTAX: return this.syntaxviolations;
             case NONE: break;
         }
         return 0;
@@ -86,7 +90,8 @@ public class ViolationCount {
             && this.commandViolations == other.commandViolations
             && this.floodViolations == other.floodViolations
             && this.regularViolations == other.regularViolations
-            && this.unicodeViolations == other.unicodeViolations;
+            && this.unicodeViolations == other.unicodeViolations
+            && this.syntaxviolations == other.syntaxviolations;
     }
 
     @Override
@@ -97,7 +102,8 @@ public class ViolationCount {
             this.capsviolations,
             this.commandViolations,
             this.unicodeViolations,
-            this.floodViolations
+            this.floodViolations,
+            this.syntaxviolations
         );
     }
 
@@ -110,6 +116,7 @@ public class ViolationCount {
             +",caps="+this.capsviolations
             +",command="+this.commandViolations
             +",unicode="+this.unicodeViolations
+            +",syntax="+this.syntaxviolations
             +"]";
     }
 }

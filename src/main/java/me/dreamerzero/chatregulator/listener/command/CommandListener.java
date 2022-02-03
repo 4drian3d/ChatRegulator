@@ -17,6 +17,7 @@ import me.dreamerzero.chatregulator.modules.checks.CommandCheck;
 import me.dreamerzero.chatregulator.modules.checks.FloodCheck;
 import me.dreamerzero.chatregulator.modules.checks.InfractionCheck;
 import me.dreamerzero.chatregulator.modules.checks.SpamCheck;
+import me.dreamerzero.chatregulator.modules.checks.SyntaxCheck;
 import me.dreamerzero.chatregulator.modules.checks.UnicodeCheck;
 import me.dreamerzero.chatregulator.objects.AtomicString;
 import me.dreamerzero.chatregulator.result.IReplaceable;
@@ -60,6 +61,15 @@ public class CommandListener {
                     continuation.resume();
                     return;
                 }
+
+        if(GeneralUtils.allowedPlayer(player, config.getSyntaxConfig(), InfractionType.SYNTAX)
+            && SyntaxCheck.createCheck(command.get()).thenApply(result ->
+                GeneralUtils.checkAndCall(infractionPlayer, command.get(), InfractionType.SYNTAX, result, SourceType.COMMAND, config.getCommandBlacklistConfig(), messages.getBlacklistMessages())
+            ).join().booleanValue()){
+                event.setResult(CommandResult.denied());
+                continuation.resume();
+                return;
+            }
 
         if(GeneralUtils.allowedPlayer(player, config.getUnicodeConfig(), InfractionType.UNICODE)
             && UnicodeCheck.createCheck(command.get()).thenApply(result -> {
@@ -133,7 +143,6 @@ public class CommandListener {
                         event.setResult(CommandResult.command(commandReplaced));
                         command.set(commandReplaced);
                     }
-                    
                 }
                 return false;
             }).join().booleanValue()){

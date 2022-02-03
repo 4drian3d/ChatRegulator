@@ -34,7 +34,8 @@ public final class PlaceholderUtils {
             stringPlaceholder("regular", count.getCount(InfractionType.REGULAR)),
             stringPlaceholder("unicode", count.getCount(InfractionType.UNICODE)),
             stringPlaceholder("caps", count.getCount(InfractionType.CAPS)),
-            stringPlaceholder("command", count.getCount(InfractionType.BCOMMAND))
+            stringPlaceholder("command", count.getCount(InfractionType.BCOMMAND)),
+            stringPlaceholder("syntax", count.getCount(InfractionType.SYNTAX))
         );
         Player p = player.getPlayer();
         if(p != null){
@@ -58,7 +59,8 @@ public final class PlaceholderUtils {
             stringPlaceholder("regular", statistics.getViolationCount(InfractionType.REGULAR)),
             stringPlaceholder("command", statistics.getViolationCount(InfractionType.BCOMMAND)),
             stringPlaceholder("unicode", statistics.getViolationCount(InfractionType.UNICODE)),
-            stringPlaceholder("caps", statistics.getViolationCount(InfractionType.CAPS))
+            stringPlaceholder("caps", statistics.getViolationCount(InfractionType.CAPS)),
+            stringPlaceholder("syntax", statistics.getViolationCount(InfractionType.SYNTAX))
         );
     }
 
