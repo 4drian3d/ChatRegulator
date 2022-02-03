@@ -37,18 +37,14 @@ public class SpamCheck implements ICheck {
      * based on his 3 previous messages/commands.
      * If the {@link InfractionPlayer} is spamming, it will set detectec as true
      */
-    private boolean spamInfricted(String string){
-        if(type == SourceType.CHAT){
-            String prelastMessage = infractionPlayer.preLastMessage();
-            String lastMessage = infractionPlayer.lastMessage();
+    private boolean spamInfricted(final String string){
+        return type == SourceType.CHAT
+            ? this.spamCheck(infractionPlayer.preLastMessage(), infractionPlayer.lastMessage(), string)
+            : this.spamCheck(infractionPlayer.preLastCommand(), infractionPlayer.lastCommand(), string);
+    }
 
-            return prelastMessage.equalsIgnoreCase(lastMessage) && lastMessage.contains(string);
-        } else {
-            String prelastCommand = infractionPlayer.preLastCommand();
-            String lastCommand = infractionPlayer.lastCommand();
-
-            return prelastCommand.equalsIgnoreCase(lastCommand) && lastCommand.contains(string);
-        }
+    private boolean spamCheck(final String pre, final String last, final String string){
+        return pre.equalsIgnoreCase(last) && last.contains(string);
     }
 
     @Override

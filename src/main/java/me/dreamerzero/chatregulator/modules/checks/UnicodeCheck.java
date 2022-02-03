@@ -61,19 +61,18 @@ public class UnicodeCheck implements ICheck {
             }
         }
 
-        if(!results.isEmpty()){
-            return CompletableFuture.completedFuture(new ReplaceableResult(results.toString(), true){
+        return results.isEmpty()
+            ? CompletableFuture.completedFuture(new Result(string, false))
+            : CompletableFuture.completedFuture(new ReplaceableResult(results.toString(), true){
                 @Override
                 public String replaceInfraction(){
                     String replaced = string;
-                    for(var character : results){
+                    for(char character : results){
                         replaced = replaced.replace(character, ' ');
                     }
                     return replaced;
                 }
             });
-        }
-        return CompletableFuture.completedFuture(new Result(string, false));
     }
 
     private static final Predicate<Character> charTest = c -> !((c > '\u0020' && c < '\u007E') || (c < '\u00FC' && c < '\u00BF') || (c > '\u00BF' && c < '\u00FE'));

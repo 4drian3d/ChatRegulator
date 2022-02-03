@@ -58,8 +58,8 @@ public class InfractionCheck implements ICheck {
                 patterns.add(wordpattern);
             }
         }
-        if(detected){
-            return CompletableFuture.completedFuture(new ReplaceableResult(patterns.toString(), true){
+        return CompletableFuture.completedFuture(detected
+            ? new ReplaceableResult(patterns.toString(), true){
                 @Override
                 public String replaceInfraction(){
                     String original = string;
@@ -68,10 +68,8 @@ public class InfractionCheck implements ICheck {
                     }
                     return original;
                 }
-            });
-        }
-
-        return CompletableFuture.completedFuture(new Result(string, false));
+            }
+            : new Result(string, false));
     }
 
     @Override

@@ -17,11 +17,11 @@ import me.dreamerzero.chatregulator.result.ReplaceableResult;
 public class CapsCheck implements ICheck {
     private final int limit;
 
-    CapsCheck(){
+    private CapsCheck(){
         this.limit = Configuration.getConfig().getCapsConfig().limit();
     }
 
-    CapsCheck(int limit){
+    private CapsCheck(int limit){
         this.limit = limit;
     }
 
@@ -33,15 +33,14 @@ public class CapsCheck implements ICheck {
             if(Character.isUpperCase(c)) capcount++;
         }
 
-        if(capcount >= limit){
-            return CompletableFuture.completedFuture(new Result(string, true));
-        }
-        return CompletableFuture.completedFuture(new ReplaceableResult(string, false){
-            @Override
-            public String replaceInfraction(){
-                return string.toLowerCase(Locale.ROOT);
-            }
-        });
+        return CompletableFuture.completedFuture(capcount >= this.limit
+            ? new Result(string, true)
+            : new ReplaceableResult(string, false){
+                @Override
+                public String replaceInfraction(){
+                    return string.toLowerCase(Locale.ROOT);
+                }
+            });
     }
 
     public static CompletableFuture<Result> createCheck(String string){
