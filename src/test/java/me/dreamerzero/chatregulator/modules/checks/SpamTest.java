@@ -1,10 +1,6 @@
 package me.dreamerzero.chatregulator.modules.checks;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.UUID;
 
 import com.velocitypowered.api.proxy.Player;
 
@@ -13,14 +9,13 @@ import org.junit.jupiter.api.Test;
 
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.enums.SourceType;
+import me.dreamerzero.chatregulator.utils.TestsUtils;
 
 public class SpamTest {
     @Test
     @DisplayName("Chat Test")
     void chatTest(){
-        Player p = mock(Player.class);
-        when(p.getUsername()).thenReturn("Juan");
-        when(p.getUniqueId()).thenReturn(UUID.randomUUID());
+        Player p = TestsUtils.createNormalPlayer("Juan");
 
         InfractionPlayer player = InfractionPlayer.get(p);
 
@@ -36,9 +31,7 @@ public class SpamTest {
     @Test
     @DisplayName("Command Test")
     void commandTest(){
-        Player p = mock(Player.class);
-        when(p.getUsername()).thenReturn("Juan_Alcachofa");
-        when(p.getUniqueId()).thenReturn(UUID.randomUUID());
+        Player p = TestsUtils.createNormalPlayer("JuanAlcachofa");
 
         final InfractionPlayer player = InfractionPlayer.get(p);
 

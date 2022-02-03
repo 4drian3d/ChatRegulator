@@ -1,10 +1,6 @@
 package me.dreamerzero.chatregulator.utils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.UUID;
 
 import com.velocitypowered.api.proxy.Player;
 
@@ -23,9 +19,7 @@ public class PlaceholderTest {
     @DisplayName("Player Placeholders")
     void playerPlaceholders(){
         MiniMessage mm = MiniMessage.miniMessage();
-        Player p = mock(Player.class);
-        when(p.getUsername()).thenReturn("4drian3d");
-        when(p.getUniqueId()).thenReturn(UUID.randomUUID());
+        Player p = TestsUtils.createNormalPlayer("Adrianed_04yt");
 
         InfractionPlayer player = InfractionPlayer.get(p);
 
@@ -41,7 +35,7 @@ public class PlaceholderTest {
             placeholders);
 
         Component expectedComponent = Component.text(
-            "Player 4drian3d or 4drian3d with"
+            "Player Adrianed_04yt or Adrianed_04yt with"
             +" 0 regular infractions,"
             +" 0 flood infractions,"
             +" 0 spam infractions,"
