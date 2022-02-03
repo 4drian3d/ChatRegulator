@@ -10,6 +10,7 @@ import me.dreamerzero.chatregulator.result.Result;
 import me.dreamerzero.chatregulator.utils.CommandUtils;
 
 public class SyntaxCheck implements ICheck{
+    private static final SyntaxCheck cachedCheck = new SyntaxCheck();
 
     @Override
     public CompletableFuture<Result> check(@NotNull String string) {
@@ -23,7 +24,7 @@ public class SyntaxCheck implements ICheck{
     }
 
     public static CompletableFuture<Result> createCheck(String string){
-        return new SyntaxCheck().check(string);
+        return cachedCheck.check(string);
     }
     private SyntaxCheck(){}
 }
