@@ -1,45 +1,61 @@
 package me.dreamerzero.chatregulator.utils;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.UUID;
+import java.nio.file.Path;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
 
 import com.velocitypowered.api.proxy.Player;
+import com.velocitypowered.api.proxy.ProxyServer;
 
-import me.dreamerzero.chatregulator.enums.Permissions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import me.dreamerzero.chatregulator.ChatRegulator;
+import me.dreamerzero.chatregulator.objects.TestPlayer;
+import me.dreamerzero.chatregulator.objects.TestProxy;
 
 public class TestsUtils {
     public static Player createNormalPlayer(String name){
-        Player player = mock(Player.class);
-
-        when(player.getUsername()).thenReturn(name);
-        when(player.getUniqueId()).thenReturn(UUID.randomUUID());
-        when(player.getClientBrand()).thenReturn("vanilla");
-        when(player.hasPermission(Permissions.BYPASS_INFRACTIONS)).thenReturn(false);
-        when(player.hasPermission(Permissions.BYPASS_FLOOD)).thenReturn(false);
-        when(player.hasPermission(Permissions.BYPASS_CAPS)).thenReturn(false);
-        when(player.hasPermission(Permissions.BYPASS_SPAM)).thenReturn(false);
-        when(player.hasPermission(Permissions.BYPASS_UNICODE)).thenReturn(false);
-        when(player.hasPermission(Permissions.BYPASS_COMMANDSPY)).thenReturn(false);
+        Player player = new TestPlayer(name, false);
 
         return player;
     }
 
     public static Player createOperatorPlayer(String name){
-        Player player = mock(Player.class);
-
-        when(player.getUsername()).thenReturn(name);
-        when(player.getUniqueId()).thenReturn(UUID.randomUUID());
-        when(player.getClientBrand()).thenReturn("vanilla");
-        when(player.hasPermission(Permissions.BYPASS_INFRACTIONS)).thenReturn(true);
-        when(player.hasPermission(Permissions.BYPASS_FLOOD)).thenReturn(true);
-        when(player.hasPermission(Permissions.BYPASS_CAPS)).thenReturn(true);
-        when(player.hasPermission(Permissions.BYPASS_SPAM)).thenReturn(true);
-        when(player.hasPermission(Permissions.BYPASS_UNICODE)).thenReturn(true);
-        when(player.hasPermission(Permissions.BYPASS_COMMANDSPY)).thenReturn(true);
-        when(player.hasPermission(Permissions.NOTIFICATIONS)).thenReturn(true);
+        Player player = new TestPlayer(name, true);
 
         return player;
+    }
+
+    public static ProxyServer createProxy(){
+        ProxyServer proxy = new TestProxy();
+
+        return proxy;
+    }
+
+    public static Player createRandomNormalPlayer(){
+        return createNormalPlayer(createRandomString(10));
+    }
+
+    public static String createRandomString(int limit){
+        Random rm = new Random();
+        Set<Character> chars = new HashSet<>();
+        for(int i = 0; i < limit; i++){
+            char nextCharacter = (char)rm.nextInt(122);
+            if((nextCharacter > 'A' && nextCharacter < 'Z') || (nextCharacter > 'a' && nextCharacter < 'z'))
+                chars.add(nextCharacter);
+        }
+        StringBuilder builder = new StringBuilder();
+        chars.forEach(builder::append);
+
+        return builder.toString();
+    }
+
+    public static ChatRegulator createRegulator(){
+        ProxyServer proxy = createProxy();
+        Logger logger = LoggerFactory.getLogger(TestsUtils.class);
+        Path path = Path.of("build", "reports", "tests", "test");
+        return new ChatRegulator(proxy, logger, path);
     }
 }

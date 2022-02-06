@@ -77,7 +77,7 @@ public class ChatRegulator {
         this.logger = logger;
     }
 
-    private static final void setPlugin(final ChatRegulator pl){plugin = pl;}
+    static void setPlugin(final ChatRegulator pl){if(plugin == null) plugin = pl;}
 
     /**
      * Initialization of the plugin
