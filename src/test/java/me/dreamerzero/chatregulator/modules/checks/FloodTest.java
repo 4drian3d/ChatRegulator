@@ -23,4 +23,18 @@ public class FloodTest {
             assertEquals(replaced, expected);
         });
     }
+
+    @Test
+    void multiFlood(){
+        String original = "helloooooo everyoneeeeeee";
+
+        FloodCheck.createCheck(original).thenAccept(result -> {
+            assertTrue(result.isInfraction());
+            assertTrue(result instanceof IReplaceable);
+            //TODO: Fix this
+            String replaced = "hell everyon";
+            String actual = ((IReplaceable)result).replaceInfraction();
+            assertEquals(replaced, actual, actual);
+        }).join();
+    }
 }

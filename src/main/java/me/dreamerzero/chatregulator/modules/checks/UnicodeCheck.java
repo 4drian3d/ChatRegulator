@@ -40,7 +40,7 @@ public class UnicodeCheck implements ICheck {
         char[] charArray = Objects.requireNonNull(string).toCharArray();
         final Set<Character> results = new HashSet<>();
 
-        if(custom){
+        if(custom && charscustom.length != 0){
             for(char character : charArray){
                 for(char blockedchar : charscustom){
                     if(character == blockedchar){
@@ -75,7 +75,7 @@ public class UnicodeCheck implements ICheck {
             });
     }
 
-    private static final Predicate<Character> charTest = c -> !((c > '\u0020' && c < '\u007E') || (c < '\u00FC' && c < '\u00BF') || (c > '\u00BF' && c < '\u00FE'));
+    private static final Predicate<Character> charTest = c -> !((c >= ' ' && c <= '~') || (c <= 'ü' && c <= '¿') || (c >= '\u00BF' && c <= '\u00FE'));
 
     @Override
     public @NotNull InfractionType type() {

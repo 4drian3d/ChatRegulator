@@ -30,17 +30,13 @@ public class StringTest {
         CompletableFuture<String> futureString = CompletableFuture.supplyAsync(() -> {
             aString.set("full replaced string");
             return aString.get();
-        }).thenApplyAsync(string -> {
-            aString.concatAndGet("nose");
-            return aString.get();
-        }).thenApplyAsync(a -> {
-            return aString.setAndGet("full new String");
-        });
+        })
+        .thenApplyAsync(s -> aString.concatAndGet("nose"))
+        .thenApplyAsync(a -> aString.setAndGet("full new String"));
 
         String expected = futureString.join();
         String actual = aString.get();
 
         assertEquals(expected, actual);
-
     }
 }
