@@ -1,45 +1,62 @@
 package me.dreamerzero.chatregulator.listener;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.concurrent.CompletableFuture;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import com.velocitypowered.api.event.Continuation;
-import com.velocitypowered.api.event.EventManager;
 import com.velocitypowered.api.event.player.PlayerChatEvent;
 import com.velocitypowered.api.proxy.Player;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.nio.file.Path;
+
+import me.dreamerzero.chatregulator.RegulatorTest;
+import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.listener.chat.ChatListener;
 import me.dreamerzero.chatregulator.modules.Statistics;
 import me.dreamerzero.chatregulator.utils.TestsUtils;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 
 public class ChatTest {
+    @BeforeAll
+    static void loadConfig(){
+        Logger logger = LoggerFactory.getLogger(ChatTest.class);
+        Configuration.loadConfig(Path.of("build", "reports", "tests", "test"), logger);
+        RegulatorTest.set(TestsUtils.createRegulator());
+    }
+
     @Test
     @DisplayName("Chat Listener Test")
+    @Disabled("Deprecated")
     void chatListenerTest(){
-        EventManager eManager = mock(EventManager.class);
-
-        String chatMessage = "Holaaaaaaaaaaaaaaaaa";
-        final int floodCount = Statistics.getStatistics().getViolationCount(InfractionType.FLOOD);
+        String chatMessage = "AAAA";
 
         Player player = TestsUtils.createNormalPlayer("JugadorRandom");
 
         PlayerChatEvent chatEvent = new PlayerChatEvent(player, chatMessage);
-        Continuation chatContinuation = mock(Continuation.class);
+        Continuation chatContinuation = new Continuation(){
+            @Override
+            public void resume() {}
+            @Override
+            public void resumeWithException(Throwable arg0) {}
+        };
 
-        when(eManager.fire(chatEvent)).thenReturn(CompletableFuture.completedFuture(chatEvent));
+        TestsUtils.createProxy().getEventManager().fire(chatEvent).thenAccept(event -> {
+            Statistics stats = Statistics.getStatistics();
+            final int capsCount = stats.getViolationCount(InfractionType.CAPS);
+            new ChatListener().onChat(event, chatContinuation);
 
-        eManager.fire(chatEvent).thenAccept(event -> {
-            ChatListener chatListener = new ChatListener();
-            chatListener.onChat(event, chatContinuation);
-            final int newFloodCount = Statistics.getStatistics().getViolationCount(InfractionType.FLOOD);
-            assertEquals(floodCount + 1, newFloodCount);
-        });
+            final int newcapsCount = stats.getViolationCount(InfractionType.CAPS);
+
+            fail((capsCount ) +" and " + newcapsCount+" Evento bloqueado: "+ event.getResult());
+            assertEquals(capsCount + 1, newcapsCount);
+        }).join();
     }
 }

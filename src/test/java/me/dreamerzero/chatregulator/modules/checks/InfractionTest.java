@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.nio.file.Path;
 
 import me.dreamerzero.chatregulator.config.Configuration;
-import me.dreamerzero.chatregulator.result.PatternReplaceableResult;
+import me.dreamerzero.chatregulator.result.IReplaceable;
 
 public class InfractionTest {
     @BeforeAll
@@ -35,9 +35,9 @@ public class InfractionTest {
         InfractionCheck iCheck = InfractionCheck.builder()
             .replaceable(true)
             .blockedStrings(
-                "sh(i|@|l|j|1|y)t",
-                "d(i|@|l|j|1|y)c(k)?",
-                "f(u|v|4)ck"
+                "sh[ilj1y]t",
+                "d[ilj1y]c(k)?",
+                "f[uv4]ck"
             )
             .build();
 
@@ -46,11 +46,11 @@ public class InfractionTest {
 
         iCheck.check(original).thenAccept(result -> {
             assertTrue(result.isInfraction());
-            assertTrue(result instanceof PatternReplaceableResult);
+            assertTrue(result instanceof IReplaceable);
 
-            String replaced = ((PatternReplaceableResult)result).replaceInfraction();
+            String replaced = ((IReplaceable)result).replaceInfraction();
 
             assertEquals(expected, replaced);
-        });
+        }).join();
     }
 }

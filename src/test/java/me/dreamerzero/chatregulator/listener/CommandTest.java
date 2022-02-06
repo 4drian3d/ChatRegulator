@@ -11,6 +11,7 @@ import com.velocitypowered.api.event.EventManager;
 import com.velocitypowered.api.event.command.CommandExecuteEvent;
 import com.velocitypowered.api.proxy.Player;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -22,6 +23,7 @@ import me.dreamerzero.chatregulator.utils.TestsUtils;
 public class CommandTest {
     @Test
     @DisplayName("Command Listener Test")
+    @Disabled("Deprecated")
     void commandListenerTest(){
         EventManager eManager = mock(EventManager.class);
 
@@ -38,6 +40,6 @@ public class CommandTest {
             commandListener.onCommand(event, commandContinuation);
             final int newInfractionCount = Statistics.getStatistics().getViolationCount(InfractionType.REGULAR);
             assertEquals(infractionInitialCount+1, newInfractionCount);
-        });
+        }).join();
     }
 }
