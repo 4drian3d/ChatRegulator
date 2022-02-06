@@ -3,12 +3,32 @@ package me.dreamerzero.chatregulator.modules.checks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.nio.file.Path;
+
+import com.velocitypowered.api.proxy.Player;
+
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import me.dreamerzero.chatregulator.InfractionPlayer;
+import me.dreamerzero.chatregulator.config.Configuration;
+import me.dreamerzero.chatregulator.enums.InfractionType;
+import me.dreamerzero.chatregulator.enums.SourceType;
+import me.dreamerzero.chatregulator.modules.StatisticsUtils;
 import me.dreamerzero.chatregulator.result.IReplaceable;
+import me.dreamerzero.chatregulator.utils.GeneralUtils;
+import me.dreamerzero.chatregulator.utils.TestsUtils;
 
 public class CapsTest {
+    @BeforeAll
+    static void loadConfig(){
+        Logger logger = LoggerFactory.getLogger(InfractionTest.class);
+        Configuration.loadConfig(Path.of("build", "reports", "tests", "test"), logger);
+    }
+
     @Test
     @DisplayName("Caps Test")
     void capsTest(){
@@ -21,6 +41,20 @@ public class CapsTest {
             String replaced = ((IReplaceable)result).replaceInfraction();
 
             assertEquals(expected, replaced);
-        });
+        }).join();
+    }
+
+    @Test
+    void realTest(){
+        String message = "AAAAAAAAAA";
+        Player player = TestsUtils.createRandomNormalPlayer();
+        assertTrue(GeneralUtils.allowedPlayer(player, Configuration.getConfig().getCapsConfig(), InfractionType.CAPS));
+        CapsCheck.createCheck(message).thenAccept(result -> {
+            assertTrue(GeneralUtils.checkAndCall(InfractionPlayer.get(player), message, InfractionType.CAPS, result, SourceType.CHAT, Configuration.getConfig().getCapsConfig(), Configuration.getMessages().getCapsMessages()));
+            assertTrue(result instanceof IReplaceable);
+            String messageReplaced = ((IReplaceable)result).replaceInfraction();
+            assertEquals("aaaaaaaaaa", messageReplaced);
+            StatisticsUtils.resetStatistics();
+        }).join();
     }
 }

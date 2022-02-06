@@ -34,13 +34,13 @@ public class CapsCheck implements ICheck {
         }
 
         return CompletableFuture.completedFuture(capcount >= this.limit
-            ? new Result(string, true)
-            : new ReplaceableResult(string, false){
+            ? new ReplaceableResult(string, true){
                 @Override
                 public String replaceInfraction(){
                     return string.toLowerCase(Locale.ROOT);
                 }
-            });
+            }
+            : new Result(string, false));
     }
 
     public static CompletableFuture<Result> createCheck(String string){
