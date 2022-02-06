@@ -56,16 +56,14 @@ public class PlaceholderTest {
             +" <regular> regular infractions,"
             +" <flood> flood infractions,"
             +" <spam> spam infractions,"
-            +" <unicode> unicode infractions,"
-            +" and <caps> caps infractions");
+            +" and <unicode> unicode infractions");
 
         Component expectedComponent = Component.text(
             "Global statistics"
             +" 0 regular infractions,"
             +" 0 flood infractions,"
             +" 0 spam infractions,"
-            +" 0 unicode infractions,"
-            +" and 0 caps infractions", NamedTextColor.AQUA);
+            +" and 0 unicode infractions", NamedTextColor.AQUA);
 
         assertEquals(expectedComponent, componentWithPlaceholders);
     }

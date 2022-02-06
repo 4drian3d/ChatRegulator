@@ -100,6 +100,31 @@ public final class Statistics {
         return 0;
     }
 
+    void resetViolationCount(){
+        this.spamCount = 0;
+        this.floodCount = 0;
+        this.regularCount = 0;
+        this.commandCount = 0;
+        this.unicodeViolations = 0;
+        this.capsViolations = 0;
+        this.syntaxViolations = 0;
+        this.globalViolations = 0;
+    }
+
+    void setViolationCount(InfractionType type, int amount){
+        switch(type){
+            case SPAM: this.spamCount = amount; break;
+            case FLOOD: this.floodCount = amount; break;
+            case REGULAR: this.regularCount = amount; break;
+            case BCOMMAND: this.commandCount = amount; break;
+            case UNICODE: this.unicodeViolations = amount; break;
+            case CAPS: this.capsViolations = amount; break;
+            case SYNTAX: this.syntaxViolations = amount; break;
+            case NONE: break;
+        }
+        this.globalViolations = this.spamCount + this.floodCount + this.regularCount + this.commandCount + this.unicodeViolations + this.capsViolations + this.syntaxViolations;
+    }
+
     @Override
     public boolean equals(Object o){
         if(this == o) return true;
