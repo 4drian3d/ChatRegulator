@@ -8,7 +8,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import com.google.inject.Inject;
-import com.velocitypowered.api.command.CommandMeta;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Dependency;
@@ -20,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.slf4j.Logger;
 
-import me.dreamerzero.chatregulator.commands.ChatRegulatorCommand;
+import me.dreamerzero.chatregulator.commands.BrigadierRegulator;
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.enums.Components;
 import me.dreamerzero.chatregulator.listener.chat.ChatListener;
@@ -101,13 +100,7 @@ public class ChatRegulator {
             new ReloadListener(path, logger),
             new SpyListener()
         );
-
-        CommandMeta regulatorMeta = server.getCommandManager()
-            .metaBuilder("chatregulator")
-            .aliases("chatr", "cregulator")
-            .build();
-        server.getCommandManager().register(regulatorMeta, new ChatRegulatorCommand(infractionPlayers, server));
-
+        BrigadierRegulator.registerCommand(infractionPlayers.values());
         checkInfractionPlayersRunnable();
     }
 

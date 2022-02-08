@@ -244,6 +244,12 @@ public class InfractionPlayer implements ForwardingAudience.Single{
         }
     }
 
+    public static InfractionPlayer get(@NotNull final String name){
+        return ChatRegulator.infractionPlayers.values().stream()
+            .filter(p -> p.username().equalsIgnoreCase(name))
+            .findAny().orElse(null);
+    }
+
     @Override
     public boolean equals(Object o){
         if(this==o) return true;

@@ -18,6 +18,7 @@ public final class Components {
             .add(TransformationType.KEYBIND)
             .add(TransformationType.RAINBOW)
             .add(TransformationType.TRANSLATABLE)
+            .add(TransformationType.CLICK_EVENT)
             .build()
         ).build();
     public static final MiniMessage SPECIAL_MINIMESSAGE = MiniMessage.builder()
