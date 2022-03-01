@@ -78,7 +78,7 @@ public final class BrigadierRegulator {
     private static LiteralCommandNode<CommandSource> infoSubCommand(String command){
         return LiteralArgumentBuilder
             .<CommandSource>literal(command)
-            .requires(src -> src.hasPermission("chatregulator.command.help"))
+            .requires(src -> src.hasPermission(Permissions.COMMAND_HELP))
             .executes(cmd -> {
                 sendLines(cmd.getSource(), Configuration.getMessages().getGeneralMessages().getHelpMessages().getMainHelp(), chatrCommand);
                 return 1;
@@ -109,7 +109,7 @@ public final class BrigadierRegulator {
     private static LiteralCommandNode<CommandSource> statsCommand(String command){
         return LiteralArgumentBuilder
             .<CommandSource>literal(command)
-            .requires(src -> src.hasPermission("chatregulator.command.stats"))
+            .requires(src -> src.hasPermission(Permissions.COMMAND_STATS))
             .executes(cmd -> {
                 sendLines(cmd.getSource(), Configuration.getMessages().getGeneralMessages().getStatsFormat());
                 return 1;
@@ -119,7 +119,7 @@ public final class BrigadierRegulator {
     private static LiteralCommandNode<CommandSource> playerCommand(String command, Collection<InfractionPlayer> players){
         return LiteralArgumentBuilder
             .<CommandSource>literal(command)
-            .requires(src -> src.hasPermission("chatregulator.command.player"))
+            .requires(src -> src.hasPermission(Permissions.COMMAND_PLAYER))
             .executes(cmd -> {
                 cmd.getSource().sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(Configuration.getMessages().getGeneralMessages().noArgument()));
                 return 1;
@@ -154,7 +154,7 @@ public final class BrigadierRegulator {
     private static LiteralCommandNode<CommandSource> resetCommand(String command, Collection<InfractionPlayer> players){
         return LiteralArgumentBuilder
             .<CommandSource>literal(command)
-            .requires(src -> src.hasPermission("chatregulator.command.reset"))
+            .requires(src -> src.hasPermission(Permissions.COMMAND_RESET))
             .executes(cmd -> {
                 cmd.getSource().sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(Configuration.getMessages().getGeneralMessages().noArgument()));
                 return 1;
@@ -180,14 +180,14 @@ public final class BrigadierRegulator {
                     resetAll(p, cmd.getSource());
                     return 1;
                 })
-                .then(resetWithPlayerSubcommand("infractions", InfractionType.REGULAR, "chatregulator.command.reset.regular"))
-                .then(resetWithPlayerSubcommand("regular", InfractionType.REGULAR, "chatregulator.command.reset.regular"))
-                .then(resetWithPlayerSubcommand("flood", InfractionType.FLOOD, "chatregulator.command.reset.flood"))
-                .then(resetWithPlayerSubcommand("spam", InfractionType.SPAM, "chatregulator.command.reset.spam"))
-                .then(resetWithPlayerSubcommand("command", InfractionType.BCOMMAND, "chatregulator.command.reset.command"))
-                .then(resetWithPlayerSubcommand("unicode", InfractionType.UNICODE, "chatregulator.command.reset.unicode"))
-                .then(resetWithPlayerSubcommand("caps", InfractionType.CAPS, "chatregulator.command.reset.caps"))
-                .then(resetWithPlayerSubcommand("syntax", InfractionType.SYNTAX, "chatregulator.command.reset.syntax"))
+                .then(resetWithPlayerSubcommand("infractions", InfractionType.REGULAR, Permissions.COMMAND_RESET_REGULAR))
+                .then(resetWithPlayerSubcommand("regular", InfractionType.REGULAR, Permissions.COMMAND_RESET_REGULAR))
+                .then(resetWithPlayerSubcommand("flood", InfractionType.FLOOD, Permissions.COMMAND_RESET_FLOOD))
+                .then(resetWithPlayerSubcommand("spam", InfractionType.SPAM, Permissions.COMMAND_RESET_SPAM))
+                .then(resetWithPlayerSubcommand("command", InfractionType.BCOMMAND, Permissions.COMMAND_RESET_BCOMMAND))
+                .then(resetWithPlayerSubcommand("unicode", InfractionType.UNICODE, Permissions.COMMAND_RESET_UNICODE))
+                .then(resetWithPlayerSubcommand("caps", InfractionType.CAPS, Permissions.COMMAND_RESET_CAPS))
+                .then(resetWithPlayerSubcommand("syntax", InfractionType.SYNTAX, Permissions.COMMAND_RESET_SYNTAX))
                 )
             .build();
     }
@@ -225,7 +225,7 @@ public final class BrigadierRegulator {
     private static LiteralCommandNode<CommandSource> clearCommand(String command){
         return LiteralArgumentBuilder
             .<CommandSource>literal(command)
-            .requires(p -> p.hasPermission("chatregulator.command.clear"))
+            .requires(p -> p.hasPermission(Permissions.COMMAND_CLEAR))
             .executes(cmd -> {
                 ChatRegulator.getInstance().getProxy().sendMessage(Components.SPACES_COMPONENT);
                 cmd.getSource().sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(Configuration.getMessages().getClearMessages().getGlobalMessage()));
@@ -233,6 +233,7 @@ public final class BrigadierRegulator {
             })
             .then(LiteralArgumentBuilder
                 .<CommandSource>literal("server")
+                .requires(p -> p.hasPermission(Permissions.COMMAND_CLEAR_SERVER))
                 .executes(cmd -> {
                     if (cmd.getSource() instanceof Player) {
                         Player player = (Player)cmd.getSource();
@@ -267,6 +268,7 @@ public final class BrigadierRegulator {
             )
             .then(LiteralArgumentBuilder
                 .<CommandSource>literal("player")
+                .requires(p -> p.hasPermission(Permissions.COMMAND_CLEAR_PLAYER))
                 .executes(cmd -> {
                     cmd.getSource().sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(Configuration.getMessages().getGeneralMessages().noArgument()));
                     return 1;
@@ -302,7 +304,7 @@ public final class BrigadierRegulator {
     private static LiteralCommandNode<CommandSource> reloadCommand(String command){
         return LiteralArgumentBuilder
             .<CommandSource>literal(command)
-            .requires(p -> p.hasPermission("chatregulator.command.reload"))
+            .requires(p -> p.hasPermission(Permissions.COMMAND_RELOAD))
             .executes(cmd -> {
                 cmd.getSource().sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(Configuration.getMessages().getGeneralMessages().getReloadMessage()));
                 ChatRegulator.getInstance().reloadConfig();

@@ -15,6 +15,7 @@ repositories {
 dependencies {
     shadow("org.spongepowered:configurate-hocon:4.1.2")
     shadow("org.jetbrains:annotations:23.0.0")
+    //TODO: Remove in Velocity 3.1.2
     shadow("net.kyori:adventure-text-minimessage:4.10.0"){
         exclude("net.kyori", "adventure-api")
     }
@@ -22,7 +23,7 @@ dependencies {
     compileOnly("net.frankheijden.serverutils:ServerUtils:3.4.0")
 
     compileOnly("com.velocitypowered:velocity-api:3.1.2-SNAPSHOT")
-    annotationProcessor("com.velocitypowered:velocity-api:3.1.1")
+    annotationProcessor("com.velocitypowered:velocity-api:3.1.2-SNAPSHOT")
 
     testImplementation("org.slf4j:slf4j-api:1.7.32")
     testImplementation("org.spongepowered:configurate-hocon:4.1.2")
