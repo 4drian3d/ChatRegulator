@@ -11,8 +11,12 @@ import me.dreamerzero.chatregulator.InfractionPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 public class PlaceholderTest {
+    private static final PlainTextComponentSerializer PLAIN_SERIALIZER = PlainTextComponentSerializer.plainText();
 
     @Test
     @DisplayName("Player Placeholders")
@@ -22,7 +26,10 @@ public class PlaceholderTest {
         InfractionPlayer player = InfractionPlayer.get(p);
 
         MiniMessage mm = MiniMessage.builder()
-            .placeholderResolver(PlaceholderUtils.getPlaceholders(player))
+            .tags(TagResolver.resolver(
+                PlaceholderUtils.getPlaceholders(player),
+                StandardTags.color())
+            )
             .build();
 
         Component componentWithPlaceholders = mm.deserialize(
@@ -41,14 +48,17 @@ public class PlaceholderTest {
             +" 0 unicode infractions,"
             +" and 0 caps infractions", NamedTextColor.AQUA);
 
-        assertEquals(expectedComponent, componentWithPlaceholders);
+        assertEqualsComponent(expectedComponent, componentWithPlaceholders);
     }
 
     @Test
     @DisplayName("Global Placeholders")
     void globalPlaceholders(){
         MiniMessage mm = MiniMessage.builder()
-            .placeholderResolver(PlaceholderUtils.getGlobalPlaceholders())
+            .tags(TagResolver.resolver(
+                PlaceholderUtils.getGlobalPlaceholders(),
+                StandardTags.color())
+            )
             .build();
 
         Component componentWithPlaceholders = mm.deserialize(
@@ -65,6 +75,10 @@ public class PlaceholderTest {
             +" 0 spam infractions,"
             +" and 0 unicode infractions", NamedTextColor.AQUA);
 
-        assertEquals(expectedComponent, componentWithPlaceholders);
+        assertEqualsComponent(expectedComponent, componentWithPlaceholders);
+    }
+
+    public void assertEqualsComponent(Component first, Component second){
+        assertEquals(PLAIN_SERIALIZER.serialize(first), PLAIN_SERIALIZER.serialize(second));
     }
 }

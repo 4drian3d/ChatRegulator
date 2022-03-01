@@ -26,8 +26,8 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.placeholder.Placeholder;
-import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
 public final class BrigadierRegulator {
     private BrigadierRegulator(){}
@@ -40,7 +40,7 @@ public final class BrigadierRegulator {
                 cmd.getSource().sendMessage(
                     MiniMessage.miniMessage().deserialize(
                         Configuration.getMessages().getGeneralMessages().getInfoMessage(),
-                        PlaceholderResolver.placeholders(Placeholder.raw("command", cmd.getInput()))));
+                        Placeholder.unparsed("command", cmd.getInput())));
                 return 1;
             })
             .then(infoSubCommand("help"))
@@ -69,12 +69,12 @@ public final class BrigadierRegulator {
         lines.forEach(ln -> sender.sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(ln)));
     }
 
-    private static void sendLines(Audience sender, Collection<String> lines, PlaceholderResolver resolver){
+    private static void sendLines(Audience sender, Collection<String> lines, TagResolver resolver){
         lines.forEach(ln -> sender.sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(ln, resolver)));
     }
 
-    private static final PlaceholderResolver chatrCommand = PlaceholderResolver.placeholders(Placeholder.raw("command", "chatregulator"));
-    
+    private static final TagResolver chatrCommand = Placeholder.unparsed("command", "chatregulator");
+
     private static LiteralCommandNode<CommandSource> infoSubCommand(String command){
         return LiteralArgumentBuilder
             .<CommandSource>literal(command)
@@ -132,17 +132,17 @@ public final class BrigadierRegulator {
                     Optional<Player> optionalPlayer = ChatRegulator.getInstance().getProxy().getPlayer(arg);
                     if(optionalPlayer.isPresent()){
                         InfractionPlayer infractionPlayer = InfractionPlayer.get(optionalPlayer.get());
-                        PlaceholderResolver placeholders = PlaceholderUtils.getPlaceholders(infractionPlayer);
+                        TagResolver placeholders = PlaceholderUtils.getPlaceholders(infractionPlayer);
                         sendLines(source, Configuration.getMessages().getGeneralMessages().getPlayerFormat(), placeholders);
                     } else {
                         Optional<InfractionPlayer> opt = players.stream().filter(p -> p.username().equals(arg)).findAny();
                         if(opt.isPresent()){
-                            PlaceholderResolver placeholders = PlaceholderUtils.getPlaceholders(opt.get());
+                            TagResolver placeholders = PlaceholderUtils.getPlaceholders(opt.get());
                             sendLines(source, Configuration.getMessages().getGeneralMessages().getPlayerFormat(), placeholders);
                         } else {
                             source.sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(
                                 Configuration.getMessages().getGeneralMessages().playerNotFound(),
-                                PlaceholderResolver.placeholders(Placeholder.raw("player", arg))
+                                Placeholder.unparsed("player", arg)
                             ));
                         }
                     }
@@ -174,7 +174,7 @@ public final class BrigadierRegulator {
                     String arg = cmd.getArgument("player", String.class);
                     InfractionPlayer p = InfractionPlayer.get(arg);
                     if(p == null){
-                        cmd.getSource().sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(Configuration.getMessages().getGeneralMessages().playerNotFound(), PlaceholderResolver.placeholders(Placeholder.raw("player", arg))));
+                        cmd.getSource().sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(Configuration.getMessages().getGeneralMessages().playerNotFound(), Placeholder.unparsed("player", arg)));
                         return 1;
                     }
                     resetAll(p, cmd.getSource());
@@ -213,7 +213,7 @@ public final class BrigadierRegulator {
                 String arg = cmd.getArgument("player", String.class);
                 InfractionPlayer p = InfractionPlayer.get(arg);
                 if(p == null){
-                    cmd.getSource().sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(Configuration.getMessages().getGeneralMessages().playerNotFound(), PlaceholderResolver.placeholders(Placeholder.raw("player", arg))));
+                    cmd.getSource().sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(Configuration.getMessages().getGeneralMessages().playerNotFound(), Placeholder.unparsed("player", arg)));
                     return 1;
                 }
                 p.getViolations().resetViolations(type);
@@ -240,9 +240,7 @@ public final class BrigadierRegulator {
                             playerServer.getServer().sendMessage(Components.SPACES_COMPONENT);
                             player.sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(
                                 Configuration.getMessages().getClearMessages().getServerMessage(),
-                                PlaceholderResolver.placeholders(
-                                    Placeholder.raw("server", playerServer.getServerInfo().getName())
-                                )
+                                Placeholder.unparsed("server", playerServer.getServerInfo().getName())
                             ));
                         });
                     } else {
@@ -258,7 +256,7 @@ public final class BrigadierRegulator {
                     })
                     .executes(cmd -> {
                         String arg = cmd.getArgument("server", String.class);
-                        PlaceholderResolver serverPlaceholder = PlaceholderResolver.placeholders(Placeholder.raw("server", arg));
+                        TagResolver serverPlaceholder = Placeholder.unparsed("server", arg);
                         ChatRegulator.getInstance().getProxy().getServer(arg).ifPresentOrElse(serverObjetive -> {
                             serverObjetive.sendMessage(Components.SPACES_COMPONENT);
                             cmd.getSource().sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(Configuration.getMessages().getClearMessages().getServerMessage(), serverPlaceholder));
@@ -281,7 +279,7 @@ public final class BrigadierRegulator {
                     })
                     .executes(cmd -> {
                         String arg = cmd.getArgument("player", String.class);
-                        PlaceholderResolver serverPlaceholder = PlaceholderResolver.placeholders(Placeholder.raw("player", arg));
+                        TagResolver serverPlaceholder = Placeholder.unparsed("player", arg);
                         ChatRegulator.getInstance().getProxy().getPlayer(arg).ifPresentOrElse(playerObjetive -> {
                             playerObjetive.sendMessage(Components.SPACES_COMPONENT);
                             cmd.getSource().sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(Configuration.getMessages().getClearMessages().getPlayerMessage(), serverPlaceholder));

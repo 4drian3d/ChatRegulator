@@ -12,9 +12,8 @@ import me.dreamerzero.chatregulator.enums.Permissions;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.placeholder.Placeholder;
-import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
-import net.kyori.adventure.text.minimessage.transformation.TransformationType;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.title.Title;
 
 /**
@@ -30,10 +29,9 @@ public class ConfigManager {
      */
     public static void sendWarningMessage(InfractionPlayer infractor, Result result, Messages.Warning messages, MainConfig.Warning config){
         String message = messages.getWarningMessage();
-        PlaceholderResolver placeholder = PlaceholderResolver.combining(
-            PlaceholderResolver.placeholders(
-                Placeholder.raw("infraction", result.getInfractionString())),
-                PlaceholderUtils.getPlaceholders(infractor));
+        TagResolver placeholder = TagResolver.resolver(
+            Placeholder.unparsed("infraction", result.getInfractionString()),
+            PlaceholderUtils.getPlaceholders(infractor));
         switch(config.getWarningType()){
             case TITLE: sendTitle(message, infractor, placeholder); break;
             case MESSAGE: infractor.sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(message, placeholder)); break;
@@ -41,34 +39,22 @@ public class ConfigManager {
         }
     }
 
-    private static final MiniMessage titleMiniMessage = MiniMessage.builder().transformations(tr ->
-        tr.clear()
-            .add(TransformationType.COLOR)
-            .add(TransformationType.DECORATION)
-            .add(TransformationType.FONT)
-            .add(TransformationType.GRADIENT)
-            .add(TransformationType.KEYBIND)
-            .add(TransformationType.RAINBOW)
-            .add(TransformationType.TRANSLATABLE)
-        .build()
-    ).build();
-
-    private static void sendTitle(String message, Audience player, PlaceholderResolver placeholder){
-        if(!message.contains(";")){
+    private static void sendTitle(String message, Audience player, TagResolver placeholder){
+        if(message.indexOf(';') != -1){
             player.showTitle(
             Title.title(
                 Component.empty(),
-                titleMiniMessage.deserialize(
+                Components.SPECIAL_MINIMESSAGE.deserialize(
                     message,
                     placeholder)));
         } else {
             String[] titleParts = message.split(";");
             player.showTitle(
                 Title.title(
-                    titleMiniMessage.deserialize(
+                    Components.SPECIAL_MINIMESSAGE.deserialize(
                         titleParts[0],
                         placeholder),
-                    titleMiniMessage.deserialize(
+                    Components.SPECIAL_MINIMESSAGE.deserialize(
                         titleParts[1],
                         placeholder)));
         }
@@ -115,7 +101,7 @@ public class ConfigManager {
     public static void sendResetMessage(Audience sender, InfractionType type, InfractionPlayer player){
         Messages.Config messages = Configuration.getMessages();
         MiniMessage mm = Components.MESSAGE_MINIMESSAGE;
-        PlaceholderResolver resolver = PlaceholderUtils.getPlaceholders(player);
+        TagResolver resolver = PlaceholderUtils.getPlaceholders(player);
         switch(type){
             case REGULAR: sender.sendMessage(mm.deserialize(messages.getInfractionsMessages().getResetMessage(), resolver)); break;
             case FLOOD: sender.sendMessage(mm.deserialize(messages.getFloodMessages().getResetMessage(), resolver)); break;

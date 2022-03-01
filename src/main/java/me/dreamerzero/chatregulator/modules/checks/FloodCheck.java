@@ -18,8 +18,8 @@ import me.dreamerzero.chatregulator.result.PatternReplaceableResult;
 public class FloodCheck implements ICheck {
     // Credit: https://github.com/2lstudios-mc/ChatSentinel/blob/master/src/main/resources/config.yml#L91
     // (\\w)\\1{5,}|(\\w{28,})|([^\\wñ]{20,})|(^.{220,}$)
-    private static final String STANDART_PATTERN = "(\\w)\\1{5,}|(\\w{28,})|([^\\wñ]{20,})|(^.{220,}$)";
-    private static Pattern floodPattern = Pattern.compile(STANDART_PATTERN, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+    private static final String STANDARD_PATTERN = "(\\w)\\1{5,}|(\\w{28,})|([^\\wñ]{20,})|(^.{220,}$)";
+    private static Pattern floodPattern = Pattern.compile(STANDARD_PATTERN, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
     private final Pattern realPattern;
 
     private FloodCheck(){
@@ -34,7 +34,7 @@ public class FloodCheck implements ICheck {
      * Update the Flood pattern based in the configuration
      */
     public static void setFloodRegex(){
-        floodPattern = Pattern.compile(STANDART_PATTERN.replace(5+"", Configuration.getConfig().getFloodConfig().getLimit()+""), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+        floodPattern = Pattern.compile(STANDARD_PATTERN.replace(5+"", Configuration.getConfig().getFloodConfig().getLimit()+""), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
     }
 
     @Override
@@ -69,9 +69,9 @@ public class FloodCheck implements ICheck {
         Builder(){}
 
         /**
-         * 
-         * @param pattern
-         * @return
+         * Set the pattern
+         * @param pattern the new pattern
+         * @return the builder itself
          */
         public Builder pattern(Pattern pattern){
             this.pattern = pattern;
@@ -80,7 +80,7 @@ public class FloodCheck implements ICheck {
 
         public Builder limit(int limit){
             if(pattern == null){
-                this.pattern = Pattern.compile(STANDART_PATTERN.replace(5+"", limit+""), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+                this.pattern = Pattern.compile(STANDARD_PATTERN.replace(5+"", limit+""), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
             }
             return this;
         }

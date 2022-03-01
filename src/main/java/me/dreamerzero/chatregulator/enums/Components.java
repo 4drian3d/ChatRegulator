@@ -3,35 +3,32 @@ package me.dreamerzero.chatregulator.enums;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.transformation.TransformationType;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 
 public final class Components {
     public static final MiniMessage MESSAGE_MINIMESSAGE = MiniMessage.builder()
-        .transformations(tr -> tr.clear()
-            .add(TransformationType.COLOR)
-            .add(TransformationType.RAINBOW)
-            .add(TransformationType.DECORATION)
-            .add(TransformationType.FONT)
-            .add(TransformationType.GRADIENT)
-            .add(TransformationType.HOVER_EVENT)
-            .add(TransformationType.INSERTION)
-            .add(TransformationType.KEYBIND)
-            .add(TransformationType.RAINBOW)
-            .add(TransformationType.TRANSLATABLE)
-            .add(TransformationType.CLICK_EVENT)
-            .build()
-        ).build();
+        .tags(TagResolver.resolver(
+            StandardTags.color(),
+            StandardTags.decorations(),
+            StandardTags.rainbow(),
+            StandardTags.font(),
+            StandardTags.gradient(),
+            StandardTags.hoverEvent(),
+            StandardTags.insertion(),
+            StandardTags.keybind(),
+            StandardTags.translatable(),
+            StandardTags.clickEvent()
+        )).build();
     public static final MiniMessage SPECIAL_MINIMESSAGE = MiniMessage.builder()
-        .transformations(tr -> tr.clear()
-            .add(TransformationType.COLOR)
-            .add(TransformationType.DECORATION)
-            .add(TransformationType.FONT)
-            .add(TransformationType.GRADIENT)
-            .add(TransformationType.KEYBIND)
-            .add(TransformationType.RAINBOW)
-            .add(TransformationType.TRANSLATABLE)
-            .build()
-        ).build();
+        .tags(TagResolver.resolver(
+            StandardTags.color(),
+            StandardTags.decorations(),
+            StandardTags.font(),
+            StandardTags.gradient(),
+            StandardTags.keybind(),
+            StandardTags.translatable()
+        )).build();
 
     /**
      * Spaces component for "/chatregulator clear" command

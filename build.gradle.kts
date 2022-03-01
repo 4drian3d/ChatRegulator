@@ -9,20 +9,19 @@ plugins {
 repositories {
     mavenLocal()
     maven("https://papermc.io/repo/repository/maven-public/")
-    maven("https://oss.sonatype.org/content/repositories/snapshots/")
     maven("https://repo.fvdh.dev/releases")
 }
 
 dependencies {
     shadow("org.spongepowered:configurate-hocon:4.1.2")
     shadow("org.jetbrains:annotations:23.0.0")
-    shadow("net.kyori:adventure-text-minimessage:4.10.0-SNAPSHOT"){
+    shadow("net.kyori:adventure-text-minimessage:4.10.0"){
         exclude("net.kyori", "adventure-api")
     }
 
     compileOnly("net.frankheijden.serverutils:ServerUtils:3.4.0")
 
-    compileOnly("com.velocitypowered:velocity-api:3.1.1")
+    compileOnly("com.velocitypowered:velocity-api:3.1.2-SNAPSHOT")
     annotationProcessor("com.velocitypowered:velocity-api:3.1.1")
 
     testImplementation("org.slf4j:slf4j-api:1.7.32")
@@ -30,8 +29,8 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.8.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.mockito:mockito-core:4.1.0")
-    testImplementation("com.velocitypowered:velocity-api:3.1.1")
-    testImplementation("net.kyori:adventure-text-minimessage:4.10.0-SNAPSHOT")
+    testImplementation("com.velocitypowered:velocity-api:3.1.2-SNAPSHOT")
+    testImplementation("net.kyori:adventure-text-minimessage:4.10.0")
 
 }
 
