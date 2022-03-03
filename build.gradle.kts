@@ -15,10 +15,6 @@ repositories {
 dependencies {
     shadow("org.spongepowered:configurate-hocon:4.1.2")
     shadow("org.jetbrains:annotations:23.0.0")
-    //TODO: Remove in Velocity 3.1.2
-    shadow("net.kyori:adventure-text-minimessage:4.10.0"){
-        exclude("net.kyori", "adventure-api")
-    }
 
     compileOnly("net.frankheijden.serverutils:ServerUtils:3.4.0")
 
@@ -31,12 +27,11 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.mockito:mockito-core:4.1.0")
     testImplementation("com.velocitypowered:velocity-api:3.1.2-SNAPSHOT")
-    testImplementation("net.kyori:adventure-text-minimessage:4.10.0")
 
 }
 
 group = "me.dreamerzero.chatregulator"
-version = "2.1.0"
+version = "3.0.0"
 description = "A global chat regulator for you Velocity network"
 val url = "https://forums.velocitypowered.com/t/chatregulator-a-global-chat-regulator-for-velocity/962"
 val id = "chatregulator"

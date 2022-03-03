@@ -39,8 +39,7 @@ public final class CommandUtils {
     private static void execute(@NotNull Player infractor, @NotNull InfractionPlayer iPlayer, @NotNull InfractionType type, Executable executable){
         CommandsConfig config = executable.getCommandsConfig();
         if(config.executeCommand() && iPlayer.getViolations().getCount(type) % config.violationsRequired() == 0){
-            var currentServer = infractor.getCurrentServer();
-            final String servername = currentServer.isPresent() ? currentServer.get().getServerInfo().getName() :"";
+            final String servername = infractor.getCurrentServer().map(sv -> sv.getServerInfo().getName()).orElse("");
             config.getCommandsToExecute().forEach(cmd -> {
                 final String commandToSend = cmd.replace("<player>", infractor.getUsername()).replace("<server>", servername);
                 final ProxyServer proxy = ChatRegulator.getInstance().getProxy();
