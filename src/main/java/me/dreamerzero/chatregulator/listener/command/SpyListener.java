@@ -24,9 +24,11 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 @Internal
 public class SpyListener {
     private final MiniMessage mm;
+    private final ChatRegulator plugin;
 
-    public SpyListener(){
+    public SpyListener(ChatRegulator plugin){
         this.mm = Components.MESSAGE_MINIMESSAGE;
+        this.plugin = plugin;
     }
 
     @Subscribe(order = PostOrder.LAST)
@@ -46,8 +48,9 @@ public class SpyListener {
             ChatRegulator.getInstance().getProxy().getAllPlayers().stream()
                 .filter(PERMISSION_PREDICATE)
                 .forEach(p -> p.sendMessage(
-                    mm.deserialize(
+                    plugin.getFormatter().parse(
                         Configuration.getMessages().getCommandSpyMessages().getMessage(),
+                        p,
                         TagResolver.resolver(
                             Placeholder.unparsed("command", command),
                             Placeholder.unparsed("player", ((Player)source).getUsername())

@@ -122,7 +122,6 @@ public class ChatListener {
                         event.setResult(ChatResult.message(messageReplaced));
                         message.set(messageReplaced);
                     }
-
                 }
                 return false;
             }).join().booleanValue()){

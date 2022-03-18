@@ -30,6 +30,10 @@ import me.dreamerzero.chatregulator.listener.list.LeaveListener;
 import me.dreamerzero.chatregulator.listener.plugin.PluginListener;
 import me.dreamerzero.chatregulator.listener.plugin.ReloadListener;
 import me.dreamerzero.chatregulator.utils.Constants;
+import me.dreamerzero.chatregulator.placeholders.RegulatorExpansion;
+import me.dreamerzero.chatregulator.placeholders.formatter.IFormatter;
+import me.dreamerzero.chatregulator.placeholders.formatter.MiniPlaceholderFormatter;
+import me.dreamerzero.chatregulator.placeholders.formatter.NormalFormatter;
 
 /**
  * Plugin main class
@@ -56,6 +60,7 @@ public final class ChatRegulator {
     private final Logger logger;
     private final Path path;
     private static ChatRegulator plugin;
+    private IFormatter formatter;
 
     /**
      * InfractionPlayer list
@@ -89,16 +94,25 @@ public final class ChatRegulator {
         server.getConsoleCommandSource().sendMessage(Components.MESSAGE_MINIMESSAGE
             .deserialize("<gradient:#f2709c:#ff9472>ChatRegulator</gradient> <gradient:#DAE2F8:#D4D3DD>has started, have a very nice day</gradient>"));
         Configuration.loadConfig(path, logger);
-        if(server.getPluginManager().isLoaded("ServerUtils")){
+
+        if(server.getPluginManager().isLoaded("serverutils")){
             this.registerListener(new PluginListener(logger));
         }
+
+        if(server.getPluginManager().isLoaded("miniplaceholders")){
+            this.formatter = new MiniPlaceholderFormatter();
+            RegulatorExpansion.getExpansion().register();
+        } else {
+            this.formatter = new NormalFormatter();
+        }
+
         this.registerListener(
             new ChatListener(),
             new CommandListener(),
             new JoinListener(infractionPlayers),
             new LeaveListener(),
             new ReloadListener(path, logger),
-            new SpyListener()
+            new SpyListener(this)
         );
         BrigadierRegulator.registerCommand(infractionPlayers.values());
         checkInfractionPlayersRunnable();
@@ -134,6 +148,10 @@ public final class ChatRegulator {
     @Internal
     public @NotNull ProxyServer getProxy(){
         return this.server;
+    }
+
+    public IFormatter getFormatter(){
+        return this.formatter;
     }
 
     /**
