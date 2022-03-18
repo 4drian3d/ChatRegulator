@@ -73,7 +73,7 @@ public final class GeneralUtils {
                 } else {
                     DebugUtils.debug(player, string, infractionType, result, plugin);
                     Statistics.getStatistics().addViolationCount(infractionType);
-                    ConfigManager.sendWarningMessage(player, result, infractionType);
+                    ConfigManager.sendWarningMessage(player, result, infractionType, plugin.getFormatter());
                     ConfigManager.sendAlertMessage(player, infractionType, plugin);
 
                     player.getViolations().addViolation(infractionType);

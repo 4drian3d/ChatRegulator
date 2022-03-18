@@ -15,6 +15,8 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
 /**
  * Player Data Collection Utilities
+ * 
+ * This class returns placeholders whether or not MiniPlaceholders is installed
  */
 public final class PlaceholderUtils {
     /**

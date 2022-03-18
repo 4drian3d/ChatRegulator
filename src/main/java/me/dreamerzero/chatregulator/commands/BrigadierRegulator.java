@@ -21,11 +21,11 @@ import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.enums.Components;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.enums.Permissions;
+import me.dreamerzero.chatregulator.placeholders.formatter.IFormatter;
 import me.dreamerzero.chatregulator.utils.PlaceholderUtils;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
@@ -38,14 +38,14 @@ public final class BrigadierRegulator {
             .requires(src -> src.hasPermission(Permissions.COMMAND))
             .executes(cmd -> {
                 cmd.getSource().sendMessage(
-                    MiniMessage.miniMessage().deserialize(
+                    plugin.getFormatter().parse(
                         Configuration.getMessages().getGeneralMessages().getInfoMessage(),
                         Placeholder.unparsed("command", cmd.getInput())));
                 return 1;
             })
-            .then(infoSubCommand("help"))
-            .then(infoSubCommand("info"))
-            .then(statsCommand("stats"))
+            .then(infoSubCommand("help", plugin))
+            .then(infoSubCommand("info", plugin))
+            .then(statsCommand("stats", plugin))
             .then(playerCommand("player", plugin))
             .then(resetCommand("reset", plugin))
             .then(clearCommand("clear", plugin))
@@ -54,7 +54,7 @@ public final class BrigadierRegulator {
                 .<CommandSource>literal("clear")
                 .executes(cmd -> {
                     plugin.getProxy().sendMessage(Components.SPACES_COMPONENT);
-                    cmd.getSource().sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(Configuration.getMessages().getClearMessages().getGlobalMessage()));
+                    cmd.getSource().sendMessage(plugin.getFormatter().parse(Configuration.getMessages().getClearMessages().getGlobalMessage()));
                     return 1;
                 }).build())
             .build();
@@ -65,53 +65,53 @@ public final class BrigadierRegulator {
         proxy.getCommandManager().register(meta, bCommand);
     }
 
-    private static void sendLines(Audience sender, Collection<String> lines){
-        lines.forEach(ln -> sender.sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(ln)));
+    private static void sendLines(Audience sender, Collection<String> lines, IFormatter formatter){
+        lines.forEach(ln -> sender.sendMessage(formatter.parse(ln, sender)));
     }
 
-    private static void sendLines(Audience sender, Collection<String> lines, TagResolver resolver){
-        lines.forEach(ln -> sender.sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(ln, resolver)));
+    private static void sendLines(Audience sender, Collection<String> lines, TagResolver resolver, IFormatter formatter){
+        lines.forEach(ln -> sender.sendMessage(formatter.parse(ln, sender, resolver)));
     }
 
     private static final TagResolver chatrCommand = Placeholder.unparsed("command", "chatregulator");
 
-    private static LiteralCommandNode<CommandSource> infoSubCommand(String command){
+    private static LiteralCommandNode<CommandSource> infoSubCommand(String command, ChatRegulator plugin){
         return LiteralArgumentBuilder
             .<CommandSource>literal(command)
             .requires(src -> src.hasPermission(Permissions.COMMAND_HELP))
             .executes(cmd -> {
-                sendLines(cmd.getSource(), Configuration.getMessages().getGeneralMessages().getHelpMessages().getMainHelp(), chatrCommand);
+                sendLines(cmd.getSource(), Configuration.getMessages().getGeneralMessages().getHelpMessages().getMainHelp(), chatrCommand, plugin.getFormatter());
                 return 1;
             })
             .then(LiteralArgumentBuilder
                 .<CommandSource>literal("clear")
                 .executes(cmd -> {
-                    sendLines(cmd.getSource(), Configuration.getMessages().getGeneralMessages().getHelpMessages().getClearHelp(), chatrCommand);
+                    sendLines(cmd.getSource(), Configuration.getMessages().getGeneralMessages().getHelpMessages().getClearHelp(), chatrCommand, plugin.getFormatter());
                     return 1;
                 }).build()
             )
             .then(LiteralArgumentBuilder
                 .<CommandSource>literal("reset")
                 .executes(cmd -> {
-                    sendLines(cmd.getSource(), Configuration.getMessages().getGeneralMessages().getHelpMessages().getResethelp(), chatrCommand);
+                    sendLines(cmd.getSource(), Configuration.getMessages().getGeneralMessages().getHelpMessages().getResethelp(), chatrCommand, plugin.getFormatter());
                     return 1;
                 })
             )
             .then(LiteralArgumentBuilder
                 .<CommandSource>literal("player")
                 .executes(cmd -> {
-                    sendLines(cmd.getSource(), Configuration.getMessages().getGeneralMessages().getHelpMessages().getPlayerHelp(), chatrCommand);
+                    sendLines(cmd.getSource(), Configuration.getMessages().getGeneralMessages().getHelpMessages().getPlayerHelp(), chatrCommand, plugin.getFormatter());
                     return 1;
                 })
             ).build();
     }
 
-    private static LiteralCommandNode<CommandSource> statsCommand(String command){
+    private static LiteralCommandNode<CommandSource> statsCommand(String command, ChatRegulator plugin){
         return LiteralArgumentBuilder
             .<CommandSource>literal(command)
             .requires(src -> src.hasPermission(Permissions.COMMAND_STATS))
             .executes(cmd -> {
-                sendLines(cmd.getSource(), Configuration.getMessages().getGeneralMessages().getStatsFormat());
+                sendLines(cmd.getSource(), Configuration.getMessages().getGeneralMessages().getStatsFormat(), plugin.getFormatter());
                 return 1;
             }).build();
     }
@@ -121,7 +121,7 @@ public final class BrigadierRegulator {
             .<CommandSource>literal(command)
             .requires(src -> src.hasPermission(Permissions.COMMAND_PLAYER))
             .executes(cmd -> {
-                cmd.getSource().sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(Configuration.getMessages().getGeneralMessages().noArgument()));
+                cmd.getSource().sendMessage(plugin.getFormatter().parse(Configuration.getMessages().getGeneralMessages().noArgument(), cmd.getSource()));
                 return 1;
             })
             .then(RequiredArgumentBuilder
@@ -133,14 +133,14 @@ public final class BrigadierRegulator {
                     if(optionalPlayer.isPresent()){
                         InfractionPlayer infractionPlayer = InfractionPlayer.get(optionalPlayer.get());
                         TagResolver placeholders = PlaceholderUtils.getPlaceholders(infractionPlayer);
-                        sendLines(source, Configuration.getMessages().getGeneralMessages().getPlayerFormat(), placeholders);
+                        sendLines(source, Configuration.getMessages().getGeneralMessages().getPlayerFormat(), placeholders, plugin.getFormatter());
                     } else {
                         Optional<InfractionPlayer> opt = plugin.getChatPlayers().stream().filter(p -> p.username().equals(arg)).findAny();
                         if(opt.isPresent()){
                             TagResolver placeholders = PlaceholderUtils.getPlaceholders(opt.get());
-                            sendLines(source, Configuration.getMessages().getGeneralMessages().getPlayerFormat(), placeholders);
+                            sendLines(source, Configuration.getMessages().getGeneralMessages().getPlayerFormat(), placeholders, plugin.getFormatter());
                         } else {
-                            source.sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(
+                            source.sendMessage(plugin.getFormatter().parse(
                                 Configuration.getMessages().getGeneralMessages().playerNotFound(),
                                 Placeholder.unparsed("player", arg)
                             ));
@@ -156,7 +156,7 @@ public final class BrigadierRegulator {
             .<CommandSource>literal(command)
             .requires(src -> src.hasPermission(Permissions.COMMAND_RESET))
             .executes(cmd -> {
-                cmd.getSource().sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(Configuration.getMessages().getGeneralMessages().noArgument()));
+                cmd.getSource().sendMessage(plugin.getFormatter().parse(Configuration.getMessages().getGeneralMessages().noArgument(), cmd.getSource()));
                 return 1;
             })
             .then(RequiredArgumentBuilder
@@ -174,25 +174,25 @@ public final class BrigadierRegulator {
                     String arg = cmd.getArgument("player", String.class);
                     InfractionPlayer p = InfractionPlayer.get(arg);
                     if(p == null){
-                        cmd.getSource().sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(Configuration.getMessages().getGeneralMessages().playerNotFound(), Placeholder.unparsed("player", arg)));
+                        cmd.getSource().sendMessage(plugin.getFormatter().parse(Configuration.getMessages().getGeneralMessages().playerNotFound(), cmd.getSource(), Placeholder.unparsed("player", arg)));
                         return 1;
                     }
-                    resetAll(p, cmd.getSource());
+                    resetAll(p, cmd.getSource(), plugin.getFormatter());
                     return 1;
                 })
-                .then(resetWithPlayerSubcommand("infractions", InfractionType.REGULAR, Permissions.COMMAND_RESET_REGULAR))
-                .then(resetWithPlayerSubcommand("regular", InfractionType.REGULAR, Permissions.COMMAND_RESET_REGULAR))
-                .then(resetWithPlayerSubcommand("flood", InfractionType.FLOOD, Permissions.COMMAND_RESET_FLOOD))
-                .then(resetWithPlayerSubcommand("spam", InfractionType.SPAM, Permissions.COMMAND_RESET_SPAM))
-                .then(resetWithPlayerSubcommand("command", InfractionType.BCOMMAND, Permissions.COMMAND_RESET_BCOMMAND))
-                .then(resetWithPlayerSubcommand("unicode", InfractionType.UNICODE, Permissions.COMMAND_RESET_UNICODE))
-                .then(resetWithPlayerSubcommand("caps", InfractionType.CAPS, Permissions.COMMAND_RESET_CAPS))
-                .then(resetWithPlayerSubcommand("syntax", InfractionType.SYNTAX, Permissions.COMMAND_RESET_SYNTAX))
+                .then(resetWithPlayerSubcommand("infractions", InfractionType.REGULAR, Permissions.COMMAND_RESET_REGULAR, plugin.getFormatter()))
+                .then(resetWithPlayerSubcommand("regular", InfractionType.REGULAR, Permissions.COMMAND_RESET_REGULAR, plugin.getFormatter()))
+                .then(resetWithPlayerSubcommand("flood", InfractionType.FLOOD, Permissions.COMMAND_RESET_FLOOD, plugin.getFormatter()))
+                .then(resetWithPlayerSubcommand("spam", InfractionType.SPAM, Permissions.COMMAND_RESET_SPAM, plugin.getFormatter()))
+                .then(resetWithPlayerSubcommand("command", InfractionType.BCOMMAND, Permissions.COMMAND_RESET_BCOMMAND, plugin.getFormatter()))
+                .then(resetWithPlayerSubcommand("unicode", InfractionType.UNICODE, Permissions.COMMAND_RESET_UNICODE, plugin.getFormatter()))
+                .then(resetWithPlayerSubcommand("caps", InfractionType.CAPS, Permissions.COMMAND_RESET_CAPS, plugin.getFormatter()))
+                .then(resetWithPlayerSubcommand("syntax", InfractionType.SYNTAX, Permissions.COMMAND_RESET_SYNTAX, plugin.getFormatter()))
                 )
             .build();
     }
 
-    private static void resetAll(InfractionPlayer player, Audience source){
+    private static void resetAll(InfractionPlayer player, Audience source, IFormatter formatter){
         player.getViolations().resetViolations(
             InfractionType.SPAM,
             InfractionType.FLOOD,
@@ -202,10 +202,10 @@ public final class BrigadierRegulator {
             InfractionType.CAPS,
             InfractionType.SYNTAX
         );
-        ConfigManager.sendResetMessage(source, InfractionType.NONE, player);
+        ConfigManager.sendResetMessage(source, InfractionType.NONE, player, formatter);
     }
 
-    private  static LiteralCommandNode<CommandSource> resetWithPlayerSubcommand(String subcommand, InfractionType type, String resetPermission){
+    private  static LiteralCommandNode<CommandSource> resetWithPlayerSubcommand(String subcommand, InfractionType type, String resetPermission, IFormatter formatter){
         return LiteralArgumentBuilder
             .<CommandSource>literal(subcommand)
             .requires(p -> p.hasPermission(resetPermission))
@@ -213,11 +213,11 @@ public final class BrigadierRegulator {
                 String arg = cmd.getArgument("player", String.class);
                 InfractionPlayer p = InfractionPlayer.get(arg);
                 if(p == null){
-                    cmd.getSource().sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(Configuration.getMessages().getGeneralMessages().playerNotFound(), Placeholder.unparsed("player", arg)));
+                    cmd.getSource().sendMessage(formatter.parse(Configuration.getMessages().getGeneralMessages().playerNotFound(), cmd.getSource(), Placeholder.unparsed("player", arg)));
                     return 1;
                 }
                 p.getViolations().resetViolations(type);
-                ConfigManager.sendResetMessage(cmd.getSource(), type, p);
+                ConfigManager.sendResetMessage(cmd.getSource(), type, p, formatter);
                 return 1;
             }).build();
     }
@@ -228,7 +228,7 @@ public final class BrigadierRegulator {
             .requires(p -> p.hasPermission(Permissions.COMMAND_CLEAR))
             .executes(cmd -> {
                 plugin.getProxy().sendMessage(Components.SPACES_COMPONENT);
-                cmd.getSource().sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(Configuration.getMessages().getClearMessages().getGlobalMessage()));
+                cmd.getSource().sendMessage(plugin.getFormatter().parse(Configuration.getMessages().getClearMessages().getGlobalMessage()));
                 return 1;
             })
             .then(LiteralArgumentBuilder
@@ -239,13 +239,14 @@ public final class BrigadierRegulator {
                         Player player = (Player)cmd.getSource();
                         player.getCurrentServer().ifPresent(playerServer -> {
                             playerServer.getServer().sendMessage(Components.SPACES_COMPONENT);
-                            player.sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(
+                            player.sendMessage(plugin.getFormatter().parse(
                                 Configuration.getMessages().getClearMessages().getServerMessage(),
+                                player,
                                 Placeholder.unparsed("server", playerServer.getServerInfo().getName())
                             ));
                         });
                     } else {
-                        cmd.getSource().sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(Configuration.getMessages().getGeneralMessages().noArgument()));
+                        cmd.getSource().sendMessage(plugin.getFormatter().parse(Configuration.getMessages().getGeneralMessages().noArgument(), cmd.getSource()));
                     }
                     return 1;
                 })
@@ -260,8 +261,8 @@ public final class BrigadierRegulator {
                         TagResolver serverPlaceholder = Placeholder.unparsed("server", arg);
                         plugin.getProxy().getServer(arg).ifPresentOrElse(serverObjetive -> {
                             serverObjetive.sendMessage(Components.SPACES_COMPONENT);
-                            cmd.getSource().sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(Configuration.getMessages().getClearMessages().getServerMessage(), serverPlaceholder));
-                        }, () -> cmd.getSource().sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(Configuration.getMessages().getClearMessages().getNotFoundServerMessage(), serverPlaceholder)));
+                            cmd.getSource().sendMessage(plugin.getFormatter().parse(Configuration.getMessages().getClearMessages().getServerMessage(), cmd.getSource(), serverPlaceholder));
+                        }, () -> cmd.getSource().sendMessage(plugin.getFormatter().parse(Configuration.getMessages().getClearMessages().getNotFoundServerMessage(), cmd.getSource(), serverPlaceholder)));
                         return 1;
                     }).build()
                 )
@@ -270,7 +271,7 @@ public final class BrigadierRegulator {
                 .<CommandSource>literal("player")
                 .requires(p -> p.hasPermission(Permissions.COMMAND_CLEAR_PLAYER))
                 .executes(cmd -> {
-                    cmd.getSource().sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(Configuration.getMessages().getGeneralMessages().noArgument()));
+                    cmd.getSource().sendMessage(plugin.getFormatter().parse(Configuration.getMessages().getGeneralMessages().noArgument(), cmd.getSource()));
                     return 1;
                 })
                 .then(RequiredArgumentBuilder
@@ -284,8 +285,8 @@ public final class BrigadierRegulator {
                         TagResolver serverPlaceholder = Placeholder.unparsed("player", arg);
                         plugin.getProxy().getPlayer(arg).ifPresentOrElse(playerObjetive -> {
                             playerObjetive.sendMessage(Components.SPACES_COMPONENT);
-                            cmd.getSource().sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(Configuration.getMessages().getClearMessages().getPlayerMessage(), serverPlaceholder));
-                        }, () -> cmd.getSource().sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(Configuration.getMessages().getClearMessages().getNotFoundServerMessage(), serverPlaceholder)));
+                            cmd.getSource().sendMessage(plugin.getFormatter().parse(Configuration.getMessages().getClearMessages().getPlayerMessage(), cmd.getSource(), serverPlaceholder));
+                        }, () -> cmd.getSource().sendMessage(plugin.getFormatter().parse(Configuration.getMessages().getClearMessages().getNotFoundServerMessage(), cmd.getSource(), serverPlaceholder)));
                         return 1;
                     }).build()
                 ).build()
@@ -294,7 +295,7 @@ public final class BrigadierRegulator {
                 .<CommandSource>literal("all")
                 .executes(cmd -> {
                     plugin.getProxy().sendMessage(Components.SPACES_COMPONENT);
-                    cmd.getSource().sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(Configuration.getMessages().getClearMessages().getGlobalMessage()));
+                    cmd.getSource().sendMessage(plugin.getFormatter().parse(Configuration.getMessages().getClearMessages().getGlobalMessage(), cmd.getSource()));
                     return 1;
                 }).build()
             ).build();
@@ -306,7 +307,7 @@ public final class BrigadierRegulator {
             .<CommandSource>literal(command)
             .requires(p -> p.hasPermission(Permissions.COMMAND_RELOAD))
             .executes(cmd -> {
-                cmd.getSource().sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(Configuration.getMessages().getGeneralMessages().getReloadMessage()));
+                cmd.getSource().sendMessage(plugin.getFormatter().parse(Configuration.getMessages().getGeneralMessages().getReloadMessage()));
                 plugin.reloadConfig();
                 return 1;
             }).build();

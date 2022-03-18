@@ -10,9 +10,9 @@ import me.dreamerzero.chatregulator.utils.PlaceholderUtils;
 import me.dreamerzero.chatregulator.enums.Components;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.enums.Permissions;
+import me.dreamerzero.chatregulator.placeholders.formatter.IFormatter;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.title.Title;
@@ -28,15 +28,15 @@ public class ConfigManager {
      * @param result the result of the infraction
      * @param messages the messages
      */
-    public static void sendWarningMessage(InfractionPlayer infractor, Result result, InfractionType type){
+    public static void sendWarningMessage(InfractionPlayer infractor, Result result, InfractionType type, IFormatter formatter){
         String message = type.getMessages().get().getWarningMessage();
         TagResolver placeholder = TagResolver.resolver(
             Placeholder.unparsed("infraction", result.getInfractionString()),
             PlaceholderUtils.getPlaceholders(infractor));
         switch(((MainConfig.Warning)type.getConfig().get()).getWarningType()){
             case TITLE: sendTitle(message, infractor, placeholder); break;
-            case MESSAGE: infractor.sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(message, placeholder)); break;
-            case ACTIONBAR: infractor.sendActionBar(Components.SPECIAL_MINIMESSAGE.deserialize(message, placeholder)); break;
+            case MESSAGE: infractor.sendMessage(formatter.parse(message, infractor.getPlayer(), placeholder)); break;
+            case ACTIONBAR: infractor.sendActionBar(formatter.parse(message, infractor.getPlayer(), placeholder)); break;
         }
     }
 
@@ -87,19 +87,22 @@ public class ConfigManager {
      * @param player the infraction player
      *               whose warnings have been reset
      */
-    public static void sendResetMessage(Audience sender, InfractionType type, InfractionPlayer player){
+    public static void sendResetMessage(Audience sender, InfractionType type, InfractionPlayer player, IFormatter formatter){
         Messages.Config messages = Configuration.getMessages();
-        MiniMessage mm = Components.MESSAGE_MINIMESSAGE;
+        if(sender instanceof InfractionPlayer){
+            InfractionPlayer p = ((InfractionPlayer)sender);
+            if(p.isOnline()) sender = p.getPlayer();
+        }
         TagResolver resolver = PlaceholderUtils.getPlaceholders(player);
         switch(type){
-            case REGULAR: sender.sendMessage(mm.deserialize(messages.getInfractionsMessages().getResetMessage(), resolver)); break;
-            case FLOOD: sender.sendMessage(mm.deserialize(messages.getFloodMessages().getResetMessage(), resolver)); break;
-            case SPAM: sender.sendMessage(mm.deserialize(messages.getSpamMessages().getResetMessage(), resolver)); break;
-            case NONE: sender.sendMessage(mm.deserialize(messages.getGeneralMessages().allReset(), resolver)); break;
-            case BCOMMAND: sender.sendMessage(mm.deserialize(messages.getBlacklistMessages().getResetMessage(), resolver)); break;
-            case UNICODE: sender.sendMessage(mm.deserialize(messages.getUnicodeMessages().getResetMessage(), resolver)); break;
-            case CAPS: sender.sendMessage(mm.deserialize(messages.getCapsMessages().getResetMessage(), resolver)); break;
-            case SYNTAX: sender.sendMessage(mm.deserialize(messages.getSyntaxMessages().getResetMessage(), resolver)); break;
+            case REGULAR: sender.sendMessage(formatter.parse(messages.getInfractionsMessages().getResetMessage(), sender, resolver)); break;
+            case FLOOD: sender.sendMessage(formatter.parse(messages.getFloodMessages().getResetMessage(), sender, resolver)); break;
+            case SPAM: sender.sendMessage(formatter.parse(messages.getSpamMessages().getResetMessage(), sender, resolver)); break;
+            case NONE: sender.sendMessage(formatter.parse(messages.getGeneralMessages().allReset(), sender, resolver)); break;
+            case BCOMMAND: sender.sendMessage(formatter.parse(messages.getBlacklistMessages().getResetMessage(), sender, resolver)); break;
+            case UNICODE: sender.sendMessage(formatter.parse(messages.getUnicodeMessages().getResetMessage(), sender, resolver)); break;
+            case CAPS: sender.sendMessage(formatter.parse(messages.getCapsMessages().getResetMessage(), sender, resolver)); break;
+            case SYNTAX: sender.sendMessage(formatter.parse(messages.getSyntaxMessages().getResetMessage(), sender, resolver)); break;
         }
     }
 }
