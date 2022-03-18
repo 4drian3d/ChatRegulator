@@ -32,7 +32,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 public final class BrigadierRegulator {
     private BrigadierRegulator(){}
 
-    public static void registerCommand(Collection<InfractionPlayer> players){
+    public static void registerCommand(ChatRegulator plugin){
         LiteralCommandNode<CommandSource> commandNode = LiteralArgumentBuilder
             .<CommandSource>literal("chatregulator")
             .requires(src -> src.hasPermission(Permissions.COMMAND))
@@ -46,20 +46,20 @@ public final class BrigadierRegulator {
             .then(infoSubCommand("help"))
             .then(infoSubCommand("info"))
             .then(statsCommand("stats"))
-            .then(playerCommand("player", players))
-            .then(resetCommand("reset", players))
-            .then(clearCommand("clear"))
-            .then(reloadCommand("reload"))
+            .then(playerCommand("player", plugin))
+            .then(resetCommand("reset", plugin))
+            .then(clearCommand("clear", plugin))
+            .then(reloadCommand("reload", plugin))
             .then(LiteralArgumentBuilder
                 .<CommandSource>literal("clear")
                 .executes(cmd -> {
-                    ChatRegulator.getInstance().getProxy().sendMessage(Components.SPACES_COMPONENT);
+                    plugin.getProxy().sendMessage(Components.SPACES_COMPONENT);
                     cmd.getSource().sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(Configuration.getMessages().getClearMessages().getGlobalMessage()));
                     return 1;
                 }).build())
             .build();
 
-        ProxyServer proxy = ChatRegulator.getInstance().getProxy();
+        ProxyServer proxy = plugin.getProxy();
         BrigadierCommand bCommand = new BrigadierCommand(commandNode);
         CommandMeta meta = proxy.getCommandManager().metaBuilder(bCommand).aliases("chatr", "cregulator").build();
         proxy.getCommandManager().register(meta, bCommand);
@@ -116,7 +116,7 @@ public final class BrigadierRegulator {
             }).build();
     }
 
-    private static LiteralCommandNode<CommandSource> playerCommand(String command, Collection<InfractionPlayer> players){
+    private static LiteralCommandNode<CommandSource> playerCommand(String command, ChatRegulator plugin){
         return LiteralArgumentBuilder
             .<CommandSource>literal(command)
             .requires(src -> src.hasPermission(Permissions.COMMAND_PLAYER))
@@ -129,13 +129,13 @@ public final class BrigadierRegulator {
                 .executes(cmd -> {
                     String arg = cmd.getArgument("player", String.class);
                     CommandSource source = cmd.getSource();
-                    Optional<Player> optionalPlayer = ChatRegulator.getInstance().getProxy().getPlayer(arg);
+                    Optional<Player> optionalPlayer = plugin.getProxy().getPlayer(arg);
                     if(optionalPlayer.isPresent()){
                         InfractionPlayer infractionPlayer = InfractionPlayer.get(optionalPlayer.get());
                         TagResolver placeholders = PlaceholderUtils.getPlaceholders(infractionPlayer);
                         sendLines(source, Configuration.getMessages().getGeneralMessages().getPlayerFormat(), placeholders);
                     } else {
-                        Optional<InfractionPlayer> opt = players.stream().filter(p -> p.username().equals(arg)).findAny();
+                        Optional<InfractionPlayer> opt = plugin.getChatPlayers().stream().filter(p -> p.username().equals(arg)).findAny();
                         if(opt.isPresent()){
                             TagResolver placeholders = PlaceholderUtils.getPlaceholders(opt.get());
                             sendLines(source, Configuration.getMessages().getGeneralMessages().getPlayerFormat(), placeholders);
@@ -151,7 +151,7 @@ public final class BrigadierRegulator {
             .build();
     }
 
-    private static LiteralCommandNode<CommandSource> resetCommand(String command, Collection<InfractionPlayer> players){
+    private static LiteralCommandNode<CommandSource> resetCommand(String command, ChatRegulator plugin){
         return LiteralArgumentBuilder
             .<CommandSource>literal(command)
             .requires(src -> src.hasPermission(Permissions.COMMAND_RESET))
@@ -163,7 +163,7 @@ public final class BrigadierRegulator {
                 .<CommandSource, String>argument("player", StringArgumentType.word())
                 //TODO: Configurable message
                 .suggests((argument, builder) -> {
-                    players.forEach(p -> builder.suggest(p.username(), VelocityBrigadierMessage.tooltip(
+                    plugin.getChatPlayers().forEach(p -> builder.suggest(p.username(), VelocityBrigadierMessage.tooltip(
                         Component.text("Reset ", NamedTextColor.AQUA)
                         .append(Component.text(p.username(), NamedTextColor.WHITE))
                         .append(Component.text(" infractions"))
@@ -222,12 +222,12 @@ public final class BrigadierRegulator {
             }).build();
     }
 
-    private static LiteralCommandNode<CommandSource> clearCommand(String command){
+    private static LiteralCommandNode<CommandSource> clearCommand(String command, ChatRegulator plugin){
         return LiteralArgumentBuilder
             .<CommandSource>literal(command)
             .requires(p -> p.hasPermission(Permissions.COMMAND_CLEAR))
             .executes(cmd -> {
-                ChatRegulator.getInstance().getProxy().sendMessage(Components.SPACES_COMPONENT);
+                plugin.getProxy().sendMessage(Components.SPACES_COMPONENT);
                 cmd.getSource().sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(Configuration.getMessages().getClearMessages().getGlobalMessage()));
                 return 1;
             })
@@ -252,13 +252,13 @@ public final class BrigadierRegulator {
                 .then(RequiredArgumentBuilder
                     .<CommandSource, String>argument("server", StringArgumentType.word())
                     .suggests((arg, builder) -> {
-                        ChatRegulator.getInstance().getProxy().getAllServers().forEach(sv -> builder.suggest(sv.getServerInfo().getName()));
+                        plugin.getProxy().getAllServers().forEach(sv -> builder.suggest(sv.getServerInfo().getName()));
                         return builder.buildFuture();
                     })
                     .executes(cmd -> {
                         String arg = cmd.getArgument("server", String.class);
                         TagResolver serverPlaceholder = Placeholder.unparsed("server", arg);
-                        ChatRegulator.getInstance().getProxy().getServer(arg).ifPresentOrElse(serverObjetive -> {
+                        plugin.getProxy().getServer(arg).ifPresentOrElse(serverObjetive -> {
                             serverObjetive.sendMessage(Components.SPACES_COMPONENT);
                             cmd.getSource().sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(Configuration.getMessages().getClearMessages().getServerMessage(), serverPlaceholder));
                         }, () -> cmd.getSource().sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(Configuration.getMessages().getClearMessages().getNotFoundServerMessage(), serverPlaceholder)));
@@ -276,13 +276,13 @@ public final class BrigadierRegulator {
                 .then(RequiredArgumentBuilder
                     .<CommandSource, String>argument("player", StringArgumentType.word())
                     .suggests((arg, builder) -> {
-                        ChatRegulator.getInstance().getProxy().getAllPlayers().forEach(p -> builder.suggest(p.getUsername()));
+                        plugin.getProxy().getAllPlayers().forEach(p -> builder.suggest(p.getUsername()));
                         return builder.buildFuture();
                     })
                     .executes(cmd -> {
                         String arg = cmd.getArgument("player", String.class);
                         TagResolver serverPlaceholder = Placeholder.unparsed("player", arg);
-                        ChatRegulator.getInstance().getProxy().getPlayer(arg).ifPresentOrElse(playerObjetive -> {
+                        plugin.getProxy().getPlayer(arg).ifPresentOrElse(playerObjetive -> {
                             playerObjetive.sendMessage(Components.SPACES_COMPONENT);
                             cmd.getSource().sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(Configuration.getMessages().getClearMessages().getPlayerMessage(), serverPlaceholder));
                         }, () -> cmd.getSource().sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(Configuration.getMessages().getClearMessages().getNotFoundServerMessage(), serverPlaceholder)));
@@ -293,7 +293,7 @@ public final class BrigadierRegulator {
             .then(LiteralArgumentBuilder
                 .<CommandSource>literal("all")
                 .executes(cmd -> {
-                    ChatRegulator.getInstance().getProxy().sendMessage(Components.SPACES_COMPONENT);
+                    plugin.getProxy().sendMessage(Components.SPACES_COMPONENT);
                     cmd.getSource().sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(Configuration.getMessages().getClearMessages().getGlobalMessage()));
                     return 1;
                 }).build()
@@ -301,13 +301,13 @@ public final class BrigadierRegulator {
 
     }
 
-    private static LiteralCommandNode<CommandSource> reloadCommand(String command){
+    private static LiteralCommandNode<CommandSource> reloadCommand(String command, ChatRegulator plugin){
         return LiteralArgumentBuilder
             .<CommandSource>literal(command)
             .requires(p -> p.hasPermission(Permissions.COMMAND_RELOAD))
             .executes(cmd -> {
                 cmd.getSource().sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(Configuration.getMessages().getGeneralMessages().getReloadMessage()));
-                ChatRegulator.getInstance().reloadConfig();
+                plugin.reloadConfig();
                 return 1;
             }).build();
     }

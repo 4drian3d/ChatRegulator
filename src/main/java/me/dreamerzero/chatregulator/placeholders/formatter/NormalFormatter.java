@@ -22,5 +22,10 @@ public class NormalFormatter implements IFormatter {
     public Component parse(String string, Player player, TagResolver extraResolver) {
         return MiniMessage.miniMessage().deserialize(string, extraResolver);
     }
+
+    @Override
+    public Component parse(String string, TagResolver extraResolver) {
+        return MiniMessage.miniMessage().deserialize(string, extraResolver);
+    }
     
 }

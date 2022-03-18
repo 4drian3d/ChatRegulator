@@ -14,20 +14,16 @@ import org.jetbrains.annotations.ApiStatus.Internal;
 import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.config.MainConfig;
-import me.dreamerzero.chatregulator.enums.Components;
 import me.dreamerzero.chatregulator.enums.Permissions;
 import me.dreamerzero.chatregulator.modules.CommandSpy;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
 @Internal
 public class SpyListener {
-    private final MiniMessage mm;
     private final ChatRegulator plugin;
 
     public SpyListener(ChatRegulator plugin){
-        this.mm = Components.MESSAGE_MINIMESSAGE;
         this.plugin = plugin;
     }
 
@@ -45,7 +41,7 @@ public class SpyListener {
         final String command = event.getCommand();
 
         if(CommandSpy.shouldAnnounce(source, command, config)){
-            ChatRegulator.getInstance().getProxy().getAllPlayers().stream()
+            plugin.getProxy().getAllPlayers().stream()
                 .filter(PERMISSION_PREDICATE)
                 .forEach(p -> p.sendMessage(
                     plugin.getFormatter().parse(

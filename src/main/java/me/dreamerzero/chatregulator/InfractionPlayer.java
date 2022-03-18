@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import com.velocitypowered.api.proxy.Player;
+import com.velocitypowered.api.proxy.ProxyServer;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -60,8 +61,8 @@ public class InfractionPlayer implements ForwardingAudience.Single{
      * @throws PlayerNotAvailableException
      */
     @Internal
-    InfractionPlayer(@NotNull UUID uuid) throws PlayerNotAvailableException{
-        this.player = ChatRegulator.getInstance().getProxy().getPlayer(uuid).orElseThrow(PlayerNotAvailableException::new);
+    InfractionPlayer(@NotNull UUID uuid, ProxyServer proxy) throws PlayerNotAvailableException{
+        this.player = proxy.getPlayer(uuid).orElseThrow(PlayerNotAvailableException::new);
         this.preLastMessage = " .";
         this.lastMessage = " ";
         this.preLastCommand = " ";
@@ -210,13 +211,12 @@ public class InfractionPlayer implements ForwardingAudience.Single{
      * @return the {@link InfractionPlayer}
      * @throws PlayerNotAvailableException if the player is not available
      */
-    public static @Nullable InfractionPlayer get(final UUID uuid) throws PlayerNotAvailableException{
+    public static @Nullable InfractionPlayer get(final UUID uuid, ProxyServer proxy) throws PlayerNotAvailableException{
         InfractionPlayer p = ChatRegulator.infractionPlayers.get(Objects.requireNonNull(uuid));
         if(p != null){
             return p;
         } else {
-            ChatRegulator plugin = ChatRegulator.getInstance();
-            Optional<Player> optionalPlayer = plugin.getProxy().getPlayer(uuid);
+            Optional<Player> optionalPlayer = proxy.getPlayer(uuid);
             if(optionalPlayer.isPresent()){
                 InfractionPlayer iPlayer = InfractionPlayer.get(optionalPlayer.get());
                 ChatRegulator.infractionPlayers.put(uuid, iPlayer);

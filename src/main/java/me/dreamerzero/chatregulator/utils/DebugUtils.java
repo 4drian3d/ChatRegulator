@@ -22,9 +22,9 @@ public final class DebugUtils {
      * @param detection the detection type
      * @param result the result
      */
-    public static void debug(InfractionPlayer infractor, String string, InfractionType detection, Result result){
+    public static void debug(InfractionPlayer infractor, String string, InfractionType detection, Result result, ChatRegulator plugin){
 
-        final Logger logger = ChatRegulator.getInstance().getLogger();
+        final Logger logger = plugin.getLogger();
         if(logger.isDebugEnabled()){
             logger.debug("User Detected: {}", infractor.username());
             logger.debug("Detection: {}", detection);

@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import me.dreamerzero.chatregulator.InfractionPlayer;
-import me.dreamerzero.chatregulator.RegulatorTest;
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.enums.SourceType;
@@ -31,7 +30,6 @@ public class UnicodeTest {
     static void loadConfig(){
         Logger logger = LoggerFactory.getLogger(UnicodeTest.class);
         Configuration.loadConfig(Path.of("build", "reports", "tests", "test"), logger);
-        RegulatorTest.set(TestsUtils.createRegulator());
     }
 
     @Test
@@ -74,9 +72,9 @@ public class UnicodeTest {
     void realTest(){
         String randomMSG = "ƕƘáéíóú";
         Player player = TestsUtils.createRandomNormalPlayer();
-        assertTrue(GeneralUtils.allowedPlayer(player, Configuration.getConfig().getUnicodeConfig(), InfractionType.UNICODE));
+        assertTrue(GeneralUtils.allowedPlayer(player, InfractionType.UNICODE));
         UnicodeCheck.builder().replaceable(true).build().check(randomMSG).thenAccept(result -> {
-            assertTrue(GeneralUtils.callViolationEvent(InfractionPlayer.get(player), randomMSG, InfractionType.UNICODE, result, SourceType.CHAT, Configuration.getConfig().getUnicodeConfig(), Configuration.getMessages().getUnicodeMessages()));
+            assertTrue(GeneralUtils.callViolationEvent(InfractionPlayer.get(player), randomMSG, InfractionType.UNICODE, result, SourceType.CHAT, TestsUtils.createRegulator()));
             assertTrue(result instanceof IReplaceable);
             IReplaceable replaceableResult = (IReplaceable)result;
             String messageReplaced = replaceableResult.replaceInfraction();

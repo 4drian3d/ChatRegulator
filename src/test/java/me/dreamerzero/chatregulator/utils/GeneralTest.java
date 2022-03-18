@@ -8,7 +8,6 @@ import com.velocitypowered.api.proxy.Player;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 
 public class GeneralTest {
@@ -18,8 +17,8 @@ public class GeneralTest {
         Player opplayer = TestsUtils.createOperatorPlayer("OPPlayer");
         Player notOpPlayer = TestsUtils.createNormalPlayer("NotOpPlayer");
 
-        assertTrue(GeneralUtils.allowedPlayer(notOpPlayer, Configuration.getConfig().getSyntaxConfig(), InfractionType.SYNTAX));
+        assertTrue(GeneralUtils.allowedPlayer(notOpPlayer, InfractionType.SYNTAX));
 
-        assertFalse(GeneralUtils.allowedPlayer(opplayer, Configuration.getConfig().getFloodConfig(), InfractionType.FLOOD));
+        assertFalse(GeneralUtils.allowedPlayer(opplayer, InfractionType.FLOOD));
     }
 }

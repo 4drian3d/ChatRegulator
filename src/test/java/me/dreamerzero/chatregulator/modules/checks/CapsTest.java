@@ -48,9 +48,9 @@ public class CapsTest {
     void realTest(){
         String message = "AAAAAAAAAA";
         Player player = TestsUtils.createRandomNormalPlayer();
-        assertTrue(GeneralUtils.allowedPlayer(player, Configuration.getConfig().getCapsConfig(), InfractionType.CAPS));
+        assertTrue(GeneralUtils.allowedPlayer(player, InfractionType.CAPS));
         CapsCheck.createCheck(message).thenAccept(result -> {
-            assertTrue(GeneralUtils.checkAndCall(InfractionPlayer.get(player), message, InfractionType.CAPS, result, SourceType.CHAT, Configuration.getConfig().getCapsConfig(), Configuration.getMessages().getCapsMessages()));
+            assertTrue(GeneralUtils.checkAndCall(InfractionPlayer.get(player), message, InfractionType.CAPS, result, SourceType.CHAT, TestsUtils.createRegulator()));
             assertTrue(result instanceof IReplaceable);
             String messageReplaced = ((IReplaceable)result).replaceInfraction();
             assertEquals("aaaaaaaaaa", messageReplaced);

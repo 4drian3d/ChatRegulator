@@ -11,6 +11,7 @@ import com.velocitypowered.api.proxy.Player;
 
 import org.jetbrains.annotations.ApiStatus.Internal;
 
+import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.config.MainConfig;
@@ -33,6 +34,10 @@ import me.dreamerzero.chatregulator.enums.SourceType;
  */
 @Internal
 public class CommandListener {
+    private final ChatRegulator plugin;
+    public CommandListener(ChatRegulator plugin){
+        this.plugin = plugin;
+    }
     /**
      * Listener for command detections
      * @param event the command event
@@ -49,33 +54,32 @@ public class CommandListener {
             continuation.resume();
             return;
         }
-        final var messages = Configuration.getMessages();
 
         final AtomicString command = new AtomicString(event.getCommand());
         final Player player = (Player)event.getCommandSource();
         final InfractionPlayer infractionPlayer = InfractionPlayer.get(player);
 
-        if(GeneralUtils.allowedPlayer(player, config.getCommandBlacklistConfig(), InfractionType.BCOMMAND)
+        if(GeneralUtils.allowedPlayer(player, InfractionType.BCOMMAND)
             && CommandCheck.createCheck(command.get()).thenApply(result ->
-                GeneralUtils.checkAndCall(infractionPlayer, command.get(), InfractionType.BCOMMAND, result, SourceType.COMMAND, config.getCommandBlacklistConfig(), messages.getBlacklistMessages()))
+                GeneralUtils.checkAndCall(infractionPlayer, command.get(), InfractionType.BCOMMAND, result, SourceType.COMMAND, plugin))
                 .join().booleanValue()){
                     event.setResult(CommandResult.denied());
                     continuation.resume();
                     return;
                 }
 
-        if(GeneralUtils.allowedPlayer(player, config.getSyntaxConfig(), InfractionType.SYNTAX)
+        if(GeneralUtils.allowedPlayer(player, InfractionType.SYNTAX)
             && SyntaxCheck.createCheck(command.get()).thenApply(result ->
-                GeneralUtils.checkAndCall(infractionPlayer, command.get(), InfractionType.SYNTAX, result, SourceType.COMMAND, config.getCommandBlacklistConfig(), messages.getBlacklistMessages())
+                GeneralUtils.checkAndCall(infractionPlayer, command.get(), InfractionType.SYNTAX, result, SourceType.COMMAND, plugin)
             ).join().booleanValue()){
                 event.setResult(CommandResult.denied());
                 continuation.resume();
                 return;
             }
 
-        if(GeneralUtils.allowedPlayer(player, config.getUnicodeConfig(), InfractionType.UNICODE)
+        if(GeneralUtils.allowedPlayer(player, InfractionType.UNICODE)
             && UnicodeCheck.createCheck(command.get()).thenApply(result -> {
-                if(GeneralUtils.checkAndCall(infractionPlayer, command.get(), InfractionType.UNICODE, result, SourceType.COMMAND, config.getUnicodeConfig(), messages.getUnicodeMessages())){
+                if(GeneralUtils.checkAndCall(infractionPlayer, command.get(), InfractionType.UNICODE, result, SourceType.COMMAND, plugin)){
                     if(config.getUnicodeConfig().isBlockable()){
                         return true;
                     }
@@ -92,9 +96,9 @@ public class CommandListener {
                 return;
             }
 
-        if(GeneralUtils.allowedPlayer(player, config.getCapsConfig(), InfractionType.CAPS)
+        if(GeneralUtils.allowedPlayer(player, InfractionType.CAPS)
             && CapsCheck.createCheck(command.get()).thenApply(result -> {
-                if(GeneralUtils.checkAndCall(infractionPlayer, command.get(),InfractionType.CAPS, result, SourceType.COMMAND, config.getCapsConfig(), messages.getCapsMessages())){
+                if(GeneralUtils.checkAndCall(infractionPlayer, command.get(),InfractionType.CAPS, result, SourceType.COMMAND, plugin)){
                     if(config.getCapsConfig().isBlockable()){
                         return true;
                     }
@@ -112,9 +116,9 @@ public class CommandListener {
             }
 
 
-        if(GeneralUtils.allowedPlayer(player, config.getFloodConfig(), InfractionType.FLOOD)
+        if(GeneralUtils.allowedPlayer(player, InfractionType.FLOOD)
             && FloodCheck.createCheck(command.get()).thenApply(result -> {
-                if(GeneralUtils.checkAndCall(infractionPlayer, command.get(), InfractionType.FLOOD, result, SourceType.COMMAND, config.getFloodConfig(), messages.getFloodMessages())) {
+                if(GeneralUtils.checkAndCall(infractionPlayer, command.get(), InfractionType.FLOOD, result, SourceType.COMMAND, plugin)) {
                     if(config.getFloodConfig().isBlockable()){
                         return true;
                     }
@@ -132,9 +136,9 @@ public class CommandListener {
             }
 
 
-        if(GeneralUtils.allowedPlayer(player, config.getInfractionsConfig(), InfractionType.REGULAR)
+        if(GeneralUtils.allowedPlayer(player, InfractionType.REGULAR)
             && InfractionCheck.createCheck(command.get()).thenApply(result -> {
-                if(GeneralUtils.checkAndCall(infractionPlayer, command.get(), InfractionType.REGULAR, result, SourceType.COMMAND, config.getInfractionsConfig(), messages.getInfractionsMessages())) {
+                if(GeneralUtils.checkAndCall(infractionPlayer, command.get(), InfractionType.REGULAR, result, SourceType.COMMAND, plugin)) {
                     if(config.getInfractionsConfig().isBlockable()){
                         return true;
                     }
@@ -151,10 +155,10 @@ public class CommandListener {
                 return;
             }
 
-        if(GeneralUtils.allowedPlayer(player, config.getSpamConfig(), InfractionType.SPAM)
+        if(GeneralUtils.allowedPlayer(player, InfractionType.SPAM)
             && SpamCheck.createCheck(infractionPlayer, command.get(), SourceType.COMMAND).thenApply(result ->
                 GeneralUtils.spamCheck(result, config, infractionPlayer)
-                && GeneralUtils.callViolationEvent(infractionPlayer, command.get(), InfractionType.SPAM, result, SourceType.COMMAND, config.getSpamConfig(), messages.getSpamMessages())
+                && GeneralUtils.callViolationEvent(infractionPlayer, command.get(), InfractionType.SPAM, result, SourceType.COMMAND, plugin)
             ).join().booleanValue()){
                 event.setResult(CommandResult.denied());
                 continuation.resume();

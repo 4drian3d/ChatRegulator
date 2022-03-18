@@ -1,7 +1,9 @@
 package me.dreamerzero.chatregulator;
 
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -55,11 +57,10 @@ import me.dreamerzero.chatregulator.placeholders.formatter.NormalFormatter;
         )
     }
 )
-public final class ChatRegulator {
+public class ChatRegulator {
     private final ProxyServer server;
     private final Logger logger;
     private final Path path;
-    private static ChatRegulator plugin;
     private IFormatter formatter;
 
     /**
@@ -81,8 +82,6 @@ public final class ChatRegulator {
         this.logger = logger;
     }
 
-    static void setPlugin(final ChatRegulator pl){if(plugin == null) plugin = pl;}
-
     /**
      * Initialization of the plugin
      * @param event the Initialize Event
@@ -90,7 +89,6 @@ public final class ChatRegulator {
     @Subscribe
     @Internal
     public void onProxyInitialization(final ProxyInitializeEvent event) {
-        setPlugin(this);
         server.getConsoleCommandSource().sendMessage(Components.MESSAGE_MINIMESSAGE
             .deserialize("<gradient:#f2709c:#ff9472>ChatRegulator</gradient> <gradient:#DAE2F8:#D4D3DD>has started, have a very nice day</gradient>"));
         Configuration.loadConfig(path, logger);
@@ -107,14 +105,14 @@ public final class ChatRegulator {
         }
 
         this.registerListener(
-            new ChatListener(),
-            new CommandListener(),
+            new ChatListener(this),
+            new CommandListener(this),
             new JoinListener(infractionPlayers),
             new LeaveListener(),
             new ReloadListener(path, logger),
             new SpyListener(this)
         );
-        BrigadierRegulator.registerCommand(infractionPlayers.values());
+        BrigadierRegulator.registerCommand(this);
         checkInfractionPlayersRunnable();
     }
 
@@ -122,14 +120,6 @@ public final class ChatRegulator {
         for(Object event : events){
             server.getEventManager().register(this, event);
         }
-    }
-
-    /**
-     * Get the plugin instance
-     * @return ChatRegulator instance
-     */
-    public static ChatRegulator getInstance(){
-        return plugin;
     }
 
     /**
@@ -152,6 +142,10 @@ public final class ChatRegulator {
 
     public IFormatter getFormatter(){
         return this.formatter;
+    }
+
+    public Collection<InfractionPlayer> getChatPlayers(){
+        return Set.copyOf(infractionPlayers.values());
     }
 
     /**

@@ -3,6 +3,7 @@ package me.dreamerzero.chatregulator.config;
 import java.util.stream.Collectors;
 
 import me.dreamerzero.chatregulator.InfractionPlayer;
+import me.dreamerzero.chatregulator.config.Messages.Alert;
 import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.result.Result;
 import me.dreamerzero.chatregulator.utils.PlaceholderUtils;
@@ -27,12 +28,12 @@ public class ConfigManager {
      * @param result the result of the infraction
      * @param messages the messages
      */
-    public static void sendWarningMessage(InfractionPlayer infractor, Result result, Messages.Warning messages, MainConfig.Warning config){
-        String message = messages.getWarningMessage();
+    public static void sendWarningMessage(InfractionPlayer infractor, Result result, InfractionType type){
+        String message = type.getMessages().get().getWarningMessage();
         TagResolver placeholder = TagResolver.resolver(
             Placeholder.unparsed("infraction", result.getInfractionString()),
             PlaceholderUtils.getPlaceholders(infractor));
-        switch(config.getWarningType()){
+        switch(((MainConfig.Warning)type.getConfig().get()).getWarningType()){
             case TITLE: sendTitle(message, infractor, placeholder); break;
             case MESSAGE: infractor.sendMessage(Components.MESSAGE_MINIMESSAGE.deserialize(message, placeholder)); break;
             case ACTIONBAR: infractor.sendActionBar(Components.SPECIAL_MINIMESSAGE.deserialize(message, placeholder)); break;
@@ -65,27 +66,15 @@ public class ConfigManager {
      * @param infractor the player who committed the infraction
      * @param type the type of infraction
      */
-    public static void sendAlertMessage(InfractionPlayer infractor, InfractionType type){
-        String message = "";
-        Messages.Config messages = Configuration.getMessages();
-        MiniMessage mm = Components.MESSAGE_MINIMESSAGE;
-        switch(type){
-            case FLOOD: message = messages.getFloodMessages().getAlertMessage(); break;
-            case REGULAR: message = messages.getInfractionsMessages().getAlertMessage(); break;
-            case SPAM: message = messages.getSpamMessages().getAlertMessage(); break;
-            case BCOMMAND:  message = messages.getBlacklistMessages().getAlertMessage(); break;
-            case UNICODE: message = messages.getUnicodeMessages().getAlertMessage(); break;
-            case CAPS: message = messages.getCapsMessages().getAlertMessage(); break;
-            case SYNTAX: message = messages.getSyntaxMessages().getAlertMessage(); break;
-            case NONE: return;
-        }
+    public static void sendAlertMessage(InfractionPlayer infractor, InfractionType type, ChatRegulator plugin){
+        String message = ((Alert)type.getMessages().get()).getAlertMessage();
 
-        Audience staff = Audience.audience(ChatRegulator.getInstance().getProxy().getAllPlayers().stream()
+        Audience staff = Audience.audience(plugin.getProxy().getAllPlayers().stream()
                 .filter(op -> op.hasPermission(Permissions.NOTIFICATIONS))
                 .collect(Collectors.toList()));
 
         staff.sendMessage(
-            mm.deserialize(
+            plugin.getFormatter().parse(
                 message,
                 PlaceholderUtils.getPlaceholders(infractor)));
     }

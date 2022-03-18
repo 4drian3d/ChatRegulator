@@ -10,9 +10,6 @@ import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.config.ConfigManager;
 import me.dreamerzero.chatregulator.config.MainConfig;
-import me.dreamerzero.chatregulator.config.Messages;
-import me.dreamerzero.chatregulator.config.MainConfig.Executable;
-import me.dreamerzero.chatregulator.config.MainConfig.Toggleable;
 import me.dreamerzero.chatregulator.modules.Statistics;
 import me.dreamerzero.chatregulator.result.Result;
 import me.dreamerzero.chatregulator.enums.SourceType;
@@ -28,12 +25,11 @@ public final class GeneralUtils {
     /**
      * Check if the player can be checked
      * @param player the infraction player
-     * @param toggleable the toggleable config
      * @param type the infraction type
      * @return if the player can be checked
      */
-    public static boolean allowedPlayer(@NotNull Player player, @NotNull Toggleable toggleable, InfractionType type){
-        return toggleable.enabled() && !Objects.requireNonNull(player).hasPermission(type.bypassPermission());
+    public static boolean allowedPlayer(@NotNull Player player, InfractionType type){
+        return type.getConfig().get().enabled() && !Objects.requireNonNull(player).hasPermission(type.bypassPermission());
     }
 
     /**
@@ -65,10 +61,9 @@ public final class GeneralUtils {
         @NotNull InfractionType infractionType,
         @NotNull Result result,
         @NotNull SourceType stype,
-        MainConfig.Warning config,
-        Messages.Warning messages) {
+        @NotNull ChatRegulator plugin) {
 
-        return ChatRegulator.getInstance().getProxy().getEventManager().fire(stype == SourceType.COMMAND
+        return plugin.getProxy().getEventManager().fire(stype == SourceType.COMMAND
             ? new CommandViolationEvent(player, infractionType, result, string)
             : new ChatViolationEvent(player, infractionType, result, string))
             .thenApplyAsync(violationEvent -> {
@@ -76,13 +71,13 @@ public final class GeneralUtils {
                     if(stype == SourceType.COMMAND) player.lastCommand(string); else player.lastMessage(string);
                     return false;
                 } else {
-                    DebugUtils.debug(player, string, infractionType, result);
+                    DebugUtils.debug(player, string, infractionType, result, plugin);
                     Statistics.getStatistics().addViolationCount(infractionType);
-                    ConfigManager.sendWarningMessage(player, result, messages, config);
-                    ConfigManager.sendAlertMessage(player, infractionType);
+                    ConfigManager.sendWarningMessage(player, result, infractionType);
+                    ConfigManager.sendAlertMessage(player, infractionType, plugin);
 
                     player.getViolations().addViolation(infractionType);
-                    CommandUtils.executeCommand(infractionType, player, (Executable)config);
+                    CommandUtils.executeCommand(infractionType, player, plugin);
                     return true;
                 }
         }).join();
@@ -103,9 +98,8 @@ public final class GeneralUtils {
         @NotNull InfractionType type,
         @NotNull Result result,
         @NotNull SourceType stype,
-        MainConfig.Warning config,
-        Messages.Warning messages){
-        return result.isInfraction() && GeneralUtils.callViolationEvent(player, string, type, result, stype, config, messages);
+        @NotNull ChatRegulator plugin){
+        return result.isInfraction() && GeneralUtils.callViolationEvent(player, string, type, result, stype, plugin);
     }
     private GeneralUtils(){}
 }

@@ -8,6 +8,8 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 public interface IFormatter {
     Component parse(String string);
 
+    Component parse(String string, TagResolver extraResolver);
+
     Component parse(String string, Player player);
 
     Component parse(String string, Player player, TagResolver extraResolver);

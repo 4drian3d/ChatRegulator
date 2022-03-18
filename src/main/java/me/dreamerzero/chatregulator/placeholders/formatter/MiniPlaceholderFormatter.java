@@ -31,5 +31,11 @@ public class MiniPlaceholderFormatter implements IFormatter {
             extraResolver);
         return MiniMessage.miniMessage().deserialize(string, resolver);
     }
+
+    @Override
+    public Component parse(String string, TagResolver extraResolver) {
+        TagResolver global = TagResolver.resolver(MiniPlaceholders.getGlobalPlaceholders(), extraResolver);
+        return MiniMessage.miniMessage().deserialize(string, global);
+    }
     
 }

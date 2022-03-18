@@ -9,10 +9,10 @@ import com.velocitypowered.api.proxy.Player;
 
 import org.jetbrains.annotations.ApiStatus.Internal;
 
+import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.config.MainConfig;
-import me.dreamerzero.chatregulator.config.Messages;
 import me.dreamerzero.chatregulator.modules.Replacer;
 import me.dreamerzero.chatregulator.modules.checks.CapsCheck;
 import me.dreamerzero.chatregulator.modules.checks.FloodCheck;
@@ -31,6 +31,10 @@ import me.dreamerzero.chatregulator.enums.SourceType;
  * ChatRegulator's Chat Listener
  */
 public class ChatListener {
+    private final ChatRegulator plugin;
+    public ChatListener(ChatRegulator plugin){
+        this.plugin = plugin;
+    }
     /**
      * Chat Listener for detections
      * @param event the chat event
@@ -43,14 +47,13 @@ public class ChatListener {
             return;
         }
         final MainConfig.Config config = Configuration.getConfig();
-        final Messages.Config messages = Configuration.getMessages();
         final Player player = event.getPlayer();
         final AtomicString message = new AtomicString(event.getMessage());
         final InfractionPlayer infractor = InfractionPlayer.get(player);
 
-        if(GeneralUtils.allowedPlayer(player, config.getUnicodeConfig(), InfractionType.UNICODE)
+        if(GeneralUtils.allowedPlayer(player, InfractionType.UNICODE)
             && UnicodeCheck.createCheck(message.get()).thenApplyAsync(result -> {
-                if(GeneralUtils.callViolationEvent(infractor, message.get(), InfractionType.UNICODE, result, SourceType.CHAT, config.getUnicodeConfig(), messages.getUnicodeMessages())){
+                if(GeneralUtils.callViolationEvent(infractor, message.get(), InfractionType.UNICODE, result, SourceType.CHAT, plugin)){
                     if(config.getUnicodeConfig().isBlockable()){
                         event.setResult(ChatResult.denied());
                         continuation.resume();
@@ -68,9 +71,9 @@ public class ChatListener {
                 return;
             }
 
-        if(GeneralUtils.allowedPlayer(player, config.getCapsConfig(), InfractionType.CAPS)
+        if(GeneralUtils.allowedPlayer(player, InfractionType.CAPS)
             && CapsCheck.createCheck(message.get()).thenApply(result -> {
-                if(GeneralUtils.checkAndCall(infractor, message.get(), InfractionType.CAPS, result, SourceType.CHAT, config.getCapsConfig(), messages.getCapsMessages())){
+                if(GeneralUtils.checkAndCall(infractor, message.get(), InfractionType.CAPS, result, SourceType.CHAT, plugin)){
                     if(config.getCapsConfig().isBlockable()){
                         event.setResult(ChatResult.denied());
                         continuation.resume();
@@ -88,9 +91,9 @@ public class ChatListener {
             }
 
 
-        if(GeneralUtils.allowedPlayer(player, config.getFloodConfig(), InfractionType.FLOOD)
+        if(GeneralUtils.allowedPlayer(player, InfractionType.FLOOD)
             && FloodCheck.createCheck(message.get()).thenApply(result -> {
-                if(GeneralUtils.checkAndCall(infractor, message.get(), InfractionType.FLOOD, result, SourceType.CHAT, config.getFloodConfig(), messages.getFloodMessages())) {
+                if(GeneralUtils.checkAndCall(infractor, message.get(), InfractionType.FLOOD, result, SourceType.CHAT, plugin)) {
                     if(config.getFloodConfig().isBlockable()){
                         event.setResult(ChatResult.denied());
                         continuation.resume();
@@ -109,9 +112,9 @@ public class ChatListener {
             }
 
 
-        if(GeneralUtils.allowedPlayer(player, config.getInfractionsConfig(),InfractionType.REGULAR)
+        if(GeneralUtils.allowedPlayer(player, InfractionType.REGULAR)
             && InfractionCheck.createCheck(message.get()).thenApply(result -> {
-                if(GeneralUtils.checkAndCall(infractor, message.get(),InfractionType.REGULAR, result, SourceType.CHAT, config.getInfractionsConfig(), messages.getInfractionsMessages())) {
+                if(GeneralUtils.checkAndCall(infractor, message.get(),InfractionType.REGULAR, result, SourceType.CHAT, plugin)) {
                     if(config.getInfractionsConfig().isBlockable()){
                         event.setResult(ChatResult.denied());
                         continuation.resume();
@@ -129,10 +132,10 @@ public class ChatListener {
             }
 
 
-        if(GeneralUtils.allowedPlayer(player, config.getSpamConfig(), InfractionType.SPAM)
+        if(GeneralUtils.allowedPlayer(player, InfractionType.SPAM)
             && SpamCheck.createCheck(infractor, message.get(), SourceType.CHAT).thenApply(result ->
                 GeneralUtils.spamCheck(result, config, infractor)
-                && GeneralUtils.callViolationEvent(infractor, message.get(), InfractionType.SPAM,result, SourceType.CHAT, config.getSpamConfig(), messages.getSpamMessages())
+                && GeneralUtils.callViolationEvent(infractor, message.get(), InfractionType.SPAM,result, SourceType.CHAT, plugin)
             ).join().booleanValue()){
                 event.setResult(ChatResult.denied());
                 continuation.resume();

@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.objects.TestPlayer;
 import me.dreamerzero.chatregulator.objects.TestProxy;
+import me.dreamerzero.chatregulator.placeholders.formatter.IFormatter;
+import me.dreamerzero.chatregulator.placeholders.formatter.NormalFormatter;
 
 public class TestsUtils {
     public static Player createNormalPlayer(String name){
@@ -56,6 +58,11 @@ public class TestsUtils {
         ProxyServer proxy = createProxy();
         Logger logger = LoggerFactory.getLogger(TestsUtils.class);
         Path path = Path.of("build", "reports", "tests", "test");
-        return new ChatRegulator(proxy, logger, path);
+        return new ChatRegulator(proxy, logger, path){
+            @Override
+            public IFormatter getFormatter(){
+                return new NormalFormatter();
+            }
+        };
     }
 }
