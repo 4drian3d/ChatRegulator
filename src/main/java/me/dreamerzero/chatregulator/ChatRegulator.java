@@ -51,7 +51,7 @@ import me.dreamerzero.chatregulator.utils.Constants;
         )
     }
 )
-public class ChatRegulator {
+public final class ChatRegulator {
     private final ProxyServer server;
     private final Logger logger;
     private final Path path;

@@ -10,11 +10,20 @@ repositories {
     mavenLocal()
     maven("https://papermc.io/repo/repository/maven-public/")
     maven("https://repo.fvdh.dev/releases")
+    maven("https://jitpack.io")
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
 }
 
 dependencies {
     shadow("org.spongepowered:configurate-hocon:4.1.2")
     shadow("org.jetbrains:annotations:23.0.0")
+
+    compileOnly("com.github.4drian3d:MiniPlaceholders:20a8c111f5")
 
     compileOnly("net.frankheijden.serverutils:ServerUtils:3.4.0")
 
@@ -33,13 +42,11 @@ dependencies {
 group = "me.dreamerzero.chatregulator"
 version = "3.0.0"
 description = "A global chat regulator for you Velocity network"
-val url = "https://forums.velocitypowered.com/t/chatregulator-a-global-chat-regulator-for-velocity/962"
-val id = "chatregulator"
-
-java.sourceCompatibility = JavaVersion.VERSION_11
+val url: String = "https://forums.velocitypowered.com/t/chatregulator-a-global-chat-regulator-for-velocity/962"
+val id: String = "chatregulator"
 
 blossom{
-	val constants = "src/main/java/me/dreamerzero/chatregulator/utils/Constants.java"
+	val constants: String = "src/main/java/me/dreamerzero/chatregulator/utils/Constants.java"
 	replaceToken("{name}", rootProject.name, constants)
     replaceToken("{id}", id, constants)
 	replaceToken("{version}", version, constants)
@@ -67,6 +74,10 @@ tasks {
         testLogging {
 		    events("passed", "skipped", "failed")
 	    }
+    }
+
+    compileJava {
+        options.release.set(11)
     }
 }
 
