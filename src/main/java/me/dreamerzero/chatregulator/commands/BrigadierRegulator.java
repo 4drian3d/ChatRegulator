@@ -24,8 +24,6 @@ import me.dreamerzero.chatregulator.enums.Permissions;
 import me.dreamerzero.chatregulator.placeholders.formatter.IFormatter;
 import me.dreamerzero.chatregulator.utils.PlaceholderUtils;
 import net.kyori.adventure.audience.Audience;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
@@ -161,12 +159,13 @@ public final class BrigadierRegulator {
             })
             .then(RequiredArgumentBuilder
                 .<CommandSource, String>argument("player", StringArgumentType.word())
-                //TODO: Configurable message
-                .suggests((argument, builder) -> {
+                .suggests((ctx, builder) -> {
                     plugin.getChatPlayers().forEach(p -> builder.suggest(p.username(), VelocityBrigadierMessage.tooltip(
-                        Component.text("Reset ", NamedTextColor.AQUA)
-                        .append(Component.text(p.username(), NamedTextColor.WHITE))
-                        .append(Component.text(" infractions"))
+                        plugin.getFormatter().parse(
+                            Configuration.getMessages().getGeneralMessages().getPlayerSuggestionsFormat(),
+                            p,
+                            Placeholder.unparsed("player", p.username())
+                        )
                     )));
                     return builder.buildFuture();
                 })

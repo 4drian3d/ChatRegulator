@@ -460,6 +460,10 @@ public class Messages {
         @Setting(value = "reload-message")
         private String reloadMessage = "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <aqua>Reloading Configuration";
 
+        @Comment("Suggestion format to send on '/chatr reset' command")
+        @Setting(value = "player-suggestion-format")
+        private String playerSuggestionFormat = "Reset <player> infractions";
+
         @Comment("Help messages")
         @Setting(value = "help-messages")
         private General.Help helpMessages = new General.Help();
@@ -527,6 +531,10 @@ public class Messages {
          */
         public String getReloadMessage(){
             return this.reloadMessage;
+        }
+
+        public String getPlayerSuggestionsFormat(){
+            return this.playerSuggestionFormat;
         }
 
         /**
