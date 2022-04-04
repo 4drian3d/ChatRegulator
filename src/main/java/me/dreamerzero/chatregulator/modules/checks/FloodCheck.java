@@ -44,7 +44,7 @@ public class FloodCheck implements ICheck {
         return CompletableFuture.completedFuture(new PatternReplaceableResult(string, result, realPattern, matcher){
             @Override
             public String replaceInfraction(){
-                return matcher.replaceAll("");
+                return matcher.replaceAll((matchresult) -> Character.toString(matchresult.group().charAt(0)));
             }
         });
     }
