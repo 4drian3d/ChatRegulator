@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -94,6 +95,9 @@ public class Configuration {
         final HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
             .defaultOptions(opts -> opts
                 .shouldCopyDefaults(true)
+                .serializers(builder -> {
+                    builder.register(Pattern.class, new CustomPatternSerializer());
+                })
                 .header(
                     "ChatRegulator | by 4drian3d\n"+
                     "Blacklist of Commands and Regular Expressions\n"+

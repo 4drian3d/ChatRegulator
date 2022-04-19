@@ -1,7 +1,5 @@
 package me.dreamerzero.chatregulator.listener.command;
 
-import java.util.Set;
-
 import com.velocitypowered.api.event.Continuation;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
@@ -170,8 +168,7 @@ public class CommandListener {
     }
 
     private boolean checkIfCanCheck(final String command, final MainConfig.Config config){
-        Set<String> values = config.getCommandsChecked();
-        for(String cmd : values){
+        for(final String cmd : config.getCommandsChecked()){
             if(CommandUtils.isStartingString(command, cmd))
                 return true;
         }

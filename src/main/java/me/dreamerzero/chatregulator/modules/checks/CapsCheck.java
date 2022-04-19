@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.result.Result;
+import net.kyori.adventure.builder.AbstractBuilder;
 import me.dreamerzero.chatregulator.result.ReplaceableResult;
 
 /**
@@ -61,7 +62,7 @@ public class CapsCheck implements ICheck {
     }
 
     /**Caps Check Builder */
-    public static class Builder{
+    public static class Builder implements AbstractBuilder<CapsCheck> {
         private int limit;
         Builder(){}
 
@@ -75,8 +76,11 @@ public class CapsCheck implements ICheck {
             return this;
         }
 
+        @Override
         public CapsCheck build(){
-            return limit == 0 ? new CapsCheck() : new CapsCheck(limit);
+            return limit == 0
+                ? new CapsCheck()
+                : new CapsCheck(limit);
         }
     }
 }

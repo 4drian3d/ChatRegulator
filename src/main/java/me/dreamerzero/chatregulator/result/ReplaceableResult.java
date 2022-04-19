@@ -16,6 +16,6 @@ public class ReplaceableResult extends Result implements IReplaceable {
 
     @Override
     public @Nullable String replaceInfraction() {
-        throw new UnsupportedOperationException("Not implemented");
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 }

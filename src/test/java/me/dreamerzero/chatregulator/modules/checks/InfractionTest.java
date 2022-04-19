@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.nio.file.Path;
+import java.util.regex.Pattern;
 
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.result.IReplaceable;
@@ -34,10 +35,10 @@ public class InfractionTest {
     void replaceMultiple(){
         InfractionCheck iCheck = InfractionCheck.builder()
             .replaceable(true)
-            .blockedStrings(
-                "sh[ilj1y]t",
-                "d[ilj1y]c(k)?",
-                "f[uv4]ck"
+            .blockedPatterns(
+                Pattern.compile("sh[ilj1y]t", Pattern.CASE_INSENSITIVE),
+                Pattern.compile("d[ilj1y]ck", Pattern.CASE_INSENSITIVE),
+                Pattern.compile("f[uv4]ck", Pattern.CASE_INSENSITIVE)
             )
             .build();
 

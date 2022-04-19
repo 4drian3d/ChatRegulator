@@ -12,6 +12,7 @@ import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.result.ReplaceableResult;
 import me.dreamerzero.chatregulator.result.Result;
+import net.kyori.adventure.builder.AbstractBuilder;
 
 /**
  * Check for invalid characters
@@ -90,7 +91,7 @@ public class UnicodeCheck implements ICheck {
         return new UnicodeCheck.Builder();
     }
 
-    public static class Builder{
+    public static class Builder implements AbstractBuilder<UnicodeCheck> {
         private char[] chars;
         private boolean replaceable;
 
@@ -116,8 +117,11 @@ public class UnicodeCheck implements ICheck {
             return this;
         }
 
+        @Override
         public UnicodeCheck build(){
-            return chars == null ? new UnicodeCheck(!replaceable) : new UnicodeCheck(chars, !replaceable);
+            return chars == null
+                ? new UnicodeCheck(!replaceable)
+                : new UnicodeCheck(chars, !replaceable);
         }
 
     }

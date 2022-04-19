@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.result.Result;
+import net.kyori.adventure.builder.AbstractBuilder;
 import me.dreamerzero.chatregulator.result.PatternReplaceableResult;
 
 /**
@@ -63,7 +64,7 @@ public class FloodCheck implements ICheck {
     }
 
     /**Floood Check Builder */
-    public static class Builder{
+    public static class Builder implements AbstractBuilder<FloodCheck> {
         private Pattern pattern;
 
         Builder(){}
@@ -85,6 +86,7 @@ public class FloodCheck implements ICheck {
             return this;
         }
 
+        @Override
         public @NotNull FloodCheck build(){
             return pattern == null ? new FloodCheck() : new FloodCheck(pattern);
         }
