@@ -15,7 +15,7 @@ import me.dreamerzero.chatregulator.utils.CommandUtils;
 /**
  * Check for verification of executed commands
  */
-public class CommandCheck implements ICheck {
+public final class CommandCheck implements ICheck {
     private final Collection<String> blockedCommands;
 
     private CommandCheck(){
@@ -29,7 +29,7 @@ public class CommandCheck implements ICheck {
     //TODO: Add return type to all checks
     @Override
     public CompletableFuture<Result> check(@NotNull String string) {
-        for (String blockedCommand : blockedCommands){
+        for (final String blockedCommand : blockedCommands){
             if(CommandUtils.isStartingString(string, blockedCommand)){
                 return CompletableFuture.completedFuture(new Result(string, true));
             }

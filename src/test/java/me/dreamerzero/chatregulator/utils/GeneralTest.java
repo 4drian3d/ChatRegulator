@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import me.dreamerzero.chatregulator.enums.InfractionType;
 
-public class GeneralTest {
+public final class GeneralTest {
     @Test
     @DisplayName("General Tests")
     void generaltest(){

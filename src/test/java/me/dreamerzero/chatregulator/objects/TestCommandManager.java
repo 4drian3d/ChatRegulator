@@ -13,7 +13,7 @@ import com.velocitypowered.api.command.CommandSource;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-public class TestCommandManager implements CommandManager {
+public final class TestCommandManager implements CommandManager {
 
     @Override
     public CompletableFuture<Boolean> executeAsync(CommandSource arg0, String arg1) {

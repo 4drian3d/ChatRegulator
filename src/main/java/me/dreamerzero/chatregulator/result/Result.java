@@ -37,8 +37,7 @@ public class Result {
     @Override
     public boolean equals(Object o){
         if(this == o) return true;
-        if(o == null || o.getClass() != this.getClass()) return false;
-        Result that = (Result) o;
+        if(!(o instanceof Result that)) return false;
         return that.infractionString.equals(this.infractionString) && that.infricted == this.infricted;
     }
 

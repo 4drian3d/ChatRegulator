@@ -9,7 +9,7 @@ import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.result.Result;
 import me.dreamerzero.chatregulator.utils.CommandUtils;
 
-public class SyntaxCheck implements ICheck{
+public final class SyntaxCheck implements ICheck{
     private static final SyntaxCheck cachedCheck = new SyntaxCheck();
 
     @Override

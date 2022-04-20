@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import me.dreamerzero.chatregulator.config.Configuration;
 
-public class CommandsTest {
+public final class CommandsTest {
     @Test
     @DisplayName("First Argument")
     void testFirstArgument(){

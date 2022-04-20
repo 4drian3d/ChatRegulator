@@ -8,7 +8,7 @@ import java.util.Set;
 import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.plugin.PluginManager;
 
-public class TestPluginManager implements PluginManager {
+public final class TestPluginManager implements PluginManager {
 
     @Override
     public void addToClasspath(Object arg0, Path arg1) {

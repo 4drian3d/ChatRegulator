@@ -13,7 +13,7 @@ import me.dreamerzero.chatregulator.modules.checks.FloodCheck;
 
 /**Proxy reload listener */
 @Internal
-public class ReloadListener {
+public final class ReloadListener {
     private final Path path;
     private final Logger logger;
     public ReloadListener(Path path, Logger logger){

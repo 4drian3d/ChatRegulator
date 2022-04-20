@@ -13,7 +13,7 @@ import me.dreamerzero.chatregulator.result.Result;
 /**
  * Detection of command/message spamming
  */
-public class SpamCheck implements ICheck {
+public final class SpamCheck implements ICheck {
     private final InfractionPlayer infractionPlayer;
     private final SourceType type;
 

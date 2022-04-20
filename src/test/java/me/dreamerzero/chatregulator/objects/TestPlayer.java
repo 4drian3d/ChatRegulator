@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
 
-public class TestPlayer implements Player{
+public final class TestPlayer implements Player{
     private final boolean op;
     private final String name;
     private final UUID uuid = UUID.randomUUID();

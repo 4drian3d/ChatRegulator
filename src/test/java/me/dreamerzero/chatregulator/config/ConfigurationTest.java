@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import me.dreamerzero.chatregulator.enums.ControlType;
 import me.dreamerzero.chatregulator.enums.WarningType;
 
-public class ConfigurationTest {
+public final class ConfigurationTest {
     @BeforeAll
     static void loadConfig(){
         Logger logger = LoggerFactory.getLogger(ConfigurationTest.class);

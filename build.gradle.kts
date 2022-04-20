@@ -15,7 +15,7 @@ repositories {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(11))
+        languageVersion.set(JavaLanguageVersion.of(16))
     }
 }
 
@@ -23,7 +23,7 @@ dependencies {
     shadow("org.spongepowered:configurate-hocon:4.1.2")
     shadow("org.jetbrains:annotations:23.0.0")
 
-    compileOnly("com.github.4drian3d:MiniPlaceholders:20a8c111f5")
+    compileOnly("com.github.4drian3d:MiniPlaceholders:1.1.1")
 
     compileOnly("net.frankheijden.serverutils:ServerUtils:3.4.0")
 
@@ -77,7 +77,7 @@ tasks {
     }
 
     compileJava {
-        options.release.set(11)
+        options.release.set(16)
     }
 }
 

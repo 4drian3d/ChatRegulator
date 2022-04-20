@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import me.dreamerzero.chatregulator.config.Configuration;
 
-public class ReplacerTest {
+public final class ReplacerTest {
     @BeforeAll
     static void loadConfig(){
         Logger logger = LoggerFactory.getLogger(ReplacerTest.class);

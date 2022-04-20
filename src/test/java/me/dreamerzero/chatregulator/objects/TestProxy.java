@@ -24,7 +24,7 @@ import com.velocitypowered.api.util.ProxyVersion;
 import me.dreamerzero.chatregulator.utils.TestsUtils;
 import net.kyori.adventure.text.Component;
 
-public class TestProxy implements ProxyServer {
+public final class TestProxy implements ProxyServer {
     private PluginManager pManager;
     private EventManager eManager;
     private CommandManager cManager;

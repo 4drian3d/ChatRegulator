@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class CommandTest {
+public final class CommandTest {
     @Test
     @DisplayName("Command Check")
     void blockedCommandsTest(){

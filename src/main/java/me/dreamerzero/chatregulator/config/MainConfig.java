@@ -9,7 +9,7 @@ import org.spongepowered.configurate.objectmapping.meta.Setting;
 import me.dreamerzero.chatregulator.enums.ControlType;
 import me.dreamerzero.chatregulator.enums.WarningType;
 
-public class MainConfig {
+public final class MainConfig {
     private MainConfig(){}
     /**Main Configuration */
     @ConfigSerializable
@@ -45,7 +45,9 @@ public class MainConfig {
         @Comment("Syntax blocker configuration")
         private Syntax syntax = new Syntax();
 
-        @Comment("Specify in which commands you want the violations to be detected\nI recommend you to put chat commands, for example: /tell")
+        @Comment("""
+            Specify in which commands you want the violations to be detected
+            I recommend you to put chat commands, for example: /tell""")
         @Setting(value = "commands-checked")
         private Set<String> commandsChecked = Set.of(
             "tell",
@@ -152,7 +154,9 @@ public class MainConfig {
         @Comment("Enables command blocking")
         private boolean enabled = true;
 
-        @Comment("Sets the form of warning\nAvailable options: TITLE, ACTIONBAR, MESSAGE")
+        @Comment("""
+            Sets the form of warning
+            Available options: TITLE, ACTIONBAR, MESSAGE""")
         @Setting(value = "warning-type")
         private WarningType warningType = WarningType.MESSAGE;
 
@@ -185,15 +189,17 @@ public class MainConfig {
         @Comment("Enable violation checking in chat and commands")
         private boolean enabled = true;
 
-        @Comment("Sets the form of warning\nAvailable options: TITLE, ACTIONBAR, MESSAGE")
+        @Comment("""
+            Sets the form of warning
+            Available options: TITLE, ACTIONBAR, MESSAGE""")
         @Setting(value = "warning-type")
         private WarningType warningType = WarningType.MESSAGE;
 
-        @Comment("Sets the control format\nAvailable options: BLOCK, REPLACE")
+        @Comment("""
+            Sets the control format
+            Available options: BLOCK, REPLACE""")
         @Setting(value = "control-type")
         private ControlType controlType = ControlType.BLOCK;
-
-        
 
         @Comment("Commands to be executed in the regular infraction module")
         private Infractions.Commands commands = new Infractions.Commands();
@@ -226,14 +232,20 @@ public class MainConfig {
     /**Flood Configuration */
     @ConfigSerializable
     public static class Flood implements Toggleable, Warning, Controllable, Executable {
-        @Comment("Enable flood check in the chat\n(e.g.: \"aaaaaaaa\")")
+        @Comment("""
+            Enable flood check in the chat
+            (e.g.: \"aaaaaaaa\")""")
         private boolean enabled = true;
 
-        @Comment("Sets the form of warning\nAvailable options: TITLE, ACTIONBAR, MESSAGE")
+        @Comment("""
+            Sets the form of warning
+            Available options: TITLE, ACTIONBAR, MESSAGE""")
         @Setting(value = "warning-type")
         private WarningType warningType = WarningType.MESSAGE;
 
-        @Comment("Sets the control format\nAvailable options: BLOCK, REPLACE")
+        @Comment("""
+            Sets the control format
+            Available options: BLOCK, REPLACE""")
         @Setting(value = "control-type")
         private ControlType controlType = ControlType.BLOCK;
 
@@ -283,7 +295,9 @@ public class MainConfig {
         @Comment("Enable the spam module")
         private boolean enabled = true;
 
-        @Comment("Sets the form of warning\nAvailable options: TITLE, ACTIONBAR, MESSAGE")
+        @Comment("""
+            Sets the form of warning
+            Available options: TITLE, ACTIONBAR, MESSAGE""")
         @Setting(value = "warning-type")
         private WarningType warningType = WarningType.MESSAGE;
 
@@ -345,11 +359,15 @@ public class MainConfig {
         @Comment("Enable the Unicode Module")
         private boolean enabled = true;
 
-        @Comment("Sets the form of warning\nAvailable options: TITLE, ACTIONBAR, MESSAGE")
+        @Comment("""
+            Sets the form of warning
+            Available options: TITLE, ACTIONBAR, MESSAGE""")
         @Setting(value = "warning-type")
         private WarningType warningType = WarningType.MESSAGE;
 
-        @Comment("Sets the control format\nAvailable options: BLOCK, REPLACE")
+        @Comment("""
+            Sets the control format
+            Available options: BLOCK, REPLACE""")
         @Setting(value = "control-type")
         private ControlType controlType = ControlType.BLOCK;
 
@@ -411,11 +429,15 @@ public class MainConfig {
         @Comment("Enable the Caps limit Module")
         private boolean enabled = true;
 
-        @Comment("Sets the control format\nAvailable options: BLOCK, REPLACE")
+        @Comment("""
+            Sets the control format
+            Available options: BLOCK, REPLACE""")
         @Setting(value = "control-type")
         private ControlType controlType = ControlType.BLOCK;
 
-        @Comment("Sets the form of warning\nAvailable options: TITLE, ACTIONBAR, MESSAGE")
+        @Comment("""
+            Sets the form of warning
+            Available options: TITLE, ACTIONBAR, MESSAGE""")
         @Setting(value = "warning-type")
         private WarningType warningType = WarningType.MESSAGE;
 
@@ -461,7 +483,9 @@ public class MainConfig {
         @Comment("Enable the Syntax blocker Module")
         private boolean enabled = true;
 
-        @Comment("Sets the form of warning\nAvailable options: TITLE, ACTIONBAR, MESSAGE")
+        @Comment("""
+            Sets the form of warning
+            Available options: TITLE, ACTIONBAR, MESSAGE""")
         @Setting(value = "warning-type")
         private WarningType warningType = WarningType.MESSAGE;
 

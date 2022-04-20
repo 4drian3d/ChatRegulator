@@ -5,7 +5,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
-public class NormalFormatter implements IFormatter {
+public final class NormalFormatter implements IFormatter {
 
     @Override
     public Component parse(String string) {
@@ -26,5 +26,5 @@ public class NormalFormatter implements IFormatter {
     public Component parse(String string, TagResolver extraResolver) {
         return MiniMessage.miniMessage().deserialize(string, extraResolver);
     }
-    
+
 }

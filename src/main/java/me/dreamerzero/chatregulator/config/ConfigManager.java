@@ -20,7 +20,7 @@ import net.kyori.adventure.title.Title;
 /**
  * Utilities for using the configuration paths in an orderly manner
  */
-public class ConfigManager {
+public final class ConfigManager {
     private ConfigManager(){}
     /**
      * Send a message of some kind to the offender.
@@ -89,20 +89,19 @@ public class ConfigManager {
      */
     public static void sendResetMessage(Audience sender, InfractionType type, InfractionPlayer player, IFormatter formatter){
         Messages.Config messages = Configuration.getMessages();
-        if(sender instanceof InfractionPlayer){
-            InfractionPlayer p = ((InfractionPlayer)sender);
+        if(sender instanceof InfractionPlayer p){
             if(p.isOnline()) sender = p.getPlayer();
         }
-        TagResolver resolver = PlaceholderUtils.getPlaceholders(player);
-        switch(type){
-            case REGULAR: sender.sendMessage(formatter.parse(messages.getInfractionsMessages().getResetMessage(), sender, resolver)); break;
-            case FLOOD: sender.sendMessage(formatter.parse(messages.getFloodMessages().getResetMessage(), sender, resolver)); break;
-            case SPAM: sender.sendMessage(formatter.parse(messages.getSpamMessages().getResetMessage(), sender, resolver)); break;
-            case NONE: sender.sendMessage(formatter.parse(messages.getGeneralMessages().allReset(), sender, resolver)); break;
-            case BCOMMAND: sender.sendMessage(formatter.parse(messages.getBlacklistMessages().getResetMessage(), sender, resolver)); break;
-            case UNICODE: sender.sendMessage(formatter.parse(messages.getUnicodeMessages().getResetMessage(), sender, resolver)); break;
-            case CAPS: sender.sendMessage(formatter.parse(messages.getCapsMessages().getResetMessage(), sender, resolver)); break;
-            case SYNTAX: sender.sendMessage(formatter.parse(messages.getSyntaxMessages().getResetMessage(), sender, resolver)); break;
-        }
+        final TagResolver resolver = PlaceholderUtils.getPlaceholders(player);
+        sender.sendMessage(switch(type){
+            case REGULAR -> formatter.parse(messages.getInfractionsMessages().getResetMessage(), sender, resolver);
+            case FLOOD -> formatter.parse(messages.getFloodMessages().getResetMessage(), sender, resolver);
+            case SPAM -> formatter.parse(messages.getSpamMessages().getResetMessage(), sender, resolver);
+            case NONE -> formatter.parse(messages.getGeneralMessages().allReset(), sender, resolver);
+            case BCOMMAND -> formatter.parse(messages.getBlacklistMessages().getResetMessage(), sender, resolver);
+            case UNICODE -> formatter.parse(messages.getUnicodeMessages().getResetMessage(), sender, resolver);
+            case CAPS -> formatter.parse(messages.getCapsMessages().getResetMessage(), sender, resolver);
+            case SYNTAX -> formatter.parse(messages.getSyntaxMessages().getResetMessage(), sender, resolver);
+        });
     }
 }

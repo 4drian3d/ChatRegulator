@@ -29,8 +29,8 @@ public final class DebugUtils {
             logger.debug("User Detected: {}", infractor.username());
             logger.debug("Detection: {}", detection);
             logger.debug("String: {}", string);
-            if(result instanceof PatternResult){
-                Pattern pattern = ((PatternResult)result).getPattern();
+            if(result instanceof PatternResult patternResult){
+                final Pattern pattern = patternResult.getPattern();
                 if(pattern != null)
                     logger.debug("Pattern: {}", pattern.pattern());
             }

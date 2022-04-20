@@ -7,7 +7,7 @@ import java.util.concurrent.CompletableFuture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class StringTest {
+public final class StringTest {
     @Test
     @DisplayName("AtomicString Basic Test")
     void testString(){

@@ -25,7 +25,7 @@ import me.dreamerzero.chatregulator.result.Result;
 import me.dreamerzero.chatregulator.utils.GeneralUtils;
 import me.dreamerzero.chatregulator.utils.TestsUtils;
 
-public class UnicodeTest {
+public final class UnicodeTest {
     @BeforeAll
     static void loadConfig(){
         Logger logger = LoggerFactory.getLogger(UnicodeTest.class);

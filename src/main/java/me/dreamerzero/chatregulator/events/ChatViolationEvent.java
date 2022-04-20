@@ -8,7 +8,7 @@ import me.dreamerzero.chatregulator.enums.InfractionType;
 /**
  * Event fired when recognizing an infraction in the chat of a player
  */
-public class ChatViolationEvent extends ViolationEvent {
+public final class ChatViolationEvent extends ViolationEvent {
     private final String message;
 
     /**

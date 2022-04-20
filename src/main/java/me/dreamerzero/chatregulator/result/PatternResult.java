@@ -47,14 +47,13 @@ public class PatternResult extends Result {
     @Override
     public boolean equals(Object o){
         if(this == o) return true;
-        if(o == null || o.getClass() != this.getClass()) return false;
-        PatternResult that = (PatternResult) o;
+        if(!(o instanceof PatternResult that)) return false;
         return that.getInfractionString().equals(this.getInfractionString()) && that.isInfraction() == this.isInfraction();
     }
 
     @Override
     public int hashCode(){
-        return Objects.hash(this.getInfractionString(), this.isInfraction());
+        return Objects.hash(this.getInfractionString());
     }
 
     @Override

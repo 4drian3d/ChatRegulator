@@ -13,7 +13,7 @@ import net.frankheijden.serverutils.velocity.events.VelocityPluginEnableEvent;
  * ServerUtils Listener in case ChatRegulator is reloaded
  */
 @Internal
-public class PluginListener {
+public final class PluginListener {
     private final Logger logger;
     private static final String PLNAME = "chatregulator";
     /**

@@ -9,7 +9,7 @@ import me.dreamerzero.chatregulator.utils.CommandUtils;
 /**
  * Command Spy utils
  */
-public class CommandSpy {
+public final class CommandSpy {
     private CommandSpy(){}
 
     /**

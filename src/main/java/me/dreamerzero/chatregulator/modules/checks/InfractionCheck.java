@@ -20,7 +20,7 @@ import me.dreamerzero.chatregulator.result.ReplaceableResult;
 /**
  * Utilities for the detection of restringed words
  */
-public class InfractionCheck implements ICheck {
+public final class InfractionCheck implements ICheck {
     private final Collection<Pattern> blockedWords;
     private final boolean blockable;
 

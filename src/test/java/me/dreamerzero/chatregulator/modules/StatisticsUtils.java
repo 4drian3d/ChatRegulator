@@ -2,7 +2,7 @@ package me.dreamerzero.chatregulator.modules;
 
 import me.dreamerzero.chatregulator.enums.InfractionType;
 
-public class StatisticsUtils {
+public final class StatisticsUtils {
     public static void resetStatistics(){
         Statistics.getStatistics().resetViolationCount();
     }

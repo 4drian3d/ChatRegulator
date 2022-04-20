@@ -24,7 +24,7 @@ import net.kyori.adventure.audience.ForwardingAudience;
  * be assigned in order to be sanctioned correctly.
  * To get the real player, check {@link #getPlayer()}
  */
-public class InfractionPlayer implements ForwardingAudience.Single{
+public final class InfractionPlayer implements ForwardingAudience.Single{
     private final Player player;
     private String preLastMessage;
     private String lastMessage;
@@ -253,8 +253,7 @@ public class InfractionPlayer implements ForwardingAudience.Single{
     @Override
     public boolean equals(Object o){
         if(this==o) return true;
-        if(!(o instanceof InfractionPlayer)) return false;
-        InfractionPlayer other = (InfractionPlayer)o;
+        if(!(o instanceof final InfractionPlayer other)) return false;
         return other.getViolations().equals(this.getViolations()) || other.username.equals(this.username);
     }
 

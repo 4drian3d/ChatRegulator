@@ -17,7 +17,7 @@ import me.dreamerzero.chatregulator.objects.TestProxy;
 import me.dreamerzero.chatregulator.placeholders.formatter.IFormatter;
 import me.dreamerzero.chatregulator.placeholders.formatter.NormalFormatter;
 
-public class TestsUtils {
+public final class TestsUtils {
     public static Player createNormalPlayer(String name){
         Player player = new TestPlayer(name, false);
 

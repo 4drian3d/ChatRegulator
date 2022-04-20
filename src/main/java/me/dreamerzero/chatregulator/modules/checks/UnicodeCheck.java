@@ -17,7 +17,7 @@ import net.kyori.adventure.builder.AbstractBuilder;
 /**
  * Check for invalid characters
  */
-public class UnicodeCheck implements ICheck {
+public final class UnicodeCheck implements ICheck {
     private char[] charscustom = {};
     private final boolean blockable;
     private Predicate<Character> charPredicate = c -> {

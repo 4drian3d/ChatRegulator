@@ -16,7 +16,7 @@ import me.dreamerzero.chatregulator.utils.TestsUtils;
 
 import static me.dreamerzero.chatregulator.enums.InfractionType.*;
 
-public class InfractionPlayerTest {
+public final class InfractionPlayerTest {
 
     @BeforeAll
     static void createPlayer(){

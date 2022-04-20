@@ -16,7 +16,7 @@ import me.dreamerzero.chatregulator.InfractionPlayer;
  * Join Listener for creation of InfractionPlayers
  */
 @Internal
-public class JoinListener {
+public final class JoinListener {
     private final Map<UUID, InfractionPlayer> infractionPlayers;
     @Internal
     /**

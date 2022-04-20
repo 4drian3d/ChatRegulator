@@ -7,6 +7,7 @@ import com.velocitypowered.api.proxy.Player;
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.miniplaceholders.api.Expansion;
+import me.dreamerzero.miniplaceholders.api.utils.TagsUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 
@@ -18,26 +19,30 @@ public final class RegulatorExpansion {
             .audiencePlaceholder("infractions_count", (aud, queue, ctx) -> {
                 InfractionPlayer player = InfractionPlayer.get((Player)aud);
                 String type = queue.popOr(() -> "you need to introduce the infraction type").value();
-                final int count;
-                switch(type.toLowerCase(Locale.ROOT)){
-                    case "flood": count = player.getViolations().getCount(InfractionType.FLOOD); break;
-                    case "spam": count = player.getViolations().getCount(InfractionType.SPAM); break;
-                    case "regular": count = player.getViolations().getCount(InfractionType.REGULAR); break;
-                    case "command": count = player.getViolations().getCount(InfractionType.BCOMMAND); break;
-                    case "unicode": count = player.getViolations().getCount(InfractionType.UNICODE); break;
-                    case "syntax": count = player.getViolations().getCount(InfractionType.SYNTAX); break;
-                    default: count = 0;
-                }
-                return Tag.selfClosingInserting(Component.text(count));
+                return Tag.selfClosingInserting(
+                    Component.text(
+                        player.getViolations().getCount(
+                            switch(type.toLowerCase(Locale.ROOT)){
+                                case "flood" -> InfractionType.FLOOD;
+                                case "spam" -> InfractionType.SPAM;
+                                case "regular" -> InfractionType.REGULAR;
+                                case "command" -> InfractionType.BCOMMAND;
+                                case "unicode" -> InfractionType.UNICODE;
+                                case "syntax" -> InfractionType.SYNTAX;
+                                default -> InfractionType.NONE;
+                            }
+                        )
+                    )
+                );
             })
             .audiencePlaceholder("pre_last_command", (aud, queue, ctx) ->
-                Tag.selfClosingInserting(Component.text(InfractionPlayer.get((Player)aud).preLastCommand())))
+                TagsUtils.staticTag(InfractionPlayer.get((Player)aud).preLastCommand()))
             .audiencePlaceholder("last_command", (aud, queue, ctx) ->
-                Tag.selfClosingInserting(Component.text(InfractionPlayer.get((Player)aud).lastCommand())))
-            .audiencePlaceholder("pre_last_message", (aud, queue, ctx) -> 
-                Tag.selfClosingInserting(Component.text(InfractionPlayer.get((Player)aud).preLastMessage())))
-            .audiencePlaceholder("last_message", (aud, queue, ctx) -> 
-                Tag.selfClosingInserting(Component.text(InfractionPlayer.get((Player)aud).lastMessage())))
+                TagsUtils.staticTag(InfractionPlayer.get((Player)aud).lastCommand()))
+            .audiencePlaceholder("pre_last_message", (aud, queue, ctx) ->
+                TagsUtils.staticTag(InfractionPlayer.get((Player)aud).preLastMessage()))
+            .audiencePlaceholder("last_message", (aud, queue, ctx) ->
+                TagsUtils.staticTag(InfractionPlayer.get((Player)aud).lastMessage()))
             .build();
     }
 }

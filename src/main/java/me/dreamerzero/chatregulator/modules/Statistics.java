@@ -87,17 +87,16 @@ public final class Statistics {
      * @return count of the respective infraction type
      */
     public int getViolationCount(@NotNull InfractionType type){
-        switch(type){
-            case SPAM: return this.spamCount;
-            case FLOOD: return this.floodCount;
-            case REGULAR: return this.regularCount;
-            case BCOMMAND: return this.commandCount;
-            case UNICODE: return this.unicodeViolations;
-            case CAPS: return this.capsViolations;
-            case SYNTAX: return this.syntaxViolations;
-            case NONE: return this.globalViolations;
-        }
-        return 0;
+        return switch(type){
+            case SPAM -> this.spamCount;
+            case FLOOD -> this.floodCount;
+            case REGULAR -> this.regularCount;
+            case BCOMMAND -> this.commandCount;
+            case UNICODE -> this.unicodeViolations;
+            case CAPS -> this.capsViolations;
+            case SYNTAX -> this.syntaxViolations;
+            case NONE -> this.globalViolations;
+        };
     }
 
     void resetViolationCount(){
@@ -113,14 +112,14 @@ public final class Statistics {
 
     void setViolationCount(InfractionType type, int amount){
         switch(type){
-            case SPAM: this.spamCount = amount; break;
-            case FLOOD: this.floodCount = amount; break;
-            case REGULAR: this.regularCount = amount; break;
-            case BCOMMAND: this.commandCount = amount; break;
-            case UNICODE: this.unicodeViolations = amount; break;
-            case CAPS: this.capsViolations = amount; break;
-            case SYNTAX: this.syntaxViolations = amount; break;
-            case NONE: break;
+            case SPAM -> this.spamCount = amount;
+            case FLOOD -> this.floodCount = amount;
+            case REGULAR -> this.regularCount = amount;
+            case BCOMMAND -> this.commandCount = amount;
+            case UNICODE -> this.unicodeViolations = amount;
+            case CAPS -> this.capsViolations = amount;
+            case SYNTAX -> this.syntaxViolations = amount;
+            case NONE -> {}
         }
         this.globalViolations = this.spamCount + this.floodCount + this.regularCount + this.commandCount + this.unicodeViolations + this.capsViolations + this.syntaxViolations;
     }

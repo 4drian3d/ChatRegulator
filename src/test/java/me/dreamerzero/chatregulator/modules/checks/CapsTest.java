@@ -22,7 +22,7 @@ import me.dreamerzero.chatregulator.result.IReplaceable;
 import me.dreamerzero.chatregulator.utils.GeneralUtils;
 import me.dreamerzero.chatregulator.utils.TestsUtils;
 
-public class CapsTest {
+public final class CapsTest {
     @BeforeAll
     static void loadConfig(){
         Logger logger = LoggerFactory.getLogger(InfractionTest.class);

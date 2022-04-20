@@ -8,7 +8,7 @@ import java.util.regex.PatternSyntaxException;
 import org.spongepowered.configurate.serialize.ScalarSerializer;
 import org.spongepowered.configurate.serialize.SerializationException;
 
-public class CustomPatternSerializer extends ScalarSerializer<Pattern> {
+public final class CustomPatternSerializer extends ScalarSerializer<Pattern> {
     CustomPatternSerializer() {
         super(Pattern.class);
     }

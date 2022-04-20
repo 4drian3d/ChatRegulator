@@ -20,7 +20,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
 @Internal
-public class SpyListener {
+public final class SpyListener {
     private final ChatRegulator plugin;
 
     public SpyListener(ChatRegulator plugin){
@@ -32,7 +32,7 @@ public class SpyListener {
         final CommandSource source = event.getCommandSource();
         final MainConfig.CommandSpy config = Configuration.getConfig().getCommandSpyConfig();
         if(!event.getResult().isAllowed()
-            || !(source instanceof Player)
+            || !(source instanceof Player player)
             || !config.enabled()
             || source.hasPermission(Permissions.BYPASS_COMMANDSPY)){
             continuation.resume();
@@ -41,16 +41,17 @@ public class SpyListener {
         final String command = event.getCommand();
 
         if(CommandSpy.shouldAnnounce(source, command, config)){
+            final TagResolver resolver = TagResolver.resolver(
+                Placeholder.unparsed("command", command),
+                Placeholder.unparsed("player", player.getUsername())
+            );
             plugin.getProxy().getAllPlayers().stream()
                 .filter(PERMISSION_PREDICATE)
                 .forEach(p -> p.sendMessage(
                     plugin.getFormatter().parse(
                         Configuration.getMessages().getCommandSpyMessages().getMessage(),
                         p,
-                        TagResolver.resolver(
-                            Placeholder.unparsed("command", command),
-                            Placeholder.unparsed("player", ((Player)source).getUsername())
-                        )
+                        resolver
                     )
                 ));
         }

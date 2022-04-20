@@ -234,8 +234,7 @@ public final class BrigadierRegulator {
                 .<CommandSource>literal("server")
                 .requires(p -> p.hasPermission(Permissions.COMMAND_CLEAR_SERVER))
                 .executes(cmd -> {
-                    if (cmd.getSource() instanceof Player) {
-                        Player player = (Player)cmd.getSource();
+                    if (cmd.getSource() instanceof final Player player) {
                         player.getCurrentServer().ifPresent(playerServer -> {
                             playerServer.getServer().sendMessage(Components.SPACES_COMPONENT);
                             player.sendMessage(plugin.getFormatter().parse(

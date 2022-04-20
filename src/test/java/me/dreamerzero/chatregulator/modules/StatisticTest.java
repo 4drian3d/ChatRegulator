@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import me.dreamerzero.chatregulator.enums.InfractionType;
 
-public class StatisticTest {
+public final class StatisticTest {
     @Test
     @DisplayName("Global Statistics Test")
     void statisticTest(){

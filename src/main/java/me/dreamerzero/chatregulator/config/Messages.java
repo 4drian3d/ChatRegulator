@@ -7,7 +7,7 @@ import org.spongepowered.configurate.objectmapping.meta.Comment;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
 
 /**ChatRegulator Messages */
-public class Messages {
+public final class Messages {
     private Messages(){}
 
     /**
@@ -133,7 +133,10 @@ public class Messages {
      */
     @ConfigSerializable
     public static class CommandBlacklist implements Warning, Alert, Reset{
-        @Comment("Message to be sent to the offender\nDepending on your warning-type section settings, it will be sent as Title, Actionbar or Message\nIn case you use the Title mode, put a ; to delimit the title and the subtitle")
+        @Comment("""
+            Message to be sent to the offender
+            Depending on your warning-type section settings, it will be sent as Title, Actionbar or Message
+            In case you use the Title mode, put a ; to delimit the title and the subtitle""")
         private String warning = "<red>Hello, it is not allowed to use blocked commands";
 
         @Comment("Message to be sent to staff with chatregulator.notifications permission")
@@ -163,7 +166,10 @@ public class Messages {
      */
     @ConfigSerializable
     public static class Infractions implements Warning, Alert, Reset{
-        @Comment("Message to be sent to the offender\nDepending on your warning-type section settings, it will be sent as Title, Actionbar or Message\nIn case you use the Title mode, put a ; to delimit the title and the subtitle")
+        @Comment("""
+            Message to be sent to the offender
+            Depending on your warning-type section settings, it will be sent as Title, Actionbar or Message
+            In case you use the Title mode, put a ; to delimit the title and the subtitle""")
         private String warning = "<red>Hello, it is not allowed to use dirty words on this server";
 
         @Comment("Message to be sent to staff with chatregulator.notifications permission")
@@ -193,7 +199,10 @@ public class Messages {
      */
     @ConfigSerializable
     public static class Flood implements Warning, Alert, Reset{
-        @Comment("Message to be sent to the offender\nDepending on your warning-type section settings, it will be sent as Title, Actionbar or Message\nIn case you use the Title mode, put a ; to delimit the title and the subtitle")
+        @Comment("""
+            Message to be sent to the offender
+            Depending on your warning-type section settings, it will be sent as Title, Actionbar or Message
+            In case you use the Title mode, put a ; to delimit the title and the subtitle""")
         private String warning = "<red>Hello, it is not allowed to make flood on this server";
 
         @Comment("Message to be sent to staff with chatregulator.notifications permission")
@@ -221,7 +230,10 @@ public class Messages {
     /**Spam Messages */
     @ConfigSerializable
     public static class Spam implements Warning, Alert, Reset{
-        @Comment("Message to be sent to the offender\nDepending on your warning-type section settings, it will be sent as Title, Actionbar or Message\nIn case you use the Title mode, put a ; to delimit the title and the subtitle")
+        @Comment("""
+            Message to be sent to the offender
+            Depending on your warning-type section settings, it will be sent as Title, Actionbar or Message
+            In case you use the Title mode, put a ; to delimit the title and the subtitle""")
         private String warning = "<red>Hello, it is not allowed to make spam on this server";
 
         @Comment("Message to be sent to staff with chatregulator.notifications permission")
@@ -251,7 +263,10 @@ public class Messages {
      */
     @ConfigSerializable
     public static class Unicode implements Warning, Alert, Reset{
-        @Comment("Message to be sent to the offender\nDepending on your warning-type section settings, it will be sent as Title, Actionbar or Message\nIn case you use the Title mode, put a ; to delimit the title and the subtitle")
+        @Comment("""
+            Message to be sent to the offender
+            Depending on your warning-type section settings, it will be sent as Title, Actionbar or Message
+            In case you use the Title mode, put a ; to delimit the title and the subtitle""")
         private String warning = "<red>Hello, it is not allowed to use this symbols";
 
         @Comment("Message to be sent to staff with chatregulator.notifications permission")
@@ -281,7 +296,10 @@ public class Messages {
      */
     @ConfigSerializable
     public static class Caps implements Warning, Alert, Reset{
-        @Comment("Message to be sent to the offender\nDepending on your warning-type section settings, it will be sent as Title, Actionbar or Message\nIn case you use the Title mode, put a ; to delimit the title and the subtitle")
+        @Comment("""
+            Message to be sent to the offender
+            Depending on your warning-type section settings, it will be sent as Title, Actionbar or Message
+            In case you use the Title mode, put a ; to delimit the title and the subtitle""")
         private String warning = "<red>Hello, it is not allowed to use too many caps";
 
         @Comment("Message to be sent to staff with chatregulator.notifications permission")
@@ -309,7 +327,10 @@ public class Messages {
     /**Syntax Messages */
     @ConfigSerializable
     public static class Syntax implements Warning, Alert, Reset{
-        @Comment("Message to be sent to the offender\nDepending on your warning-type section settings, it will be sent as Title, Actionbar or Message\nIn case you use the Title mode, put a ; to delimit the title and the subtitle")
+        @Comment("""
+            Message to be sent to the offender
+            Depending on your warning-type section settings, it will be sent as Title, Actionbar or Message
+            In case you use the Title mode, put a ; to delimit the title and the subtitle""")
         private String warning = "<red>Hello, it is not allowed to use this type of commands";
 
         @Comment("Message to be sent to staff with chatregulator.notifications permission")
@@ -409,8 +430,11 @@ public class Messages {
      */
     @ConfigSerializable
     public static class General{
-        @Comment("Violation statistics message\nThis message will appear when using the \"/chatregulator stats\" command\nAvailable Placeholders: <flood>, <spam>, <regular>, <command>, <unicode>, <caps>")
-        private List<String> stats = List.<String>of(
+        @Comment("""
+            Violation statistics message
+            This message will appear when using the \"/chatregulator stats\" command
+            Available Placeholders: <flood>, <spam>, <regular>, <command>, <unicode>, <caps>. <syntax>""")
+        private List<String> stats = List.of(
             "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
             "<#3B4371>| <red>General Stats</red>",
             "<#3B4371>| <aqua>Regular Infractions:</aqua> <white><regular></white>",
@@ -423,8 +447,11 @@ public class Messages {
             "<#3B4371>|------------------------|"
         );
 
-        @Comment("Player statistics message\nThis message will appear when using the command \"/chatregulator player <someplayer>\"\nAvailable Placeholders: <player>, <flood>, <spam>, <regular>, <unicode>, <caps>")
-        private List<String> player = List.<String>of(
+        @Comment("""
+            Player statistics message
+            This message will appear when using the command \"/chatregulator player <someplayer>\"
+            Available Placeholders: <player>, <flood>, <spam>, <regular>, <unicode>, <caps>, <syntax>""")
+        private List<String> player = List.of(
             "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
             "<#3B4371>| <gold><player></gold> <red>Stats</red>",
             "<#3B4371>| <aqua>Regular Infractions:</aqua> <white><regular></white>",
@@ -552,7 +579,7 @@ public class Messages {
         public static class Help{
             @Comment("Plugin main help message")
             @Setting(value = "main-help")
-            private List<String> main = List.<String>of(
+            private List<String> main = List.of(
                 "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
                 "<#3B4371>| <gold>+ <hover:show_text:'<gradient:#ffd89b:#19547b>Click on a section to view its commands'><gradient:#CAC531:#F3F9A7>Command Help</gradient></hover>",
                 "<#3B4371>| <hover:show_text:'<gradient:#ff4b1f:#ff9068>This command shows you the global statistics of infractions</gradient>'><gradient:#FF5F6D:#FFC371><command> <aqua>stats</aqua></hover>",
@@ -563,7 +590,7 @@ public class Messages {
             );
 
             @Comment("Help message for \"/chatregulator player <player>\" command")
-            private List<String> player = List.<String>of(
+            private List<String> player = List.of(
                 "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
                 "<#3B4371>| <gold>+ <gradient:#CAC531:#F3F9A7>Player Help</gradient>",
                 "<#3B4371>| <click:suggest_command:'/chatr player <player>'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command shows you a player infractions</gradient>'><gradient:#FF5F6D:#FFC371><command> <aqua>player</aqua> <player></hover>",
@@ -571,7 +598,7 @@ public class Messages {
             );
 
             @Comment("Help message for \"/chatregulator reset\" subcommands")
-            private List<String> reset = List.<String>of(
+            private List<String> reset = List.of(
                 "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
                 "<#3B4371>| <gold>+ <gradient:#CAC531:#F3F9A7>Reset Help</gradient>",
                 "<#3B4371>| <click:suggest_command:'/chatr <player> reset'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will reset all infractions of a player</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <green><player> <aqua>reset</aqua></hover>",
@@ -587,7 +614,7 @@ public class Messages {
             );
 
             @Comment("Help message for \"/chatregulator clear\" subcommands")
-            private List<String> clear = List.<String>of(
+            private List<String> clear = List.of(
                 "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
                 "<#3B4371>| <gold>+ <gradient:#CAC531:#F3F9A7>Clear Help</gradient>",
                 "<#3B4371>| <click:suggest_command:'/chatr clear'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will clear the chat of the entire network</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <aqua>clear</aqua></hover>",

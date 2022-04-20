@@ -16,7 +16,9 @@ public final class Blacklist {
      */
     @ConfigSerializable
     public static class Config{
-        @Comment("Sets the expressions to be checked in the\nInfractions module in commands and general chat")
+        @Comment("""
+            Sets the expressions to be checked in the
+            Infractions module in commands and general chat""")
         @Setting(value = "blocked-words")
         private Set<Pattern> blockedPatterns = Set.of(
             Pattern.compile("f(u|v|4)ck", Pattern.CASE_INSENSITIVE),
@@ -31,7 +33,9 @@ public final class Blacklist {
             Pattern.compile("\\$\\{(jndi|log4j|sys|env|main|marker|java|base64|lower|upper|web|docker|kubernetes|spring|jvmrunargs|date|ctx)\\:.*\\}", Pattern.CASE_INSENSITIVE)
         );
 
-        @Comment("Sets the commands that cannot be executed\n(configurable in the command module)")
+        @Comment("""
+            Sets the commands that cannot be executed
+            (configurable in the command module)""")
         @Setting(value = "blocked-commands")
         private Set<String> blockedCommands = Set.of(
             "execute",

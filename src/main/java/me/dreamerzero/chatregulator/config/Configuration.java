@@ -19,7 +19,7 @@ import me.dreamerzero.chatregulator.modules.checks.FloodCheck;
 /**
  * The configuration paths available in the plugin
  */
-public class Configuration {
+public final class Configuration {
     private Configuration(){}
     private static MainConfig.Config config;
     private static Messages.Config messages;
@@ -45,10 +45,10 @@ public class Configuration {
         final HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
             .defaultOptions(opts -> opts
                 .shouldCopyDefaults(true)
-                .header(
-                    "ChatRegulator | by 4drian3d\n "+
-                    "Check the function of each configuration option at\n"+
-                    "https://github.com/4drian3d/ChatRegulator/wiki/Configuration\n"
+                .header("""
+                    ChatRegulator | by 4drian3d
+                    Check the function of each configuration option at
+                    https://github.com/4drian3d/ChatRegulator/wiki/Configuration"""
                 )
             )
             .path(configPath)
@@ -69,12 +69,12 @@ public class Configuration {
         final HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
             .defaultOptions(opts -> opts
                 .shouldCopyDefaults(true)
-                .header(
-                    "ChatRegulator | by 4drian3d\n"+
-                    "To modify the plugin messages and to use the plugin in general,\n"+
-                    "I recommend that you have a basic knowledge of MiniMessage○\n"+
-                    "Guide: https://docs.adventure.kyori.net/minimessage.html#format\n"+
-                    "Spanish Guide: https://gist.github.com/4drian3d/9ccce0ca1774285e38becb09b73728f3"
+                .header("""
+                    ChatRegulator | by 4drian3d
+                    To modify the plugin messages and to use the plugin in general
+                    I recommend that you have a basic knowledge of MiniMessage
+                    Guide: https://docs.adventure.kyori.net/minimessage.html#format
+                    Spanish Guide: https://gist.github.com/4drian3d/9ccce0ca1774285e38becb09b73728f3"""
                 )
             )
             .path(messagesConfig)
@@ -98,12 +98,12 @@ public class Configuration {
                 .serializers(builder -> {
                     builder.register(Pattern.class, new CustomPatternSerializer());
                 })
-                .header(
-                    "ChatRegulator | by 4drian3d\n"+
-                    "Blacklist of Commands and Regular Expressions\n"+
-                    "To test each regular expression, use: \n"+
-                    "https://regex101.com/"+
-                    "If you are using patterns that include '\\', replace them with '\\\\'"
+                .header("""
+                    ChatRegulator | by 4drian3d
+                    Blacklist of Commands and Regular Expressions
+                    To test each regular expression, use:
+                    https://regex101.com/
+                    If you are using patterns that include '\\', replace them with '\\\\'"""
                 )
             )
             .path(blacklistConfig)

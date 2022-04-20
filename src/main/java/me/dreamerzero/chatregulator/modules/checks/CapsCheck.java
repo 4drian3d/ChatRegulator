@@ -15,7 +15,7 @@ import me.dreamerzero.chatregulator.result.ReplaceableResult;
 /**
  * Check for compliance with uppercase character limit in a string
  */
-public class CapsCheck implements ICheck {
+public final class CapsCheck implements ICheck {
     private final int limit;
 
     private CapsCheck(){
@@ -27,14 +27,11 @@ public class CapsCheck implements ICheck {
     }
 
     @Override
-    public CompletableFuture<Result> check(@NotNull String string) {
-        char[] chararray = Objects.requireNonNull(string).toCharArray();
-        int capcount = 0;
-        for(char c : chararray){
-            if(Character.isUpperCase(c)) capcount++;
-        }
-
-        return CompletableFuture.completedFuture(capcount >= this.limit
+    public CompletableFuture<Result> check(final @NotNull String string) {
+        return CompletableFuture.completedFuture(Objects.requireNonNull(string)
+            .chars()
+            .filter(Character::isUpperCase)
+            .count() >= this.limit
             ? new ReplaceableResult(string, true){
                 @Override
                 public String replaceInfraction(){

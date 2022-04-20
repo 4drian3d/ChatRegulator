@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.result.IReplaceable;
 
-public class InfractionTest {
+public final class InfractionTest {
     @BeforeAll
     static void loadConfig(){
         Logger logger = LoggerFactory.getLogger(InfractionTest.class);

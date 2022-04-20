@@ -31,7 +31,7 @@ import me.dreamerzero.chatregulator.enums.SourceType;
  * Detections related to command execution by players
  */
 @Internal
-public class CommandListener {
+public final class CommandListener {
     private final ChatRegulator plugin;
     public CommandListener(ChatRegulator plugin){
         this.plugin = plugin;
@@ -43,7 +43,7 @@ public class CommandListener {
      */
     @Subscribe(order = PostOrder.FIRST)
     public void onCommand(CommandExecuteEvent event, Continuation continuation){
-        if (!(event.getCommandSource() instanceof Player) || !event.getResult().isAllowed()){
+        if (!(event.getCommandSource() instanceof final Player player) || !event.getResult().isAllowed()){
             continuation.resume();
             return;
         }
@@ -54,7 +54,6 @@ public class CommandListener {
         }
 
         final AtomicString command = new AtomicString(event.getCommand());
-        final Player player = (Player)event.getCommandSource();
         final InfractionPlayer infractionPlayer = InfractionPlayer.get(player);
 
         if(GeneralUtils.allowedPlayer(player, InfractionType.BCOMMAND)
@@ -81,8 +80,8 @@ public class CommandListener {
                     if(config.getUnicodeConfig().isBlockable()){
                         return true;
                     }
-                    if(result instanceof IReplaceable){
-                        String commandReplaced = ((IReplaceable)result).replaceInfraction();
+                    if(result instanceof IReplaceable replaceable){
+                        String commandReplaced = replaceable.replaceInfraction();
                         event.setResult(CommandResult.command(commandReplaced));
                         command.set(commandReplaced);
                     }
@@ -100,8 +99,8 @@ public class CommandListener {
                     if(config.getCapsConfig().isBlockable()){
                         return true;
                     }
-                    if(result instanceof IReplaceable) {
-                        String commandReplaced = ((IReplaceable)result).replaceInfraction();
+                    if(result instanceof IReplaceable replaceable) {
+                        String commandReplaced = replaceable.replaceInfraction();
                         event.setResult(CommandResult.command(commandReplaced));
                         command.set(commandReplaced);
                     }
@@ -120,8 +119,8 @@ public class CommandListener {
                     if(config.getFloodConfig().isBlockable()){
                         return true;
                     }
-                    if(result instanceof IReplaceable){
-                        String commandReplaced = ((IReplaceable)result).replaceInfraction();
+                    if(result instanceof IReplaceable replaceable){
+                        String commandReplaced = replaceable.replaceInfraction();
                         event.setResult(CommandResult.command(commandReplaced));
                         command.set(commandReplaced);
                     }
@@ -140,8 +139,8 @@ public class CommandListener {
                     if(config.getInfractionsConfig().isBlockable()){
                         return true;
                     }
-                    if(result instanceof IReplaceable){
-                        String commandReplaced = ((IReplaceable)result).replaceInfraction();
+                    if(result instanceof IReplaceable replaceable){
+                        String commandReplaced = replaceable.replaceInfraction();
                         event.setResult(CommandResult.command(commandReplaced));
                         command.set(commandReplaced);
                     }

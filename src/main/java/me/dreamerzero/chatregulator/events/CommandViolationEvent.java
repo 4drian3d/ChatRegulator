@@ -10,7 +10,7 @@ import me.dreamerzero.chatregulator.enums.InfractionType;
 /**
  * Event fired when recognizing an infraction in a command executed by a player.
  */
-public class CommandViolationEvent extends ViolationEvent {
+public final class CommandViolationEvent extends ViolationEvent {
     private final String command;
 
     /**

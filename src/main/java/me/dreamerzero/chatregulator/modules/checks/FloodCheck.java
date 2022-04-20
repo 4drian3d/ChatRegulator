@@ -16,7 +16,7 @@ import me.dreamerzero.chatregulator.result.PatternReplaceableResult;
 /**
  * Utilities for detecting incoherent messages containing floods
  */
-public class FloodCheck implements ICheck {
+public final class FloodCheck implements ICheck {
     // Credit: https://github.com/2lstudios-mc/ChatSentinel/blob/master/src/main/resources/config.yml#L91
     // (\\w)\\1{5,}|(\\w{28,})|([^\\wñ]{20,})|(^.{220,}$)
     private static final String STANDARD_PATTERN = "(\\w)\\1{5,}|(\\w{28,})|([^\\wñ]{20,})|(^.{220,}$)";
@@ -39,13 +39,12 @@ public class FloodCheck implements ICheck {
     }
 
     @Override
-    public CompletableFuture<Result> check(@NotNull final String string){
-        Matcher matcher = realPattern.matcher(Objects.requireNonNull(string));
-        boolean result = matcher.find();
-        return CompletableFuture.completedFuture(new PatternReplaceableResult(string, result, realPattern, matcher){
+    public CompletableFuture<Result> check(final @NotNull String string){
+        final Matcher matcher = realPattern.matcher(Objects.requireNonNull(string));
+        return CompletableFuture.completedFuture(new PatternReplaceableResult(string, matcher.find(), realPattern, matcher){
             @Override
             public String replaceInfraction(){
-                return matcher.replaceAll((matchresult) -> Character.toString(matchresult.group().charAt(0)));
+                return matcher.replaceAll(match -> Character.toString(match.group().charAt(0)));
             }
         });
     }

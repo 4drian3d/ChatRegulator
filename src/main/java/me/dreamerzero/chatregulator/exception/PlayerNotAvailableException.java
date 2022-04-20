@@ -6,7 +6,7 @@ import java.util.UUID;
 import org.jetbrains.annotations.NotNull;
 
 /**Exception for unavailability of a player*/
-public class PlayerNotAvailableException extends RuntimeException{
+public final class PlayerNotAvailableException extends RuntimeException{
     /**
      * Creates a new exception without message
      */

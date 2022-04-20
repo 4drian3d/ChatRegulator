@@ -30,7 +30,7 @@ import me.dreamerzero.chatregulator.enums.SourceType;
 /**
  * ChatRegulator's Chat Listener
  */
-public class ChatListener {
+public final class ChatListener {
     private final ChatRegulator plugin;
     public ChatListener(ChatRegulator plugin){
         this.plugin = plugin;
@@ -59,8 +59,7 @@ public class ChatListener {
                         continuation.resume();
                         return true;
                     }
-                    if(result instanceof ReplaceableResult){
-                        ReplaceableResult replaceableResult = (ReplaceableResult)result;
+                    if(result instanceof final ReplaceableResult replaceableResult){
                         String messageReplaced = replaceableResult.replaceInfraction();
                         event.setResult(ChatResult.message(messageReplaced));
                         message.set(messageReplaced);
@@ -79,8 +78,8 @@ public class ChatListener {
                         continuation.resume();
                         return true;
                     }
-                    if(result instanceof IReplaceable){
-                        String messageReplaced = ((IReplaceable)result).replaceInfraction();
+                    if(result instanceof IReplaceable replaceable){
+                        String messageReplaced = replaceable.replaceInfraction();
                         event.setResult(ChatResult.message(messageReplaced));
                         message.set(messageReplaced);
                     }
@@ -99,8 +98,8 @@ public class ChatListener {
                         continuation.resume();
                         return true;
                     }
-                    if(result instanceof IReplaceable){
-                        String messageReplaced = ((IReplaceable)result).replaceInfraction();
+                    if(result instanceof IReplaceable replaceable){
+                        String messageReplaced = replaceable.replaceInfraction();
                         event.setResult(ChatResult.message(messageReplaced));
                         message.set(messageReplaced);
                     }
@@ -120,8 +119,8 @@ public class ChatListener {
                         continuation.resume();
                         return true;
                     }
-                    if(result instanceof IReplaceable){
-                        String messageReplaced = ((IReplaceable)result).replaceInfraction();
+                    if(result instanceof IReplaceable replaceable){
+                        String messageReplaced = replaceable.replaceInfraction();
                         event.setResult(ChatResult.message(messageReplaced));
                         message.set(messageReplaced);
                     }

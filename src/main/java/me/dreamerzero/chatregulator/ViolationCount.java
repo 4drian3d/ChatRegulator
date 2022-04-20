@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 
 /**Global Violation Count */
-public class ViolationCount {
+public final class ViolationCount {
     private int floodViolations;
     private int regularViolations;
     private int spamViolations;
@@ -67,31 +67,29 @@ public class ViolationCount {
      * @return the count
      */
     public int getCount(@NotNull InfractionType type){
-        switch(type){
-            case SPAM: return this.spamViolations;
-            case REGULAR: return this.regularViolations;
-            case FLOOD: return this.floodViolations;
-            case BCOMMAND: return this.commandViolations;
-            case UNICODE: return this.unicodeViolations;
-            case CAPS: return this.capsviolations;
-            case SYNTAX: return this.syntaxviolations;
-            case NONE: break;
-        }
-        return 0;
+        return switch(type){
+            case SPAM -> this.spamViolations;
+            case REGULAR -> this.regularViolations;
+            case FLOOD -> this.floodViolations;
+            case BCOMMAND -> this.commandViolations;
+            case UNICODE -> this.unicodeViolations;
+            case CAPS -> this.capsviolations;
+            case SYNTAX -> this.syntaxviolations;
+            case NONE -> 0;
+        };
     }
 
     @Override
     public boolean equals(Object o){
         if(this==o) return true;
-        if(o == null || this.getClass() != o.getClass()) return false;
-        ViolationCount other = (ViolationCount)o;
-        return this.spamViolations == other.spamViolations
-            && this.capsviolations == other.capsviolations
-            && this.commandViolations == other.commandViolations
-            && this.floodViolations == other.floodViolations
-            && this.regularViolations == other.regularViolations
-            && this.unicodeViolations == other.unicodeViolations
-            && this.syntaxviolations == other.syntaxviolations;
+        if(!(o instanceof final ViolationCount that)) return false;
+        return this.spamViolations == that.spamViolations
+            && this.capsviolations == that.capsviolations
+            && this.commandViolations == that.commandViolations
+            && this.floodViolations == that.floodViolations
+            && this.regularViolations == that.regularViolations
+            && this.unicodeViolations == that.unicodeViolations
+            && this.syntaxviolations == that.syntaxviolations;
     }
 
     @Override
