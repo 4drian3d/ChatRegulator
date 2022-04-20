@@ -356,6 +356,9 @@ public class MainConfig {
         @Comment("Commands to be executed in the unicode module")
         private Unicode.Commands commands = new Unicode.Commands();
 
+        @Comment("Additional Characters to allow")
+        private Chars additionalChars = new Chars();
+
         @Override
         public boolean enabled(){
             return this.enabled;
@@ -376,9 +379,29 @@ public class MainConfig {
             return controlType;
         }
 
+        public Chars additionalChars() {
+            return this.additionalChars;
+        }
+
         /**Unicode Commands configuration */
         @ConfigSerializable
         public static class Commands extends CommandsConfig{}
+
+        @ConfigSerializable
+        public static class Chars implements Toggleable {
+            private boolean enabled;
+            private char[] chars = {'ç'};
+
+            public char[] chars() {
+                return this.chars;
+            }
+
+            @Override
+            public boolean enabled() {
+                return this.enabled;
+            }
+
+        }
     }
 
     /**Caps Configuration */

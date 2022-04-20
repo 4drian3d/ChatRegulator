@@ -18,37 +18,34 @@ import net.kyori.adventure.builder.AbstractBuilder;
  * Check for invalid characters
  */
 public class UnicodeCheck implements ICheck {
-    private final boolean custom;
     private char[] charscustom = {};
     private final boolean blockable;
+    private Predicate<Character> charPredicate = c -> {
+        for(char ch : UnicodeCheck.this.charscustom) {
+            if(ch == c) return true;
+        }
+        return false;
+    };
 
-    private UnicodeCheck(){
-        this(Configuration.getConfig().getUnicodeConfig().isBlockable());
-    }
-
-    private UnicodeCheck(boolean blockable){
-        this.blockable = blockable;
-        this.custom = false;
-    }
-
-    private UnicodeCheck(char[] chars, boolean blockable){
+    private UnicodeCheck(char[] chars, boolean blockable, boolean block){
         this.charscustom = chars;
-        this.custom = true;
         this.blockable = blockable;
+        this.charPredicate = block
+            ? this.charPredicate.or(charTest)
+            : this.charPredicate.or(charTest).negate();
     }
+
     @Override
     public CompletableFuture<Result> check(@NotNull final String string) {
         char[] charArray = Objects.requireNonNull(string).toCharArray();
         final Set<Character> results = new HashSet<>();
 
-        if(custom && charscustom.length != 0){
+        if(charscustom.length != 0){
             for(char character : charArray){
-                for(char blockedchar : charscustom){
-                    if(character == blockedchar){
-                        if(blockable)
-                            return CompletableFuture.completedFuture(new Result(string, true));
-                        results.add(character);
-                    }
+                if(charPredicate.test(character)){
+                    if(blockable)
+                        return CompletableFuture.completedFuture(new Result(string, true));
+                    results.add(character);
                 }
             }
         } else {
@@ -84,7 +81,17 @@ public class UnicodeCheck implements ICheck {
     }
 
     public static CompletableFuture<Result> createCheck(String string){
-        return new UnicodeCheck().check(string);
+        return Configuration.getConfig().getUnicodeConfig().additionalChars().enabled()
+            ? new UnicodeCheck(
+                Configuration.getConfig().getUnicodeConfig().additionalChars().chars(),
+                Configuration.getConfig().getUnicodeConfig().isBlockable(),
+                true
+            ).check(string)
+            : new UnicodeCheck(
+                new char[0],
+                Configuration.getConfig().getUnicodeConfig().isBlockable(),
+                true
+            ).check(string);
     }
 
     public static UnicodeCheck.Builder builder(){
@@ -94,6 +101,7 @@ public class UnicodeCheck implements ICheck {
     public static class Builder implements AbstractBuilder<UnicodeCheck> {
         private char[] chars;
         private boolean replaceable;
+        private boolean block;
 
         private Builder(){}
 
@@ -102,7 +110,7 @@ public class UnicodeCheck implements ICheck {
          * @param chars the characters
          * @return this
          */
-        public Builder blockedCharacters(char... chars){
+        public Builder characters(char... chars){
             this.chars = chars;
             return this;
         }
@@ -117,11 +125,22 @@ public class UnicodeCheck implements ICheck {
             return this;
         }
 
+        public Builder blockCharacters(){
+            this.block = true;
+            return this;
+        }
+
+        public Builder allowCharacters() {
+            this.block = false;
+            return this;
+        }
+
         @Override
         public UnicodeCheck build(){
-            return chars == null
-                ? new UnicodeCheck(!replaceable)
-                : new UnicodeCheck(chars, !replaceable);
+            return new UnicodeCheck(chars == null
+                    ? new char[0]
+                    : chars,
+                !replaceable, block);
         }
 
     }

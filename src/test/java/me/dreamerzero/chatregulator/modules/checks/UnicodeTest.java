@@ -53,7 +53,7 @@ public class UnicodeTest {
         String illegal = "ñn't";
 
         assertTrue(UnicodeCheck.builder()
-            .blockedCharacters('ñ')
+            .characters('ñ')
             .build()
             .check(illegal)
             .thenApply(Result::isInfraction)
@@ -81,5 +81,20 @@ public class UnicodeTest {
             assertEquals("  áéíóú",messageReplaced);
             StatisticsUtils.resetStatistics();
         }).join();
+    }
+
+    @Test
+    void builderTest() {
+        UnicodeCheck.Builder builder = UnicodeCheck.builder()
+            .characters('a');
+
+        assertTrue(builder.blockCharacters().build()
+            .check("aaaaaa")
+            .thenApply(Result::isInfraction)
+            .join());
+        assertFalse(builder.allowCharacters().build()
+            .check("aaaaaaa")
+            .thenApply(Result::isInfraction)
+            .join());
     }
 }
