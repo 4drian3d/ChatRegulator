@@ -63,10 +63,6 @@ public final class BrigadierRegulator {
         proxy.getCommandManager().register(meta, bCommand);
     }
 
-    private static void sendLines(Audience sender, Collection<String> lines, IFormatter formatter){
-        lines.forEach(ln -> sender.sendMessage(formatter.parse(ln, sender)));
-    }
-
     private static void sendLines(Audience sender, Collection<String> lines, TagResolver resolver, IFormatter formatter){
         lines.forEach(ln -> sender.sendMessage(formatter.parse(ln, sender, resolver)));
     }
@@ -109,7 +105,14 @@ public final class BrigadierRegulator {
             .<CommandSource>literal(command)
             .requires(src -> src.hasPermission(Permissions.COMMAND_STATS))
             .executes(cmd -> {
-                sendLines(cmd.getSource(), Configuration.getMessages().getGeneralMessages().getStatsFormat(), plugin.getFormatter());
+                TagResolver resolver = cmd.getSource() instanceof Player player
+                    ? PlaceholderUtils.getPlaceholders(InfractionPlayer.get(player))
+                    : PlaceholderUtils.getGlobalPlaceholders();
+                sendLines(
+                    cmd.getSource(),
+                    Configuration.getMessages().getGeneralMessages().getStatsFormat(),
+                    resolver,
+                    plugin.getFormatter());
                 return 1;
             }).build();
     }
