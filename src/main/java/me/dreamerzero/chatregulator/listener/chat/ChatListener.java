@@ -12,24 +12,17 @@ import org.jetbrains.annotations.ApiStatus.Internal;
 import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.config.Configuration;
-import me.dreamerzero.chatregulator.config.MainConfig;
 import me.dreamerzero.chatregulator.modules.Replacer;
-import me.dreamerzero.chatregulator.modules.checks.CapsCheck;
-import me.dreamerzero.chatregulator.modules.checks.FloodCheck;
-import me.dreamerzero.chatregulator.modules.checks.InfractionCheck;
-import me.dreamerzero.chatregulator.modules.checks.SpamCheck;
-import me.dreamerzero.chatregulator.modules.checks.UnicodeCheck;
 import me.dreamerzero.chatregulator.objects.AtomicString;
-import me.dreamerzero.chatregulator.result.IReplaceable;
-import me.dreamerzero.chatregulator.result.ReplaceableResult;
-import me.dreamerzero.chatregulator.utils.GeneralUtils;
-import me.dreamerzero.chatregulator.enums.InfractionType;
-import me.dreamerzero.chatregulator.enums.SourceType;
+import me.dreamerzero.chatregulator.wrapper.event.ChatWrapper;
+import me.dreamerzero.chatregulator.wrapper.event.EventWrapper;
 
-@Internal
+import static me.dreamerzero.chatregulator.utils.GeneralUtils.*;
+
 /**
  * ChatRegulator's Chat Listener
  */
+@Internal
 public final class ChatListener {
     private final ChatRegulator plugin;
     public ChatListener(ChatRegulator plugin){
@@ -41,108 +34,26 @@ public final class ChatListener {
      * @param continuation the event cycle
      */
     @Subscribe(order = PostOrder.FIRST)
-    public void onChat(PlayerChatEvent event, Continuation continuation) {
+    public void onChat(final PlayerChatEvent event, final Continuation continuation) {
         if(!event.getResult().isAllowed()){
             continuation.resume();
             return;
         }
-        final MainConfig.Config config = Configuration.getConfig();
         final Player player = event.getPlayer();
         final AtomicString message = new AtomicString(event.getMessage());
         final InfractionPlayer infractor = InfractionPlayer.get(player);
+        final EventWrapper<PlayerChatEvent> wrapper = new ChatWrapper(event, continuation);
 
-        if(GeneralUtils.allowedPlayer(player, InfractionType.UNICODE)
-            && UnicodeCheck.createCheck(message.get()).thenApplyAsync(result -> {
-                if(GeneralUtils.callViolationEvent(infractor, message.get(), InfractionType.UNICODE, result, SourceType.CHAT, plugin)){
-                    if(config.getUnicodeConfig().isBlockable()){
-                        event.setResult(ChatResult.denied());
-                        continuation.resume();
-                        return true;
-                    }
-                    if(result instanceof final ReplaceableResult replaceableResult){
-                        String messageReplaced = replaceableResult.replaceInfraction();
-                        event.setResult(ChatResult.message(messageReplaced));
-                        message.set(messageReplaced);
-                    }
-                }
-                return false;
-            }).join().booleanValue()){
-                return;
-            }
+        if(unicode(infractor, message, wrapper, plugin)
+            || caps(infractor, message, wrapper, plugin)
+            || flood(infractor, message, wrapper, plugin)
+            || regular(infractor, message, wrapper, plugin)
+            || spam(infractor, message, wrapper, plugin)
+        ) {
+            return;
+        }
 
-        if(GeneralUtils.allowedPlayer(player, InfractionType.CAPS)
-            && CapsCheck.createCheck(message.get()).thenApply(result -> {
-                if(GeneralUtils.checkAndCall(infractor, message.get(), InfractionType.CAPS, result, SourceType.CHAT, plugin)){
-                    if(config.getCapsConfig().isBlockable()){
-                        event.setResult(ChatResult.denied());
-                        continuation.resume();
-                        return true;
-                    }
-                    if(result instanceof IReplaceable replaceable){
-                        String messageReplaced = replaceable.replaceInfraction();
-                        event.setResult(ChatResult.message(messageReplaced));
-                        message.set(messageReplaced);
-                    }
-                }
-                return false;
-            }).join().booleanValue()){
-                return;
-            }
-
-
-        if(GeneralUtils.allowedPlayer(player, InfractionType.FLOOD)
-            && FloodCheck.createCheck(message.get()).thenApply(result -> {
-                if(GeneralUtils.checkAndCall(infractor, message.get(), InfractionType.FLOOD, result, SourceType.CHAT, plugin)) {
-                    if(config.getFloodConfig().isBlockable()){
-                        event.setResult(ChatResult.denied());
-                        continuation.resume();
-                        return true;
-                    }
-                    if(result instanceof IReplaceable replaceable){
-                        String messageReplaced = replaceable.replaceInfraction();
-                        event.setResult(ChatResult.message(messageReplaced));
-                        message.set(messageReplaced);
-                    }
-
-                }
-                return false;
-            }).join().booleanValue()){
-                return;
-            }
-
-
-        if(GeneralUtils.allowedPlayer(player, InfractionType.REGULAR)
-            && InfractionCheck.createCheck(message.get()).thenApply(result -> {
-                if(GeneralUtils.checkAndCall(infractor, message.get(),InfractionType.REGULAR, result, SourceType.CHAT, plugin)) {
-                    if(config.getInfractionsConfig().isBlockable()){
-                        event.setResult(ChatResult.denied());
-                        continuation.resume();
-                        return true;
-                    }
-                    if(result instanceof IReplaceable replaceable){
-                        String messageReplaced = replaceable.replaceInfraction();
-                        event.setResult(ChatResult.message(messageReplaced));
-                        message.set(messageReplaced);
-                    }
-                }
-                return false;
-            }).join().booleanValue()){
-                return;
-            }
-
-
-        if(GeneralUtils.allowedPlayer(player, InfractionType.SPAM)
-            && SpamCheck.createCheck(infractor, message.get(), SourceType.CHAT).thenApply(result ->
-                GeneralUtils.spamCheck(result, config, infractor)
-                && GeneralUtils.callViolationEvent(infractor, message.get(), InfractionType.SPAM,result, SourceType.CHAT, plugin)
-            ).join().booleanValue()){
-                event.setResult(ChatResult.denied());
-                continuation.resume();
-                return;
-            }
-
-
-        if(config.getFormatConfig().enabled()){
+        if(Configuration.getConfig().getFormatConfig().enabled()){
             message.set(Replacer.applyFormat(message.get()));
             event.setResult(ChatResult.message(message.get()));
         }

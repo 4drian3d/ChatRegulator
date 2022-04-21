@@ -21,6 +21,7 @@ import me.dreamerzero.chatregulator.modules.StatisticsUtils;
 import me.dreamerzero.chatregulator.result.IReplaceable;
 import me.dreamerzero.chatregulator.utils.GeneralUtils;
 import me.dreamerzero.chatregulator.utils.TestsUtils;
+import me.dreamerzero.chatregulator.utils.GeneralUtils.EventBundle;
 
 public final class CapsTest {
     @BeforeAll
@@ -50,7 +51,7 @@ public final class CapsTest {
         Player player = TestsUtils.createRandomNormalPlayer();
         assertTrue(GeneralUtils.allowedPlayer(player, InfractionType.CAPS));
         CapsCheck.createCheck(message).thenAccept(result -> {
-            assertTrue(GeneralUtils.checkAndCall(InfractionPlayer.get(player), message, InfractionType.CAPS, result, SourceType.CHAT, TestsUtils.createRegulator()));
+            assertTrue(GeneralUtils.checkAndCall(new EventBundle(InfractionPlayer.get(player), message, InfractionType.CAPS, result, SourceType.CHAT), TestsUtils.createRegulator()));
             assertTrue(result instanceof IReplaceable);
             String messageReplaced = ((IReplaceable)result).replaceInfraction();
             assertEquals("aaaaaaaaaa", messageReplaced);

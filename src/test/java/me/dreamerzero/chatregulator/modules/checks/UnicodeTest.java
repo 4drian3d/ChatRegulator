@@ -24,6 +24,7 @@ import me.dreamerzero.chatregulator.result.IReplaceable;
 import me.dreamerzero.chatregulator.result.Result;
 import me.dreamerzero.chatregulator.utils.GeneralUtils;
 import me.dreamerzero.chatregulator.utils.TestsUtils;
+import me.dreamerzero.chatregulator.utils.GeneralUtils.EventBundle;
 
 public final class UnicodeTest {
     @BeforeAll
@@ -74,7 +75,7 @@ public final class UnicodeTest {
         Player player = TestsUtils.createRandomNormalPlayer();
         assertTrue(GeneralUtils.allowedPlayer(player, InfractionType.UNICODE));
         UnicodeCheck.builder().replaceable(true).build().check(randomMSG).thenAccept(result -> {
-            assertTrue(GeneralUtils.callViolationEvent(InfractionPlayer.get(player), randomMSG, InfractionType.UNICODE, result, SourceType.CHAT, TestsUtils.createRegulator()));
+            assertTrue(GeneralUtils.callViolationEvent(new EventBundle(InfractionPlayer.get(player), randomMSG, InfractionType.UNICODE, result, SourceType.CHAT), TestsUtils.createRegulator()));
             assertTrue(result instanceof IReplaceable);
             IReplaceable replaceableResult = (IReplaceable)result;
             String messageReplaced = replaceableResult.replaceInfraction();
