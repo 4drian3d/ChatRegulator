@@ -31,8 +31,8 @@ public final class Configuration {
      * @param logger plugin logger
      */
     public static void loadConfig(@NotNull Path path, @NotNull Logger logger){
-        Objects.requireNonNull(path, "plugin path");
-        Objects.requireNonNull(logger, "plugin logger");
+        Objects.requireNonNull(path, () ->"plugin path");
+        Objects.requireNonNull(logger, () -> "plugin logger");
         loadMainConfig(path, logger);
         loadMessagesConfig(path, logger);
         loadBlacklistConfig(path, logger);
