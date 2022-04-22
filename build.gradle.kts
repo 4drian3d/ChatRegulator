@@ -11,6 +11,7 @@ repositories {
     maven("https://papermc.io/repo/repository/maven-public/")
     maven("https://repo.fvdh.dev/releases")
     maven("https://jitpack.io")
+    maven("https://repo.alessiodp.com/releases/")
 }
 
 java {
@@ -20,8 +21,9 @@ java {
 }
 
 dependencies {
-    shadow("org.spongepowered:configurate-hocon:4.1.2")
+    compileOnly("org.spongepowered:configurate-hocon:4.1.2")
     shadow("org.jetbrains:annotations:23.0.0")
+    shadow("net.byteflux:libby-velocity:1.1.5")
 
     compileOnly("com.github.4drian3d:MiniPlaceholders:1.1.1")
 

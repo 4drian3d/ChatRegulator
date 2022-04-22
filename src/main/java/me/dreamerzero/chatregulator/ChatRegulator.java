@@ -14,6 +14,7 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
+import com.velocitypowered.api.plugin.PluginManager;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 
@@ -32,6 +33,8 @@ import me.dreamerzero.chatregulator.listener.list.LeaveListener;
 import me.dreamerzero.chatregulator.listener.plugin.PluginListener;
 import me.dreamerzero.chatregulator.listener.plugin.ReloadListener;
 import me.dreamerzero.chatregulator.utils.Constants;
+import net.byteflux.libby.Library;
+import net.byteflux.libby.VelocityLibraryManager;
 import me.dreamerzero.chatregulator.placeholders.RegulatorExpansion;
 import me.dreamerzero.chatregulator.placeholders.formatter.IFormatter;
 import me.dreamerzero.chatregulator.placeholders.formatter.MiniPlaceholderFormatter;
@@ -61,6 +64,7 @@ public class ChatRegulator {
     private final ProxyServer server;
     private final Logger logger;
     private final Path path;
+    private final PluginManager manager;
     private IFormatter formatter;
 
     /**
@@ -76,10 +80,11 @@ public class ChatRegulator {
      */
     @Inject
     @Internal
-    public ChatRegulator(final ProxyServer server, Logger logger, @DataDirectory Path path) {
+    public ChatRegulator(final ProxyServer server, Logger logger, @DataDirectory Path path, PluginManager pmanager) {
         this.server = server;
         this.path = path;
         this.logger = logger;
+        this.manager = pmanager;
     }
 
     /**
@@ -89,8 +94,12 @@ public class ChatRegulator {
     @Subscribe
     @Internal
     public void onProxyInitialization(final ProxyInitializeEvent event) {
-        server.getConsoleCommandSource().sendMessage(Components.MESSAGE_MINIMESSAGE
-            .deserialize("<gradient:#f2709c:#ff9472>ChatRegulator</gradient> <gradient:#DAE2F8:#D4D3DD>has started, have a very nice day</gradient>"));
+        server.getConsoleCommandSource().sendMessage(
+            Components.MESSAGE_MINIMESSAGE
+                .deserialize(
+                    "<gradient:#f2709c:#ff9472>ChatRegulator</gradient> <gradient:#DAE2F8:#D4D3DD>Starting plugin")
+        );
+        this.loadDependencies();
         Configuration.loadConfig(path, logger);
 
         if(server.getPluginManager().isLoaded("serverutils")){
@@ -114,6 +123,13 @@ public class ChatRegulator {
         );
         BrigadierRegulator.registerCommand(this);
         checkInfractionPlayersRunnable();
+
+        server.getConsoleCommandSource().sendMessage(
+            Components.MESSAGE_MINIMESSAGE
+                .deserialize(
+                    "<gradient:#f2709c:#ff9472>ChatRegulator</gradient> <gradient:#DAE2F8:#D4D3DD>has started, have a very nice day</gradient>"
+                )
+        );
     }
 
     private void registerListener(@NotNull Object @NotNull... events){
@@ -174,5 +190,33 @@ public class ChatRegulator {
      */
     public void reloadConfig(){
         Configuration.loadConfig(path, logger);
+    }
+
+    private void loadDependencies() {
+        final VelocityLibraryManager<ChatRegulator> libraryManager = new VelocityLibraryManager<>(logger, this.path, manager, this, "libs");
+
+        final Library hocon = Library.builder()
+            .groupId("org{}spongepowered")
+            .artifactId("configurate-hocon")
+            .version("4.1.2")
+            .id("configurate-hocon")
+            .build();
+        final Library confCore = Library.builder()
+            .groupId("org{}spongepowered")
+            .artifactId("configurate-core")
+            .version("4.1.2")
+            .id("configurate-core")
+            .build();
+        final Library geantyref = Library.builder()
+            .groupId("io{}leangen{}geantyref")
+            .artifactId("geantyref")
+            .version("1.3.13")
+            .id("geantyref")
+            .build();
+
+        libraryManager.addMavenCentral();
+        libraryManager.loadLibrary(hocon);
+        libraryManager.loadLibrary(confCore);
+        libraryManager.loadLibrary(geantyref);
     }
 }

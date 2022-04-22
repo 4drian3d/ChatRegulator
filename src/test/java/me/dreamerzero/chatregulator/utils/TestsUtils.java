@@ -58,7 +58,7 @@ public final class TestsUtils {
         ProxyServer proxy = createProxy();
         Logger logger = LoggerFactory.getLogger(TestsUtils.class);
         Path path = Path.of("build", "reports", "tests", "test");
-        return new ChatRegulator(proxy, logger, path){
+        return new ChatRegulator(proxy, logger, path, null){
             @Override
             public IFormatter getFormatter(){
                 return new NormalFormatter();
