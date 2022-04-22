@@ -27,3 +27,9 @@ jobs:
         timeout_minutes: 4
         max_attempts: 2
         command: gradle build
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: ChatRegulator
+        path: build/libs/ChatRegulator.jar
