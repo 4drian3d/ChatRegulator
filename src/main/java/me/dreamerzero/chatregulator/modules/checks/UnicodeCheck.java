@@ -19,62 +19,30 @@ import net.kyori.adventure.builder.AbstractBuilder;
  * Check for invalid characters
  */
 public final class UnicodeCheck implements ICheck {
-    private char[] chars = {};
+    private final char[] chars;
     private final ControlType control;
-    private Predicate<Character> charPredicate = c -> {
-        for(final char character : this.chars) {
-            if(character == c) {
-                System.out.println("charPredicate: TRUE");
-                return true;
-            }
-        }
-        return false;
-    };
+    private final Predicate<Character> charPredicate;
 
     private UnicodeCheck(char[] chars, ControlType control, CharMode mode){
         this.chars = chars;
         this.control = control;
-        if(chars.length == 0)
-            this.charPredicate = DEFAULT_CHAR_TEST;
-        else
-            this.charPredicate = mode == CharMode.BLACKLIST
-                ? DEFAULT_CHAR_TEST.or(this.charPredicate)
-                : DEFAULT_CHAR_TEST.or(this.charPredicate.negate());
+        if(chars == null) {
+            this.charPredicate = UnicodeCheck::defaultCharTest;
+        } else {
+            this.charPredicate = (mode == CharMode.BLACKLIST)
+                ? c -> defaultCharTest(c) || charTest(c)
+                : c -> defaultCharTest(c) && !charTest(c);
+        }
     }
 
     @Override
-    public CompletableFuture<Result> check(@NotNull final String string) {
-        char[] charArray = Objects.requireNonNull(string).toCharArray();
+    public CompletableFuture<Result> check(final @NotNull String string) {
+        final char[] charArray = Objects.requireNonNull(string).toCharArray();
         final Set<Character> results = new HashSet<>();
-
-        /*final List<Character> results = Objects.requireNonNull(string)
-            .chars()
-            .boxed()
-            .map(i -> (char)i.intValue())
-            .filter(charPredicate::test)
-            .toList();
-
-        if(!results.isEmpty()) {
-            return control == ControlType.BLOCK
-                ? CompletableFuture.completedFuture(new Result(string, true))
-                : CompletableFuture.completedFuture(new ReplaceableResult(results.toString(), true){
-                    @Override
-                    public String replaceInfraction(){
-                        String replaced = string;
-                        for(final char character : results){
-                            replaced = replaced.replace(character, ' ');
-                        }
-                        return replaced;
-                    }
-                });
-        } else {
-            return CompletableFuture.completedFuture(new Result(string, false));
-        }*/
 
         for(final char character : charArray){
             if(charPredicate.test(character)){
                 if(control == ControlType.BLOCK) {
-                    System.out.println("Retorno ControlType.BLOCk");
                     return CompletableFuture.completedFuture(new Result(string, true));
                 }
                 results.add(character);
@@ -84,9 +52,6 @@ public final class UnicodeCheck implements ICheck {
         return results.isEmpty()
             ? CompletableFuture.completedFuture(new Result(string, false))
             : CompletableFuture.completedFuture(new ReplaceableResult(results.toString(), true){
-                {
-                    System.out.println("Retorno Replaceable result cuando results no esta vacio");
-                }
                 @Override
                 public String replaceInfraction(){
                     String replaced = string;
@@ -98,18 +63,24 @@ public final class UnicodeCheck implements ICheck {
             });
     }
 
-    public static final Predicate<Character> DEFAULT_CHAR_TEST = c -> {
+    public static final boolean defaultCharTest(char c) {
         if(c >= ' ' && c <= '~') {
-            System.out.println("DEFAULT_CHAR_TEST: TRUE");
-            return true;
+            return false;
         }
         if(c <= 'ü' && c <= '¿') {
-            System.out.println("DEFAULT_CHAR_TEST: TRUE");
-            return true;
+            return false;
         }
         if(c >= '\u00BF' && c <= '\u00FE'){
-            System.out.println("DEFAULT_CHAR_TEST: TRUE");
-            return true;
+            return false;
+        }
+        return true;
+    };
+
+    private boolean charTest(char c) {
+        for(final char character : this.chars) {
+            if(character == c) {
+                return true;
+            }
         }
         return false;
     };
@@ -124,7 +95,7 @@ public final class UnicodeCheck implements ICheck {
         return new UnicodeCheck(
                 unicode.additionalChars().enabled()
                     ? unicode.additionalChars().chars()
-                    : new char[0],
+                    : null,
                 unicode.getControlType(),
                 unicode.additionalChars().charMode()
             ).check(string);
@@ -168,10 +139,7 @@ public final class UnicodeCheck implements ICheck {
 
         @Override
         public UnicodeCheck build(){
-            return new UnicodeCheck(chars == null
-                    ? new char[0]
-                    : chars,
-                control, mode);
+            return new UnicodeCheck(chars, control, mode);
         }
 
     }

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import me.dreamerzero.chatregulator.InfractionPlayer;
+import me.dreamerzero.chatregulator.modules.StatisticsUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -54,6 +55,7 @@ public final class PlaceholderTest {
     @Test
     @DisplayName("Global Placeholders")
     void globalPlaceholders(){
+        StatisticsUtils.resetStatistics();
         MiniMessage mm = MiniMessage.builder()
             .tags(TagResolver.resolver(
                 PlaceholderUtils.getGlobalPlaceholders(),

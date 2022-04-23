@@ -80,7 +80,6 @@ public final class CommandListener {
     }
 
     private boolean syntax(InfractionPlayer player, String string, EventWrapper<?> event) {
-        System.out.println("[Check] syntax");
         if(allowedPlayer(player.getPlayer(), InfractionType.SYNTAX)
             && checkAndCall(
                 new EventBundle(
@@ -101,7 +100,6 @@ public final class CommandListener {
     }
 
     private boolean blockedCommands(InfractionPlayer player, String string, EventWrapper<?> event) {
-        System.out.println("[Check] blocked commands");
         if(allowedPlayer(player.getPlayer(), InfractionType.BCOMMAND)
             && checkAndCall(
                 new EventBundle(

@@ -10,7 +10,6 @@ import java.nio.file.Path;
 import com.velocitypowered.api.proxy.Player;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -38,12 +37,11 @@ public final class UnicodeTest {
 
     @Test
     @DisplayName("Illegal Check")
-    @Disabled
     void illegalTest(){
         String illegal = "ƕƘaea";
         String expected = "  aea";
 
-        UnicodeCheck check = UnicodeCheck.builder().build();
+        UnicodeCheck check = UnicodeCheck.builder().controlType(ControlType.REPLACE).build();
         Result result = check.check(illegal).join();
 
         assertTrue(result.isInfraction());
@@ -70,15 +68,13 @@ public final class UnicodeTest {
     }
 
     @Test
-    @Disabled
     void legalCheck(){
-        String legal = "Hello my friends";
-
-        assertFalse(UnicodeCheck.createCheck(legal).join().isInfraction());
+        assertFalse(UnicodeCheck.createCheck("Hello my friends").join().isInfraction());
+        assertFalse(UnicodeCheck.createCheck("Hola").join().isInfraction());
+        assertFalse(UnicodeCheck.createCheck("aeiou nosequemasponer").join().isInfraction());
     }
 
     @Test
-    @Disabled
     void realTest(){
         String randomMSG = "ƕƘáéíóú";
         Player player = TestsUtils.createRandomNormalPlayer();
@@ -93,13 +89,12 @@ public final class UnicodeTest {
         IReplaceable replaceableResult = (IReplaceable)result;
 
         String messageReplaced = replaceableResult.replaceInfraction();
-        assertEquals("  áéíóú",messageReplaced);
+        assertEquals("  áéíóú", messageReplaced);
 
         StatisticsUtils.resetStatistics();
     }
 
     @Test
-    @Disabled
     void builderTest() {
         UnicodeCheck.Builder builder = UnicodeCheck.builder()
             .characters('ñ');
@@ -112,5 +107,13 @@ public final class UnicodeTest {
             .check("hello everyone ñ")
             .thenApply(Result::isInfraction)
             .join());
+    }
+
+    @Test
+    void testDefaultCharMethod() {
+        char[] chars = {'a', 'h', 'b', 'g', 'e', 'd', 'l'};
+        for(final char c : chars) {
+            assertFalse(UnicodeCheck.defaultCharTest(c));
+        }
     }
 }

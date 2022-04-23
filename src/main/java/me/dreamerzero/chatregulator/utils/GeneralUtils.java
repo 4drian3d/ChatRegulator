@@ -105,7 +105,7 @@ public final class GeneralUtils {
     public static boolean unicode(InfractionPlayer player, AtomicString string, EventWrapper<?> event, ChatRegulator plugin) {
         return GeneralUtils.allowedPlayer(player.getPlayer(), InfractionType.UNICODE)
             && UnicodeCheck.createCheck(string.get()).thenApply(result -> {
-                if(GeneralUtils.callViolationEvent(new EventBundle(player, string.get(), InfractionType.UNICODE, result, event.source()), plugin)){
+                if(GeneralUtils.checkAndCall(new EventBundle(player, string.get(), InfractionType.UNICODE, result, event.source()), plugin)){
                     if(Configuration.getConfig().getUnicodeConfig().isBlockable()){
                         event.cancel();
                         event.resume();

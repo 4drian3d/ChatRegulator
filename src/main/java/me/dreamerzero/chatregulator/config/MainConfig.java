@@ -358,8 +358,7 @@ public final class MainConfig {
     @ConfigSerializable
     public static class Unicode implements Toggleable, Warning, Executable, Controllable {
         @Comment("Enable the Unicode Module")
-        private boolean enabled = false;
-        //TODO: FIX UNICODE
+        private boolean enabled = true;
 
         @Comment("""
             Sets the form of warning
