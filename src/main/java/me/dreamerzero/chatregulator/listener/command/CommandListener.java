@@ -41,18 +41,24 @@ public final class CommandListener {
     public void onCommand(CommandExecuteEvent event, Continuation continuation){
         if (!(event.getCommandSource() instanceof final Player player)
             || !event.getResult().isAllowed()
-            || this.checkIfCanCheck(event.getCommand())
         ) {
             continuation.resume();
             return;
         }
 
-        final AtomicString command = new AtomicString(event.getCommand());
         final InfractionPlayer infractionPlayer = InfractionPlayer.get(player);
         final EventWrapper<CommandExecuteEvent> wrapper = new CommandWrapper(event, continuation);
 
-        if(this.blockedCommands(infractionPlayer, command, wrapper) || this.syntax(infractionPlayer, command, wrapper)
-            || unicode(infractionPlayer, command, wrapper, plugin)
+        if(this.blockedCommands(infractionPlayer, event.getCommand(), wrapper)
+            || this.syntax(infractionPlayer, event.getCommand(), wrapper)
+            || !this.checkIfCanCheck(event.getCommand())
+        ) {
+            return;
+        }
+
+        final AtomicString command = new AtomicString(event.getCommand());
+
+        if(unicode(infractionPlayer, command, wrapper, plugin)
             || caps(infractionPlayer, command, wrapper, plugin)
             || flood(infractionPlayer, command, wrapper, plugin)
             || regular(infractionPlayer, command, wrapper, plugin)
@@ -73,14 +79,15 @@ public final class CommandListener {
         return false;
     }
 
-    private boolean syntax(InfractionPlayer player, AtomicString string, EventWrapper<?> event) {
+    private boolean syntax(InfractionPlayer player, String string, EventWrapper<?> event) {
+        System.out.println("[Check] syntax");
         if(allowedPlayer(player.getPlayer(), InfractionType.SYNTAX)
             && checkAndCall(
                 new EventBundle(
                     player,
-                    string.get(),
+                    string,
                     InfractionType.SYNTAX,
-                    SyntaxCheck.createCheck(string.get()).join(),
+                    SyntaxCheck.createCheck(string).join(),
                     SourceType.COMMAND
                 ),
                 plugin
@@ -93,20 +100,21 @@ public final class CommandListener {
         return false;
     }
 
-    private boolean blockedCommands(InfractionPlayer player, AtomicString string, EventWrapper<?> event) {
+    private boolean blockedCommands(InfractionPlayer player, String string, EventWrapper<?> event) {
+        System.out.println("[Check] blocked commands");
         if(allowedPlayer(player.getPlayer(), InfractionType.BCOMMAND)
             && checkAndCall(
                 new EventBundle(
                     player,
-                    string.get(),
+                    string,
                     InfractionType.BCOMMAND,
-                    CommandCheck.createCheck(string.get()).join(),
+                    CommandCheck.createCheck(string).join(),
                     SourceType.COMMAND
                 ),
                 plugin
             )
         ) {
-            event.cancel();;
+            event.cancel();
             event.resume();
             return true;
         }

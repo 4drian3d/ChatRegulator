@@ -8,6 +8,7 @@ import org.spongepowered.configurate.objectmapping.meta.Setting;
 
 import me.dreamerzero.chatregulator.enums.ControlType;
 import me.dreamerzero.chatregulator.enums.WarningType;
+import me.dreamerzero.chatregulator.modules.checks.UnicodeCheck.CharMode;
 
 public final class MainConfig {
     private MainConfig(){}
@@ -357,7 +358,8 @@ public final class MainConfig {
     @ConfigSerializable
     public static class Unicode implements Toggleable, Warning, Executable, Controllable {
         @Comment("Enable the Unicode Module")
-        private boolean enabled = true;
+        private boolean enabled = false;
+        //TODO: FIX UNICODE
 
         @Comment("""
             Sets the form of warning
@@ -407,8 +409,9 @@ public final class MainConfig {
 
         @ConfigSerializable
         public static class Chars implements Toggleable {
-            private boolean enabled;
+            private boolean enabled = false;
             private char[] chars = {'ç'};
+            private CharMode mode = CharMode.BLACKLIST;
 
             public char[] chars() {
                 return this.chars;
@@ -417,6 +420,10 @@ public final class MainConfig {
             @Override
             public boolean enabled() {
                 return this.enabled;
+            }
+
+            public CharMode charMode() {
+                return this.mode;
             }
 
         }

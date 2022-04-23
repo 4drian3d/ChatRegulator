@@ -90,7 +90,7 @@ public final class CommandUtils {
         string = string.toLowerCase(Locale.ROOT);
         return string.equals(startingString) ||
             string.startsWith(
-                CommandUtils.getLastChar(startingString) == '*'
+                getLastChar(startingString) == '*'
                     ? startingString.substring(0, startingString.length()-1)
                     : startingString.concat(" ")
             );

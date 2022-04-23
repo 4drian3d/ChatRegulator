@@ -9,6 +9,7 @@ import java.util.function.Predicate;
 import org.jetbrains.annotations.NotNull;
 
 import me.dreamerzero.chatregulator.config.Configuration;
+import me.dreamerzero.chatregulator.enums.ControlType;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.result.ReplaceableResult;
 import me.dreamerzero.chatregulator.result.Result;
@@ -18,21 +19,27 @@ import net.kyori.adventure.builder.AbstractBuilder;
  * Check for invalid characters
  */
 public final class UnicodeCheck implements ICheck {
-    private char[] charscustom = {};
-    private final boolean blockable;
+    private char[] chars = {};
+    private final ControlType control;
     private Predicate<Character> charPredicate = c -> {
-        for(char ch : UnicodeCheck.this.charscustom) {
-            if(ch == c) return true;
+        for(final char character : this.chars) {
+            if(character == c) {
+                System.out.println("charPredicate: TRUE");
+                return true;
+            }
         }
         return false;
     };
 
-    private UnicodeCheck(char[] chars, boolean blockable, boolean block){
-        this.charscustom = chars;
-        this.blockable = blockable;
-        this.charPredicate = block
-            ? this.charPredicate.or(charTest)
-            : this.charPredicate.or(charTest).negate();
+    private UnicodeCheck(char[] chars, ControlType control, CharMode mode){
+        this.chars = chars;
+        this.control = control;
+        if(chars.length == 0)
+            this.charPredicate = DEFAULT_CHAR_TEST;
+        else
+            this.charPredicate = mode == CharMode.BLACKLIST
+                ? DEFAULT_CHAR_TEST.or(this.charPredicate)
+                : DEFAULT_CHAR_TEST.or(this.charPredicate.negate());
     }
 
     @Override
@@ -40,32 +47,50 @@ public final class UnicodeCheck implements ICheck {
         char[] charArray = Objects.requireNonNull(string).toCharArray();
         final Set<Character> results = new HashSet<>();
 
-        if(charscustom.length != 0){
-            for(char character : charArray){
-                if(charPredicate.test(character)){
-                    if(blockable)
-                        return CompletableFuture.completedFuture(new Result(string, true));
-                    results.add(character);
-                }
-            }
-        } else {
-            for(char character : charArray){
-                if(charTest.test(character)){
-                    if(blockable){
-                        return CompletableFuture.completedFuture(new Result(string, true));
+        /*final List<Character> results = Objects.requireNonNull(string)
+            .chars()
+            .boxed()
+            .map(i -> (char)i.intValue())
+            .filter(charPredicate::test)
+            .toList();
+
+        if(!results.isEmpty()) {
+            return control == ControlType.BLOCK
+                ? CompletableFuture.completedFuture(new Result(string, true))
+                : CompletableFuture.completedFuture(new ReplaceableResult(results.toString(), true){
+                    @Override
+                    public String replaceInfraction(){
+                        String replaced = string;
+                        for(final char character : results){
+                            replaced = replaced.replace(character, ' ');
+                        }
+                        return replaced;
                     }
-                    results.add(character);
+                });
+        } else {
+            return CompletableFuture.completedFuture(new Result(string, false));
+        }*/
+
+        for(final char character : charArray){
+            if(charPredicate.test(character)){
+                if(control == ControlType.BLOCK) {
+                    System.out.println("Retorno ControlType.BLOCk");
+                    return CompletableFuture.completedFuture(new Result(string, true));
                 }
+                results.add(character);
             }
         }
 
         return results.isEmpty()
             ? CompletableFuture.completedFuture(new Result(string, false))
             : CompletableFuture.completedFuture(new ReplaceableResult(results.toString(), true){
+                {
+                    System.out.println("Retorno Replaceable result cuando results no esta vacio");
+                }
                 @Override
                 public String replaceInfraction(){
                     String replaced = string;
-                    for(char character : results){
+                    for(final char character : results){
                         replaced = replaced.replace(character, ' ');
                     }
                     return replaced;
@@ -73,7 +98,21 @@ public final class UnicodeCheck implements ICheck {
             });
     }
 
-    private static final Predicate<Character> charTest = c -> !((c >= ' ' && c <= '~') || (c <= 'ü' && c <= '¿') || (c >= '\u00BF' && c <= '\u00FE'));
+    public static final Predicate<Character> DEFAULT_CHAR_TEST = c -> {
+        if(c >= ' ' && c <= '~') {
+            System.out.println("DEFAULT_CHAR_TEST: TRUE");
+            return true;
+        }
+        if(c <= 'ü' && c <= '¿') {
+            System.out.println("DEFAULT_CHAR_TEST: TRUE");
+            return true;
+        }
+        if(c >= '\u00BF' && c <= '\u00FE'){
+            System.out.println("DEFAULT_CHAR_TEST: TRUE");
+            return true;
+        }
+        return false;
+    };
 
     @Override
     public @NotNull InfractionType type() {
@@ -81,16 +120,13 @@ public final class UnicodeCheck implements ICheck {
     }
 
     public static CompletableFuture<Result> createCheck(String string){
-        return Configuration.getConfig().getUnicodeConfig().additionalChars().enabled()
-            ? new UnicodeCheck(
-                Configuration.getConfig().getUnicodeConfig().additionalChars().chars(),
-                Configuration.getConfig().getUnicodeConfig().isBlockable(),
-                true
-            ).check(string)
-            : new UnicodeCheck(
-                new char[0],
-                Configuration.getConfig().getUnicodeConfig().isBlockable(),
-                true
+        final var unicode = Configuration.getConfig().getUnicodeConfig();
+        return new UnicodeCheck(
+                unicode.additionalChars().enabled()
+                    ? unicode.additionalChars().chars()
+                    : new char[0],
+                unicode.getControlType(),
+                unicode.additionalChars().charMode()
             ).check(string);
     }
 
@@ -100,8 +136,8 @@ public final class UnicodeCheck implements ICheck {
 
     public static class Builder implements AbstractBuilder<UnicodeCheck> {
         private char[] chars;
-        private boolean replaceable;
-        private boolean block;
+        private ControlType control = ControlType.REPLACE;
+        private CharMode mode = CharMode.BLACKLIST;
 
         private Builder(){}
 
@@ -120,18 +156,13 @@ public final class UnicodeCheck implements ICheck {
          * @param replaceable replaceable or blockable
          * @return this
          */
-        public Builder replaceable(boolean replaceable){
-            this.replaceable = replaceable;
+        public Builder controlType(ControlType control){
+            this.control = control;
             return this;
         }
 
-        public Builder blockCharacters(){
-            this.block = true;
-            return this;
-        }
-
-        public Builder allowCharacters() {
-            this.block = false;
+        public Builder charMode(CharMode mode){
+            this.mode = mode;
             return this;
         }
 
@@ -140,8 +171,12 @@ public final class UnicodeCheck implements ICheck {
             return new UnicodeCheck(chars == null
                     ? new char[0]
                     : chars,
-                !replaceable, block);
+                control, mode);
         }
 
+    }
+
+    public static enum CharMode {
+        WHITELIST, BLACKLIST
     }
 }

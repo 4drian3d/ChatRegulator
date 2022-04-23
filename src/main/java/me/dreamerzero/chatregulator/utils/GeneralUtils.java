@@ -65,15 +65,15 @@ public final class GeneralUtils {
      * @return if the event is approved
      */
     public static boolean callViolationEvent(@NotNull EventBundle bundle, @NotNull ChatRegulator plugin) {
-        return plugin.getProxy().getEventManager().fire(bundle.stype() == SourceType.COMMAND
+        return plugin.getProxy().getEventManager().fire(bundle.source() == SourceType.COMMAND
             ? new CommandViolationEvent(bundle.player(), bundle.type(), bundle.result, bundle.string)
             : new ChatViolationEvent(bundle.player(), bundle.type(), bundle.result, bundle.string))
             .thenApplyAsync(violationEvent -> {
                 if(!violationEvent.getResult().isAllowed()) {
-                    if(bundle.stype == SourceType.COMMAND)
-                        bundle.player.lastCommand(bundle.string);
+                    if(bundle.source() == SourceType.COMMAND)
+                        bundle.player().lastCommand(bundle.string());
                     else
-                        bundle.player.lastMessage(bundle.string);
+                        bundle.player().lastMessage(bundle.string());
                     return false;
                 } else {
                     DebugUtils.debug(bundle.player, bundle.string, bundle.type(), bundle.result, plugin);
@@ -104,7 +104,7 @@ public final class GeneralUtils {
 
     public static boolean unicode(InfractionPlayer player, AtomicString string, EventWrapper<?> event, ChatRegulator plugin) {
         return GeneralUtils.allowedPlayer(player.getPlayer(), InfractionType.UNICODE)
-            && UnicodeCheck.createCheck(string.get()).thenApplyAsync(result -> {
+            && UnicodeCheck.createCheck(string.get()).thenApply(result -> {
                 if(GeneralUtils.callViolationEvent(new EventBundle(player, string.get(), InfractionType.UNICODE, result, event.source()), plugin)){
                     if(Configuration.getConfig().getUnicodeConfig().isBlockable()){
                         event.cancel();
@@ -186,5 +186,5 @@ public final class GeneralUtils {
         return false;
     }
 
-    public static record EventBundle(InfractionPlayer player, String string, InfractionType type, Result result, SourceType stype) {}
+    public static record EventBundle(InfractionPlayer player, String string, InfractionType type, Result result, SourceType source) {}
 }
