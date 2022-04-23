@@ -11,7 +11,7 @@ import org.jetbrains.annotations.ApiStatus.Internal;
 import me.dreamerzero.chatregulator.InfractionPlayer;
 
 @Internal
-public class LeaveListener {
+public final class LeaveListener {
     /**
      * In case the player leaves the server,
      * his online status is marked as false.

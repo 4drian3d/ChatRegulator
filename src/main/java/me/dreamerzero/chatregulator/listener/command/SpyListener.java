@@ -1,5 +1,7 @@
 package me.dreamerzero.chatregulator.listener.command;
 
+import java.util.function.Predicate;
+
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.event.Continuation;
 import com.velocitypowered.api.event.PostOrder;
@@ -12,50 +14,49 @@ import org.jetbrains.annotations.ApiStatus.Internal;
 import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.config.MainConfig;
-import me.dreamerzero.chatregulator.config.Messages;
 import me.dreamerzero.chatregulator.enums.Permissions;
 import me.dreamerzero.chatregulator.modules.CommandSpy;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.placeholder.Placeholder;
-import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
 @Internal
-public class SpyListener {
-    private MainConfig.CommandSpy config;
-    private final MiniMessage mm;
-    private Messages.CommandSpy messages;
+public final class SpyListener {
+    private final ChatRegulator plugin;
 
-    public SpyListener(){
-        this.config = Configuration.getConfig().getCommandSpyConfig();
-        this.mm = MiniMessage.miniMessage();
-        this.messages = Configuration.getMessages().getCommandSpyMessages();
+    public SpyListener(ChatRegulator plugin){
+        this.plugin = plugin;
     }
 
     @Subscribe(order = PostOrder.LAST)
-    public void onCommand(CommandExecuteEvent event, Continuation continuation){
-        CommandSource source = event.getCommandSource();
+    public void onCommand(final CommandExecuteEvent event, final Continuation continuation){
+        final CommandSource source = event.getCommandSource();
+        final MainConfig.CommandSpy config = Configuration.getConfig().getCommandSpyConfig();
         if(!event.getResult().isAllowed()
-            || !(source instanceof Player)
+            || !(source instanceof Player player)
             || !config.enabled()
             || source.hasPermission(Permissions.BYPASS_COMMANDSPY)){
             continuation.resume();
             return;
         }
-        String command = event.getCommand();
+        final String command = event.getCommand();
 
         if(CommandSpy.shouldAnnounce(source, command, config)){
-            ChatRegulator.getInstance().getProxy().getAllPlayers().stream()
-                .filter(p -> p.hasPermission(Permissions.COMMANDSPY_ALERT))
+            final TagResolver resolver = TagResolver.resolver(
+                Placeholder.unparsed("command", command),
+                Placeholder.unparsed("player", player.getUsername())
+            );
+            plugin.getProxy().getAllPlayers().stream()
+                .filter(PERMISSION_PREDICATE)
                 .forEach(p -> p.sendMessage(
-                    mm.deserialize(
-                        messages.getMessage(),
-                        PlaceholderResolver.placeholders(
-                            Placeholder.raw("command", command),
-                            Placeholder.raw("player", ((Player)source).getUsername())
-                        )
+                    plugin.getFormatter().parse(
+                        Configuration.getMessages().getCommandSpyMessages().getMessage(),
+                        p,
+                        resolver
                     )
                 ));
         }
         continuation.resume();
     }
+
+    private static final Predicate<CommandSource> PERMISSION_PREDICATE = s -> s.hasPermission(Permissions.COMMANDSPY_ALERT);
 }

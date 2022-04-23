@@ -5,25 +5,19 @@ import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 
 import me.dreamerzero.chatregulator.config.Configuration;
-import me.dreamerzero.chatregulator.config.MainConfig;
 
 /**
  * Replacer class
  */
 public final class Replacer {
-    private final MainConfig.Format config;
-    public Replacer(){
-        this.config = Configuration.getConfig().getFormatConfig();
-    }
-
     /**
      * Converts a string with the first character converted to uppercase
      * @param string the string
      * @return a string with the first character converted to uppercase
      */
-    public @NotNull String firstLetterUpercase(@NotNull final String string){
+    public static @NotNull String firstLetterUpercase(@NotNull final String string){
         Objects.requireNonNull(string);
-        if(!config.setFirstLetterUppercase() || string.length() < 1)
+        if(!Configuration.getConfig().getFormatConfig().setFirstLetterUppercase() || string.length() < 1)
             return string;
 
         char firstCharacter = string.charAt(0);
@@ -41,20 +35,21 @@ public final class Replacer {
      * @param string the string
      * @return the string converted
      */
-    public @NotNull String addFinalDot(@NotNull final String string){
+    public static @NotNull String addFinalDot(@NotNull final String string){
         Objects.requireNonNull(string);
-        if(!config.setFinalDot() || string.charAt(string.length()-1)=='.' || string.length() <= 1)
+        if(!Configuration.getConfig().getFormatConfig().setFinalDot() || string.charAt(string.length()-1)=='.' || string.length() <= 1)
             return string;
 
         return string.concat(".");
     }
+    private Replacer(){}
 
     /**
      * Applies a trailing dot and a leading capital letter to the specified string
      * @param string the string
      * @return the string converted
      */
-    public @NotNull String applyFormat(@NotNull final String string){
-        return this.firstLetterUpercase(this.addFinalDot(Objects.requireNonNull(string)));
+    public static @NotNull String applyFormat(@NotNull final String string){
+        return firstLetterUpercase(addFinalDot(Objects.requireNonNull(string)));
     }
 }

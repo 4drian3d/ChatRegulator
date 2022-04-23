@@ -1,18 +1,20 @@
 package me.dreamerzero.chatregulator;
 
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import com.google.inject.Inject;
-import com.velocitypowered.api.command.CommandMeta;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
+import com.velocitypowered.api.plugin.PluginManager;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 
@@ -20,8 +22,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.slf4j.Logger;
 
-import me.dreamerzero.chatregulator.commands.ChatRegulatorCommand;
+import me.dreamerzero.chatregulator.commands.BrigadierRegulator;
 import me.dreamerzero.chatregulator.config.Configuration;
+import me.dreamerzero.chatregulator.enums.Components;
 import me.dreamerzero.chatregulator.listener.chat.ChatListener;
 import me.dreamerzero.chatregulator.listener.command.CommandListener;
 import me.dreamerzero.chatregulator.listener.command.SpyListener;
@@ -30,7 +33,12 @@ import me.dreamerzero.chatregulator.listener.list.LeaveListener;
 import me.dreamerzero.chatregulator.listener.plugin.PluginListener;
 import me.dreamerzero.chatregulator.listener.plugin.ReloadListener;
 import me.dreamerzero.chatregulator.utils.Constants;
-import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.byteflux.libby.Library;
+import net.byteflux.libby.VelocityLibraryManager;
+import me.dreamerzero.chatregulator.placeholders.RegulatorExpansion;
+import me.dreamerzero.chatregulator.placeholders.formatter.IFormatter;
+import me.dreamerzero.chatregulator.placeholders.formatter.MiniPlaceholderFormatter;
+import me.dreamerzero.chatregulator.placeholders.formatter.NormalFormatter;
 
 /**
  * Plugin main class
@@ -56,7 +64,8 @@ public class ChatRegulator {
     private final ProxyServer server;
     private final Logger logger;
     private final Path path;
-    private static ChatRegulator plugin;
+    private final PluginManager manager;
+    private IFormatter formatter;
 
     /**
      * InfractionPlayer list
@@ -67,44 +76,60 @@ public class ChatRegulator {
      * Constructor for ChatRegulator Plugin
      * @param server the proxy server
      * @param logger logger
+     * @param path the plugin path
      */
     @Inject
     @Internal
-    public ChatRegulator(final ProxyServer server, Logger logger, @DataDirectory Path path) {
+    public ChatRegulator(final ProxyServer server, Logger logger, @DataDirectory Path path, PluginManager pmanager) {
         this.server = server;
         this.path = path;
         this.logger = logger;
+        this.manager = pmanager;
     }
 
     /**
      * Initialization of the plugin
+     * @param event the Initialize Event
      */
     @Subscribe
     @Internal
     public void onProxyInitialization(final ProxyInitializeEvent event) {
-        ChatRegulator.plugin = this;
-        server.getConsoleCommandSource().sendMessage(MiniMessage.miniMessage()
-            .deserialize("<gradient:#f2709c:#ff9472>ChatRegulator</gradient> <gradient:#DAE2F8:#D4D3DD>has started, have a very nice day</gradient>"));
+        server.getConsoleCommandSource().sendMessage(
+            Components.MESSAGE_MINIMESSAGE
+                .deserialize(
+                    "<gradient:#f2709c:#ff9472>ChatRegulator</gradient> <gradient:#DAE2F8:#D4D3DD>Starting plugin")
+        );
+        this.loadDependencies();
         Configuration.loadConfig(path, logger);
-        if(server.getPluginManager().isLoaded("ServerUtils")){
+
+        if(server.getPluginManager().isLoaded("serverutils")){
             this.registerListener(new PluginListener(logger));
         }
+
+        if(server.getPluginManager().isLoaded("miniplaceholders")){
+            this.formatter = new MiniPlaceholderFormatter();
+            RegulatorExpansion.getExpansion().register();
+        } else {
+            this.formatter = new NormalFormatter();
+        }
+
         this.registerListener(
-            new ChatListener(),
-            new CommandListener(),
+            new ChatListener(this),
+            new CommandListener(this),
             new JoinListener(infractionPlayers),
             new LeaveListener(),
             new ReloadListener(path, logger),
-            new SpyListener()
+            new SpyListener(this)
         );
-
-        CommandMeta regulatorMeta = server.getCommandManager()
-            .metaBuilder("chatregulator")
-            .aliases("chatr", "cregulator")
-            .build();
-        server.getCommandManager().register(regulatorMeta, new ChatRegulatorCommand(infractionPlayers, server));
-
+        BrigadierRegulator.registerCommand(this);
         checkInfractionPlayersRunnable();
+
+        server.getConsoleCommandSource().sendMessage(
+            Components.MESSAGE_MINIMESSAGE
+                .deserialize(
+                    "<gradient:#f2709c:#ff9472>ChatRegulator</gradient> <gradient:#DAE2F8:#D4D3DD>has started, have a very nice day</gradient>"
+                )
+        );
     }
 
     private void registerListener(@NotNull Object @NotNull... events){
@@ -114,14 +139,8 @@ public class ChatRegulator {
     }
 
     /**
-     * Get the plugin instance
-     */
-    public static ChatRegulator getInstance(){
-        return plugin;
-    }
-
-    /**
      * Get the plugin logger
+     * @return the plugin logger
      */
     @Internal
     public @NotNull Logger getLogger(){
@@ -130,10 +149,19 @@ public class ChatRegulator {
 
     /**
      * Get the proxy
+     * @return the proxy server
      */
     @Internal
     public @NotNull ProxyServer getProxy(){
         return this.server;
+    }
+
+    public IFormatter getFormatter(){
+        return this.formatter;
+    }
+
+    public Collection<InfractionPlayer> getChatPlayers(){
+        return Set.copyOf(infractionPlayers.values());
     }
 
     /**
@@ -157,7 +185,38 @@ public class ChatRegulator {
         .schedule();
     }
 
+    /**
+     * Reload the plugin configuration
+     */
     public void reloadConfig(){
         Configuration.loadConfig(path, logger);
+    }
+
+    private void loadDependencies() {
+        final VelocityLibraryManager<ChatRegulator> libraryManager = new VelocityLibraryManager<>(logger, this.path, manager, this, "libs");
+
+        final Library hocon = Library.builder()
+            .groupId("org{}spongepowered")
+            .artifactId("configurate-hocon")
+            .version("4.1.2")
+            .id("configurate-hocon")
+            .build();
+        final Library confCore = Library.builder()
+            .groupId("org{}spongepowered")
+            .artifactId("configurate-core")
+            .version("4.1.2")
+            .id("configurate-core")
+            .build();
+        final Library geantyref = Library.builder()
+            .groupId("io{}leangen{}geantyref")
+            .artifactId("geantyref")
+            .version("1.3.13")
+            .id("geantyref")
+            .build();
+
+        libraryManager.addMavenCentral();
+        libraryManager.loadLibrary(hocon);
+        libraryManager.loadLibrary(confCore);
+        libraryManager.loadLibrary(geantyref);
     }
 }

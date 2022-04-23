@@ -3,35 +3,38 @@ package me.dreamerzero.chatregulator.modules.checks;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.nio.file.Paths;
-
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import me.dreamerzero.chatregulator.config.Configuration;
+import me.dreamerzero.chatregulator.result.IReplaceable;
 
-public class FloodTest {
-    @BeforeAll
-    static void loadConfig(){
-        Logger logger = LoggerFactory.getLogger(FloodTest.class);
-        Configuration.loadConfig(Paths.get("build", "reports", "tests", "test"), logger);
-    }
-
+public final class FloodTest {
     @Test
     @DisplayName("Flood Check")
     void floodCheck(){
-        FloodCheck fCheck = new FloodCheck();
-
         String original = "aa floOoOOOooOod aa";
-        String expected = "aa fld aa";
+        String expected = "aa flod aa";
 
-        fCheck.check(original);
-        String replaced = fCheck.replaceInfraction();
+        FloodCheck.builder().limit(5).build().check(original).thenAccept(result->{
+            assertTrue(result.isInfraction());
+            assertTrue(result instanceof IReplaceable);
+            String replaced = ((IReplaceable)result).replaceInfraction();
 
-        assertEquals(replaced, expected);
-        assertTrue(fCheck.isInfraction());
+            assertEquals(replaced, expected);
+        }).join();
+    }
+
+    @Test
+    @DisplayName("MultiFlood Replacement")
+    void multiFlood(){
+        String original = "helloooooo everyoneeeeeee";
+
+        FloodCheck.createCheck(original).thenAccept(result -> {
+            assertTrue(result.isInfraction());
+            assertTrue(result instanceof IReplaceable);
+            String replaced = "hello everyone";
+            String actual = ((IReplaceable)result).replaceInfraction();
+            assertEquals(replaced, actual, actual);
+        }).join();
     }
 }

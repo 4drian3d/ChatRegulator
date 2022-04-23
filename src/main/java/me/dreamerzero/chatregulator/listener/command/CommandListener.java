@@ -4,135 +4,118 @@ import com.velocitypowered.api.event.Continuation;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.command.CommandExecuteEvent;
-import com.velocitypowered.api.event.command.CommandExecuteEvent.CommandResult;
 import com.velocitypowered.api.proxy.Player;
 
 import org.jetbrains.annotations.ApiStatus.Internal;
 
+import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.config.Configuration;
-import me.dreamerzero.chatregulator.config.MainConfig;
-import me.dreamerzero.chatregulator.modules.checks.CapsCheck;
 import me.dreamerzero.chatregulator.modules.checks.CommandCheck;
-import me.dreamerzero.chatregulator.modules.checks.FloodCheck;
-import me.dreamerzero.chatregulator.modules.checks.InfractionCheck;
-import me.dreamerzero.chatregulator.modules.checks.SpamCheck;
-import me.dreamerzero.chatregulator.modules.checks.UnicodeCheck;
-import me.dreamerzero.chatregulator.utils.GeneralUtils;
+import me.dreamerzero.chatregulator.modules.checks.SyntaxCheck;
+import me.dreamerzero.chatregulator.objects.AtomicString;
+import me.dreamerzero.chatregulator.utils.CommandUtils;
+import me.dreamerzero.chatregulator.utils.GeneralUtils.EventBundle;
+import me.dreamerzero.chatregulator.wrapper.event.CommandWrapper;
+import me.dreamerzero.chatregulator.wrapper.event.EventWrapper;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.enums.SourceType;
+
+import static me.dreamerzero.chatregulator.utils.GeneralUtils.*;
 
 /**
  * Detections related to command execution by players
  */
 @Internal
-public class CommandListener {
-    private final MainConfig.Config config;
-
-    /**
-     * CommandListener constructor
-     */
-    public CommandListener() {
-        this.config = Configuration.getConfig();
+public final class CommandListener {
+    private final ChatRegulator plugin;
+    public CommandListener(ChatRegulator plugin){
+        this.plugin = plugin;
     }
-
     /**
      * Listener for command detections
      * @param event the command event
+     * @param continuation the event cycle
      */
     @Subscribe(order = PostOrder.FIRST)
     public void onCommand(CommandExecuteEvent event, Continuation continuation){
-        if (!(event.getCommandSource() instanceof Player) || !event.getResult().isAllowed()){
+        if (!(event.getCommandSource() instanceof final Player player)
+            || !event.getResult().isAllowed()
+        ) {
             continuation.resume();
             return;
         }
 
-        String command = event.getCommand();
-        final Player player = (Player)event.getCommandSource();
         final InfractionPlayer infractionPlayer = InfractionPlayer.get(player);
+        final EventWrapper<CommandExecuteEvent> wrapper = new CommandWrapper(event, continuation);
 
-        if(GeneralUtils.allowedPlayer(player, InfractionType.BCOMMAND)){
-            CommandCheck cCheck = new CommandCheck();
-            cCheck.check(command);
-            if(GeneralUtils.checkAndCall(infractionPlayer, command, cCheck, SourceType.COMMAND)){
-                event.setResult(CommandResult.denied());
-                continuation.resume();
-                return;
-            }
+        if(this.blockedCommands(infractionPlayer, event.getCommand(), wrapper)
+            || this.syntax(infractionPlayer, event.getCommand(), wrapper)
+            || !this.checkIfCanCheck(event.getCommand())
+        ) {
+            return;
         }
 
-        if(GeneralUtils.allowedPlayer(player, InfractionType.UNICODE)){
-            UnicodeCheck uCheck = new UnicodeCheck();
-            uCheck.check(command);
-            if(GeneralUtils.checkAndCall(infractionPlayer, command, uCheck, SourceType.COMMAND)){
-                if(config.getUnicodeConfig().isBlockable()){
-                    event.setResult(CommandResult.denied());
-                    continuation.resume();
-                    return;
-                }
-                String commandReplaced = uCheck.replaceInfraction();
-                event.setResult(CommandResult.command(commandReplaced));
-                command = commandReplaced;
-            }
+        final AtomicString command = new AtomicString(event.getCommand());
+
+        if(unicode(infractionPlayer, command, wrapper, plugin)
+            || caps(infractionPlayer, command, wrapper, plugin)
+            || flood(infractionPlayer, command, wrapper, plugin)
+            || regular(infractionPlayer, command, wrapper, plugin)
+            || spam(infractionPlayer, command, wrapper, plugin)
+        ) {
+            return;
         }
 
-        if(GeneralUtils.allowedPlayer(player, InfractionType.CAPS)){
-            CapsCheck cCheck = new CapsCheck();
-            cCheck.check(command);
-
-            if(cCheck.isInfraction() && GeneralUtils.callViolationEvent(infractionPlayer, command, cCheck, SourceType.COMMAND)){
-                if(config.getCapsConfig().isBlockable()){
-                    event.setResult(CommandResult.denied());
-                    continuation.resume();
-                    return;
-                }
-                String commandReplaced = cCheck.replaceInfraction();
-                event.setResult(CommandResult.command(commandReplaced));
-                command = commandReplaced;
-            }
-        }
-
-        if(GeneralUtils.allowedPlayer(player, InfractionType.FLOOD)){
-            FloodCheck fCheck = new FloodCheck();
-            fCheck.check(command);
-            if(fCheck.isInfraction() && GeneralUtils.checkAndCall(infractionPlayer, command, fCheck, SourceType.COMMAND)) {
-                if(config.getFloodConfig().isBlockable()){
-                    event.setResult(CommandResult.denied());
-                    continuation.resume();
-                    return;
-                }
-                String commandReplaced = fCheck.replaceInfraction();
-                event.setResult(CommandResult.command(commandReplaced));
-                command = commandReplaced;
-            }
-        }
-
-        if(GeneralUtils.allowedPlayer(player, InfractionType.REGULAR)){
-            InfractionCheck iCheck = new InfractionCheck();
-            iCheck.check(command);
-            if(GeneralUtils.checkAndCall(infractionPlayer, command, iCheck, SourceType.COMMAND)) {
-                if(config.getInfractionsConfig().isBlockable()){
-                    event.setResult(CommandResult.denied());
-                    continuation.resume();
-                    return;
-                }
-                String commandReplaced = iCheck.replaceInfraction();
-                event.setResult(CommandResult.command(commandReplaced));
-                command = commandReplaced;
-            }
-        }
-
-        if(GeneralUtils.allowedPlayer(player, InfractionType.SPAM)){
-            SpamCheck sCheck = new SpamCheck(infractionPlayer, SourceType.COMMAND);
-            sCheck.check(command);
-            if(GeneralUtils.spamCheck(sCheck, config, infractionPlayer) && GeneralUtils.callViolationEvent(infractionPlayer, command, sCheck, SourceType.COMMAND)) {
-                event.setResult(CommandResult.denied());
-                continuation.resume();
-                return;
-            }
-        }
-
-        infractionPlayer.lastCommand(command);
+        infractionPlayer.lastCommand(command.get());
         continuation.resume();
+    }
+
+    private boolean checkIfCanCheck(final String command){
+        for(final String cmd : Configuration.getConfig().getCommandsChecked()){
+            if(CommandUtils.isStartingString(command, cmd))
+                return true;
+        }
+        return false;
+    }
+
+    private boolean syntax(InfractionPlayer player, String string, EventWrapper<?> event) {
+        if(allowedPlayer(player.getPlayer(), InfractionType.SYNTAX)
+            && checkAndCall(
+                new EventBundle(
+                    player,
+                    string,
+                    InfractionType.SYNTAX,
+                    SyntaxCheck.createCheck(string).join(),
+                    SourceType.COMMAND
+                ),
+                plugin
+            )
+        ){
+            event.cancel();
+            event.resume();
+            return true;
+        }
+        return false;
+    }
+
+    private boolean blockedCommands(InfractionPlayer player, String string, EventWrapper<?> event) {
+        if(allowedPlayer(player.getPlayer(), InfractionType.BCOMMAND)
+            && checkAndCall(
+                new EventBundle(
+                    player,
+                    string,
+                    InfractionType.BCOMMAND,
+                    CommandCheck.createCheck(string).join(),
+                    SourceType.COMMAND
+                ),
+                plugin
+            )
+        ) {
+            event.cancel();
+            event.resume();
+            return true;
+        }
+        return false;
     }
 }

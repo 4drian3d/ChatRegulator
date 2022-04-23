@@ -2,44 +2,87 @@ package me.dreamerzero.chatregulator.modules.checks;
 
 import java.util.Locale;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.enums.InfractionType;
+import me.dreamerzero.chatregulator.result.Result;
+import net.kyori.adventure.builder.AbstractBuilder;
+import me.dreamerzero.chatregulator.result.ReplaceableResult;
 
 /**
  * Check for compliance with uppercase character limit in a string
  */
-public class CapsCheck extends AbstractCheck implements ReplaceableCheck{
+public final class CapsCheck implements ICheck {
+    private final int limit;
 
-    @Override
-    public void check(@NotNull String message) {
-        super.string = Objects.requireNonNull(message);
-        char[] chararray = message.toCharArray();
-        int capcount = 0;
-        for(char c : chararray){
-            if(Character.isUpperCase(c)) capcount++;
-        }
-
-        if(capcount >= Configuration.getConfig().getCapsConfig().limit()){
-            super.detected = true;
-        }
+    private CapsCheck(){
+        this.limit = Configuration.getConfig().getCapsConfig().limit();
     }
 
-    @Override
-    public @Nullable String replaceInfraction(){
-        return super.string.toLowerCase(Locale.ROOT);
+    private CapsCheck(int limit){
+        this.limit = limit;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return A {@link ReplaceableResult} if the check was succesfully or a {@link Result} if not
+     */
     @Override
-    public @Nullable String getInfractionWord(){
-        return this.string;
+    public CompletableFuture<Result> check(final @NotNull String string) {
+        return CompletableFuture.completedFuture(Objects.requireNonNull(string)
+            .chars()
+            .filter(Character::isUpperCase)
+            .count() >= this.limit
+            ? new ReplaceableResult(string, true){
+                @Override
+                public String replaceInfraction(){
+                    return string.toLowerCase(Locale.ROOT);
+                }
+            }
+            : new Result(string, false));
+    }
+
+    public static CompletableFuture<Result> createCheck(String string){
+        return new CapsCheck().check(string);
     }
 
     @Override
     public @NotNull InfractionType type() {
         return InfractionType.CAPS;
+    }
+
+    /**
+     * Create a builder
+     * @return a new CapsCheck.Builder
+     */
+    public static CapsCheck.Builder builder(){
+        return new CapsCheck.Builder();
+    }
+
+    /**Caps Check Builder */
+    public static class Builder implements AbstractBuilder<CapsCheck> {
+        private int limit;
+        Builder(){}
+
+        /**
+         * Set the new caps limit
+         * @param limit the new limit
+         * @return this
+         */
+        public Builder limit(int limit){
+            this.limit = limit;
+            return this;
+        }
+
+        @Override
+        public CapsCheck build(){
+            return limit == 0
+                ? new CapsCheck()
+                : new CapsCheck(limit);
+        }
     }
 }

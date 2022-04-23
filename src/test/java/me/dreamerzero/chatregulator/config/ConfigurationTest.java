@@ -1,6 +1,6 @@
 package me.dreamerzero.chatregulator.config;
 
-import java.nio.file.Paths;
+import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,17 +13,17 @@ import org.slf4j.LoggerFactory;
 import me.dreamerzero.chatregulator.enums.ControlType;
 import me.dreamerzero.chatregulator.enums.WarningType;
 
-public class ConfigurationTest {
+public final class ConfigurationTest {
     @BeforeAll
     static void loadConfig(){
         Logger logger = LoggerFactory.getLogger(ConfigurationTest.class);
-        Configuration.loadConfig(Paths.get("build", "reports", "tests", "test"), logger);
+        Configuration.loadConfig(Path.of("build", "reports", "tests", "test"), logger);
     }
 
     @Test
     @DisplayName("Config Values")
     void configValues(){
-        var config = Configuration.getConfig();
+        MainConfig.Config config = Configuration.getConfig();
 
         assertTrue(config.getCommandBlacklistConfig().enabled());
         assertFalse(config.getFormatConfig().enabled());

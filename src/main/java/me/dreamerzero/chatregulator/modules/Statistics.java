@@ -44,6 +44,8 @@ public final class Statistics {
      */
     private int globalViolations;
 
+    private int syntaxViolations;
+
     /**
      * Get the global violation statistics
      * @return the global statistics
@@ -73,6 +75,7 @@ public final class Statistics {
             case BCOMMAND: this.commandCount++; break;
             case UNICODE: this.unicodeViolations++; break;
             case CAPS: this.capsViolations++; break;
+            case SYNTAX: this.syntaxViolations++; break;
             case NONE: break;
         }
         this.globalViolations++;
@@ -84,16 +87,41 @@ public final class Statistics {
      * @return count of the respective infraction type
      */
     public int getViolationCount(@NotNull InfractionType type){
+        return switch(type){
+            case SPAM -> this.spamCount;
+            case FLOOD -> this.floodCount;
+            case REGULAR -> this.regularCount;
+            case BCOMMAND -> this.commandCount;
+            case UNICODE -> this.unicodeViolations;
+            case CAPS -> this.capsViolations;
+            case SYNTAX -> this.syntaxViolations;
+            case NONE -> this.globalViolations;
+        };
+    }
+
+    void resetViolationCount(){
+        this.spamCount = 0;
+        this.floodCount = 0;
+        this.regularCount = 0;
+        this.commandCount = 0;
+        this.unicodeViolations = 0;
+        this.capsViolations = 0;
+        this.syntaxViolations = 0;
+        this.globalViolations = 0;
+    }
+
+    void setViolationCount(InfractionType type, int amount){
         switch(type){
-            case SPAM: return this.spamCount;
-            case FLOOD: return this.floodCount;
-            case REGULAR: return this.regularCount;
-            case BCOMMAND: return this.commandCount;
-            case UNICODE: return this.unicodeViolations;
-            case CAPS: return this.capsViolations;
-            case NONE: return this.globalViolations;
+            case SPAM -> this.spamCount = amount;
+            case FLOOD -> this.floodCount = amount;
+            case REGULAR -> this.regularCount = amount;
+            case BCOMMAND -> this.commandCount = amount;
+            case UNICODE -> this.unicodeViolations = amount;
+            case CAPS -> this.capsViolations = amount;
+            case SYNTAX -> this.syntaxViolations = amount;
+            case NONE -> {}
         }
-        return 0;
+        this.globalViolations = this.spamCount + this.floodCount + this.regularCount + this.commandCount + this.unicodeViolations + this.capsViolations + this.syntaxViolations;
     }
 
     @Override
@@ -120,6 +148,7 @@ public final class Statistics {
             +",caps="+this.capsViolations
             +",command="+this.commandCount
             +",unicode="+this.unicodeViolations
+            +",syntax="+this.syntaxViolations
             +"]";
     }
 
@@ -131,5 +160,6 @@ public final class Statistics {
         this.globalViolations = 0;
         this.regularCount = 0;
         this.unicodeViolations = 0;
+        this.syntaxViolations = 0;
     }
 }

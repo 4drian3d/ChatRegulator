@@ -10,12 +10,13 @@ import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.ViolationCount;
 import me.dreamerzero.chatregulator.modules.Statistics;
 import me.dreamerzero.chatregulator.enums.InfractionType;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.placeholder.Placeholder;
-import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
 /**
  * Player Data Collection Utilities
+ * 
+ * This class returns placeholders whether or not MiniPlaceholders is installed
  */
 public final class PlaceholderUtils {
     /**
@@ -23,24 +24,23 @@ public final class PlaceholderUtils {
      * @param player the {@link InfractionPlayer}
      * @return placeholders based on this player
      */
-    public static @NotNull PlaceholderResolver getPlaceholders(@NotNull final InfractionPlayer player){
+    public static @NotNull TagResolver getPlaceholders(@NotNull final InfractionPlayer player){
         final ViolationCount count = Objects.requireNonNull(player).getViolations();
-        PlaceholderResolver.Builder resolver = PlaceholderResolver.builder();
-        resolver.placeholders(
-            Placeholder.raw("player", player.username()),
-            Placeholder.raw("name", player.username()),
-            stringPlaceholder("flood", count.getCount(InfractionType.FLOOD)),
-            stringPlaceholder("spam", count.getCount(InfractionType.SPAM)),
-            stringPlaceholder("regular", count.getCount(InfractionType.REGULAR)),
-            stringPlaceholder("unicode", count.getCount(InfractionType.UNICODE)),
-            stringPlaceholder("caps", count.getCount(InfractionType.CAPS)),
-            stringPlaceholder("command", count.getCount(InfractionType.BCOMMAND))
+        TagResolver.Builder resolver = TagResolver.builder().resolvers(
+            Placeholder.unparsed("player", player.username()),
+            Placeholder.unparsed("name", player.username()),
+            integerPlaceholder("flood", count.getCount(InfractionType.FLOOD)),
+            integerPlaceholder("spam", count.getCount(InfractionType.SPAM)),
+            integerPlaceholder("regular", count.getCount(InfractionType.REGULAR)),
+            integerPlaceholder("unicode", count.getCount(InfractionType.UNICODE)),
+            integerPlaceholder("caps", count.getCount(InfractionType.CAPS)),
+            integerPlaceholder("command", count.getCount(InfractionType.BCOMMAND)),
+            integerPlaceholder("syntax", count.getCount(InfractionType.SYNTAX))
         );
         Player p = player.getPlayer();
         if(p != null){
             p.getCurrentServer().ifPresent(server ->
-                resolver.placeholder(
-                    Placeholder.raw("server", server.getServer().getServerInfo().getName())));
+                resolver.resolver(Placeholder.unparsed("server", server.getServer().getServerInfo().getName())));
         }
 
         return resolver.build();
@@ -50,20 +50,21 @@ public final class PlaceholderUtils {
      * Obtain the global placeholders
      * @return global placeholders
      */
-    public static @NotNull PlaceholderResolver getGlobalPlaceholders(){
+    public static @NotNull TagResolver getGlobalPlaceholders(){
         Statistics statistics = Statistics.getStatistics();
-        return PlaceholderResolver.placeholders(
-            stringPlaceholder("flood", statistics.getViolationCount(InfractionType.FLOOD)),
-            stringPlaceholder("spam", statistics.getViolationCount(InfractionType.SPAM)),
-            stringPlaceholder("regular", statistics.getViolationCount(InfractionType.REGULAR)),
-            stringPlaceholder("command", statistics.getViolationCount(InfractionType.BCOMMAND)),
-            stringPlaceholder("unicode", statistics.getViolationCount(InfractionType.UNICODE)),
-            stringPlaceholder("caps", statistics.getViolationCount(InfractionType.CAPS))
+        return TagResolver.resolver(
+            integerPlaceholder("flood", statistics.getViolationCount(InfractionType.FLOOD)),
+            integerPlaceholder("spam", statistics.getViolationCount(InfractionType.SPAM)),
+            integerPlaceholder("regular", statistics.getViolationCount(InfractionType.REGULAR)),
+            integerPlaceholder("command", statistics.getViolationCount(InfractionType.BCOMMAND)),
+            integerPlaceholder("unicode", statistics.getViolationCount(InfractionType.UNICODE)),
+            integerPlaceholder("caps", statistics.getViolationCount(InfractionType.CAPS)),
+            integerPlaceholder("syntax", statistics.getViolationCount(InfractionType.SYNTAX))
         );
     }
 
-    private static Placeholder<Component> stringPlaceholder(String key, int value){
-        return Placeholder.raw(key, String.valueOf(value));
+    private static TagResolver.Single integerPlaceholder(String key, int value){
+        return Placeholder.unparsed(key, Integer.toString(value));
     }
 
     private PlaceholderUtils(){}

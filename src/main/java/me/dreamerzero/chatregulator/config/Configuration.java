@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -18,7 +19,7 @@ import me.dreamerzero.chatregulator.modules.checks.FloodCheck;
 /**
  * The configuration paths available in the plugin
  */
-public class Configuration {
+public final class Configuration {
     private Configuration(){}
     private static MainConfig.Config config;
     private static Messages.Config messages;
@@ -30,8 +31,8 @@ public class Configuration {
      * @param logger plugin logger
      */
     public static void loadConfig(@NotNull Path path, @NotNull Logger logger){
-        Objects.requireNonNull(path, "plugin path");
-        Objects.requireNonNull(logger, "plugin logger");
+        Objects.requireNonNull(path, () ->"plugin path");
+        Objects.requireNonNull(logger, () -> "plugin logger");
         loadMainConfig(path, logger);
         loadMessagesConfig(path, logger);
         loadBlacklistConfig(path, logger);
@@ -44,10 +45,10 @@ public class Configuration {
         final HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
             .defaultOptions(opts -> opts
                 .shouldCopyDefaults(true)
-                .header(
-                    "ChatRegulator | by 4drian3d\n "+
-                    "Check the function of each configuration option at\n"+
-                    "https://github.com/4drian3d/ChatRegulator/wiki/Configuration\n"
+                .header("""
+                    ChatRegulator | by 4drian3d
+                    Check the function of each configuration option at
+                    https://github.com/4drian3d/ChatRegulator/wiki/Configuration"""
                 )
             )
             .path(configPath)
@@ -68,12 +69,12 @@ public class Configuration {
         final HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
             .defaultOptions(opts -> opts
                 .shouldCopyDefaults(true)
-                .header(
-                    "ChatRegulator | by 4drian3d\n"+
-                    "To modify the plugin messages and to use the plugin in general,\n"+
-                    "I recommend that you have a basic knowledge of MiniMessage○\n"+
-                    "Guide: https://docs.adventure.kyori.net/minimessage.html#format\n"+
-                    "Spanish Guide: https://gist.github.com/4drian3d/9ccce0ca1774285e38becb09b73728f3"
+                .header("""
+                    ChatRegulator | by 4drian3d
+                    To modify the plugin messages and to use the plugin in general
+                    I recommend that you have a basic knowledge of MiniMessage
+                    Guide: https://docs.adventure.kyori.net/minimessage.html#format
+                    Spanish Guide: https://gist.github.com/4drian3d/9ccce0ca1774285e38becb09b73728f3"""
                 )
             )
             .path(messagesConfig)
@@ -94,12 +95,15 @@ public class Configuration {
         final HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
             .defaultOptions(opts -> opts
                 .shouldCopyDefaults(true)
-                .header(
-                    "ChatRegulator | by 4drian3d\n"+
-                    "Blacklist of Commands and Regular Expressions\n"+
-                    "To test each regular expression, use: \n"+
-                    "https://regex101.com/"+
-                    "If you are using patterns that include '\\', replace them with '\\\\'"
+                .serializers(builder -> {
+                    builder.register(Pattern.class, new CustomPatternSerializer());
+                })
+                .header("""
+                    ChatRegulator | by 4drian3d
+                    Blacklist of Commands and Regular Expressions
+                    To test each regular expression, use:
+                    https://regex101.com/
+                    If you are using patterns that include '\\', replace them with '\\\\'"""
                 )
             )
             .path(blacklistConfig)
@@ -131,14 +135,26 @@ public class Configuration {
         }
     }
 
+    /**
+     * Get the main Configuration
+     * @return the general configuration
+     */
     public static MainConfig.Config getConfig(){
         return config;
     }
 
+    /**
+     * Get the Blacklist configuration
+     * @return the Blacklist configuration
+     */
     public static Blacklist.Config getBlacklist(){
         return blacklist;
     }
 
+    /**
+     * Get the Messages Configuration
+     * @return the Messages configuration
+     */
     public static Messages.Config getMessages(){
         return messages;
     }

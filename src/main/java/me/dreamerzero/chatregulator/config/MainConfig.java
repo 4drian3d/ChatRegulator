@@ -8,9 +8,11 @@ import org.spongepowered.configurate.objectmapping.meta.Setting;
 
 import me.dreamerzero.chatregulator.enums.ControlType;
 import me.dreamerzero.chatregulator.enums.WarningType;
+import me.dreamerzero.chatregulator.modules.checks.UnicodeCheck.CharMode;
 
-public class MainConfig {
+public final class MainConfig {
     private MainConfig(){}
+    /**Main Configuration */
     @ConfigSerializable
     public static class Config {
         @Comment("Regular infraction module")
@@ -41,49 +43,121 @@ public class MainConfig {
         @Comment("CommandSpy configuration")
         private CommandSpy commandSpy = new CommandSpy();
 
+        @Comment("Syntax blocker configuration")
+        private Syntax syntax = new Syntax();
+
+        @Comment("""
+            Specify in which commands you want the violations to be detected
+            I recommend you to put chat commands, for example: /tell""")
+        @Setting(value = "commands-checked")
+        private Set<String> commandsChecked = Set.of(
+            "tell",
+            "etell",
+            "msg",
+            "emsg",
+            "chat",
+            "global",
+            "reply"
+        );
+
+        /**
+         * Get the commands checked
+         * @return the commands checked
+         */
+        public Set<String> getCommandsChecked(){
+            return this.commandsChecked;
+        }
+
+        /**
+         * Get the command blacklist configuration
+         * @return the command blacklist configuration
+         */
         public CommandBlacklist getCommandBlacklistConfig(){
             return this.blacklist;
         }
 
+        /**
+         * Get the infractions configuration
+         * @return the command blacklist configuration
+         */
         public Infractions getInfractionsConfig(){
             return this.infractions;
         }
 
+        /**
+         * Get the flood configuration
+         * @return the flood configuration
+         */
         public Flood getFloodConfig(){
             return this.flood;
         }
 
+        /**
+         * Get the spam configuration
+         * @return the spam configuration
+         */
         public Spam getSpamConfig(){
             return this.spam;
         }
 
+        /**
+         * Get the unicode configuration
+         * @return the unicode configuration
+         */
         public Unicode getUnicodeConfig(){
             return this.unicode;
         }
 
+        /**
+         * Get the caps configuration
+         * @return the caps configuration
+         */
         public Caps getCapsConfig(){
             return this.caps;
         }
 
+        /**
+         * Get the formats configuration
+         * @return the formats configuration
+         */
         public Format getFormatConfig(){
             return this.format;
         }
 
+        /**
+         * Get the general configuration
+         * @return the general configuration
+         */
         public General getGeneralConfig(){
             return this.general;
         }
 
+        /**
+         * Get the command spy configuration
+         * @return the command spy configuration
+         */
         public CommandSpy getCommandSpyConfig(){
             return this.commandSpy;
         }
+
+        /**
+         * Get the syntax blocker configuration
+         * @return the syntax configuration
+         */
+        public Syntax getSyntaxConfig(){
+            return this.syntax;
+        }
     }
 
+    /**CommandBlacklist configuration */
     @ConfigSerializable
     public static class CommandBlacklist implements Executable, Warning, Toggleable {
         @Comment("Enables command blocking")
         private boolean enabled = true;
 
-        @Comment("Sets the form of warning\nAvailable options: TITLE, ACTIONBAR, MESSAGE")
+        @Comment("""
+            Sets the form of warning
+            Available options: TITLE, ACTIONBAR, MESSAGE""")
         @Setting(value = "warning-type")
         private WarningType warningType = WarningType.MESSAGE;
 
@@ -105,34 +179,28 @@ public class MainConfig {
             return this.commands;
         }
 
+        /**Command Blacklist commands configuration */
         @ConfigSerializable
         public static class Commands extends CommandsConfig{}
     }
 
+    /**Infractions configuration */
     @ConfigSerializable
     public static class Infractions implements Toggleable, Warning, Controllable, Executable {
         @Comment("Enable violation checking in chat and commands")
         private boolean enabled = true;
 
-        @Comment("Sets the form of warning\nAvailable options: TITLE, ACTIONBAR, MESSAGE")
+        @Comment("""
+            Sets the form of warning
+            Available options: TITLE, ACTIONBAR, MESSAGE""")
         @Setting(value = "warning-type")
         private WarningType warningType = WarningType.MESSAGE;
 
-        @Comment("Sets the control format\nAvailable options: BLOCK, REPLACE")
+        @Comment("""
+            Sets the control format
+            Available options: BLOCK, REPLACE""")
         @Setting(value = "control-type")
         private ControlType controlType = ControlType.BLOCK;
-
-        @Comment("Specify in which commands you want the violations to be detected\nI recommend you to put chat commands, for example: /tell")
-        @Setting(value = "commands-checked")
-        private Set<String> commandsChecked = Set.of(
-            "tell",
-            "etell",
-            "msg",
-            "emsg",
-            "chat",
-            "global",
-            "reply"
-        );
 
         @Comment("Commands to be executed in the regular infraction module")
         private Infractions.Commands commands = new Infractions.Commands();
@@ -152,29 +220,33 @@ public class MainConfig {
             return this.controlType;
         }
 
-        public Set<String> getCommandsChecked(){
-            return this.commandsChecked;
-        }
-
         @Override
         public CommandsConfig getCommandsConfig(){
             return this.commands;
         }
 
+        /**Infraction commands configuration */
         @ConfigSerializable
         public static class Commands extends CommandsConfig{}
     }
 
+    /**Flood Configuration */
     @ConfigSerializable
     public static class Flood implements Toggleable, Warning, Controllable, Executable {
-        @Comment("Enable flood check in the chat\n(e.g.: \"aaaaaaaa\")")
+        @Comment("""
+            Enable flood check in the chat
+            (e.g.: \"aaaaaaaa\")""")
         private boolean enabled = true;
 
-        @Comment("Sets the form of warning\nAvailable options: TITLE, ACTIONBAR, MESSAGE")
+        @Comment("""
+            Sets the form of warning
+            Available options: TITLE, ACTIONBAR, MESSAGE""")
         @Setting(value = "warning-type")
         private WarningType warningType = WarningType.MESSAGE;
 
-        @Comment("Sets the control format\nAvailable options: BLOCK, REPLACE")
+        @Comment("""
+            Sets the control format
+            Available options: BLOCK, REPLACE""")
         @Setting(value = "control-type")
         private ControlType controlType = ControlType.BLOCK;
 
@@ -199,6 +271,10 @@ public class MainConfig {
             return this.controlType;
         }
 
+        /**
+         * Get the flood limit
+         * @return the flood limit
+         */
         public int getLimit(){
             return this.limit;
         }
@@ -208,17 +284,21 @@ public class MainConfig {
             return this.commands;
         }
 
+        /**Flood Commands configuration */
         @ConfigSerializable
         public static class Commands extends CommandsConfig{}
     }
 
+    /**Spam Configuration */
     @ConfigSerializable
     public static class Spam implements Toggleable, Warning, Executable {
 
         @Comment("Enable the spam module")
         private boolean enabled = true;
 
-        @Comment("Sets the form of warning\nAvailable options: TITLE, ACTIONBAR, MESSAGE")
+        @Comment("""
+            Sets the form of warning
+            Available options: TITLE, ACTIONBAR, MESSAGE""")
         @Setting(value = "warning-type")
         private WarningType warningType = WarningType.MESSAGE;
 
@@ -238,6 +318,10 @@ public class MainConfig {
             return this.warningType;
         }
 
+        /**
+         * Get the cooldown config
+         * @return the cooldown config
+         */
         public Spam.Cooldown getCooldownConfig(){
             return this.cooldown;
         }
@@ -247,6 +331,7 @@ public class MainConfig {
             return this.commands;
         }
 
+        /**Spam cooldown configuration */
         @ConfigSerializable
         public static class Cooldown{
             @Comment("Enables the cooldown submodule")
@@ -264,25 +349,34 @@ public class MainConfig {
             }
         }
 
+        /**Spam Commands configuration */
         @ConfigSerializable
         public static class Commands extends CommandsConfig{}
     }
 
+    /**Unicode Configuration */
     @ConfigSerializable
     public static class Unicode implements Toggleable, Warning, Executable, Controllable {
         @Comment("Enable the Unicode Module")
         private boolean enabled = true;
 
-        @Comment("Sets the form of warning\nAvailable options: TITLE, ACTIONBAR, MESSAGE")
+        @Comment("""
+            Sets the form of warning
+            Available options: TITLE, ACTIONBAR, MESSAGE""")
         @Setting(value = "warning-type")
         private WarningType warningType = WarningType.MESSAGE;
 
-        @Comment("Sets the control format\nAvailable options: BLOCK, REPLACE")
+        @Comment("""
+            Sets the control format
+            Available options: BLOCK, REPLACE""")
         @Setting(value = "control-type")
         private ControlType controlType = ControlType.BLOCK;
 
         @Comment("Commands to be executed in the unicode module")
         private Unicode.Commands commands = new Unicode.Commands();
+
+        @Comment("Additional Characters to allow")
+        private Chars additionalChars = new Chars();
 
         @Override
         public boolean enabled(){
@@ -304,21 +398,52 @@ public class MainConfig {
             return controlType;
         }
 
+        public Chars additionalChars() {
+            return this.additionalChars;
+        }
+
+        /**Unicode Commands configuration */
         @ConfigSerializable
         public static class Commands extends CommandsConfig{}
+
+        @ConfigSerializable
+        public static class Chars implements Toggleable {
+            private boolean enabled = false;
+            private char[] chars = {'ç'};
+            private CharMode mode = CharMode.BLACKLIST;
+
+            public char[] chars() {
+                return this.chars;
+            }
+
+            @Override
+            public boolean enabled() {
+                return this.enabled;
+            }
+
+            public CharMode charMode() {
+                return this.mode;
+            }
+
+        }
     }
 
+    /**Caps Configuration */
     @ConfigSerializable
     public static class Caps implements Warning, Toggleable, Controllable, Executable{
 
         @Comment("Enable the Caps limit Module")
         private boolean enabled = true;
 
-        @Comment("Sets the control format\nAvailable options: BLOCK, REPLACE")
+        @Comment("""
+            Sets the control format
+            Available options: BLOCK, REPLACE""")
         @Setting(value = "control-type")
         private ControlType controlType = ControlType.BLOCK;
 
-        @Comment("Sets the form of warning\nAvailable options: TITLE, ACTIONBAR, MESSAGE")
+        @Comment("""
+            Sets the form of warning
+            Available options: TITLE, ACTIONBAR, MESSAGE""")
         @Setting(value = "warning-type")
         private WarningType warningType = WarningType.MESSAGE;
 
@@ -353,6 +478,41 @@ public class MainConfig {
 
         @ConfigSerializable
         public static class Commands extends CommandsConfig{}
+    }
+
+    @ConfigSerializable
+    public static class Syntax implements Warning, Toggleable, Executable {
+
+        @Comment("Commands to be executed in the syntax module")
+        private Syntax.Commands commands = new Syntax.Commands();
+
+        @Comment("Enable the Syntax blocker Module")
+        private boolean enabled = true;
+
+        @Comment("""
+            Sets the form of warning
+            Available options: TITLE, ACTIONBAR, MESSAGE""")
+        @Setting(value = "warning-type")
+        private WarningType warningType = WarningType.MESSAGE;
+
+        @Override
+        public CommandsConfig getCommandsConfig() {
+            return this.commands;
+        }
+
+        @Override
+        public boolean enabled() {
+            return this.enabled;
+        }
+
+        @Override
+        public WarningType getWarningType() {
+            return this.warningType;
+        }
+
+        @ConfigSerializable
+        public static class Commands extends CommandsConfig{}
+
     }
 
     @ConfigSerializable

@@ -1,13 +1,13 @@
 package me.dreamerzero.chatregulator.utils;
 
-import com.velocitypowered.api.proxy.Player;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.ChatRegulator;
-import me.dreamerzero.chatregulator.modules.checks.AbstractCheck;
-import me.dreamerzero.chatregulator.modules.checks.PatternCheck;
+import me.dreamerzero.chatregulator.result.PatternResult;
+import me.dreamerzero.chatregulator.result.Result;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 
 /**
@@ -20,19 +20,20 @@ public final class DebugUtils {
      * @param infractor the {@link InfractionPlayer} involved
      * @param string the message/command
      * @param detection the detection type
-     * @param check the check
+     * @param result the result
      */
-    public static void debug(InfractionPlayer infractor, String string, InfractionType detection, AbstractCheck check){
+    public static void debug(InfractionPlayer infractor, String string, InfractionType detection, Result result, ChatRegulator plugin){
 
-        final Logger logger = ChatRegulator.getInstance().getLogger();
-        Player player = infractor.getPlayer();
-        if(player != null) logger.debug("User Detected: {}", player.getUsername());
-        logger.debug("Detection: {}", detection);
-        logger.debug("String: {}", string);
-        if(check instanceof PatternCheck){
-            var pattern = ((PatternCheck)check).getPattern();
-            if(pattern == null) return;
-            logger.debug("Pattern: {}", pattern.pattern());
+        final Logger logger = plugin.getLogger();
+        if(logger.isDebugEnabled()){
+            logger.debug("User Detected: {}", infractor.username());
+            logger.debug("Detection: {}", detection);
+            logger.debug("String: {}", string);
+            if(result instanceof PatternResult patternResult){
+                final Pattern pattern = patternResult.getPattern();
+                if(pattern != null)
+                    logger.debug("Pattern: {}", pattern.pattern());
+            }
         }
     }
 

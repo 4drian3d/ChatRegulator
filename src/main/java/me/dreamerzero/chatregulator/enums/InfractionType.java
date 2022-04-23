@@ -1,5 +1,9 @@
 package me.dreamerzero.chatregulator.enums;
 
+import java.util.function.Supplier;
+
+import org.jetbrains.annotations.NotNull;
+
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.config.MainConfig;
 import me.dreamerzero.chatregulator.config.Messages;
@@ -12,58 +16,67 @@ public enum InfractionType {
      * Represents a regular violation, i.e.
      * detection based on the blacklist.yml file.
      */
-    REGULAR(Permissions.BYPASS_INFRACTIONS, Configuration.getConfig().getInfractionsConfig(), Configuration.getMessages().getInfractionsMessages()),
+    REGULAR(Permissions.BYPASS_INFRACTIONS, () -> Configuration.getConfig().getInfractionsConfig(), () -> Configuration.getMessages().getInfractionsMessages()),
     /**
      * Represents an infraction for repeating
      * the same character several times in a row.
      */
-    FLOOD(Permissions.BYPASS_FLOOD, Configuration.getConfig().getFloodConfig(), Configuration.getMessages().getFloodMessages()),
+    FLOOD(Permissions.BYPASS_FLOOD, () -> Configuration.getConfig().getFloodConfig(), () -> Configuration.getMessages().getFloodMessages()),
     /**
      * Represents an infraction for repeating
      * the same word or command several times.
      */
-    SPAM(Permissions.BYPASS_SPAM, Configuration.getConfig().getSpamConfig(), Configuration.getMessages().getSpamMessages()),
+    SPAM(Permissions.BYPASS_SPAM, () -> Configuration.getConfig().getSpamConfig(), () -> Configuration.getMessages().getSpamMessages()),
     /**
      * Represents a blocked command
      */
-    BCOMMAND(Permissions.BYPASS_BCOMMAND, Configuration.getConfig().getCommandBlacklistConfig(), Configuration.getMessages().getBlacklistMessages()),
+    BCOMMAND(Permissions.BYPASS_BCOMMAND, () -> Configuration.getConfig().getCommandBlacklistConfig(), () -> Configuration.getMessages().getBlacklistMessages()),
     /**
      * Represents a Unicode check
      */
-    UNICODE(Permissions.BYPASS_UNICODE, Configuration.getConfig().getUnicodeConfig(), Configuration.getMessages().getUnicodeMessages()),
+    UNICODE(Permissions.BYPASS_UNICODE, () -> Configuration.getConfig().getUnicodeConfig(), () -> Configuration.getMessages().getUnicodeMessages()),
     /**
      * Represents a Caps limit check
      */
-    CAPS(Permissions.BYPASS_CAPS, Configuration.getConfig().getCapsConfig(), Configuration.getMessages().getCapsMessages()),
+    CAPS(Permissions.BYPASS_CAPS, () -> Configuration.getConfig().getCapsConfig(), () -> Configuration.getMessages().getCapsMessages()),
+    /**
+     * Represents a Syntax check
+     * <p>/minecraft:tp
+     */
+    SYNTAX(Permissions.BYPASS_SYNTAX, () -> Configuration.getConfig().getSyntaxConfig(), () -> Configuration.getMessages().getSyntaxMessages()),
     /**
      * Used internally to represent a
      * multiple warning and in other cases more
      */
-    NONE;
+    NONE("chatregulator.no-permission");
 
-    private String bypassPermission;
-    private MainConfig.Toggleable config;
-    private Messages.Warning messages;
+    private final String bypassPermission;
+    private Supplier<MainConfig.Toggleable> config;
+    private Supplier<Messages.Warning> messages;
 
-    InfractionType(String permission, MainConfig.Toggleable config, Messages.Warning messages){
+    InfractionType(String permission){
         this.bypassPermission = permission;
+    }
+
+    InfractionType(String permission, Supplier<MainConfig.Toggleable> config, Supplier<Messages.Warning> messages){
+        this(permission);
         this.config = config;
         this.messages = messages;
     }
 
-    InfractionType(){
-        this.bypassPermission = "";
-    }
-
-    public String bypassPermission(){
-        return this.bypassPermission;
-    }
-
-    public MainConfig.Toggleable getConfig(){
+    public Supplier<MainConfig.Toggleable> getConfig(){
         return this.config;
     }
 
-    public Messages.Warning getMessages(){
+    public Supplier<Messages.Warning> getMessages(){
         return this.messages;
+    }
+
+    /**
+     * Get the bypass permission of this type
+     * @return the bypass permission
+     */
+    public @NotNull String bypassPermission(){
+        return this.bypassPermission;
     }
 }

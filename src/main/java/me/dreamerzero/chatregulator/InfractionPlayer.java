@@ -3,24 +3,28 @@ package me.dreamerzero.chatregulator;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.Temporal;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
 import com.velocitypowered.api.proxy.Player;
+import com.velocitypowered.api.proxy.ProxyServer;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.ApiStatus.Internal;
 
 import me.dreamerzero.chatregulator.exception.PlayerNotAvailableException;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.audience.ForwardingAudience;
 
 /**
  * A player to whom the necessary warnings and variables can
  * be assigned in order to be sanctioned correctly.
  * To get the real player, check {@link #getPlayer()}
  */
-public class InfractionPlayer {
+public final class InfractionPlayer implements ForwardingAudience.Single{
     private final Player player;
     private String preLastMessage;
     private String lastMessage;
@@ -39,7 +43,7 @@ public class InfractionPlayer {
      */
     @Internal
     public InfractionPlayer(@NotNull Player player){
-        this.player = player;
+        this.player = Objects.requireNonNull(player);
         this.preLastMessage = " .";
         this.lastMessage = " ";
         this.preLastCommand = " ";
@@ -57,8 +61,8 @@ public class InfractionPlayer {
      * @throws PlayerNotAvailableException
      */
     @Internal
-    InfractionPlayer(@NotNull UUID uuid) throws PlayerNotAvailableException{
-        this.player = ChatRegulator.getInstance().getProxy().getPlayer(uuid).orElseThrow(PlayerNotAvailableException::new);
+    InfractionPlayer(@NotNull UUID uuid, ProxyServer proxy) throws PlayerNotAvailableException{
+        this.player = proxy.getPlayer(uuid).orElseThrow(PlayerNotAvailableException::new);
         this.preLastMessage = " .";
         this.lastMessage = " ";
         this.preLastCommand = " ";
@@ -207,13 +211,12 @@ public class InfractionPlayer {
      * @return the {@link InfractionPlayer}
      * @throws PlayerNotAvailableException if the player is not available
      */
-    public static @Nullable InfractionPlayer get(final UUID uuid) throws PlayerNotAvailableException{
-        InfractionPlayer p = ChatRegulator.infractionPlayers.get(uuid);
+    public static @Nullable InfractionPlayer get(final UUID uuid, ProxyServer proxy) throws PlayerNotAvailableException{
+        InfractionPlayer p = ChatRegulator.infractionPlayers.get(Objects.requireNonNull(uuid));
         if(p != null){
             return p;
         } else {
-            ChatRegulator plugin = ChatRegulator.getInstance();
-            Optional<Player> optionalPlayer = plugin.getProxy().getPlayer(uuid);
+            Optional<Player> optionalPlayer = proxy.getPlayer(uuid);
             if(optionalPlayer.isPresent()){
                 InfractionPlayer iPlayer = InfractionPlayer.get(optionalPlayer.get());
                 ChatRegulator.infractionPlayers.put(uuid, iPlayer);
@@ -231,7 +234,7 @@ public class InfractionPlayer {
      */
     public static @NotNull InfractionPlayer get(@NotNull final Player player){
         final UUID uuid = Objects.requireNonNull(player).getUniqueId();
-        var playersMap = ChatRegulator.infractionPlayers;
+        final Map<UUID, InfractionPlayer> playersMap = ChatRegulator.infractionPlayers;
         if(playersMap.containsKey(uuid)){
             return playersMap.get(uuid);
         } else {
@@ -241,11 +244,16 @@ public class InfractionPlayer {
         }
     }
 
+    public static InfractionPlayer get(@NotNull final String name){
+        return ChatRegulator.infractionPlayers.values().stream()
+            .filter(p -> p.username().equalsIgnoreCase(name))
+            .findAny().orElse(null);
+    }
+
     @Override
     public boolean equals(Object o){
         if(this==o) return true;
-        if(!(o instanceof InfractionPlayer)) return false;
-        InfractionPlayer other = (InfractionPlayer)o;
+        if(!(o instanceof final InfractionPlayer other)) return false;
         return other.getViolations().equals(this.getViolations()) || other.username.equals(this.username);
     }
 
@@ -261,5 +269,10 @@ public class InfractionPlayer {
             +",online="+this.isOnline
             +",violationcount="+violationsCount.toString()
             +"]";
+    }
+
+    @Override
+    public @NotNull Audience audience() {
+        return isOnline ? player : Audience.empty();
     }
 }

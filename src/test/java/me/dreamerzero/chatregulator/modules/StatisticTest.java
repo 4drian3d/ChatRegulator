@@ -7,16 +7,18 @@ import org.junit.jupiter.api.Test;
 
 import me.dreamerzero.chatregulator.enums.InfractionType;
 
-public class StatisticTest {
+public final class StatisticTest {
     @Test
     @DisplayName("Global Statistics Test")
     void statisticTest(){
         Statistics stats = Statistics.getStatistics();
+        stats.resetViolationCount();
         stats.addViolationCount(InfractionType.BCOMMAND);
 
         assertEquals(1, stats.getViolationCount(InfractionType.BCOMMAND));
 
         Statistics alternativeStats = Statistics.getStatistics();
         assertEquals(stats, alternativeStats);
+        stats.resetViolationCount();
     }
 }

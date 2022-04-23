@@ -4,7 +4,6 @@ import java.util.Locale;
 import java.util.Objects;
 
 import com.velocitypowered.api.proxy.Player;
-import com.velocitypowered.api.proxy.ProxyServer;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -27,25 +26,24 @@ public final class CommandUtils {
      * of a violation has been exceeded.
      * @param type the {@link InfractionType}
      * @param infractorPlayer the {@link InfractionPlayer} involved
+     * @param plugin the plugin
      */
-    public static void executeCommand(@NotNull InfractionType type, @NotNull InfractionPlayer infractorPlayer){
+    public static void executeCommand(@NotNull InfractionType type, @NotNull InfractionPlayer infractorPlayer, ChatRegulator plugin){
         Player infractor = Objects.requireNonNull(infractorPlayer).getPlayer();
         if(infractor != null){
-            execute(infractor, infractorPlayer, type);
+            execute(infractor, infractorPlayer, type, plugin);
         }
     }
 
-    private static void execute(@NotNull Player infractor, @NotNull InfractionPlayer iPlayer, @NotNull InfractionType type){
-        CommandsConfig config = ((Executable)type.getConfig()).getCommandsConfig();
+    private static void execute(@NotNull Player infractor, @NotNull InfractionPlayer iPlayer, @NotNull InfractionType type, ChatRegulator plugin){
+        CommandsConfig config = ((Executable)type.getConfig().get()).getCommandsConfig();
         if(config.executeCommand() && iPlayer.getViolations().getCount(type) % config.violationsRequired() == 0){
-            var currentServer = infractor.getCurrentServer();
-            final String servername = currentServer.isPresent() ? currentServer.get().getServerInfo().getName() :"";
+            final String servername = infractor.getCurrentServer().map(sv -> sv.getServerInfo().getName()).orElse("");
             config.getCommandsToExecute().forEach(cmd -> {
                 final String commandToSend = cmd.replace("<player>", infractor.getUsername()).replace("<server>", servername);
-                final ProxyServer proxy = ChatRegulator.getInstance().getProxy();
-                proxy.getCommandManager().executeAsync(proxy.getConsoleCommandSource(), commandToSend).thenAcceptAsync(status -> {
+                plugin.getProxy().getCommandManager().executeAsync(plugin.getProxy().getConsoleCommandSource(), commandToSend).thenAcceptAsync(status -> {
                     if(!status.booleanValue()){
-                        ChatRegulator.getInstance().getLogger().warn("Error executing command {}", commandToSend);
+                        plugin.getLogger().warn("Error executing command {}", commandToSend);
                     }
                 });
             });
@@ -92,7 +90,7 @@ public final class CommandUtils {
         string = string.toLowerCase(Locale.ROOT);
         return string.equals(startingString) ||
             string.startsWith(
-                CommandUtils.getLastChar(startingString) == '*'
+                getLastChar(startingString) == '*'
                     ? startingString.substring(0, startingString.length()-1)
                     : startingString.concat(" ")
             );

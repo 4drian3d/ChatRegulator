@@ -6,13 +6,15 @@ import org.jetbrains.annotations.NotNull;
 
 import me.dreamerzero.chatregulator.enums.InfractionType;
 
-public class ViolationCount {
+/**Global Violation Count */
+public final class ViolationCount {
     private int floodViolations;
     private int regularViolations;
     private int spamViolations;
     private int commandViolations;
     private int unicodeViolations;
     private int capsviolations;
+    private int syntaxviolations;
 
     /**
      * Adds an infraction to the count of any type of player infraction.
@@ -26,6 +28,7 @@ public class ViolationCount {
             case BCOMMAND: this.commandViolations++; break;
             case UNICODE: this.unicodeViolations++; break;
             case CAPS: this.capsviolations++; break;
+            case SYNTAX: this.syntaxviolations++; break;
             case NONE: return;
         }
     }
@@ -43,6 +46,7 @@ public class ViolationCount {
             case BCOMMAND: this.commandViolations = newViolationsCount; break;
             case UNICODE: this.unicodeViolations = newViolationsCount; break;
             case CAPS: this.capsviolations = newViolationsCount; break;
+            case SYNTAX: this.syntaxviolations = newViolationsCount; break;
             case NONE: return;
         }
     }
@@ -63,29 +67,29 @@ public class ViolationCount {
      * @return the count
      */
     public int getCount(@NotNull InfractionType type){
-        switch(type){
-            case SPAM: return this.spamViolations;
-            case REGULAR: return this.regularViolations;
-            case FLOOD: return this.floodViolations;
-            case BCOMMAND: return this.commandViolations;
-            case UNICODE: return this.unicodeViolations;
-            case CAPS: return this.capsviolations;
-            case NONE: break;
-        }
-        return 0;
+        return switch(type){
+            case SPAM -> this.spamViolations;
+            case REGULAR -> this.regularViolations;
+            case FLOOD -> this.floodViolations;
+            case BCOMMAND -> this.commandViolations;
+            case UNICODE -> this.unicodeViolations;
+            case CAPS -> this.capsviolations;
+            case SYNTAX -> this.syntaxviolations;
+            case NONE -> 0;
+        };
     }
 
     @Override
     public boolean equals(Object o){
         if(this==o) return true;
-        if(o == null || this.getClass() != o.getClass()) return false;
-        ViolationCount other = (ViolationCount)o;
-        return this.spamViolations == other.spamViolations
-            && this.capsviolations == other.capsviolations
-            && this.commandViolations == other.commandViolations
-            && this.floodViolations == other.floodViolations
-            && this.regularViolations == other.regularViolations
-            && this.unicodeViolations == other.unicodeViolations;
+        if(!(o instanceof final ViolationCount that)) return false;
+        return this.spamViolations == that.spamViolations
+            && this.capsviolations == that.capsviolations
+            && this.commandViolations == that.commandViolations
+            && this.floodViolations == that.floodViolations
+            && this.regularViolations == that.regularViolations
+            && this.unicodeViolations == that.unicodeViolations
+            && this.syntaxviolations == that.syntaxviolations;
     }
 
     @Override
@@ -96,7 +100,8 @@ public class ViolationCount {
             this.capsviolations,
             this.commandViolations,
             this.unicodeViolations,
-            this.floodViolations
+            this.floodViolations,
+            this.syntaxviolations
         );
     }
 
@@ -109,6 +114,7 @@ public class ViolationCount {
             +",caps="+this.capsviolations
             +",command="+this.commandViolations
             +",unicode="+this.unicodeViolations
+            +",syntax="+this.syntaxviolations
             +"]";
     }
 }

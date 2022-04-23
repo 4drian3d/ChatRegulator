@@ -6,7 +6,10 @@ import me.dreamerzero.chatregulator.config.MainConfig;
 import me.dreamerzero.chatregulator.enums.Permissions;
 import me.dreamerzero.chatregulator.utils.CommandUtils;
 
-public class CommandSpy {
+/**
+ * Command Spy utils
+ */
+public final class CommandSpy {
     private CommandSpy(){}
 
     /**

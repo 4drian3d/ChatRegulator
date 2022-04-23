@@ -1,7 +1,6 @@
 package me.dreamerzero.chatregulator.utils;
 
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.velocitypowered.api.proxy.Player;
 
@@ -10,15 +9,23 @@ import org.jetbrains.annotations.NotNull;
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.config.ConfigManager;
+import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.config.MainConfig;
 import me.dreamerzero.chatregulator.modules.Statistics;
-import me.dreamerzero.chatregulator.modules.checks.AbstractCheck;
+import me.dreamerzero.chatregulator.modules.checks.CapsCheck;
+import me.dreamerzero.chatregulator.modules.checks.FloodCheck;
+import me.dreamerzero.chatregulator.modules.checks.InfractionCheck;
 import me.dreamerzero.chatregulator.modules.checks.SpamCheck;
+import me.dreamerzero.chatregulator.modules.checks.UnicodeCheck;
+import me.dreamerzero.chatregulator.objects.AtomicString;
+import me.dreamerzero.chatregulator.result.IReplaceable;
+import me.dreamerzero.chatregulator.result.ReplaceableResult;
+import me.dreamerzero.chatregulator.result.Result;
+import me.dreamerzero.chatregulator.wrapper.event.EventWrapper;
 import me.dreamerzero.chatregulator.enums.SourceType;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.events.ChatViolationEvent;
 import me.dreamerzero.chatregulator.events.CommandViolationEvent;
-import net.kyori.adventure.text.Component;
 
 /**
  * General utils
@@ -28,174 +35,150 @@ public final class GeneralUtils {
     /**
      * Check if the player can be checked
      * @param player the infraction player
-     * @param type the infractiontype
+     * @param type the infraction type
      * @return if the player can be checked
      */
-    public static boolean allowedPlayer(@NotNull Player player, @NotNull InfractionType type){
-        return type.getConfig().enabled() && !Objects.requireNonNull(player).hasPermission(type.bypassPermission());
+    public static boolean allowedPlayer(@NotNull Player player, InfractionType type){
+        return type.getConfig().get().enabled() && !Objects.requireNonNull(player).hasPermission(type.bypassPermission());
     }
 
     /**
      * Check if a player has spammed
-     * @param check the check
-     * @param config the config
+     * @param result the result
      * @param iplayer the infraction player
      * @return if the player has flagged for spam
      */
-    public static boolean spamCheck(SpamCheck check, MainConfig.Config config, InfractionPlayer iplayer){
-        MainConfig.Spam sconfig = config.getSpamConfig();
-        return check.isInfraction()
+    public static boolean spamCheck(Result result, InfractionPlayer iplayer){
+        MainConfig.Spam sconfig = Configuration.getConfig().getSpamConfig();
+        return result.isInfraction()
             && (sconfig.getCooldownConfig().enabled() && iplayer.getTimeSinceLastMessage() < sconfig.getCooldownConfig().limit()
                 || !sconfig.getCooldownConfig().enabled());
     }
 
     /**
      * Call violation event
-     * @param player detected player
-     * @param string the string of the event
-     * @param detection the detection
-     * @param stype the source type
+     * @param bundle the event bundle
+     * @param plugin chatregulator plugin
      * @return if the event is approved
      */
-    public static boolean callViolationEvent(@NotNull InfractionPlayer player, @NotNull String string, @NotNull AbstractCheck detection, @NotNull SourceType stype) {
-        AtomicBoolean approved = new AtomicBoolean(true);
-        InfractionType type = detection.type();
-        ChatRegulator.getInstance().getProxy().getEventManager().fire(stype == SourceType.COMMAND
-            ? new CommandViolationEvent(player, type, detection, string)
-            : new ChatViolationEvent(player, type, detection, string))
-            .thenAcceptAsync(violationEvent -> {
+    public static boolean callViolationEvent(@NotNull EventBundle bundle, @NotNull ChatRegulator plugin) {
+        return plugin.getProxy().getEventManager().fire(bundle.source() == SourceType.COMMAND
+            ? new CommandViolationEvent(bundle.player(), bundle.type(), bundle.result, bundle.string)
+            : new ChatViolationEvent(bundle.player(), bundle.type(), bundle.result, bundle.string))
+            .thenApplyAsync(violationEvent -> {
                 if(!violationEvent.getResult().isAllowed()) {
-                    approved.set(false);
-                    if(stype == SourceType.COMMAND) player.lastCommand(string); else player.lastMessage(string);
+                    if(bundle.source() == SourceType.COMMAND)
+                        bundle.player().lastCommand(bundle.string());
+                    else
+                        bundle.player().lastMessage(bundle.string());
+                    return false;
                 } else {
-                    DebugUtils.debug(player, string, type, detection);
-                    Statistics.getStatistics().addViolationCount(type);
-                    ConfigManager.sendWarningMessage(player, type, detection);
-                    ConfigManager.sendAlertMessage(player, type);
+                    DebugUtils.debug(bundle.player, bundle.string, bundle.type(), bundle.result, plugin);
+                    Statistics.getStatistics().addViolationCount(bundle.type());
+                    ConfigManager.sendWarningMessage(bundle.player, bundle.result, bundle.type(), plugin.getFormatter());
+                    ConfigManager.sendAlertMessage(bundle.player, bundle.type(), plugin);
 
-                    player.getViolations().addViolation(type);
-                    CommandUtils.executeCommand(type, player);
+                    bundle.player.getViolations().addViolation(bundle.type);
+                    CommandUtils.executeCommand(bundle.type, bundle.player, plugin);
+                    return true;
                 }
-        });
-        return approved.get();
+        }).join();
     }
 
     /**
      * Call an event and check if it was not cancelled
-     * @param player the {@link InfractionPlayer}
-     * @param string the string of the event (Command/Chat Message executed)
-     * @param detection the detection
-     * @param stype the source type
+     * @param bundle the event bundle
+     * @param plugin chatregulator plugin
      * @return if the event was not cancelled
      */
-    public static boolean checkAndCall(@NotNull InfractionPlayer player, @NotNull String string, @NotNull AbstractCheck detection, @NotNull SourceType stype){
-        return detection.isInfraction() && GeneralUtils.callViolationEvent(player, string, detection, stype);
+    public static boolean checkAndCall(@NotNull EventBundle bundle, @NotNull ChatRegulator plugin) {
+        return bundle.result().isInfraction() && GeneralUtils.callViolationEvent(bundle, plugin);
+    }
+    private GeneralUtils(){}
+
+    public static boolean unicode(InfractionPlayer player, AtomicString string, EventWrapper<?> event, ChatRegulator plugin) {
+        return GeneralUtils.allowedPlayer(player.getPlayer(), InfractionType.UNICODE)
+            && UnicodeCheck.createCheck(string.get()).thenApply(result -> {
+                if(GeneralUtils.checkAndCall(new EventBundle(player, string.get(), InfractionType.UNICODE, result, event.source()), plugin)){
+                    if(Configuration.getConfig().getUnicodeConfig().isBlockable()){
+                        event.cancel();
+                        event.resume();
+                        return true;
+                    }
+                    if(result instanceof final ReplaceableResult replaceableResult){
+                        event.setString(string.setAndGet(replaceableResult.replaceInfraction()));
+                    }
+                }
+                return false;
+            }).join();
     }
 
-    /**
-     * Spaces component for "/chatregulator clear" command
-     */
-    public static final Component spacesComponent = Component.text()
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .append(Component.newline())
-        .build();
-    private GeneralUtils(){}
+    public static boolean caps(InfractionPlayer player, AtomicString string, EventWrapper<?> event, ChatRegulator plugin) {
+        return GeneralUtils.allowedPlayer(player.getPlayer(), InfractionType.CAPS)
+            && CapsCheck.createCheck(string.get()).thenApply(result -> {
+                if(GeneralUtils.checkAndCall(new EventBundle(player, string.get(), InfractionType.CAPS, result, event.source()), plugin)){
+                    if(Configuration.getConfig().getCapsConfig().isBlockable()){
+                        event.cancel();
+                        event.resume();
+                        return true;
+                    }
+                    if(result instanceof IReplaceable replaceable){
+                        String messageReplaced = replaceable.replaceInfraction();
+                        event.setString(string.setAndGet(messageReplaced));
+                    }
+                }
+                return false;
+            }).join();
+    }
+
+    public static boolean flood(InfractionPlayer player, AtomicString string, EventWrapper<?> event, ChatRegulator plugin) {
+        return GeneralUtils.allowedPlayer(player.getPlayer(), InfractionType.FLOOD)
+            && FloodCheck.createCheck(string.get()).thenApply(result -> {
+                if(GeneralUtils.checkAndCall(new EventBundle(player, string.get(), InfractionType.FLOOD, result, event.source()), plugin)) {
+                    if(Configuration.getConfig().getFloodConfig().isBlockable()){
+                        event.cancel();
+                        event.resume();
+                        return true;
+                    }
+                    if(result instanceof IReplaceable replaceable){
+                        event.setString(string.setAndGet(replaceable.replaceInfraction()));
+                    }
+                }
+                return false;
+            }).join();
+    }
+
+    public static boolean regular(InfractionPlayer player, AtomicString string, EventWrapper<?> event, ChatRegulator plugin) {
+        return GeneralUtils.allowedPlayer(player.getPlayer(), InfractionType.REGULAR)
+            && InfractionCheck.createCheck(string.get()).thenApply(result -> {
+                if(GeneralUtils.checkAndCall(new EventBundle(player, string.get(), InfractionType.REGULAR, result, event.source()), plugin)) {
+                    if(Configuration.getConfig().getInfractionsConfig().isBlockable()){
+                        event.cancel();
+                        event.resume();
+                        return true;
+                    }
+                    if(result instanceof IReplaceable replaceable){
+                        String messageReplaced = replaceable.replaceInfraction();
+                        event.setString(string.setAndGet(messageReplaced));
+                    }
+                }
+                return false;
+            }).join();
+    }
+
+    public static boolean spam(InfractionPlayer player, AtomicString string, EventWrapper<?> event, ChatRegulator plugin) {
+        if(GeneralUtils.allowedPlayer(player.getPlayer(), InfractionType.SPAM)) {
+            var result = SpamCheck.createCheck(player, string.get(), event.source()).join();
+            if(GeneralUtils.spamCheck(result, player)
+                && GeneralUtils.callViolationEvent(new EventBundle(player, string.get(), InfractionType.SPAM, result, event.source()), plugin)
+            ) {
+                event.cancel();
+                event.resume();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static record EventBundle(InfractionPlayer player, String string, InfractionType type, Result result, SourceType source) {}
 }

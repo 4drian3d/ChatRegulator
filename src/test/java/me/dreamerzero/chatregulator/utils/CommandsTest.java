@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import java.nio.file.Paths;
+import java.nio.file.Path;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import me.dreamerzero.chatregulator.config.Configuration;
 
-public class CommandsTest {
+public final class CommandsTest {
     @Test
     @DisplayName("First Argument")
     void testFirstArgument(){
@@ -30,7 +30,7 @@ public class CommandsTest {
     @DisplayName("Command Blacklisted")
     void isCommandBlacklisted(){
         Logger logger = LoggerFactory.getLogger(CommandsTest.class);
-        Configuration.loadConfig(Paths.get("build", "reports", "tests", "test"), logger);
+        Configuration.loadConfig(Path.of("build", "reports", "tests", "test"), logger);
 
         String command = "execute for all";
         boolean isCommand = CommandUtils.isCommand(command);
@@ -58,5 +58,15 @@ public class CommandsTest {
         String thirdconfig = "lp*";
 
         assertTrue(CommandUtils.isStartingString(thirdcommand, thirdconfig));
+    }
+
+    @Test
+    @DisplayName("Last Char")
+    void lastChar(){
+        final String string = "Holaaaaaaa!";
+        final char lastChar = '!';
+
+        final char theLastChar = CommandUtils.getLastChar(string);
+        assertEquals(lastChar, theLastChar);
     }
 }

@@ -3,29 +3,28 @@ package me.dreamerzero.chatregulator.events;
 import org.jetbrains.annotations.NotNull;
 
 import me.dreamerzero.chatregulator.InfractionPlayer;
-import me.dreamerzero.chatregulator.modules.checks.AbstractCheck;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 
 /**
  * Event fired when recognizing an infraction in the chat of a player
  */
-public class ChatViolationEvent extends ViolationEvent {
+public final class ChatViolationEvent extends ViolationEvent {
     private final String message;
 
     /**
      * Constructor of a ChatViolationEvent
      * @param infractionPlayer the player who committed the infraction
      * @param type the infraction type
-     * @param detection the detection
+     * @param detectionResult the detection result
      * @param message the chat message in which the violation was found
      */
     public ChatViolationEvent(
         @NotNull InfractionPlayer infractionPlayer,
         @NotNull InfractionType type,
-        @NotNull AbstractCheck detection,
+        @NotNull me.dreamerzero.chatregulator.result.Result detectionResult,
         @NotNull String message) {
 
-            super(infractionPlayer, type, detection);
+            super(infractionPlayer, type, detectionResult);
             this.message = message;
     }
 
