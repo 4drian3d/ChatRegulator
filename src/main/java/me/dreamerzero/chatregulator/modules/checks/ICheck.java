@@ -20,11 +20,11 @@ public interface ICheck {
      * @apiNote To see what check has returned, perform a result instanceof ReplaceableResult
      * @return a CompletableFuture with the result of the check
      */
-    public abstract CompletableFuture<Result> check(@NotNull final String string);
+    @NotNull CompletableFuture<Result> check(@NotNull final String string);
 
     /**
      * Get the {@link InfractionType} of this check
      * @return the infraction type
      */
-    public abstract @NotNull InfractionType type();
+    @NotNull InfractionType type();
 }

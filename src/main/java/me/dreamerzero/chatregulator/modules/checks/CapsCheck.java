@@ -26,6 +26,11 @@ public final class CapsCheck implements ICheck {
         this.limit = limit;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return A {@link ReplaceableResult} if the check was succesfully or a {@link Result} if not
+     */
     @Override
     public CompletableFuture<Result> check(final @NotNull String string) {
         return CompletableFuture.completedFuture(Objects.requireNonNull(string)

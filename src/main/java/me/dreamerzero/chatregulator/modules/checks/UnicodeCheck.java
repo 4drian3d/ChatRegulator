@@ -35,6 +35,12 @@ public final class UnicodeCheck implements ICheck {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return A {@link Result} if the check was not sucesfull or if the {@link ControlType} is {@link ControlType#BLOCK}
+     * else it will return a {@link ReplaceableResult}
+     */
     @Override
     public CompletableFuture<Result> check(final @NotNull String string) {
         final char[] charArray = Objects.requireNonNull(string).toCharArray();
@@ -49,9 +55,9 @@ public final class UnicodeCheck implements ICheck {
             }
         }
 
-        return results.isEmpty()
-            ? CompletableFuture.completedFuture(new Result(string, false))
-            : CompletableFuture.completedFuture(new ReplaceableResult(results.toString(), true){
+        return CompletableFuture.completedFuture(results.isEmpty()
+            ? new Result(string, false)
+            : new ReplaceableResult(results.toString(), true){
                 @Override
                 public String replaceInfraction(){
                     String replaced = string;

@@ -38,6 +38,11 @@ public final class FloodCheck implements ICheck {
         floodPattern = Pattern.compile(STANDARD_PATTERN.replace(5+"", Configuration.getConfig().getFloodConfig().getLimit()+""), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return a {@link PatternReplaceableReturn} with the Result of the check
+     */
     @Override
     public CompletableFuture<Result> check(final @NotNull String string){
         final Matcher matcher = realPattern.matcher(Objects.requireNonNull(string));

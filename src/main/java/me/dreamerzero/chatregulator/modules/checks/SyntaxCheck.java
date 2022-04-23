@@ -12,9 +12,14 @@ import me.dreamerzero.chatregulator.utils.CommandUtils;
 public final class SyntaxCheck implements ICheck{
     private static final SyntaxCheck cachedCheck = new SyntaxCheck();
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return A Result with the command executed
+     */
     @Override
-    public CompletableFuture<Result> check(@NotNull String string) {
-        String command = CommandUtils.getFirstArgument(Objects.requireNonNull(string));
+    public CompletableFuture<Result> check(final @NotNull String string) {
+        final String command = CommandUtils.getFirstArgument(Objects.requireNonNull(string));
         return CompletableFuture.completedFuture(new Result(command, command.indexOf(':') != -1));
     }
 

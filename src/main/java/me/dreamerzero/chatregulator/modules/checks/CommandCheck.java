@@ -26,7 +26,11 @@ public final class CommandCheck implements ICheck {
         this.blockedCommands = blocledCommands;
     }
 
-    //TODO: Add return type to all checks
+    /**
+     * {@inheritDoc}
+     *
+     * @return A Result with the string with the command blocked and if the check was succesfull
+     */
     @Override
     public CompletableFuture<Result> check(@NotNull String string) {
         for (final String blockedCommand : blockedCommands){

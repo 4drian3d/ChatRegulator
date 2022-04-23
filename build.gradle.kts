@@ -4,6 +4,7 @@ plugins {
     java
     id("net.kyori.blossom") version "1.3.0"
     id("com.github.johnrengelman.shadow") version "7.1.2"
+    `maven-publish`
 }
 
 repositories {
@@ -18,6 +19,8 @@ java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(16))
     }
+    withSourcesJar()
+    withJavadocJar()
 }
 
 dependencies {
@@ -46,6 +49,25 @@ version = "3.0.0"
 description = "A global chat regulator for you Velocity network"
 val url: String = "https://forums.velocitypowered.com/t/chatregulator-a-global-chat-regulator-for-velocity/962"
 val id: String = "chatregulator"
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = group as String
+            artifactId = id
+            version = version
+            from(components["java"])
+        }
+    }
+}
+
+tasks.withType<Javadoc> {
+    (options as StandardJavadocDocletOptions).links(
+        "https://jd.adventure.kyori.net/api/4.10.1/",
+        "https://jd.adventure.kyori.net/text-minimessage/4.10.1/",
+        "https://jd.velocitypowered.com/3.0.0/"
+    )
+}
 
 blossom{
 	val constants: String = "src/main/java/me/dreamerzero/chatregulator/utils/Constants.java"
@@ -80,6 +102,10 @@ tasks {
 
     compileJava {
         options.release.set(16)
+    }
+
+    javadoc {
+        options.encoding = Charsets.UTF_8.name()
     }
 }
 
