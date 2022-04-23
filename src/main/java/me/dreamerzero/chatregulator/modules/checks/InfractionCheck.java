@@ -41,7 +41,7 @@ public final class InfractionCheck implements ICheck {
      * Or a {@link ReplaceableResult} if the check was successful
      * and is configured to replace multiple violations.
      * Or a {@link Result} if the check was not successful
-     * @see {@link ICheck}
+     * @see ICheck
      */
     @Override
     public CompletableFuture<Result> check(@NotNull final String string){

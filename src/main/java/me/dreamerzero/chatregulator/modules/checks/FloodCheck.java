@@ -41,7 +41,7 @@ public final class FloodCheck implements ICheck {
     /**
      * {@inheritDoc}
      *
-     * @return a {@link PatternReplaceableReturn} with the Result of the check
+     * @return a {@link PatternReplaceableResult} with the Result of the check
      */
     @Override
     public CompletableFuture<Result> check(final @NotNull String string){

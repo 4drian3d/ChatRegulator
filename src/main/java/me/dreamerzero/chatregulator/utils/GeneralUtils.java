@@ -57,11 +57,8 @@ public final class GeneralUtils {
 
     /**
      * Call violation event
-     * @param player detected player
-     * @param string the string of the event
-     * @param infractionType the infraction type
-     * @param result the result
-     * @param stype the source type
+     * @param bundle the event bundle
+     * @param plugin chatregulator plugin
      * @return if the event is approved
      */
     public static boolean callViolationEvent(@NotNull EventBundle bundle, @NotNull ChatRegulator plugin) {
@@ -90,11 +87,8 @@ public final class GeneralUtils {
 
     /**
      * Call an event and check if it was not cancelled
-     * @param player the {@link InfractionPlayer}
-     * @param string the string of the event (Command/Chat Message executed)
-     * @param type the infraction type
-     * @param result the result of the detection
-     * @param stype the source type
+     * @param bundle the event bundle
+     * @param plugin chatregulator plugin
      * @return if the event was not cancelled
      */
     public static boolean checkAndCall(@NotNull EventBundle bundle, @NotNull ChatRegulator plugin) {

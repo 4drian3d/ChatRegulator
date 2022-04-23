@@ -26,7 +26,7 @@ public final class CommandUtils {
      * of a violation has been exceeded.
      * @param type the {@link InfractionType}
      * @param infractorPlayer the {@link InfractionPlayer} involved
-     * @param config the executable config
+     * @param plugin the plugin
      */
     public static void executeCommand(@NotNull InfractionType type, @NotNull InfractionPlayer infractorPlayer, ChatRegulator plugin){
         Player infractor = Objects.requireNonNull(infractorPlayer).getPlayer();

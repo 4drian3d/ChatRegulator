@@ -130,7 +130,7 @@ public final class UnicodeCheck implements ICheck {
 
         /**
          * Set if the check can replace the infraction
-         * @param replaceable replaceable or blockable
+         * @param control the control type
          * @return this
          */
         public Builder controlType(ControlType control){

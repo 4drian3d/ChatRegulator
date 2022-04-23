@@ -26,7 +26,8 @@ public final class ConfigManager {
      * Send a message of some kind to the offender.
      * @param infractor offender
      * @param result the result of the infraction
-     * @param messages the messages
+     * @param type the infraction type
+     * @param formatter the formatter
      */
     public static void sendWarningMessage(InfractionPlayer infractor, Result result, InfractionType type, IFormatter formatter){
         String message = type.getMessages().get().getWarningMessage();
