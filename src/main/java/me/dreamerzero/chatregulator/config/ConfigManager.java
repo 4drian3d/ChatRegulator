@@ -42,14 +42,13 @@ public final class ConfigManager {
 
     private static void sendTitle(String message, Audience player, TagResolver placeholder){
         if(message.indexOf(';') != -1){
-            player.showTitle(
-            Title.title(
-                Component.empty(),
-                Components.SPECIAL_MINIMESSAGE.deserialize(
-                    message,
-                    placeholder)));
+            sendSingleTitle(player, message, placeholder);
         } else {
             String[] titleParts = message.split(";");
+            if(titleParts.length == 1){
+                sendSingleTitle(player, titleParts[0], placeholder);
+                return;
+            }
             player.showTitle(
                 Title.title(
                     Components.SPECIAL_MINIMESSAGE.deserialize(
@@ -59,6 +58,15 @@ public final class ConfigManager {
                         titleParts[1],
                         placeholder)));
         }
+    }
+
+    private static void sendSingleTitle(Audience aud, String title, TagResolver placeholder) {
+        aud.showTitle(
+            Title.title(
+                Component.empty(),
+                Components.SPECIAL_MINIMESSAGE.deserialize(
+                    title,
+                    placeholder)));
     }
 
     /**
