@@ -26,7 +26,6 @@ import me.dreamerzero.chatregulator.listener.command.CommandListener;
 import me.dreamerzero.chatregulator.listener.command.SpyListener;
 import me.dreamerzero.chatregulator.listener.list.JoinListener;
 import me.dreamerzero.chatregulator.listener.list.LeaveListener;
-import me.dreamerzero.chatregulator.listener.plugin.PluginListener;
 import me.dreamerzero.chatregulator.listener.plugin.ReloadListener;
 import me.dreamerzero.chatregulator.utils.Constants;
 import net.byteflux.libby.Library;
@@ -49,11 +48,6 @@ import me.dreamerzero.chatregulator.placeholders.formatter.NormalFormatter;
         "4drian3d"
     },
     dependencies = {
-        // This dependency is necessary only to send a warning message when reloading the plugin
-        @Dependency(
-            id = "serverutils",
-            optional = true
-        ),
         @Dependency(
             id = "miniplaceholders",
             optional = true
@@ -102,14 +96,10 @@ public class ChatRegulator {
         server.getConsoleCommandSource().sendMessage(
             Components.MESSAGE_MINIMESSAGE
                 .deserialize(
-                    "<gradient:#f2709c:#ff9472>ChatRegulator</gradient> <gradient:#DAE2F8:#D4D3DD>Starting plugin")
+                    "<gradient:#f2709c:#ff9472>ChatRegulator</gradient> <gradient:#DAE2F8:#D4D3DD>Starting plugin...")
         );
         this.loadDependencies();
         Configuration.loadConfig(path, logger);
-
-        if(server.getPluginManager().isLoaded("serverutils")){
-            this.registerListener(new PluginListener(logger));
-        }
 
         if(server.getPluginManager().isLoaded("miniplaceholders")){
             this.formatter = new MiniPlaceholderFormatter();

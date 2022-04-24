@@ -30,8 +30,6 @@ dependencies {
 
     compileOnly("com.github.4drian3d:MiniPlaceholders:1.1.1")
 
-    compileOnly("net.frankheijden.serverutils:ServerUtils:3.4.4")
-
     compileOnly("com.velocitypowered:velocity-api:3.1.2-SNAPSHOT")
     annotationProcessor("com.velocitypowered:velocity-api:3.1.2-SNAPSHOT")
 
