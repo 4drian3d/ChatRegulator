@@ -2,7 +2,6 @@ package me.dreamerzero.chatregulator;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.Temporal;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -24,7 +23,7 @@ import net.kyori.adventure.audience.ForwardingAudience;
  * be assigned in order to be sanctioned correctly.
  * To get the real player, check {@link #getPlayer()}
  */
-public final class InfractionPlayer implements ForwardingAudience.Single{
+public final class InfractionPlayer implements ForwardingAudience.Single {
     private final Player player;
     private String preLastMessage;
     private String lastMessage;
@@ -33,7 +32,6 @@ public final class InfractionPlayer implements ForwardingAudience.Single{
     private ViolationCount violationsCount;
     private boolean isOnline;
     private final String username;
-    private Temporal lastTimeSeen;
     private Instant timeSinceLastMessage;
     private Instant timeSinceLastCommand;
 
@@ -96,24 +94,6 @@ public final class InfractionPlayer implements ForwardingAudience.Single{
      */
     public void isOnline(boolean status){
         this.isOnline = status;
-    }
-
-    /**
-     * Get the time in milliseconds
-     * when the player was last seen.
-     * @return time in microseconds of the
-     * moment when the user exited
-     */
-    public long getLastSeen(){
-        return Duration.between(this.lastTimeSeen, Instant.now()).toMillis();
-    }
-
-    /**
-     * Sets the time at which the player has left the server
-     * @param time the time when the player was last seen
-     */
-    public void setLastSeen(Temporal time){
-        this.lastTimeSeen = time;
     }
 
     /**
