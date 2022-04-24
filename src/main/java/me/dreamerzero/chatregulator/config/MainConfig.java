@@ -1,6 +1,7 @@
 package me.dreamerzero.chatregulator.config;
 
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
@@ -568,7 +569,13 @@ public final class MainConfig {
     public static class General{
         @Comment("Set the maximum time in which a user's violations will be saved after the user leaves your server")
         @Setting(value = "delete-users-after")
-        private long deleteUsersAfter = 3000;
+        private long deleteUsersAfter = 30;
+
+        @Comment("""
+            Set the time unit of the delete-users-after setting
+            Available values: NANOSECONDS, MICROSECONDS, MILLISECONDS, SECONDS, MINUTES, HOURS, DAYS""")
+        @Setting(value = "time-unit")
+        private TimeUnit unit = TimeUnit.SECONDS;
 
         @Comment("Limit the ammount of users showed on autocompletion")
         @Setting(value = "tab-complete-limit")
@@ -576,6 +583,10 @@ public final class MainConfig {
 
         public long deleteUsersTime(){
             return this.deleteUsersAfter;
+        }
+
+        public TimeUnit unit() {
+            return this.unit;
         }
 
         public int tabCompleteLimit(){

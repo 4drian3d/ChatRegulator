@@ -1,13 +1,9 @@
 package me.dreamerzero.chatregulator;
 
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
@@ -52,10 +48,14 @@ import me.dreamerzero.chatregulator.placeholders.formatter.NormalFormatter;
     authors = {
         "4drian3d"
     },
-    // This dependency is necessary only to send a warning message when reloading the plugin.
     dependencies = {
+        // This dependency is necessary only to send a warning message when reloading the plugin
         @Dependency(
             id = "serverutils",
+            optional = true
+        ),
+        @Dependency(
+            id = "miniplaceholders",
             optional = true
         )
     }
@@ -80,7 +80,12 @@ public class ChatRegulator {
      */
     @Inject
     @Internal
-    public ChatRegulator(final ProxyServer server, Logger logger, @DataDirectory Path path, PluginManager pmanager) {
+    public ChatRegulator(
+        final ProxyServer server,
+        final Logger logger,
+        final @DataDirectory Path path,
+        final PluginManager pmanager
+    ) {
         this.server = server;
         this.path = path;
         this.logger = logger;
@@ -117,12 +122,11 @@ public class ChatRegulator {
             new ChatListener(this),
             new CommandListener(this),
             new JoinListener(infractionPlayers),
-            new LeaveListener(),
+            new LeaveListener(this),
             new ReloadListener(path, logger),
             new SpyListener(this)
         );
         BrigadierRegulator.registerCommand(this);
-        checkInfractionPlayersRunnable();
 
         server.getConsoleCommandSource().sendMessage(
             Components.MESSAGE_MINIMESSAGE
@@ -160,29 +164,8 @@ public class ChatRegulator {
         return this.formatter;
     }
 
-    public Collection<InfractionPlayer> getChatPlayers(){
-        return Set.copyOf(infractionPlayers.values());
-    }
-
-    /**
-     * Verification check for players who have
-     * left the server and have not re-entered
-     * in the configured time
-     */
-    private void checkInfractionPlayersRunnable(){
-        long timeToDelete = Configuration.getConfig().getGeneralConfig().deleteUsersTime()*1000;
-        server.getScheduler().buildTask(this, ()->{
-            for(Entry<UUID, InfractionPlayer> entry : infractionPlayers.entrySet()){
-                InfractionPlayer iPlayer = entry.getValue();
-                if(iPlayer.isOnline()) continue;
-                if(iPlayer.getLastSeen() - System.currentTimeMillis() > timeToDelete){
-                    infractionPlayers.remove(entry.getKey());
-                    logger.debug("The player {} was eliminated", iPlayer.username());
-                }
-            }
-        })
-        .repeat(timeToDelete, TimeUnit.MILLISECONDS)
-        .schedule();
+    public Map<UUID, InfractionPlayer> getChatPlayers(){
+        return infractionPlayers;
     }
 
     /**

@@ -136,7 +136,7 @@ public final class BrigadierRegulator {
                         TagResolver placeholders = PlaceholderUtils.getPlaceholders(infractionPlayer);
                         sendLines(source, Configuration.getMessages().getGeneralMessages().getPlayerFormat(), placeholders, plugin.getFormatter());
                     } else {
-                        Optional<InfractionPlayer> opt = plugin.getChatPlayers().stream().filter(p -> p.username().equals(arg)).findAny();
+                        Optional<InfractionPlayer> opt = plugin.getChatPlayers().values().stream().filter(p -> p.username().equals(arg)).findAny();
                         if(opt.isPresent()){
                             TagResolver placeholders = PlaceholderUtils.getPlaceholders(opt.get());
                             sendLines(source, Configuration.getMessages().getGeneralMessages().getPlayerFormat(), placeholders, plugin.getFormatter());
@@ -163,7 +163,7 @@ public final class BrigadierRegulator {
             .then(RequiredArgumentBuilder
                 .<CommandSource, String>argument("player", StringArgumentType.word())
                 .suggests((ctx, builder) -> {
-                    plugin.getChatPlayers().forEach(p -> builder.suggest(p.username(), VelocityBrigadierMessage.tooltip(
+                    plugin.getChatPlayers().forEach((uuid, p) -> builder.suggest(p.username(), VelocityBrigadierMessage.tooltip(
                         plugin.getFormatter().parse(
                             Configuration.getMessages().getGeneralMessages().getPlayerSuggestionsFormat(),
                             p,
