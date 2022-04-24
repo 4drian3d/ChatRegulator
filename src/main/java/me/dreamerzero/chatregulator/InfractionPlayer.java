@@ -23,7 +23,7 @@ import net.kyori.adventure.audience.ForwardingAudience;
  * To get the real player, check {@link #getPlayer()}
  */
 public final class InfractionPlayer implements ForwardingAudience.Single {
-    private final Player player;
+    private Player player;
     private String preLastMessage;
     private String lastMessage;
     private String preLastCommand;
@@ -39,7 +39,7 @@ public final class InfractionPlayer implements ForwardingAudience.Single {
      * @param player the player on which it will be based
      */
     @Internal
-    InfractionPlayer(@NotNull Player player){
+    InfractionPlayer(final @NotNull Player player){
         this.player = Objects.requireNonNull(player);
         this.preLastMessage = " .";
         this.lastMessage = " ";
@@ -215,6 +215,9 @@ public final class InfractionPlayer implements ForwardingAudience.Single {
         final UUID uuid = Objects.requireNonNull(player).getUniqueId();
         InfractionPlayer infractor = ChatRegulator.infractionPlayers.get(uuid);
         if(infractor != null){
+            if(!infractor.isOnline()) {
+                infractor.player = player;
+            }
             return infractor;
         } else {
             infractor = new InfractionPlayer(player);
