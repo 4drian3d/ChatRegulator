@@ -3,7 +3,7 @@ package me.dreamerzero.chatregulator.listener.command;
 import java.util.function.Predicate;
 
 import com.velocitypowered.api.command.CommandSource;
-import com.velocitypowered.api.event.Continuation;
+import com.velocitypowered.api.event.EventTask;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.command.CommandExecuteEvent;
@@ -28,34 +28,36 @@ public final class SpyListener {
     }
 
     @Subscribe(order = PostOrder.LAST)
-    public void onCommand(final CommandExecuteEvent event, final Continuation continuation){
+    public EventTask onCommand(final CommandExecuteEvent event){
         final CommandSource source = event.getCommandSource();
         final MainConfig.CommandSpy config = Configuration.getConfig().getCommandSpyConfig();
         if(!event.getResult().isAllowed()
-            || !(source instanceof Player player)
+            || !(source instanceof final Player player)
             || !config.enabled()
-            || source.hasPermission(Permissions.BYPASS_COMMANDSPY)){
-            continuation.resume();
-            return;
+            || source.hasPermission(Permissions.BYPASS_COMMANDSPY)
+        ) {
+            return null;
         }
-        final String command = event.getCommand();
 
-        if(CommandSpy.shouldAnnounce(source, command, config)){
-            final TagResolver resolver = TagResolver.resolver(
-                Placeholder.unparsed("command", command),
-                Placeholder.unparsed("player", player.getUsername())
-            );
-            plugin.getProxy().getAllPlayers().stream()
-                .filter(PERMISSION_PREDICATE)
-                .forEach(p -> p.sendMessage(
-                    plugin.getFormatter().parse(
-                        Configuration.getMessages().getCommandSpyMessages().getMessage(),
-                        p,
-                        resolver
-                    )
-                ));
-        }
-        continuation.resume();
+        return EventTask.async(() -> {
+            final String command = event.getCommand();
+
+            if(CommandSpy.shouldAnnounce(source, command, config)){
+                final TagResolver resolver = TagResolver.resolver(
+                    Placeholder.unparsed("command", command),
+                    Placeholder.unparsed("player", player.getUsername())
+                );
+                plugin.getProxy().getAllPlayers().stream()
+                    .filter(PERMISSION_PREDICATE)
+                    .forEach((final Player p) -> p.sendMessage(
+                        plugin.getFormatter().parse(
+                            Configuration.getMessages().getCommandSpyMessages().getMessage(),
+                            p,
+                            resolver
+                        )
+                    ));
+            }
+        });
     }
 
     private static final Predicate<CommandSource> PERMISSION_PREDICATE = s -> s.hasPermission(Permissions.COMMANDSPY_ALERT);
