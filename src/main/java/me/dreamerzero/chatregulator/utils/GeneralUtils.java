@@ -49,10 +49,11 @@ public final class GeneralUtils {
      * @return if the player has flagged for spam
      */
     public static boolean spamCheck(Result result, InfractionPlayer iplayer){
-        MainConfig.Spam sconfig = Configuration.getConfig().getSpamConfig();
-        return result.isInfraction()
-            && (sconfig.getCooldownConfig().enabled() && iplayer.getTimeSinceLastMessage() < sconfig.getCooldownConfig().limit()
-                || !sconfig.getCooldownConfig().enabled());
+        final MainConfig.Spam config = Configuration.getConfig().getSpamConfig();
+        if(!result.isInfraction() || !config.getCooldownConfig().enabled()) {
+            return false;
+        }
+        return iplayer.getTimeSinceLastMessage() < config.getCooldownConfig().unit().toMillis(config.getCooldownConfig().limit());
     }
 
     /**

@@ -338,15 +338,24 @@ public final class MainConfig {
             @Comment("Enables the cooldown submodule")
             private boolean enabled = true;
 
-            @Comment("Set the time limit between each message (in milliseconds)")
-            private int limit = 2500;
+            @Comment("Set the time limit between each message")
+            private long limit = 2500;
+
+            @Comment("""
+                Time Unit of the cooldown limit
+                Available values: NANOSECONDS, MICROSECONDS, MILLISECONDS, SECONDS, MINUTES, HOURS, DAYS""")
+            private TimeUnit unit = TimeUnit.MILLISECONDS;
 
             public boolean enabled(){
                 return this.enabled;
             }
 
-            public int limit(){
+            public long limit(){
                 return this.limit;
+            }
+
+            public TimeUnit unit() {
+                return this.unit;
             }
         }
 
@@ -409,8 +418,15 @@ public final class MainConfig {
 
         @ConfigSerializable
         public static class Chars implements Toggleable {
+            @Comment("Enables extra character check")
             private boolean enabled = false;
+            @Comment("Sets the additional characters to check")
             private char[] chars = {'ç'};
+            @Comment("""
+                Sets character checking mode
+                Modes Availables:
+                BLACKLIST: If one of the configured characters is detected, the check will be activated as an illegal character
+                WHITELIST: If a character is detected as illegal but is within the configured characters, its detection as an illegal character will be skipped""")
             private CharMode mode = CharMode.BLACKLIST;
 
             public char[] chars() {
