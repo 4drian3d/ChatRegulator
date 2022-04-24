@@ -1,9 +1,9 @@
 package me.dreamerzero.chatregulator.listener.list;
 
-import java.time.Instant;
 import java.util.UUID;
 
 import com.velocitypowered.api.event.EventTask;
+import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.DisconnectEvent;
 
@@ -24,12 +24,11 @@ public final class LeaveListener {
      * his online status is marked as false.
      * @param event the event
      */
-    @Subscribe
-    public EventTask onLeave(DisconnectEvent event){
+    @Subscribe(order = PostOrder.LAST)
+    public EventTask onLeave(final DisconnectEvent event){
         return EventTask.async(() -> {
             final InfractionPlayer player = InfractionPlayer.get(event.getPlayer());
             player.isOnline(false);
-            player.setLastSeen(Instant.now());
 
             final UUID uuid = event.getPlayer().getUniqueId();
 

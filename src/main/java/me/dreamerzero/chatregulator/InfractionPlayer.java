@@ -2,7 +2,6 @@ package me.dreamerzero.chatregulator;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -40,7 +39,7 @@ public final class InfractionPlayer implements ForwardingAudience.Single {
      * @param player the player on which it will be based
      */
     @Internal
-    public InfractionPlayer(@NotNull Player player){
+    InfractionPlayer(@NotNull Player player){
         this.player = Objects.requireNonNull(player);
         this.preLastMessage = " .";
         this.lastMessage = " ";
@@ -59,7 +58,7 @@ public final class InfractionPlayer implements ForwardingAudience.Single {
      * @throws PlayerNotAvailableException
      */
     @Internal
-    InfractionPlayer(@NotNull UUID uuid, ProxyServer proxy) throws PlayerNotAvailableException{
+    InfractionPlayer(final @NotNull UUID uuid, final @NotNull ProxyServer proxy) throws PlayerNotAvailableException{
         this.player = proxy.getPlayer(uuid).orElseThrow(PlayerNotAvailableException::new);
         this.preLastMessage = " .";
         this.lastMessage = " ";
@@ -116,7 +115,7 @@ public final class InfractionPlayer implements ForwardingAudience.Single {
      * Sets the player's last sent message
      * @param newLastMessage the new last message sent by the player
      */
-    public void lastMessage(String newLastMessage){
+    public void lastMessage(final @NotNull String newLastMessage){
         this.preLastMessage = this.lastMessage;
         this.lastMessage = newLastMessage;
         this.timeSinceLastMessage = Instant.now();
@@ -142,7 +141,7 @@ public final class InfractionPlayer implements ForwardingAudience.Single {
      * Sets the player's last executed command
      * @param newLastCommand the new last command executed by the player
      */
-    public void lastCommand(String newLastCommand){
+    public void lastCommand(final @NotNull String newLastCommand){
         this.preLastCommand = this.lastCommand;
         this.lastCommand = newLastCommand;
         this.timeSinceLastCommand = Instant.now();
@@ -191,16 +190,16 @@ public final class InfractionPlayer implements ForwardingAudience.Single {
      * @return the {@link InfractionPlayer}
      * @throws PlayerNotAvailableException if the player is not available
      */
-    public static @Nullable InfractionPlayer get(final UUID uuid, ProxyServer proxy) throws PlayerNotAvailableException{
-        InfractionPlayer p = ChatRegulator.infractionPlayers.get(Objects.requireNonNull(uuid));
-        if(p != null){
-            return p;
+    public static @Nullable InfractionPlayer get(final @NotNull UUID uuid, @NotNull ProxyServer proxy) throws PlayerNotAvailableException{
+        InfractionPlayer player = ChatRegulator.infractionPlayers.get(Objects.requireNonNull(uuid));
+        if(player != null){
+            return player;
         } else {
             Optional<Player> optionalPlayer = proxy.getPlayer(uuid);
             if(optionalPlayer.isPresent()){
-                InfractionPlayer iPlayer = InfractionPlayer.get(optionalPlayer.get());
-                ChatRegulator.infractionPlayers.put(uuid, iPlayer);
-                return iPlayer;
+                player = InfractionPlayer.get(optionalPlayer.get());
+                ChatRegulator.infractionPlayers.put(uuid, player);
+                return player;
             } else {
                 throw new PlayerNotAvailableException(uuid);
             }
@@ -212,19 +211,19 @@ public final class InfractionPlayer implements ForwardingAudience.Single {
      * @param player the player uuid
      * @return the {@link InfractionPlayer}
      */
-    public static @NotNull InfractionPlayer get(@NotNull final Player player){
+    public static @NotNull InfractionPlayer get(final @NotNull Player player){
         final UUID uuid = Objects.requireNonNull(player).getUniqueId();
-        final Map<UUID, InfractionPlayer> playersMap = ChatRegulator.infractionPlayers;
-        if(playersMap.containsKey(uuid)){
-            return playersMap.get(uuid);
+        InfractionPlayer infractor = ChatRegulator.infractionPlayers.get(uuid);
+        if(infractor != null){
+            return infractor;
         } else {
-            InfractionPlayer infractionPlayer = new InfractionPlayer(player);
-            playersMap.put(uuid, infractionPlayer);
-            return infractionPlayer;
+            infractor = new InfractionPlayer(player);
+            ChatRegulator.infractionPlayers.put(uuid, infractor);
+            return infractor;
         }
     }
 
-    public static InfractionPlayer get(@NotNull final String name){
+    public static @Nullable InfractionPlayer get(final @NotNull String name){
         return ChatRegulator.infractionPlayers.values().stream()
             .filter(p -> p.username().equalsIgnoreCase(name))
             .findAny().orElse(null);
@@ -232,9 +231,14 @@ public final class InfractionPlayer implements ForwardingAudience.Single {
 
     @Override
     public boolean equals(Object o){
-        if(this==o) return true;
-        if(!(o instanceof final InfractionPlayer other)) return false;
-        return other.getViolations().equals(this.getViolations()) || other.username.equals(this.username);
+        if(this == o){
+            return true;
+        }
+        if(!(o instanceof final InfractionPlayer other)) {
+            return false;
+        }
+        return Objects.equals(other.getViolations(), this.getViolations())
+            || Objects.equals(other.username, this.username);
     }
 
     @Override

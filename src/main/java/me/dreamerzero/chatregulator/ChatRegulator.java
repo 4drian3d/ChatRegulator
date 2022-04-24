@@ -111,7 +111,7 @@ public class ChatRegulator {
         this.registerListener(
             new ChatListener(this),
             new CommandListener(this),
-            new JoinListener(infractionPlayers),
+            new JoinListener(),
             new LeaveListener(this),
             new ReloadListener(path, logger),
             new SpyListener(this)
