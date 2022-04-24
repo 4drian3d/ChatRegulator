@@ -127,6 +127,16 @@ public final class BrigadierRegulator {
             })
             .then(RequiredArgumentBuilder
                 .<CommandSource, String>argument("player", StringArgumentType.word())
+                .suggests((ctx, builder) -> {
+                    plugin.getChatPlayers().forEach((uuid, p) -> builder.suggest(p.username(), VelocityBrigadierMessage.tooltip(
+                        plugin.getFormatter().parse(
+                            Configuration.getMessages().getGeneralMessages().getPlayerSuggestionsFormat(),
+                            p,
+                            Placeholder.unparsed("player", p.username())
+                        )
+                    )));
+                    return builder.buildFuture();
+                })
                 .executes(cmd -> {
                     String arg = cmd.getArgument("player", String.class);
                     CommandSource source = cmd.getSource();
