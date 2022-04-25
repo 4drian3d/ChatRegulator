@@ -1,6 +1,7 @@
 package me.dreamerzero.chatregulator.modules;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -10,7 +11,7 @@ import me.dreamerzero.chatregulator.enums.InfractionType;
  * Manages the plugin's internal statistics
  */
 public final class Statistics {
-    private static volatile Statistics statistics;
+    private static final AtomicReference<Statistics> statistics = new AtomicReference<>(null);
     /**
      * Global Spam warning count
      */
@@ -40,27 +41,31 @@ public final class Statistics {
     private int capsViolations;
 
     /**
+     * Syntax Violations count
+     */
+    private int syntaxViolations;
+
+    /**
      * Global Violations count
      */
     private int globalViolations;
-
-    private int syntaxViolations;
 
     /**
      * Get the global violation statistics
      * @return the global statistics
      */
     public static Statistics getStatistics(){
-        Statistics result = statistics;
-        if (result != null) {
-            return result;
-        }
-        synchronized(Statistics.class) {
-            if (statistics == null) {
-                statistics = new Statistics();
+        Statistics result = statistics.get();
+
+        if (result == null) {
+            result = new Statistics();
+
+            if (!statistics.compareAndSet(null, result)) {
+                result = statistics.get();
             }
-            return statistics;
         }
+
+        return result;
     }
 
     /**
@@ -69,16 +74,15 @@ public final class Statistics {
      */
     public void addViolationCount(@NotNull InfractionType type){
         switch(type){
-            case SPAM: this.spamCount++; break;
-            case FLOOD: this.floodCount++; break;
-            case REGULAR: this.regularCount++; break;
-            case BCOMMAND: this.commandCount++; break;
-            case UNICODE: this.unicodeViolations++; break;
-            case CAPS: this.capsViolations++; break;
-            case SYNTAX: this.syntaxViolations++; break;
-            case NONE: break;
+            case SPAM -> this.spamCount++;
+            case FLOOD -> this.floodCount++;
+            case REGULAR -> this.regularCount++;
+            case BCOMMAND -> this.commandCount++;
+            case UNICODE -> this.unicodeViolations++;
+            case CAPS -> this.capsViolations++;
+            case SYNTAX -> this.syntaxViolations++;
+            case NONE -> this.globalViolations++;
         }
-        this.globalViolations++;
     }
 
     /**
@@ -125,13 +129,15 @@ public final class Statistics {
     }
 
     @Override
-    public boolean equals(Object o){
-        if(this == o) return true;
-        if(o == null || o.getClass() != this.getClass()) return false;
+    public boolean equals(final Object o){
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof final Statistics that)) {
+            return false;
+        }
 
-        Statistics stats = (Statistics)o;
-
-        return this.globalViolations == stats.globalViolations;
+        return this.globalViolations == that.globalViolations;
     }
 
     @Override
@@ -153,13 +159,5 @@ public final class Statistics {
     }
 
     private Statistics(){
-        this.spamCount = 0;
-        this.capsViolations = 0;
-        this.commandCount = 0;
-        this.floodCount = 0;
-        this.globalViolations = 0;
-        this.regularCount = 0;
-        this.unicodeViolations = 0;
-        this.syntaxViolations = 0;
     }
 }
