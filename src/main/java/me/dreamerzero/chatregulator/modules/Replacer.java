@@ -16,15 +16,18 @@ public final class Replacer {
      * @return a string with the first character converted to uppercase
      */
     public static @NotNull String firstLetterUpercase(@NotNull final String string){
-        Objects.requireNonNull(string);
-        if(!Configuration.getConfig().getFormatConfig().setFirstLetterUppercase() || string.length() < 1)
+        if(!Configuration.getConfig().getFormatConfig().setFirstLetterUppercase()
+            || Objects.requireNonNull(string).length() < 1
+        ) {
             return string;
+        }
 
-        char firstCharacter = string.charAt(0);
-        if(Character.isUpperCase(firstCharacter)) return string;
+        final char firstCharacter = string.charAt(0);
+        if (Character.isUpperCase(firstCharacter)) return string;
 
-        StringBuilder builder = new StringBuilder();
-        builder.append(Character.toUpperCase(firstCharacter)).append(string.substring(1));
+        final StringBuilder builder = new StringBuilder()
+            .append(Character.toUpperCase(firstCharacter))
+            .append(string.substring(1));
         return builder.toString();
     }
 
@@ -36,9 +39,12 @@ public final class Replacer {
      * @return the string converted
      */
     public static @NotNull String addFinalDot(@NotNull final String string){
-        Objects.requireNonNull(string);
-        if(!Configuration.getConfig().getFormatConfig().setFinalDot() || string.charAt(string.length()-1)=='.' || string.length() <= 1)
+        if(!Configuration.getConfig().getFormatConfig().setFinalDot()
+            || Objects.requireNonNull(string).charAt(string.length()-1) == '.'
+            || string.length() <= 1
+        ) {
             return string;
+        }
 
         return string.concat(".");
     }
@@ -49,7 +55,7 @@ public final class Replacer {
      * @param string the string
      * @return the string converted
      */
-    public static @NotNull String applyFormat(@NotNull final String string){
-        return firstLetterUpercase(addFinalDot(Objects.requireNonNull(string)));
+    public static @NotNull String applyFormat(final @NotNull String string){
+        return firstLetterUpercase(addFinalDot(string));
     }
 }
