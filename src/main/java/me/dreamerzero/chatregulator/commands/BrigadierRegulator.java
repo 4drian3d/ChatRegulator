@@ -52,7 +52,11 @@ public final class BrigadierRegulator {
                 .<CommandSource>literal("clear")
                 .executes(cmd -> {
                     plugin.getProxy().sendMessage(Components.SPACES_COMPONENT);
-                    cmd.getSource().sendMessage(plugin.getFormatter().parse(Configuration.getMessages().getClearMessages().getGlobalMessage()));
+                    cmd.getSource().sendMessage(
+                        plugin.getFormatter().parse(
+                            Configuration.getMessages().getClearMessages().getGlobalMessage()
+                        )
+                    );
                     return 1;
                 }).build())
             .build();
@@ -122,7 +126,12 @@ public final class BrigadierRegulator {
             .<CommandSource>literal(command)
             .requires(src -> src.hasPermission(Permissions.COMMAND_PLAYER))
             .executes(cmd -> {
-                cmd.getSource().sendMessage(plugin.getFormatter().parse(Configuration.getMessages().getGeneralMessages().noArgument(), cmd.getSource()));
+                cmd.getSource().sendMessage(
+                    plugin.getFormatter().parse(
+                        Configuration.getMessages().getGeneralMessages().noArgument(),
+                        cmd.getSource()
+                    )
+                );
                 return 1;
             })
             .then(RequiredArgumentBuilder
@@ -167,7 +176,12 @@ public final class BrigadierRegulator {
             .<CommandSource>literal(command)
             .requires(src -> src.hasPermission(Permissions.COMMAND_RESET))
             .executes(cmd -> {
-                cmd.getSource().sendMessage(plugin.getFormatter().parse(Configuration.getMessages().getGeneralMessages().noArgument(), cmd.getSource()));
+                cmd.getSource().sendMessage(
+                    plugin.getFormatter().parse(
+                        Configuration.getMessages().getGeneralMessages().noArgument(),
+                        cmd.getSource()
+                    )
+                );
                 return 1;
             })
             .then(RequiredArgumentBuilder
@@ -183,10 +197,15 @@ public final class BrigadierRegulator {
                     return builder.buildFuture();
                 })
                 .executes(cmd -> {
-                    String arg = cmd.getArgument("player", String.class);
-                    InfractionPlayer p = InfractionPlayer.get(arg);
+                    final String arg = cmd.getArgument("player", String.class);
+                    final InfractionPlayer p = InfractionPlayer.get(arg);
                     if(p == null){
-                        cmd.getSource().sendMessage(plugin.getFormatter().parse(Configuration.getMessages().getGeneralMessages().playerNotFound(), cmd.getSource(), Placeholder.unparsed("player", arg)));
+                        cmd.getSource().sendMessage(
+                            plugin.getFormatter().parse(
+                                Configuration.getMessages().getGeneralMessages().playerNotFound(),
+                                cmd.getSource(), Placeholder.unparsed("player", arg)
+                            )
+                        );
                         return 1;
                     }
                     resetAll(p, cmd.getSource(), plugin.getFormatter());
@@ -225,7 +244,13 @@ public final class BrigadierRegulator {
                 String arg = cmd.getArgument("player", String.class);
                 InfractionPlayer p = InfractionPlayer.get(arg);
                 if(p == null){
-                    cmd.getSource().sendMessage(formatter.parse(Configuration.getMessages().getGeneralMessages().playerNotFound(), cmd.getSource(), Placeholder.unparsed("player", arg)));
+                    cmd.getSource().sendMessage(
+                        formatter.parse(
+                            Configuration.getMessages().getGeneralMessages().playerNotFound(),
+                            cmd.getSource(),
+                            Placeholder.unparsed("player", arg)
+                        )
+                    );
                     return 1;
                 }
                 p.getViolations().resetViolations(type);
@@ -240,7 +265,11 @@ public final class BrigadierRegulator {
             .requires(p -> p.hasPermission(Permissions.COMMAND_CLEAR))
             .executes(cmd -> {
                 plugin.getProxy().sendMessage(Components.SPACES_COMPONENT);
-                cmd.getSource().sendMessage(plugin.getFormatter().parse(Configuration.getMessages().getClearMessages().getGlobalMessage()));
+                cmd.getSource().sendMessage(
+                    plugin.getFormatter().parse(
+                        Configuration.getMessages().getClearMessages().getGlobalMessage()
+                    )
+                );
                 return 1;
             })
             .then(LiteralArgumentBuilder
@@ -257,7 +286,12 @@ public final class BrigadierRegulator {
                             ));
                         });
                     } else {
-                        cmd.getSource().sendMessage(plugin.getFormatter().parse(Configuration.getMessages().getGeneralMessages().noArgument(), cmd.getSource()));
+                        cmd.getSource().sendMessage(
+                            plugin.getFormatter().parse(
+                                Configuration.getMessages().getGeneralMessages().noArgument(),
+                                cmd.getSource()
+                            )
+                        );
                     }
                     return 1;
                 })
@@ -272,8 +306,20 @@ public final class BrigadierRegulator {
                         TagResolver serverPlaceholder = Placeholder.unparsed("server", arg);
                         plugin.getProxy().getServer(arg).ifPresentOrElse(serverObjetive -> {
                             serverObjetive.sendMessage(Components.SPACES_COMPONENT);
-                            cmd.getSource().sendMessage(plugin.getFormatter().parse(Configuration.getMessages().getClearMessages().getServerMessage(), cmd.getSource(), serverPlaceholder));
-                        }, () -> cmd.getSource().sendMessage(plugin.getFormatter().parse(Configuration.getMessages().getClearMessages().getNotFoundServerMessage(), cmd.getSource(), serverPlaceholder)));
+                            cmd.getSource().sendMessage(
+                                plugin.getFormatter().parse(
+                                    Configuration.getMessages().getClearMessages().getServerMessage(),
+                                    cmd.getSource(),
+                                    serverPlaceholder
+                                )
+                            );
+                        }, () -> cmd.getSource().sendMessage(
+                            plugin.getFormatter().parse(
+                                Configuration.getMessages().getClearMessages().getNotFoundServerMessage(),
+                                cmd.getSource(),
+                                serverPlaceholder
+                            )
+                        ));
                         return 1;
                     }).build()
                 )
@@ -282,13 +328,24 @@ public final class BrigadierRegulator {
                 .<CommandSource>literal("player")
                 .requires(p -> p.hasPermission(Permissions.COMMAND_CLEAR_PLAYER))
                 .executes(cmd -> {
-                    cmd.getSource().sendMessage(plugin.getFormatter().parse(Configuration.getMessages().getGeneralMessages().noArgument(), cmd.getSource()));
+                    cmd.getSource().sendMessage(
+                        plugin.getFormatter().parse(
+                            Configuration.getMessages().getGeneralMessages().noArgument(),
+                            cmd.getSource()
+                        )
+                    );
                     return 1;
                 })
                 .then(RequiredArgumentBuilder
                     .<CommandSource, String>argument("player", StringArgumentType.word())
                     .suggests((arg, builder) -> {
-                        plugin.getProxy().getAllPlayers().forEach(p -> builder.suggest(p.getUsername()));
+                        plugin.getChatPlayers().forEach((uuid, p) -> builder.suggest(p.username(), VelocityBrigadierMessage.tooltip(
+                            plugin.getFormatter().parse(
+                                Configuration.getMessages().getGeneralMessages().getPlayerSuggestionsFormat(),
+                                p,
+                                Placeholder.unparsed("player", p.username())
+                            )
+                        )));
                         return builder.buildFuture();
                     })
                     .executes(cmd -> {
@@ -296,8 +353,20 @@ public final class BrigadierRegulator {
                         TagResolver serverPlaceholder = Placeholder.unparsed("player", arg);
                         plugin.getProxy().getPlayer(arg).ifPresentOrElse(playerObjetive -> {
                             playerObjetive.sendMessage(Components.SPACES_COMPONENT);
-                            cmd.getSource().sendMessage(plugin.getFormatter().parse(Configuration.getMessages().getClearMessages().getPlayerMessage(), cmd.getSource(), serverPlaceholder));
-                        }, () -> cmd.getSource().sendMessage(plugin.getFormatter().parse(Configuration.getMessages().getClearMessages().getNotFoundServerMessage(), cmd.getSource(), serverPlaceholder)));
+                            cmd.getSource().sendMessage(
+                                plugin.getFormatter().parse(
+                                    Configuration.getMessages().getClearMessages().getPlayerMessage(),
+                                    cmd.getSource(),
+                                    serverPlaceholder
+                                )
+                            );
+                        }, () -> cmd.getSource().sendMessage(
+                            plugin.getFormatter().parse(
+                                Configuration.getMessages().getClearMessages().getNotFoundServerMessage(),
+                                cmd.getSource(),
+                                serverPlaceholder
+                            )
+                        ));
                         return 1;
                     }).build()
                 ).build()
@@ -306,7 +375,12 @@ public final class BrigadierRegulator {
                 .<CommandSource>literal("all")
                 .executes(cmd -> {
                     plugin.getProxy().sendMessage(Components.SPACES_COMPONENT);
-                    cmd.getSource().sendMessage(plugin.getFormatter().parse(Configuration.getMessages().getClearMessages().getGlobalMessage(), cmd.getSource()));
+                    cmd.getSource().sendMessage(
+                        plugin.getFormatter().parse(
+                            Configuration.getMessages().getClearMessages().getGlobalMessage(),
+                            cmd.getSource()
+                        )
+                    );
                     return 1;
                 }).build()
             ).build();
@@ -318,7 +392,11 @@ public final class BrigadierRegulator {
             .<CommandSource>literal(command)
             .requires(p -> p.hasPermission(Permissions.COMMAND_RELOAD))
             .executes(cmd -> {
-                cmd.getSource().sendMessage(plugin.getFormatter().parse(Configuration.getMessages().getGeneralMessages().getReloadMessage()));
+                cmd.getSource().sendMessage(
+                    plugin.getFormatter().parse(
+                        Configuration.getMessages().getGeneralMessages().getReloadMessage()
+                    )
+                );
                 plugin.reloadConfig();
                 return 1;
             }).build();

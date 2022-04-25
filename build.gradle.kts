@@ -43,7 +43,7 @@ dependencies {
 }
 
 group = "me.dreamerzero.chatregulator"
-version = "3.0.0"
+version = "3.0.1-SNAPSHOT"
 description = "A global chat regulator for you Velocity network"
 val url: String = "https://forums.velocitypowered.com/t/chatregulator-a-global-chat-regulator-for-velocity/962"
 val id: String = "chatregulator"
