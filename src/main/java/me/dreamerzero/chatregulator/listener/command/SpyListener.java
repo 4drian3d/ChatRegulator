@@ -1,7 +1,5 @@
 package me.dreamerzero.chatregulator.listener.command;
 
-import java.util.function.Predicate;
-
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.event.EventTask;
 import com.velocitypowered.api.event.PostOrder;
@@ -16,6 +14,7 @@ import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.config.MainConfig;
 import me.dreamerzero.chatregulator.enums.Permissions;
 import me.dreamerzero.chatregulator.modules.CommandSpy;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
@@ -43,22 +42,21 @@ public final class SpyListener {
             final String command = event.getCommand();
 
             if(CommandSpy.shouldAnnounce(source, command, config)){
-                final TagResolver resolver = TagResolver.resolver(
-                    Placeholder.unparsed("command", command),
-                    Placeholder.unparsed("player", player.getUsername())
+                final Component message = plugin.getFormatter().parse(
+                    Configuration.getMessages().getCommandSpyMessages().getMessage(),
+                    player,
+                    TagResolver.resolver(
+                        Placeholder.unparsed("command", command),
+                        Placeholder.unparsed("player", player.getUsername())
+                    )
                 );
-                plugin.getProxy().getAllPlayers().stream()
-                    .filter(PERMISSION_PREDICATE)
-                    .forEach((final Player p) -> p.sendMessage(
-                        plugin.getFormatter().parse(
-                            Configuration.getMessages().getCommandSpyMessages().getMessage(),
-                            p,
-                            resolver
-                        )
-                    ));
+                plugin.getProxy().getAllPlayers().forEach(pl -> {
+                    if(pl.hasPermission(Permissions.COMMANDSPY_ALERT)) {
+                        pl.sendMessage(message);
+                    }
+                });
+                plugin.getProxy().getConsoleCommandSource().sendMessage(message);
             }
         });
     }
-
-    private static final Predicate<CommandSource> PERMISSION_PREDICATE = s -> s.hasPermission(Permissions.COMMANDSPY_ALERT);
 }
