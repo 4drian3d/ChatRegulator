@@ -12,7 +12,7 @@ import org.jetbrains.annotations.ApiStatus.Internal;
 import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.config.MainConfig;
-import me.dreamerzero.chatregulator.enums.Permissions;
+import me.dreamerzero.chatregulator.enums.Permission;
 import me.dreamerzero.chatregulator.modules.CommandSpy;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -31,9 +31,9 @@ public final class SpyListener {
         final CommandSource source = event.getCommandSource();
         final MainConfig.CommandSpy config = Configuration.getConfig().getCommandSpyConfig();
         if(!event.getResult().isAllowed()
-            || !(source instanceof final Player player)
             || !config.enabled()
-            || source.hasPermission(Permissions.BYPASS_COMMANDSPY)
+            || !(source instanceof final Player player)
+            || Permission.BYPASS_COMMANDSPY.test(source)
         ) {
             return null;
         }
@@ -51,7 +51,7 @@ public final class SpyListener {
                     )
                 );
                 plugin.getProxy().getAllPlayers().forEach(pl -> {
-                    if(pl.hasPermission(Permissions.COMMANDSPY_ALERT)) {
+                    if(Permission.COMMANDSPY_ALERT.test(pl)) {
                         pl.sendMessage(message);
                     }
                 });

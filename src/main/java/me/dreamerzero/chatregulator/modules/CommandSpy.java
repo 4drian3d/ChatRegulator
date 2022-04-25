@@ -3,7 +3,7 @@ package me.dreamerzero.chatregulator.modules;
 import com.velocitypowered.api.command.CommandSource;
 
 import me.dreamerzero.chatregulator.config.MainConfig;
-import me.dreamerzero.chatregulator.enums.Permissions;
+import me.dreamerzero.chatregulator.enums.Permission;
 import me.dreamerzero.chatregulator.utils.CommandUtils;
 
 /**
@@ -21,6 +21,6 @@ public final class CommandSpy {
      */
     public static boolean shouldAnnounce(CommandSource source, String command, MainConfig.CommandSpy config){
         return config.ignoredCommands().contains(CommandUtils.getFirstArgument(command))
-            && source.hasPermission(Permissions.BYPASS_COMMANDSPY);
+            && Permission.BYPASS_COMMANDSPY.test(source);
     }
 }

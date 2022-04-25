@@ -16,49 +16,49 @@ public enum InfractionType {
      * Represents a regular violation, i.e.
      * detection based on the blacklist.yml file.
      */
-    REGULAR(Permissions.BYPASS_INFRACTIONS, () -> Configuration.getConfig().getInfractionsConfig(), () -> Configuration.getMessages().getInfractionsMessages()),
+    REGULAR(Permission.BYPASS_INFRACTIONS, () -> Configuration.getConfig().getInfractionsConfig(), () -> Configuration.getMessages().getInfractionsMessages()),
     /**
      * Represents an infraction for repeating
      * the same character several times in a row.
      */
-    FLOOD(Permissions.BYPASS_FLOOD, () -> Configuration.getConfig().getFloodConfig(), () -> Configuration.getMessages().getFloodMessages()),
+    FLOOD(Permission.BYPASS_FLOOD, () -> Configuration.getConfig().getFloodConfig(), () -> Configuration.getMessages().getFloodMessages()),
     /**
      * Represents an infraction for repeating
      * the same word or command several times.
      */
-    SPAM(Permissions.BYPASS_SPAM, () -> Configuration.getConfig().getSpamConfig(), () -> Configuration.getMessages().getSpamMessages()),
+    SPAM(Permission.BYPASS_SPAM, () -> Configuration.getConfig().getSpamConfig(), () -> Configuration.getMessages().getSpamMessages()),
     /**
      * Represents a blocked command
      */
-    BCOMMAND(Permissions.BYPASS_BCOMMAND, () -> Configuration.getConfig().getCommandBlacklistConfig(), () -> Configuration.getMessages().getBlacklistMessages()),
+    BCOMMAND(Permission.BYPASS_BCOMMAND, () -> Configuration.getConfig().getCommandBlacklistConfig(), () -> Configuration.getMessages().getBlacklistMessages()),
     /**
      * Represents a Unicode check
      */
-    UNICODE(Permissions.BYPASS_UNICODE, () -> Configuration.getConfig().getUnicodeConfig(), () -> Configuration.getMessages().getUnicodeMessages()),
+    UNICODE(Permission.BYPASS_UNICODE, () -> Configuration.getConfig().getUnicodeConfig(), () -> Configuration.getMessages().getUnicodeMessages()),
     /**
      * Represents a Caps limit check
      */
-    CAPS(Permissions.BYPASS_CAPS, () -> Configuration.getConfig().getCapsConfig(), () -> Configuration.getMessages().getCapsMessages()),
+    CAPS(Permission.BYPASS_CAPS, () -> Configuration.getConfig().getCapsConfig(), () -> Configuration.getMessages().getCapsMessages()),
     /**
      * Represents a Syntax check
      * <p>/minecraft:tp
      */
-    SYNTAX(Permissions.BYPASS_SYNTAX, () -> Configuration.getConfig().getSyntaxConfig(), () -> Configuration.getMessages().getSyntaxMessages()),
+    SYNTAX(Permission.BYPASS_SYNTAX, () -> Configuration.getConfig().getSyntaxConfig(), () -> Configuration.getMessages().getSyntaxMessages()),
     /**
      * Used internally to represent a
      * multiple warning and in other cases more
      */
-    NONE("chatregulator.no-permission");
+    NONE(Permission.NO_PERMISSION);
 
-    private final String bypassPermission;
+    private final Permission bypassPermission;
     private Supplier<MainConfig.Toggleable> config;
     private Supplier<Messages.Warning> messages;
 
-    InfractionType(String permission){
+    InfractionType(Permission permission){
         this.bypassPermission = permission;
     }
 
-    InfractionType(String permission, Supplier<MainConfig.Toggleable> config, Supplier<Messages.Warning> messages){
+    InfractionType(Permission permission, Supplier<MainConfig.Toggleable> config, Supplier<Messages.Warning> messages){
         this(permission);
         this.config = config;
         this.messages = messages;
@@ -76,7 +76,7 @@ public enum InfractionType {
      * Get the bypass permission of this type
      * @return the bypass permission
      */
-    public @NotNull String bypassPermission(){
+    public @NotNull Permission bypassPermission(){
         return this.bypassPermission;
     }
 }

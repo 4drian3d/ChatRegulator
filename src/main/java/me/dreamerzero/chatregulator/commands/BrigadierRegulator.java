@@ -20,7 +20,7 @@ import me.dreamerzero.chatregulator.config.ConfigManager;
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.enums.Components;
 import me.dreamerzero.chatregulator.enums.InfractionType;
-import me.dreamerzero.chatregulator.enums.Permissions;
+import me.dreamerzero.chatregulator.enums.Permission;
 import me.dreamerzero.chatregulator.placeholders.formatter.IFormatter;
 import me.dreamerzero.chatregulator.utils.PlaceholderUtils;
 import net.kyori.adventure.audience.Audience;
@@ -33,7 +33,7 @@ public final class BrigadierRegulator {
     public static void registerCommand(ChatRegulator plugin){
         LiteralCommandNode<CommandSource> commandNode = LiteralArgumentBuilder
             .<CommandSource>literal("chatregulator")
-            .requires(src -> src.hasPermission(Permissions.COMMAND))
+            .requires(Permission.COMMAND)
             .executes(cmd -> {
                 cmd.getSource().sendMessage(
                     plugin.getFormatter().parse(
@@ -48,17 +48,6 @@ public final class BrigadierRegulator {
             .then(resetCommand("reset", plugin))
             .then(clearCommand("clear", plugin))
             .then(reloadCommand("reload", plugin))
-            .then(LiteralArgumentBuilder
-                .<CommandSource>literal("clear")
-                .executes(cmd -> {
-                    plugin.getProxy().sendMessage(Components.SPACES_COMPONENT);
-                    cmd.getSource().sendMessage(
-                        plugin.getFormatter().parse(
-                            Configuration.getMessages().getClearMessages().getGlobalMessage()
-                        )
-                    );
-                    return 1;
-                }).build())
             .build();
 
         ProxyServer proxy = plugin.getProxy();
@@ -76,7 +65,7 @@ public final class BrigadierRegulator {
     private static LiteralCommandNode<CommandSource> infoSubCommand(String command, ChatRegulator plugin){
         return LiteralArgumentBuilder
             .<CommandSource>literal(command)
-            .requires(src -> src.hasPermission(Permissions.COMMAND_HELP))
+            .requires(Permission.COMMAND_HELP)
             .executes(cmd -> {
                 sendLines(cmd.getSource(), Configuration.getMessages().getGeneralMessages().getHelpMessages().getMainHelp(), chatrCommand, plugin.getFormatter());
                 return 1;
@@ -107,7 +96,7 @@ public final class BrigadierRegulator {
     private static LiteralCommandNode<CommandSource> statsCommand(String command, ChatRegulator plugin){
         return LiteralArgumentBuilder
             .<CommandSource>literal(command)
-            .requires(src -> src.hasPermission(Permissions.COMMAND_STATS))
+            .requires(Permission.COMMAND_STATS)
             .executes(cmd -> {
                 TagResolver resolver = cmd.getSource() instanceof Player player
                     ? PlaceholderUtils.getPlaceholders(InfractionPlayer.get(player))
@@ -124,7 +113,7 @@ public final class BrigadierRegulator {
     private static LiteralCommandNode<CommandSource> playerCommand(String command, ChatRegulator plugin){
         return LiteralArgumentBuilder
             .<CommandSource>literal(command)
-            .requires(src -> src.hasPermission(Permissions.COMMAND_PLAYER))
+            .requires(Permission.COMMAND_PLAYER)
             .executes(cmd -> {
                 cmd.getSource().sendMessage(
                     plugin.getFormatter().parse(
@@ -174,7 +163,7 @@ public final class BrigadierRegulator {
     private static LiteralCommandNode<CommandSource> resetCommand(String command, ChatRegulator plugin){
         return LiteralArgumentBuilder
             .<CommandSource>literal(command)
-            .requires(src -> src.hasPermission(Permissions.COMMAND_RESET))
+            .requires(Permission.COMMAND_RESET)
             .executes(cmd -> {
                 cmd.getSource().sendMessage(
                     plugin.getFormatter().parse(
@@ -211,14 +200,14 @@ public final class BrigadierRegulator {
                     resetAll(p, cmd.getSource(), plugin.getFormatter());
                     return 1;
                 })
-                .then(resetWithPlayerSubcommand("infractions", InfractionType.REGULAR, Permissions.COMMAND_RESET_REGULAR, plugin.getFormatter()))
-                .then(resetWithPlayerSubcommand("regular", InfractionType.REGULAR, Permissions.COMMAND_RESET_REGULAR, plugin.getFormatter()))
-                .then(resetWithPlayerSubcommand("flood", InfractionType.FLOOD, Permissions.COMMAND_RESET_FLOOD, plugin.getFormatter()))
-                .then(resetWithPlayerSubcommand("spam", InfractionType.SPAM, Permissions.COMMAND_RESET_SPAM, plugin.getFormatter()))
-                .then(resetWithPlayerSubcommand("command", InfractionType.BCOMMAND, Permissions.COMMAND_RESET_BCOMMAND, plugin.getFormatter()))
-                .then(resetWithPlayerSubcommand("unicode", InfractionType.UNICODE, Permissions.COMMAND_RESET_UNICODE, plugin.getFormatter()))
-                .then(resetWithPlayerSubcommand("caps", InfractionType.CAPS, Permissions.COMMAND_RESET_CAPS, plugin.getFormatter()))
-                .then(resetWithPlayerSubcommand("syntax", InfractionType.SYNTAX, Permissions.COMMAND_RESET_SYNTAX, plugin.getFormatter()))
+                .then(resetWithPlayerSubcommand("infractions", InfractionType.REGULAR, Permission.COMMAND_RESET_REGULAR, plugin.getFormatter()))
+                .then(resetWithPlayerSubcommand("regular", InfractionType.REGULAR, Permission.COMMAND_RESET_REGULAR, plugin.getFormatter()))
+                .then(resetWithPlayerSubcommand("flood", InfractionType.FLOOD, Permission.COMMAND_RESET_FLOOD, plugin.getFormatter()))
+                .then(resetWithPlayerSubcommand("spam", InfractionType.SPAM, Permission.COMMAND_RESET_SPAM, plugin.getFormatter()))
+                .then(resetWithPlayerSubcommand("command", InfractionType.BCOMMAND, Permission.COMMAND_RESET_BCOMMAND, plugin.getFormatter()))
+                .then(resetWithPlayerSubcommand("unicode", InfractionType.UNICODE, Permission.COMMAND_RESET_UNICODE, plugin.getFormatter()))
+                .then(resetWithPlayerSubcommand("caps", InfractionType.CAPS, Permission.COMMAND_RESET_CAPS, plugin.getFormatter()))
+                .then(resetWithPlayerSubcommand("syntax", InfractionType.SYNTAX, Permission.COMMAND_RESET_SYNTAX, plugin.getFormatter()))
                 )
             .build();
     }
@@ -236,10 +225,10 @@ public final class BrigadierRegulator {
         ConfigManager.sendResetMessage(source, InfractionType.NONE, player, formatter);
     }
 
-    private  static LiteralCommandNode<CommandSource> resetWithPlayerSubcommand(String subcommand, InfractionType type, String resetPermission, IFormatter formatter){
+    private  static LiteralCommandNode<CommandSource> resetWithPlayerSubcommand(String subcommand, InfractionType type, Permission resetPermission, IFormatter formatter){
         return LiteralArgumentBuilder
             .<CommandSource>literal(subcommand)
-            .requires(p -> p.hasPermission(resetPermission))
+            .requires(resetPermission)
             .executes(cmd -> {
                 String arg = cmd.getArgument("player", String.class);
                 InfractionPlayer p = InfractionPlayer.get(arg);
@@ -262,7 +251,7 @@ public final class BrigadierRegulator {
     private static LiteralCommandNode<CommandSource> clearCommand(String command, ChatRegulator plugin){
         return LiteralArgumentBuilder
             .<CommandSource>literal(command)
-            .requires(p -> p.hasPermission(Permissions.COMMAND_CLEAR))
+            .requires(Permission.COMMAND_CLEAR)
             .executes(cmd -> {
                 plugin.getProxy().sendMessage(Components.SPACES_COMPONENT);
                 cmd.getSource().sendMessage(
@@ -274,7 +263,7 @@ public final class BrigadierRegulator {
             })
             .then(LiteralArgumentBuilder
                 .<CommandSource>literal("server")
-                .requires(p -> p.hasPermission(Permissions.COMMAND_CLEAR_SERVER))
+                .requires(Permission.COMMAND_CLEAR_SERVER)
                 .executes(cmd -> {
                     if (cmd.getSource() instanceof final Player player) {
                         player.getCurrentServer().ifPresent(playerServer -> {
@@ -326,7 +315,7 @@ public final class BrigadierRegulator {
             )
             .then(LiteralArgumentBuilder
                 .<CommandSource>literal("player")
-                .requires(p -> p.hasPermission(Permissions.COMMAND_CLEAR_PLAYER))
+                .requires(Permission.COMMAND_CLEAR_PLAYER)
                 .executes(cmd -> {
                     cmd.getSource().sendMessage(
                         plugin.getFormatter().parse(
@@ -390,7 +379,7 @@ public final class BrigadierRegulator {
     private static LiteralCommandNode<CommandSource> reloadCommand(String command, ChatRegulator plugin){
         return LiteralArgumentBuilder
             .<CommandSource>literal(command)
-            .requires(p -> p.hasPermission(Permissions.COMMAND_RELOAD))
+            .requires(Permission.COMMAND_RELOAD)
             .executes(cmd -> {
                 cmd.getSource().sendMessage(
                     plugin.getFormatter().parse(

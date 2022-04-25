@@ -39,7 +39,7 @@ public final class GeneralUtils {
      * @return if the player can be checked
      */
     public static boolean allowedPlayer(@NotNull Player player, InfractionType type){
-        return type.getConfig().get().enabled() && !Objects.requireNonNull(player).hasPermission(type.bypassPermission());
+        return type.getConfig().get().enabled() && !type.bypassPermission().test(Objects.requireNonNull(player));
     }
 
     /**

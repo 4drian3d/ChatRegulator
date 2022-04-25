@@ -7,7 +7,7 @@ import me.dreamerzero.chatregulator.result.Result;
 import me.dreamerzero.chatregulator.utils.PlaceholderUtils;
 import me.dreamerzero.chatregulator.enums.Components;
 import me.dreamerzero.chatregulator.enums.InfractionType;
-import me.dreamerzero.chatregulator.enums.Permissions;
+import me.dreamerzero.chatregulator.enums.Permission;
 import me.dreamerzero.chatregulator.placeholders.formatter.IFormatter;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
@@ -82,7 +82,7 @@ public final class ConfigManager {
         );
 
         plugin.getProxy().getAllPlayers().forEach(player -> {
-            if(player.hasPermission(Permissions.NOTIFICATIONS)) {
+            if(Permission.NOTIFICATIONS.test(player)) {
                 player.sendMessage(message);
             }
         });
