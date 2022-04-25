@@ -1,7 +1,5 @@
 package me.dreamerzero.chatregulator.config;
 
-import java.util.stream.Collectors;
-
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.config.Messages.Alert;
 import me.dreamerzero.chatregulator.ChatRegulator;
@@ -30,8 +28,8 @@ public final class ConfigManager {
      * @param formatter the formatter
      */
     public static void sendWarningMessage(InfractionPlayer infractor, Result result, InfractionType type, IFormatter formatter){
-        String message = type.getMessages().get().getWarningMessage();
-        TagResolver placeholder = TagResolver.resolver(
+        final String message = type.getMessages().get().getWarningMessage();
+        final TagResolver placeholder = TagResolver.resolver(
             Placeholder.unparsed("infraction", result.getInfractionString()),
             PlaceholderUtils.getPlaceholders(infractor));
         switch(((MainConfig.Warning)type.getConfig().get()).getWarningType()){
@@ -42,10 +40,10 @@ public final class ConfigManager {
     }
 
     private static void sendTitle(String message, Audience player, TagResolver placeholder){
-        if(message.indexOf(';') != -1){
+        if (message.indexOf(';') != -1) {
             sendSingleTitle(player, message, placeholder);
         } else {
-            String[] titleParts = message.split(";");
+            final String[] titleParts = message.split(";");
             if(titleParts.length == 1){
                 sendSingleTitle(player, titleParts[0], placeholder);
                 return;
@@ -57,7 +55,9 @@ public final class ConfigManager {
                         placeholder),
                     Components.SPECIAL_MINIMESSAGE.deserialize(
                         titleParts[1],
-                        placeholder)));
+                        placeholder)
+                )
+            );
         }
     }
 
@@ -75,17 +75,19 @@ public final class ConfigManager {
      * @param infractor the player who committed the infraction
      * @param type the type of infraction
      */
-    public static void sendAlertMessage(InfractionPlayer infractor, InfractionType type, ChatRegulator plugin){
-        String message = ((Alert)type.getMessages().get()).getAlertMessage();
+    public static void sendAlertMessage(final InfractionPlayer infractor, final InfractionType type, final ChatRegulator plugin){
+        final Component message = plugin.getFormatter().parse(
+            ((Alert)type.getMessages().get()).getAlertMessage(),
+            PlaceholderUtils.getPlaceholders(infractor)
+        );
 
-        Audience staff = Audience.audience(plugin.getProxy().getAllPlayers().stream()
-                .filter(op -> op.hasPermission(Permissions.NOTIFICATIONS))
-                .collect(Collectors.toList()));
+        plugin.getProxy().getAllPlayers().forEach(player -> {
+            if(player.hasPermission(Permissions.NOTIFICATIONS)) {
+                player.sendMessage(message);
+            }
+        });
 
-        staff.sendMessage(
-            plugin.getFormatter().parse(
-                message,
-                PlaceholderUtils.getPlaceholders(infractor)));
+        plugin.getProxy().getConsoleCommandSource().sendMessage(message);
     }
 
     /**
