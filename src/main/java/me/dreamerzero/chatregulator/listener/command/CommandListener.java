@@ -13,7 +13,6 @@ import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.modules.checks.CommandCheck;
 import me.dreamerzero.chatregulator.modules.checks.SyntaxCheck;
-import me.dreamerzero.chatregulator.objects.AtomicString;
 import me.dreamerzero.chatregulator.utils.CommandUtils;
 import me.dreamerzero.chatregulator.utils.GeneralUtils.EventBundle;
 import me.dreamerzero.chatregulator.wrapper.event.CommandWrapper;
@@ -22,6 +21,8 @@ import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.enums.SourceType;
 
 import static me.dreamerzero.chatregulator.utils.GeneralUtils.*;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Detections related to command execution by players
@@ -56,7 +57,7 @@ public final class CommandListener {
             return;
         }
 
-        final AtomicString command = new AtomicString(event.getCommand());
+        final AtomicReference<String> command = new AtomicReference<>(event.getCommand());
 
         if(unicode(infractionPlayer, command, wrapper, plugin)
             || caps(infractionPlayer, command, wrapper, plugin)

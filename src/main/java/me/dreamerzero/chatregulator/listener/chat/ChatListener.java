@@ -13,11 +13,12 @@ import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.modules.Replacer;
-import me.dreamerzero.chatregulator.objects.AtomicString;
 import me.dreamerzero.chatregulator.wrapper.event.ChatWrapper;
 import me.dreamerzero.chatregulator.wrapper.event.EventWrapper;
 
 import static me.dreamerzero.chatregulator.utils.GeneralUtils.*;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * ChatRegulator's Chat Listener
@@ -40,7 +41,7 @@ public final class ChatListener {
             return;
         }
         final Player player = event.getPlayer();
-        final AtomicString message = new AtomicString(event.getMessage());
+        final AtomicReference<String> message = new AtomicReference<String>(event.getMessage());
         final InfractionPlayer infractor = InfractionPlayer.get(player);
         final EventWrapper<PlayerChatEvent> wrapper = new ChatWrapper(event, continuation);
 

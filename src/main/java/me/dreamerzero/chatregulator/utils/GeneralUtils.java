@@ -1,6 +1,7 @@
 package me.dreamerzero.chatregulator.utils;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 import com.velocitypowered.api.proxy.Player;
 
@@ -17,7 +18,6 @@ import me.dreamerzero.chatregulator.modules.checks.FloodCheck;
 import me.dreamerzero.chatregulator.modules.checks.InfractionCheck;
 import me.dreamerzero.chatregulator.modules.checks.SpamCheck;
 import me.dreamerzero.chatregulator.modules.checks.UnicodeCheck;
-import me.dreamerzero.chatregulator.objects.AtomicString;
 import me.dreamerzero.chatregulator.result.IReplaceable;
 import me.dreamerzero.chatregulator.result.ReplaceableResult;
 import me.dreamerzero.chatregulator.result.Result;
@@ -97,7 +97,7 @@ public final class GeneralUtils {
     }
     private GeneralUtils(){}
 
-    public static boolean unicode(InfractionPlayer player, AtomicString string, EventWrapper<?> event, ChatRegulator plugin) {
+    public static boolean unicode(InfractionPlayer player, AtomicReference<String> string, EventWrapper<?> event, ChatRegulator plugin) {
         return GeneralUtils.allowedPlayer(player.getPlayer(), InfractionType.UNICODE)
             && UnicodeCheck.createCheck(string.get()).thenApply(result -> {
                 if(GeneralUtils.checkAndCall(new EventBundle(player, string.get(), InfractionType.UNICODE, result, event.source()), plugin)){
@@ -107,14 +107,15 @@ public final class GeneralUtils {
                         return true;
                     }
                     if(result instanceof final ReplaceableResult replaceableResult){
-                        event.setString(string.setAndGet(replaceableResult.replaceInfraction()));
+                        string.set(replaceableResult.replaceInfraction());
+                        event.setString(string.get());
                     }
                 }
                 return false;
             }).join();
     }
 
-    public static boolean caps(InfractionPlayer player, AtomicString string, EventWrapper<?> event, ChatRegulator plugin) {
+    public static boolean caps(InfractionPlayer player, AtomicReference<String> string, EventWrapper<?> event, ChatRegulator plugin) {
         return GeneralUtils.allowedPlayer(player.getPlayer(), InfractionType.CAPS)
             && CapsCheck.createCheck(string.get()).thenApply(result -> {
                 if(GeneralUtils.checkAndCall(new EventBundle(player, string.get(), InfractionType.CAPS, result, event.source()), plugin)){
@@ -123,16 +124,16 @@ public final class GeneralUtils {
                         event.resume();
                         return true;
                     }
-                    if(result instanceof IReplaceable replaceable){
-                        String messageReplaced = replaceable.replaceInfraction();
-                        event.setString(string.setAndGet(messageReplaced));
+                    if(result instanceof final IReplaceable replaceable){
+                        string.set(replaceable.replaceInfraction());
+                        event.setString(string.get());
                     }
                 }
                 return false;
             }).join();
     }
 
-    public static boolean flood(InfractionPlayer player, AtomicString string, EventWrapper<?> event, ChatRegulator plugin) {
+    public static boolean flood(InfractionPlayer player, AtomicReference<String> string, EventWrapper<?> event, ChatRegulator plugin) {
         return GeneralUtils.allowedPlayer(player.getPlayer(), InfractionType.FLOOD)
             && FloodCheck.createCheck(string.get()).thenApply(result -> {
                 if(GeneralUtils.checkAndCall(new EventBundle(player, string.get(), InfractionType.FLOOD, result, event.source()), plugin)) {
@@ -141,15 +142,16 @@ public final class GeneralUtils {
                         event.resume();
                         return true;
                     }
-                    if(result instanceof IReplaceable replaceable){
-                        event.setString(string.setAndGet(replaceable.replaceInfraction()));
+                    if(result instanceof final IReplaceable replaceable){
+                        string.set(replaceable.replaceInfraction());
+                        event.setString(string.get());
                     }
                 }
                 return false;
             }).join();
     }
 
-    public static boolean regular(InfractionPlayer player, AtomicString string, EventWrapper<?> event, ChatRegulator plugin) {
+    public static boolean regular(InfractionPlayer player, AtomicReference<String> string, EventWrapper<?> event, ChatRegulator plugin) {
         return GeneralUtils.allowedPlayer(player.getPlayer(), InfractionType.REGULAR)
             && InfractionCheck.createCheck(string.get()).thenApply(result -> {
                 if(GeneralUtils.checkAndCall(new EventBundle(player, string.get(), InfractionType.REGULAR, result, event.source()), plugin)) {
@@ -158,18 +160,18 @@ public final class GeneralUtils {
                         event.resume();
                         return true;
                     }
-                    if(result instanceof IReplaceable replaceable){
-                        String messageReplaced = replaceable.replaceInfraction();
-                        event.setString(string.setAndGet(messageReplaced));
+                    if(result instanceof final IReplaceable replaceable){
+                        string.set(replaceable.replaceInfraction());
+                        event.setString(string.get());
                     }
                 }
                 return false;
             }).join();
     }
 
-    public static boolean spam(InfractionPlayer player, AtomicString string, EventWrapper<?> event, ChatRegulator plugin) {
+    public static boolean spam(InfractionPlayer player, AtomicReference<String> string, EventWrapper<?> event, ChatRegulator plugin) {
         if(GeneralUtils.allowedPlayer(player.getPlayer(), InfractionType.SPAM)) {
-            var result = SpamCheck.createCheck(player, string.get(), event.source()).join();
+            Result result = SpamCheck.createCheck(player, string.get(), event.source()).join();
             if(GeneralUtils.spamCheck(result, player)
                 && GeneralUtils.callViolationEvent(new EventBundle(player, string.get(), InfractionType.SPAM, result, event.source()), plugin)
             ) {
