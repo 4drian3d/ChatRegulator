@@ -20,7 +20,7 @@ public final class Blacklist {
             Sets the expressions to be checked in the
             Infractions module in commands and general chat""")
         @Setting(value = "blocked-words")
-        private Set<Pattern> blockedPatterns = Set.of(
+        private Pattern[] blockedPatterns = {
             Pattern.compile("f(u|v|4)ck", Pattern.CASE_INSENSITIVE),
             Pattern.compile("sh(i|@|l|j|1|y)t", Pattern.CASE_INSENSITIVE),
             Pattern.compile("d(i|@|l|j|1|y)c(k)?", Pattern.CASE_INSENSITIVE),
@@ -31,7 +31,7 @@ public final class Blacklist {
             Pattern.compile("(i|@|l|j|1|y)mb(3|@|e|x)c(i|@|l|j|1|y)l", Pattern.CASE_INSENSITIVE),
             Pattern.compile("m(o|@|0|x|8)th(3|@|e|x)rf(u|@|v)ck(3|@|e|x)r", Pattern.CASE_INSENSITIVE),
             Pattern.compile("\\$\\{(jndi|log4j|sys|env|main|marker|java|base64|lower|upper|web|docker|kubernetes|spring|jvmrunargs|date|ctx)\\:.*\\}", Pattern.CASE_INSENSITIVE)
-        );
+        };
 
         @Comment("""
             Sets the commands that cannot be executed
@@ -52,7 +52,7 @@ public final class Blacklist {
          * Get the blocked regex strings
          * @return the blocked regex strings
          */
-        public Set<Pattern> getBlockedPatterns(){
+        public Pattern[] getBlockedPatterns(){
             return this.blockedPatterns;
         }
 

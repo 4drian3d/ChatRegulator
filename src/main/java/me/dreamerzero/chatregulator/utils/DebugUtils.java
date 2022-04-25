@@ -22,14 +22,20 @@ public final class DebugUtils {
      * @param detection the detection type
      * @param result the result
      */
-    public static void debug(InfractionPlayer infractor, String string, InfractionType detection, Result result, ChatRegulator plugin){
+    public static void debug(
+        InfractionPlayer infractor,
+        String string,
+        InfractionType detection,
+        Result result,
+        ChatRegulator plugin
+    ) {
 
         final Logger logger = plugin.getLogger();
         if(logger.isDebugEnabled()){
             logger.debug("User Detected: {}", infractor.username());
             logger.debug("Detection: {}", detection);
             logger.debug("String: {}", string);
-            if(result instanceof PatternResult patternResult){
+            if(result instanceof final PatternResult patternResult){
                 final Pattern pattern = patternResult.getPattern();
                 if(pattern != null)
                     logger.debug("Pattern: {}", pattern.pattern());

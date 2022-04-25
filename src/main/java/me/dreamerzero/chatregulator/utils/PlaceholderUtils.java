@@ -24,9 +24,9 @@ public final class PlaceholderUtils {
      * @param player the {@link InfractionPlayer}
      * @return placeholders based on this player
      */
-    public static @NotNull TagResolver getPlaceholders(@NotNull final InfractionPlayer player){
+    public static @NotNull TagResolver getPlaceholders(final @NotNull InfractionPlayer player){
         final ViolationCount count = Objects.requireNonNull(player).getViolations();
-        TagResolver.Builder resolver = TagResolver.builder().resolvers(
+        final TagResolver.Builder resolver = TagResolver.builder().resolvers(
             Placeholder.unparsed("player", player.username()),
             Placeholder.unparsed("name", player.username()),
             integerPlaceholder("flood", count.getCount(InfractionType.FLOOD)),
@@ -51,7 +51,7 @@ public final class PlaceholderUtils {
      * @return global placeholders
      */
     public static @NotNull TagResolver getGlobalPlaceholders(){
-        Statistics statistics = Statistics.getStatistics();
+        final Statistics statistics = Statistics.getStatistics();
         return TagResolver.resolver(
             integerPlaceholder("flood", statistics.getViolationCount(InfractionType.FLOOD)),
             integerPlaceholder("spam", statistics.getViolationCount(InfractionType.SPAM)),

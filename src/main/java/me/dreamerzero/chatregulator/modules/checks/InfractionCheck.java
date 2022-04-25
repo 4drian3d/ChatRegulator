@@ -21,14 +21,17 @@ import me.dreamerzero.chatregulator.result.ReplaceableResult;
  * Utilities for the detection of restringed words
  */
 public final class InfractionCheck implements ICheck {
-    private final Collection<Pattern> blockedWords;
+    private final Pattern[] blockedWords;
     private final boolean blockable;
 
     private InfractionCheck(){
-        this(Configuration.getConfig().getInfractionsConfig().isBlockable(), Configuration.getBlacklist().getBlockedPatterns());
+        this(
+            Configuration.getConfig().getInfractionsConfig().isBlockable(),
+            Configuration.getBlacklist().getBlockedPatterns()
+        );
     }
 
-    private InfractionCheck(boolean blockable, Collection<Pattern> blockedWords){
+    private InfractionCheck(boolean blockable, Pattern... blockedWords){
         this.blockedWords = blockedWords;
         this.blockable = blockable;
     }
@@ -118,12 +121,12 @@ public final class InfractionCheck implements ICheck {
         @Override
         public InfractionCheck build(){
             if(this.blockedWords == null){
-                this.blockedWords = new ArrayList<>(Configuration.getBlacklist().getBlockedPatterns());
+                this.blockedWords = List.of(Configuration.getBlacklist().getBlockedPatterns());
             }
             if(!edited){
                 this.replaceable = Configuration.getConfig().getInfractionsConfig().getControlType() == ControlType.REPLACE;
             }
-            return new InfractionCheck(!replaceable, blockedWords);
+            return new InfractionCheck(!replaceable, blockedWords.toArray(Pattern[]::new));
         }
     }
 }

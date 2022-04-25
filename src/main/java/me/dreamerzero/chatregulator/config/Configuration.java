@@ -31,8 +31,8 @@ public final class Configuration {
      * @param logger plugin logger
      */
     public static void loadConfig(@NotNull Path path, @NotNull Logger logger){
-        Objects.requireNonNull(path, () ->"plugin path");
-        Objects.requireNonNull(logger, () -> "plugin logger");
+        Objects.requireNonNull(path, "plugin path");
+        Objects.requireNonNull(logger, "plugin logger");
         loadMainConfig(path, logger);
         loadMessagesConfig(path, logger);
         loadBlacklistConfig(path, logger);
@@ -115,21 +115,22 @@ public final class Configuration {
             node.set(Blacklist.Config.class, blacklist);
             loader.save(node);
         } catch (ConfigurateException exception){
-            if(checkConfig(path, "blacklist.conf")){
+            if(checkConfig(blacklistConfig)){
                 logger.error("Your blacklist configuration contains '\\' character. Please change all of its usage for '\\\\'");
             }
             logger.error("Could not load blacklist.conf file, error: {}", exception.getMessage());
         }
     }
 
-    private static boolean checkConfig(Path path, String name){
-        final Path configFile = path.resolve(name);
-        try (BufferedReader reader = Files.newBufferedReader(configFile, StandardCharsets.UTF_8)) {
-            while(true){
-                String line = reader.readLine();
-                if(line == null) return false;
-                if(line.contains("\\") && !line.contains("\\\\")) return true;
+    private static boolean checkConfig(final Path path) {
+        try (final BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+            String line;
+            while((line = reader.readLine()) != null){
+                if(line.indexOf('\\') != -1 && !line.contains("\\\\")) {
+                    return true;
+                }
             }
+            return false;
         } catch(IOException e){
             return false;
         }
