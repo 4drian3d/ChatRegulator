@@ -25,27 +25,31 @@ public final class CommandUtils {
      * configured commands when it detects that the limit
      * of a violation has been exceeded.
      * @param type the {@link InfractionType}
-     * @param infractorPlayer the {@link InfractionPlayer} involved
+     * @param infractor the {@link InfractionPlayer} involved
      * @param plugin the plugin
      */
-    public static void executeCommand(@NotNull InfractionType type, @NotNull InfractionPlayer infractorPlayer, ChatRegulator plugin){
-        Player infractor = Objects.requireNonNull(infractorPlayer).getPlayer();
-        if(infractor != null){
-            execute(infractor, infractorPlayer, type, plugin);
+    public static void executeCommand(
+        final @NotNull InfractionType type,
+        final @NotNull InfractionPlayer infractor,
+        final @NotNull ChatRegulator plugin
+    ) {
+        final Player player = Objects.requireNonNull(infractor).getPlayer();
+        if(player == null){
+            return;
         }
-    }
 
-    private static void execute(@NotNull Player infractor, @NotNull InfractionPlayer iPlayer, @NotNull InfractionType type, ChatRegulator plugin){
-        CommandsConfig config = ((Executable)type.getConfig().get()).getCommandsConfig();
-        if(config.executeCommand() && iPlayer.getViolations().getCount(type) % config.violationsRequired() == 0){
-            final String servername = infractor.getCurrentServer().map(sv -> sv.getServerInfo().getName()).orElse("");
+        final CommandsConfig config = ((Executable)type.getConfig().get()).getCommandsConfig();
+        if(config.executeCommand() && infractor.getViolations().getCount(type) % config.violationsRequired() == 0){
+            final String servername = player.getCurrentServer().map(sv -> sv.getServerInfo().getName()).orElse("");
             config.getCommandsToExecute().forEach(cmd -> {
-                final String commandToSend = cmd.replace("<player>", infractor.getUsername()).replace("<server>", servername);
-                plugin.getProxy().getCommandManager().executeAsync(plugin.getProxy().getConsoleCommandSource(), commandToSend).thenAcceptAsync(status -> {
-                    if(!status.booleanValue()){
-                        plugin.getLogger().warn("Error executing command {}", commandToSend);
-                    }
-                });
+                final String command = cmd.replace("<player>", infractor.username()).replace("<server>", servername);
+                plugin.getProxy().getCommandManager()
+                    .executeAsync(plugin.getProxy().getConsoleCommandSource(), command)
+                    .thenAcceptAsync(status -> {
+                        if(!status.booleanValue()){
+                            plugin.getLogger().warn("Error executing command {}", command);
+                        }
+                    });
             });
         }
     }
@@ -55,7 +59,7 @@ public final class CommandUtils {
      * @param command the command executed
      * @return if the command is to be checked
      */
-    public static boolean isCommand(@NotNull String command){
+    public static boolean isCommand(@NotNull String command) {
         final String firstArgument = getFirstArgument(Objects.requireNonNull(command));
         return Configuration.getBlacklist().getBlockedCommands().stream()
             .anyMatch(firstArgument::equalsIgnoreCase);
@@ -66,8 +70,8 @@ public final class CommandUtils {
      * @param string the string
      * @return the first argument
      */
-    public static @NotNull String getFirstArgument(@NotNull String string){
-        int index = Objects.requireNonNull(string).indexOf(" ");
+    public static @NotNull String getFirstArgument(final @NotNull String string) {
+        final int index = Objects.requireNonNull(string).indexOf(" ");
         if (index == -1) {
             return string;
         }
