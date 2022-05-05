@@ -44,13 +44,15 @@ public final class FloodCheck implements ICheck {
      * @return a {@link PatternReplaceableResult} with the Result of the check
      */
     @Override
-    public CompletableFuture<Result> check(final @NotNull String string){
-        final Matcher matcher = realPattern.matcher(Objects.requireNonNull(string));
-        return CompletableFuture.completedFuture(new PatternReplaceableResult(string, matcher.find(), realPattern, matcher){
-            @Override
-            public String replaceInfraction(){
-                return matcher.replaceAll(match -> Character.toString(match.group().charAt(0)));
-            }
+    public CompletableFuture<Result> check(@NotNull final String string){
+        return CompletableFuture.supplyAsync(() -> {
+            final Matcher matcher = realPattern.matcher(Objects.requireNonNull(string));
+            return new PatternReplaceableResult(string, matcher.find(), realPattern, matcher){
+                @Override
+                public String replaceInfraction() {
+                    return matcher.replaceAll(match -> Character.toString(match.group().charAt(0)));
+                }
+            };
         });
     }
 
@@ -67,7 +69,7 @@ public final class FloodCheck implements ICheck {
         return new FloodCheck.Builder();
     }
 
-    /**Floood Check Builder */
+    /**Flood Check Builder */
     public static class Builder implements AbstractBuilder<FloodCheck> {
         private Pattern pattern;
 

@@ -19,8 +19,10 @@ public final class SyntaxCheck implements ICheck{
      */
     @Override
     public CompletableFuture<Result> check(final @NotNull String string) {
-        final String command = CommandUtils.getFirstArgument(Objects.requireNonNull(string));
-        return CompletableFuture.completedFuture(new Result(command, command.indexOf(':') != -1));
+        return CompletableFuture.supplyAsync(() -> {
+            final String command = CommandUtils.getFirstArgument(Objects.requireNonNull(string));
+            return new Result(command, command.indexOf(':') != -1);
+        });
     }
 
     @Override

@@ -45,10 +45,13 @@ public final class CommandUtils {
                 final String command = cmd.replace("<player>", infractor.username()).replace("<server>", servername);
                 plugin.getProxy().getCommandManager()
                     .executeAsync(plugin.getProxy().getConsoleCommandSource(), command)
-                    .thenAcceptAsync(status -> {
-                        if(!status.booleanValue()){
+                    .handleAsync((status, ex) -> {
+                        if (ex != null) {
+                            plugin.getLogger().warn("Error executing command", ex);
+                        } else if(!status.booleanValue()) {
                             plugin.getLogger().warn("Error executing command {}", command);
                         }
+                        return null;
                     });
             });
         }

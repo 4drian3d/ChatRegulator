@@ -58,13 +58,13 @@ public final class UnicodeTest {
     void custom(){
         String illegal = "ñn't";
 
-        assertTrue(UnicodeCheck.builder()
+        var result = UnicodeCheck.builder()
             .characters('ñ')
             .build()
             .check(illegal)
-            .thenApply(Result::isInfraction)
-            .join()
-        );
+            .join();
+
+        assertTrue(result.isInfraction());
     }
 
     @Test

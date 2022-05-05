@@ -25,6 +25,7 @@ java {
 
 dependencies {
     compileOnly("org.spongepowered:configurate-hocon:4.1.2")
+    compileOnly("com.github.ben-manes.caffeine:caffeine:3.0.6")
     shadow("org.jetbrains:annotations:23.0.0")
     shadow("net.byteflux:libby-velocity:1.1.5")
 
@@ -39,7 +40,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.mockito:mockito-core:4.1.0")
     testImplementation("com.velocitypowered:velocity-api:3.1.2-SNAPSHOT")
-
+    testImplementation("com.github.ben-manes.caffeine:caffeine:3.0.6")
 }
 
 group = "me.dreamerzero.chatregulator"

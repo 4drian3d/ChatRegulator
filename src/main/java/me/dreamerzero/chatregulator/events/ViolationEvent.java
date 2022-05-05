@@ -14,7 +14,7 @@ import me.dreamerzero.chatregulator.enums.InfractionType;
 /**
  * Basis for infringement events
  */
-public class ViolationEvent implements ResultedEvent<GenericResult> {
+public abstract class ViolationEvent implements ResultedEvent<GenericResult> {
     /**
      * InfractionPlayer involved in detection
      */

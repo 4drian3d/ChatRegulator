@@ -33,12 +33,14 @@ public final class CommandCheck implements ICheck {
      */
     @Override
     public CompletableFuture<Result> check(@NotNull String string) {
-        for (final String blockedCommand : blockedCommands){
-            if(CommandUtils.isStartingString(string, blockedCommand)){
-                return CompletableFuture.completedFuture(new Result(string, true));
+        return CompletableFuture.supplyAsync(() -> {
+            for (final String blockedCommand : blockedCommands){
+                if (CommandUtils.isStartingString(string, blockedCommand)) {
+                    return new Result(string, true);
+                }
             }
-        }
-        return CompletableFuture.completedFuture(new Result(string, false));
+            return new Result(string, false);
+        });
     }
 
     @Override

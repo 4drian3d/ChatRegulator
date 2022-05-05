@@ -38,20 +38,20 @@ public final class InfractionTest {
             .blockedPatterns(
                 Pattern.compile("sh[ilj1y]t", Pattern.CASE_INSENSITIVE),
                 Pattern.compile("d[ilj1y]ck", Pattern.CASE_INSENSITIVE),
+                Pattern.compile("m[0o]th[e3]rf[uv]ck[e3]r", Pattern.CASE_INSENSITIVE),
                 Pattern.compile("f[uv4]ck", Pattern.CASE_INSENSITIVE)
             )
             .build();
 
-        String original = "Hello D1cK sh1t f4ck!!!";
-        String expected = "Hello *** *** ***!!!";
+        String original = "Hello D1cK sh1t f4ck mOtherfVck3r!!!";
+        String expected = "Hello ** ** ** ******!!!";
 
-        iCheck.check(original).thenAccept(result -> {
-            assertTrue(result.isInfraction());
-            assertTrue(result instanceof IReplaceable);
+        var check = iCheck.check(original).join();
+        assertTrue(check.isInfraction());
+        assertTrue(check instanceof IReplaceable);
 
-            String replaced = ((IReplaceable)result).replaceInfraction();
+        String replaced = ((IReplaceable)check).replaceInfraction();
 
-            assertEquals(expected, replaced);
-        }).join();
+        assertEquals(expected, replaced);
     }
 }

@@ -3,8 +3,9 @@ package me.dreamerzero.chatregulator;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
@@ -64,7 +65,7 @@ public class ChatRegulator {
     /**
      * InfractionPlayer list
      */
-    protected static final Map<UUID, InfractionPlayer> infractionPlayers = new ConcurrentHashMap<>();
+    protected static final Cache<UUID, InfractionPlayer> infractionPlayers = Caffeine.newBuilder().weakKeys().build();
 
     /**
      * Constructor for ChatRegulator Plugin
@@ -155,7 +156,7 @@ public class ChatRegulator {
     }
 
     public Map<UUID, InfractionPlayer> getChatPlayers(){
-        return infractionPlayers;
+        return infractionPlayers.asMap();
     }
 
     /**
@@ -186,10 +187,21 @@ public class ChatRegulator {
             .version("1.3.13")
             .id("geantyref")
             .build();
+        final Library caffeine = Library.builder()
+            .groupId("com{}github{}ben-manes{}caffeine")
+            .artifactId("caffeine")
+            .version("3.0.6")
+            .id("caffeine")
+            .build();
 
         libraryManager.addMavenCentral();
         libraryManager.loadLibrary(hocon);
         libraryManager.loadLibrary(confCore);
         libraryManager.loadLibrary(geantyref);
+        libraryManager.loadLibrary(caffeine);
+    }
+
+    public void removePlayer(UUID uuid) {
+        infractionPlayers.invalidate(uuid);
     }
 }

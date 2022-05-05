@@ -43,30 +43,32 @@ public final class UnicodeCheck implements ICheck {
      */
     @Override
     public CompletableFuture<Result> check(final @NotNull String string) {
-        final char[] charArray = Objects.requireNonNull(string).toCharArray();
-        final Set<Character> results = new HashSet<>();
+        return CompletableFuture.supplyAsync(() -> {
+            final char[] charArray = Objects.requireNonNull(string).toCharArray();
+            final Set<Character> results = new HashSet<>(charArray.length);
 
-        for(final char character : charArray){
-            if(charPredicate.test(character)){
-                if(control == ControlType.BLOCK) {
-                    return CompletableFuture.completedFuture(new Result(string, true));
-                }
-                results.add(character);
-            }
-        }
-
-        return CompletableFuture.completedFuture(results.isEmpty()
-            ? new Result(string, false)
-            : new ReplaceableResult(results.toString(), true){
-                @Override
-                public String replaceInfraction(){
-                    String replaced = string;
-                    for(final char character : results){
-                        replaced = replaced.replace(character, ' ');
+            for(final char character : charArray){
+                if(charPredicate.test(character)){
+                    if(control == ControlType.BLOCK) {
+                        return new Result(string, true);
                     }
-                    return replaced;
+                    results.add(character);
                 }
-            });
+            }
+
+            return results.isEmpty()
+                ? new Result(string, false)
+                : new ReplaceableResult(results.toString(), true){
+                    @Override
+                    public String replaceInfraction(){
+                        String replaced = string;
+                        for (final char character : results) {
+                            replaced = replaced.replace(character, ' ');
+                        }
+                        return replaced;
+                    }
+                };
+        });
     }
 
     public static final boolean defaultCharTest(char c) {

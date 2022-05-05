@@ -34,7 +34,8 @@ public final class LeaveListener {
 
             plugin.getProxy().getScheduler().buildTask(plugin, () -> {
                 if(plugin.getProxy().getPlayer(uuid).isEmpty()) {
-                    plugin.getLogger().debug("The player {} was eliminated", plugin.getChatPlayers().remove(uuid).username());
+                    plugin.getLogger().debug("The player {} was eliminated", player.username());
+                    plugin.removePlayer(uuid);
                 }
             }).delay(
                 Configuration.getConfig().getGeneralConfig().deleteUsersTime(),

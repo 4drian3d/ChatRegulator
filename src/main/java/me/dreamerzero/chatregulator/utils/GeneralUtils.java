@@ -26,6 +26,7 @@ import me.dreamerzero.chatregulator.enums.SourceType;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.events.ChatViolationEvent;
 import me.dreamerzero.chatregulator.events.CommandViolationEvent;
+import me.dreamerzero.chatregulator.events.ViolationEvent;
 
 /**
  * General utils
@@ -48,7 +49,7 @@ public final class GeneralUtils {
      * @param iplayer the infraction player
      * @return if the player has flagged for spam
      */
-    public static boolean spamCheck(Result result, InfractionPlayer iplayer){
+    public static boolean cooldownSpamCheck(Result result, InfractionPlayer iplayer){
         final MainConfig.Spam config = Configuration.getConfig().getSpamConfig();
         if(!result.isInfraction() || !config.getCooldownConfig().enabled()) {
             return false;
@@ -66,6 +67,15 @@ public final class GeneralUtils {
         return plugin.getProxy().getEventManager().fire(bundle.source() == SourceType.COMMAND
             ? new CommandViolationEvent(bundle.player(), bundle.type(), bundle.result, bundle.string)
             : new ChatViolationEvent(bundle.player(), bundle.type(), bundle.result, bundle.string))
+            .exceptionallyAsync(ex -> {
+                plugin.getLogger().error("An Error ocurred on Violation Event call", ex);
+                return new ViolationEvent(bundle.player(), bundle.type(), new Result(bundle.string, false)) {
+                    @Override
+                    public GenericResult getResult() {
+                        return GenericResult.denied();
+                    }
+                };
+            })
             .thenApplyAsync(violationEvent -> {
                 if(!violationEvent.getResult().isAllowed()) {
                     if(bundle.source() == SourceType.COMMAND)
@@ -99,7 +109,10 @@ public final class GeneralUtils {
 
     public static boolean unicode(InfractionPlayer player, AtomicReference<String> string, EventWrapper<?> event, ChatRegulator plugin) {
         return GeneralUtils.allowedPlayer(player.getPlayer(), InfractionType.UNICODE)
-            && UnicodeCheck.createCheck(string.get()).thenApply(result -> {
+            && UnicodeCheck.createCheck(string.get()).exceptionallyAsync(e -> {
+                plugin.getLogger().error("An Error ocurred on Unicode Check", e);
+                return new Result("", false);
+            }).thenApplyAsync(result -> {
                 if(GeneralUtils.checkAndCall(new EventBundle(player, string.get(), InfractionType.UNICODE, result, event.source()), plugin)){
                     if(Configuration.getConfig().getUnicodeConfig().isBlockable()){
                         event.cancel();
@@ -117,7 +130,10 @@ public final class GeneralUtils {
 
     public static boolean caps(InfractionPlayer player, AtomicReference<String> string, EventWrapper<?> event, ChatRegulator plugin) {
         return GeneralUtils.allowedPlayer(player.getPlayer(), InfractionType.CAPS)
-            && CapsCheck.createCheck(string.get()).thenApply(result -> {
+            && CapsCheck.createCheck(string.get()).exceptionallyAsync(e -> {
+                plugin.getLogger().error("An Error ocurred on Caps Check", e);
+                return new Result("", false);
+            }).thenApplyAsync(result -> {
                 if(GeneralUtils.checkAndCall(new EventBundle(player, string.get(), InfractionType.CAPS, result, event.source()), plugin)){
                     if(Configuration.getConfig().getCapsConfig().isBlockable()){
                         event.cancel();
@@ -135,7 +151,10 @@ public final class GeneralUtils {
 
     public static boolean flood(InfractionPlayer player, AtomicReference<String> string, EventWrapper<?> event, ChatRegulator plugin) {
         return GeneralUtils.allowedPlayer(player.getPlayer(), InfractionType.FLOOD)
-            && FloodCheck.createCheck(string.get()).thenApply(result -> {
+            && FloodCheck.createCheck(string.get()).exceptionallyAsync(e -> {
+                plugin.getLogger().error("An Error ocurred on Flood Check", e);
+                return new Result("", false);
+            }).thenApplyAsync(result -> {
                 if(GeneralUtils.checkAndCall(new EventBundle(player, string.get(), InfractionType.FLOOD, result, event.source()), plugin)) {
                     if(Configuration.getConfig().getFloodConfig().isBlockable()){
                         event.cancel();
@@ -153,7 +172,10 @@ public final class GeneralUtils {
 
     public static boolean regular(InfractionPlayer player, AtomicReference<String> string, EventWrapper<?> event, ChatRegulator plugin) {
         return GeneralUtils.allowedPlayer(player.getPlayer(), InfractionType.REGULAR)
-            && InfractionCheck.createCheck(string.get()).thenApply(result -> {
+            && InfractionCheck.createCheck(string.get()).exceptionallyAsync(e -> {
+                plugin.getLogger().error("An Error ocurred on Regular Infraction Check", e);
+                return new Result("", false);
+            }).thenApplyAsync(result -> {
                 if(GeneralUtils.checkAndCall(new EventBundle(player, string.get(), InfractionType.REGULAR, result, event.source()), plugin)) {
                     if(Configuration.getConfig().getInfractionsConfig().isBlockable()){
                         event.cancel();
@@ -171,8 +193,11 @@ public final class GeneralUtils {
 
     public static boolean spam(InfractionPlayer player, AtomicReference<String> string, EventWrapper<?> event, ChatRegulator plugin) {
         if(GeneralUtils.allowedPlayer(player.getPlayer(), InfractionType.SPAM)) {
-            Result result = SpamCheck.createCheck(player, string.get(), event.source()).join();
-            if(GeneralUtils.spamCheck(result, player)
+            final Result result = SpamCheck.createCheck(player, string.get(), event.source()).exceptionallyAsync(e -> {
+                plugin.getLogger().error("An Error ocurred on Spam Check", e);
+                return new Result("", false);
+            }).join();
+            if(GeneralUtils.cooldownSpamCheck(result, player)
                 && GeneralUtils.callViolationEvent(new EventBundle(player, string.get(), InfractionType.SPAM, result, event.source()), plugin)
             ) {
                 event.cancel();

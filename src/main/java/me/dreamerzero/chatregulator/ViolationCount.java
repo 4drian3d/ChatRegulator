@@ -81,8 +81,8 @@ public final class ViolationCount {
 
     @Override
     public boolean equals(Object o){
-        if(this==o) return true;
-        if(!(o instanceof final ViolationCount that)) return false;
+        if (this==o) return true;
+        if (!(o instanceof final ViolationCount that)) return false;
         return this.spamViolations == that.spamViolations
             && this.capsviolations == that.capsviolations
             && this.commandViolations == that.commandViolations

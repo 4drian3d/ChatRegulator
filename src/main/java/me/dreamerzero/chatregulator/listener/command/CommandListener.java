@@ -13,6 +13,7 @@ import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.modules.checks.CommandCheck;
 import me.dreamerzero.chatregulator.modules.checks.SyntaxCheck;
+import me.dreamerzero.chatregulator.result.Result;
 import me.dreamerzero.chatregulator.utils.CommandUtils;
 import me.dreamerzero.chatregulator.utils.GeneralUtils.EventBundle;
 import me.dreamerzero.chatregulator.wrapper.event.CommandWrapper;
@@ -87,7 +88,10 @@ public final class CommandListener {
                     player,
                     string,
                     InfractionType.SYNTAX,
-                    SyntaxCheck.createCheck(string).join(),
+                    SyntaxCheck.createCheck(string).exceptionallyAsync(e -> {
+                        plugin.getLogger().error("An Error ocurred on Syntax Check", e);
+                        return new Result("", false);
+                    }).join(),
                     SourceType.COMMAND
                 ),
                 plugin
@@ -107,7 +111,10 @@ public final class CommandListener {
                     player,
                     string,
                     InfractionType.BCOMMAND,
-                    CommandCheck.createCheck(string).join(),
+                    CommandCheck.createCheck(string).exceptionallyAsync(e -> {
+                        plugin.getLogger().error("An Error ocurred on Blocked Commands Check", e);
+                        return new Result("", false);
+                    }).join(),
                     SourceType.COMMAND
                 ),
                 plugin

@@ -33,7 +33,7 @@ public final class CapsCheck implements ICheck {
      */
     @Override
     public CompletableFuture<Result> check(final @NotNull String string) {
-        return CompletableFuture.completedFuture(Objects.requireNonNull(string)
+        return CompletableFuture.supplyAsync(() -> Objects.requireNonNull(string)
             .chars()
             .filter(Character::isUpperCase)
             .count() >= this.limit

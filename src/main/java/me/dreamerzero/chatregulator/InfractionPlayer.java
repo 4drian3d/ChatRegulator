@@ -3,7 +3,6 @@ package me.dreamerzero.chatregulator;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 import com.velocitypowered.api.proxy.Player;
@@ -41,25 +40,6 @@ public final class InfractionPlayer implements ForwardingAudience.Single {
     @Internal
     InfractionPlayer(final @NotNull Player player){
         this.player = Objects.requireNonNull(player);
-        this.preLastMessage = " .";
-        this.lastMessage = " ";
-        this.preLastCommand = " ";
-        this.lastCommand = " .";
-        this.timeSinceLastMessage = Instant.now();
-        this.timeSinceLastCommand = Instant.now();
-        this.violationsCount = new ViolationCount();
-        this.isOnline = true;
-        this.username = player.getUsername();
-    }
-
-    /**
-     * Constructor of an InfractorPlayer based on its {@link UUID}
-     * @param uuid the uuid on which it will be based
-     * @throws PlayerNotAvailableException
-     */
-    @Internal
-    InfractionPlayer(final @NotNull UUID uuid, final @NotNull ProxyServer proxy) throws PlayerNotAvailableException{
-        this.player = proxy.getPlayer(uuid).orElseThrow(PlayerNotAvailableException::new);
         this.preLastMessage = " .";
         this.lastMessage = " ";
         this.preLastCommand = " ";
@@ -191,19 +171,12 @@ public final class InfractionPlayer implements ForwardingAudience.Single {
      * @throws PlayerNotAvailableException if the player is not available
      */
     public static @Nullable InfractionPlayer get(final @NotNull UUID uuid, @NotNull ProxyServer proxy) throws PlayerNotAvailableException{
-        InfractionPlayer player = ChatRegulator.infractionPlayers.get(Objects.requireNonNull(uuid));
-        if(player != null){
-            return player;
-        } else {
-            Optional<Player> optionalPlayer = proxy.getPlayer(uuid);
-            if(optionalPlayer.isPresent()){
-                player = InfractionPlayer.get(optionalPlayer.get());
-                ChatRegulator.infractionPlayers.put(uuid, player);
-                return player;
-            } else {
-                throw new PlayerNotAvailableException(uuid);
-            }
-        }
+        return ChatRegulator.infractionPlayers
+            .get(Objects.requireNonNull(uuid),
+                (id) -> new InfractionPlayer(
+                    proxy.getPlayer(id)
+                        .orElseThrow(() -> new PlayerNotAvailableException(id))
+                ));
     }
 
     /**
@@ -213,21 +186,16 @@ public final class InfractionPlayer implements ForwardingAudience.Single {
      */
     public static @NotNull InfractionPlayer get(final @NotNull Player player){
         final UUID uuid = Objects.requireNonNull(player).getUniqueId();
-        InfractionPlayer infractor = ChatRegulator.infractionPlayers.get(uuid);
-        if(infractor != null){
-            if(!infractor.isOnline()) {
-                infractor.player = player;
-            }
-            return infractor;
-        } else {
-            infractor = new InfractionPlayer(player);
-            ChatRegulator.infractionPlayers.put(uuid, infractor);
-            return infractor;
+        final InfractionPlayer infractor = ChatRegulator.infractionPlayers
+            .get(uuid, id -> new InfractionPlayer(player));
+        if (!infractor.isOnline()) {
+            infractor.player = player;
         }
+        return infractor;
     }
 
     public static @Nullable InfractionPlayer get(final @NotNull String name){
-        return ChatRegulator.infractionPlayers.values().stream()
+        return ChatRegulator.infractionPlayers.asMap().values().stream()
             .filter(p -> p.username().equalsIgnoreCase(name))
             .findAny().orElse(null);
     }
@@ -240,8 +208,8 @@ public final class InfractionPlayer implements ForwardingAudience.Single {
         if(!(o instanceof final InfractionPlayer other)) {
             return false;
         }
-        return Objects.equals(other.getViolations(), this.getViolations())
-            || Objects.equals(other.username, this.username);
+        return Objects.equals(other.username, this.username)
+            && Objects.equals(other.getViolations(), this.getViolations());
     }
 
     @Override

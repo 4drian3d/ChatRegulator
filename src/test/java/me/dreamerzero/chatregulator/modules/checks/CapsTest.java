@@ -50,12 +50,11 @@ public final class CapsTest {
         String message = "AAAAAAAAAA";
         Player player = TestsUtils.createRandomNormalPlayer();
         assertTrue(GeneralUtils.allowedPlayer(player, InfractionType.CAPS));
-        CapsCheck.createCheck(message).thenAccept(result -> {
-            assertTrue(GeneralUtils.checkAndCall(new EventBundle(InfractionPlayer.get(player), message, InfractionType.CAPS, result, SourceType.CHAT), TestsUtils.createRegulator()));
-            assertTrue(result instanceof IReplaceable);
-            String messageReplaced = ((IReplaceable)result).replaceInfraction();
-            assertEquals("aaaaaaaaaa", messageReplaced);
-            StatisticsUtils.resetStatistics();
-        }).join();
+        var result = CapsCheck.createCheck(message).join();
+        assertTrue(GeneralUtils.checkAndCall(new EventBundle(InfractionPlayer.get(player), message, InfractionType.CAPS, result, SourceType.CHAT), TestsUtils.createRegulator()));
+        assertTrue(result instanceof IReplaceable);
+        String messageReplaced = ((IReplaceable)result).replaceInfraction();
+        assertEquals("aaaaaaaaaa", messageReplaced);
+        StatisticsUtils.resetStatistics();
     }
 }

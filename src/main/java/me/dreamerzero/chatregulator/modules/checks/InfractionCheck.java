@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,31 +48,42 @@ public final class InfractionCheck implements ICheck {
      * @see ICheck
      */
     @Override
-    public CompletableFuture<Result> check(@NotNull final String string){
-        final List<Pattern> patterns = new ArrayList<>();
-        boolean detected = false;
-        for (final Pattern pattern : blockedWords) {
-            final Matcher match = pattern.matcher(string);
-            if(match.find()){
-                detected = true;
-                if(blockable) {
-                    return CompletableFuture.completedFuture(new PatternResult(match.group(), true, pattern, match));
-                }
-                patterns.add(pattern);
-            }
-        }
-        return CompletableFuture.completedFuture(detected
-            ? new ReplaceableResult(patterns.toString(), true){
-                @Override
-                public String replaceInfraction(){
-                    String original = string;
-                    for(Pattern pattern : patterns){
-                        original = pattern.matcher(original).replaceAll("***");
+    public CompletableFuture<Result> check(final @NotNull String string){
+        return CompletableFuture.supplyAsync(() -> {
+            final List<Pattern> patterns = new ArrayList<>();
+            boolean detected = false;
+            for (final Pattern pattern : blockedWords) {
+                final Matcher match = pattern.matcher(string);
+                if(match.find()){
+                    detected = true;
+                    if (blockable) {
+                        return new PatternResult(match.group(), blockable, pattern, match);
                     }
-                    return original;
+                    patterns.add(pattern);
                 }
             }
-            : new Result(string, false));
+            return detected
+                ? new ReplaceableResult(patterns.toString(), true){
+                    @Override
+                    public String replaceInfraction(){
+                        String original = string;
+                        for (final Pattern pattern : patterns) {
+                            original = pattern.matcher(original).replaceAll(InfractionCheck::generateReplacement);
+                        }
+                        return original;
+                    }
+                }
+                : new Result(string, false);
+        });
+    }
+
+    private static String generateReplacement(MatchResult result) {
+        final int size = result.group().length()/2;
+        final StringBuilder builder = new StringBuilder(size);
+        for (int i = 0; i < size; i++) {
+            builder.append('*');
+        }
+        return builder.toString();
     }
 
     @Override

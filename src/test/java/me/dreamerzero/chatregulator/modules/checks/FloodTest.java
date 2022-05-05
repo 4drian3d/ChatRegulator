@@ -15,13 +15,12 @@ public final class FloodTest {
         String original = "aa floOoOOOooOod aa";
         String expected = "aa flod aa";
 
-        FloodCheck.builder().limit(5).build().check(original).thenAccept(result->{
-            assertTrue(result.isInfraction());
-            assertTrue(result instanceof IReplaceable);
-            String replaced = ((IReplaceable)result).replaceInfraction();
+        var result = FloodCheck.builder().limit(5).build().check(original).join();
+        assertTrue(result.isInfraction());
+        assertTrue(result instanceof IReplaceable);
+        String replaced = ((IReplaceable)result).replaceInfraction();
 
-            assertEquals(replaced, expected);
-        }).join();
+        assertEquals(replaced, expected);
     }
 
     @Test
@@ -29,12 +28,11 @@ public final class FloodTest {
     void multiFlood(){
         String original = "helloooooo everyoneeeeeee";
 
-        FloodCheck.createCheck(original).thenAccept(result -> {
-            assertTrue(result.isInfraction());
-            assertTrue(result instanceof IReplaceable);
-            String replaced = "hello everyone";
-            String actual = ((IReplaceable)result).replaceInfraction();
-            assertEquals(replaced, actual, actual);
-        }).join();
+        var result = FloodCheck.createCheck(original).join();
+        assertTrue(result.isInfraction());
+        assertTrue(result instanceof IReplaceable);
+        String replaced = "hello everyone";
+        String actual = ((IReplaceable)result).replaceInfraction();
+        assertEquals(replaced, actual, actual);
     }
 }

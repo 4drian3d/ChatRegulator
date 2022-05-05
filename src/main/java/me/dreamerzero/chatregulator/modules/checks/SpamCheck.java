@@ -28,8 +28,9 @@ public final class SpamCheck implements ICheck {
      */
     @Override
     public CompletableFuture<Result> check(final @NotNull String string){
-        final boolean infricted = this.spamInfricted(Objects.requireNonNull(string));
-        return CompletableFuture.completedFuture(new Result(string, infricted));
+        return CompletableFuture.supplyAsync(
+            () -> new Result(string, this.spamInfricted(Objects.requireNonNull(string)))
+        );
     }
 
     /**

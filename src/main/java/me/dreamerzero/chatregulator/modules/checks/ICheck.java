@@ -20,7 +20,7 @@ public interface ICheck {
      * @since 3.0.0
      * @return a CompletableFuture with the result of the check
      */
-    @NotNull CompletableFuture<Result> check(@NotNull final String string);
+    @NotNull CompletableFuture<Result> check(final @NotNull String string);
 
     /**
      * Get the {@link InfractionType} of this check
