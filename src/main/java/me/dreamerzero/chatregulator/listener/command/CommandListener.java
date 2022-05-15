@@ -53,7 +53,7 @@ public final class CommandListener {
 
         if(this.blockedCommands(infractionPlayer, event.getCommand(), wrapper)
             || this.syntax(infractionPlayer, event.getCommand(), wrapper)
-            || !this.checkIfCanCheck(event.getCommand())
+            || this.checkIfCanCheck(event.getCommand(), wrapper)
         ) {
             return;
         }
@@ -73,12 +73,13 @@ public final class CommandListener {
         continuation.resume();
     }
 
-    private boolean checkIfCanCheck(final String command){
+    private boolean checkIfCanCheck(final String command, EventWrapper<?> wrapper) {
         for(final String cmd : Configuration.getConfig().getCommandsChecked()){
             if(CommandUtils.isStartingString(command, cmd))
-                return true;
+                return false;
         }
-        return false;
+        wrapper.resume();
+        return true;
     }
 
     private boolean syntax(InfractionPlayer player, String string, EventWrapper<?> event) {
