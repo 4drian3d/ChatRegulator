@@ -172,25 +172,25 @@ public class ChatRegulator {
         final Library hocon = Library.builder()
             .groupId("org{}spongepowered")
             .artifactId("configurate-hocon")
-            .version("4.1.2")
+            .version(Constants.CONFIGURATE)
             .id("configurate-hocon")
             .build();
         final Library confCore = Library.builder()
             .groupId("org{}spongepowered")
             .artifactId("configurate-core")
-            .version("4.1.2")
+            .version(Constants.CONFIGURATE)
             .id("configurate-core")
             .build();
         final Library geantyref = Library.builder()
             .groupId("io{}leangen{}geantyref")
             .artifactId("geantyref")
-            .version("1.3.13")
+            .version(Constants.GEANTYREF)
             .id("geantyref")
             .build();
         final Library caffeine = Library.builder()
             .groupId("com{}github{}ben-manes{}caffeine")
             .artifactId("caffeine")
-            .version("3.0.6")
+            .version(Constants.CAFFEINE)
             .id("caffeine")
             .build();
 

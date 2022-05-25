@@ -15,6 +15,9 @@ public final class Constants {
     public static final String URL = "{url}";
     /**Plugin ID */
     public static final String ID = "{id}";
+    public static final String CAFFEINE = "{caffeine}";
+    public static final String CONFIGURATE = "{configurate}";
+    public static final String GEANTYREF = "{geantyref}";
 
     private Constants(){}
 }

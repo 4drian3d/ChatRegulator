@@ -27,7 +27,7 @@ public final class InfractionPlayer implements ForwardingAudience.Single {
     private String lastMessage;
     private String preLastCommand;
     private String lastCommand;
-    private ViolationCount violationsCount;
+    private final ViolationCount violationsCount = new ViolationCount();
     private boolean isOnline;
     private final String username;
     private Instant timeSinceLastMessage;
@@ -46,7 +46,6 @@ public final class InfractionPlayer implements ForwardingAudience.Single {
         this.lastCommand = " .";
         this.timeSinceLastMessage = Instant.now();
         this.timeSinceLastCommand = Instant.now();
-        this.violationsCount = new ViolationCount();
         this.isOnline = true;
         this.username = player.getUsername();
     }
@@ -173,7 +172,7 @@ public final class InfractionPlayer implements ForwardingAudience.Single {
     public static @Nullable InfractionPlayer get(final @NotNull UUID uuid, @NotNull ProxyServer proxy) throws PlayerNotAvailableException{
         return ChatRegulator.infractionPlayers
             .get(Objects.requireNonNull(uuid),
-                (id) -> new InfractionPlayer(
+                id -> new InfractionPlayer(
                     proxy.getPlayer(id)
                         .orElseThrow(() -> new PlayerNotAvailableException(id))
                 ));

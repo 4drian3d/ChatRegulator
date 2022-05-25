@@ -9,7 +9,7 @@ plugins {
 
 repositories {
     mavenLocal()
-    maven("https://papermc.io/repo/repository/maven-public/")
+    maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.fvdh.dev/releases")
     maven("https://jitpack.io")
     maven("https://repo.alessiodp.com/releases/")
@@ -23,9 +23,15 @@ java {
     withJavadocJar()
 }
 
+val url = property("url") as String ?: ""
+val id = property("id") as String ?: "chatregulator"
+val configurate = property("configurate-version") as String
+val geantyref = property("geantyref-version") as String
+val caffeine = property("caffeine-version") as String
+
 dependencies {
-    compileOnly("org.spongepowered:configurate-hocon:4.1.2")
-    compileOnly("com.github.ben-manes.caffeine:caffeine:3.0.6")
+    compileOnly("org.spongepowered:configurate-hocon:$configurate")
+    compileOnly("com.github.ben-manes.caffeine:caffeine:$caffeine")
     shadow("org.jetbrains:annotations:23.0.0")
     shadow("net.byteflux:libby-velocity:1.1.5")
 
@@ -35,19 +41,16 @@ dependencies {
     annotationProcessor("com.velocitypowered:velocity-api:3.1.2-SNAPSHOT")
 
     testImplementation("org.slf4j:slf4j-api:1.7.32")
-    testImplementation("org.spongepowered:configurate-hocon:4.1.2")
+    testImplementation("org.spongepowered:configurate-hocon:$configurate")
     testImplementation(platform("org.junit:junit-bom:5.8.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.mockito:mockito-core:4.1.0")
     testImplementation("com.velocitypowered:velocity-api:3.1.2-SNAPSHOT")
-    testImplementation("com.github.ben-manes.caffeine:caffeine:3.0.6")
+    testImplementation("com.github.ben-manes.caffeine:caffeine:$caffeine")
 }
 
-group = "me.dreamerzero.chatregulator"
-version = "3.0.1-SNAPSHOT"
-description = "A global chat regulator for you Velocity network"
-val url: String = "https://forums.velocitypowered.com/t/chatregulator-a-global-chat-regulator-for-velocity/962"
-val id: String = "chatregulator"
+
+
 
 publishing {
     publications {
@@ -64,17 +67,20 @@ tasks.withType<Javadoc> {
     (options as StandardJavadocDocletOptions).links(
         "https://jd.adventure.kyori.net/api/4.10.1/",
         "https://jd.adventure.kyori.net/text-minimessage/4.10.1/",
-        "https://jd.velocitypowered.com/3.0.0/"
+        "https://jd.papermc.io/velocity/3.0.0/"
     )
 }
 
-blossom{
-	val constants: String = "src/main/java/me/dreamerzero/chatregulator/utils/Constants.java"
-	replaceToken("{name}", rootProject.name, constants)
-    replaceToken("{id}", id, constants)
-	replaceToken("{version}", version, constants)
-	replaceToken("{description}", description, constants)
-    replaceToken("{url}", url, constants)
+blossom {
+    replaceTokenIn("src/main/java/me/dreamerzero/chatregulator/utils/Constants.java")
+	replaceToken("{name}", rootProject.name)
+    replaceToken("{id}", id)
+	replaceToken("{version}", version)
+	replaceToken("{description}", description)
+    replaceToken("{url}", url)
+    replaceToken("{configurate}", configurate)
+    replaceToken("{geantyref}", geantyref)
+    replaceToken("{caffeine}", caffeine)
 }
 
 tasks {
