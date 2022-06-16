@@ -1,7 +1,6 @@
 package me.dreamerzero.chatregulator.modules;
 
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -11,8 +10,6 @@ import me.dreamerzero.chatregulator.enums.InfractionType;
  * Manages the plugin's internal statistics
  */
 public final class Statistics {
-    private static final AtomicReference<Statistics> INSTANCE
-        = new AtomicReference<>(null);
     /**
      * Global Spam warning count
      */
@@ -50,24 +47,6 @@ public final class Statistics {
      * Global Violations count
      */
     private int globalViolations;
-
-    /**
-     * Get the global violation statistics
-     * @return the global statistics
-     */
-    public static Statistics getStatistics(){
-        Statistics result = INSTANCE.get();
-
-        if (result == null) {
-            result = new Statistics();
-
-            if (!INSTANCE.compareAndSet(null, result)) {
-                result = INSTANCE.get();
-            }
-        }
-
-        return result;
-    }
 
     /**
      * Add a violation to the overall violation count.
@@ -124,9 +103,14 @@ public final class Statistics {
             case UNICODE -> this.unicodeViolations = amount;
             case CAPS -> this.capsViolations = amount;
             case SYNTAX -> this.syntaxViolations = amount;
-            case NONE -> {}
+            case NONE -> {
+                this.globalViolations = this.syntaxViolations +
+                    this.spamCount + this.floodCount +
+                    this.regularCount + this.commandCount +
+                    this.unicodeViolations + this.capsViolations;
+            }
         }
-        this.globalViolations = this.spamCount + this.floodCount + this.regularCount + this.commandCount + this.unicodeViolations + this.capsViolations + this.syntaxViolations;
+        
     }
 
     @Override
@@ -157,8 +141,5 @@ public final class Statistics {
             +",unicode="+this.unicodeViolations
             +",syntax="+this.syntaxViolations
             +"]";
-    }
-
-    private Statistics(){
     }
 }

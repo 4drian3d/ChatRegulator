@@ -7,8 +7,8 @@ import com.velocitypowered.api.proxy.Player;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.InfractionPlayer;
-import me.dreamerzero.chatregulator.modules.StatisticsUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -23,12 +23,13 @@ public final class PlaceholderTest {
     @DisplayName("Player Placeholders")
     void playerPlaceholders(){
         Player p = TestsUtils.createNormalPlayer("Adrianed_04yt");
+        ChatRegulator plugin = TestsUtils.createRegulator();
 
         InfractionPlayer player = InfractionPlayer.get(p);
 
         MiniMessage mm = MiniMessage.builder()
             .tags(TagResolver.resolver(
-                PlaceholderUtils.getPlaceholders(player),
+                plugin.placeholders().getPlaceholders(player),
                 StandardTags.color())
             )
             .build();
@@ -55,10 +56,10 @@ public final class PlaceholderTest {
     @Test
     @DisplayName("Global Placeholders")
     void globalPlaceholders(){
-        StatisticsUtils.resetStatistics();
+        ChatRegulator plugin = TestsUtils.createRegulator();
         MiniMessage mm = MiniMessage.builder()
             .tags(TagResolver.resolver(
-                PlaceholderUtils.getGlobalPlaceholders(),
+                plugin.placeholders().getGlobalPlaceholders(),
                 StandardTags.color())
             )
             .build();

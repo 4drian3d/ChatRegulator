@@ -79,7 +79,7 @@ public final class UnicodeCheck implements ICheck {
             return false;
         }
         return !(c >= '\u00BF' && c <= '\u00FE');
-    };
+    }
 
     private boolean charTest(char c) {
         for(final char character : this.chars) {
@@ -88,7 +88,7 @@ public final class UnicodeCheck implements ICheck {
             }
         }
         return false;
-    };
+    }
 
     @Override
     public @NotNull InfractionType type() {
@@ -149,7 +149,7 @@ public final class UnicodeCheck implements ICheck {
 
     }
 
-    public static enum CharMode {
+    public enum CharMode {
         WHITELIST, BLACKLIST
     }
 }

@@ -28,7 +28,9 @@ import me.dreamerzero.chatregulator.listener.command.SpyListener;
 import me.dreamerzero.chatregulator.listener.list.JoinListener;
 import me.dreamerzero.chatregulator.listener.list.LeaveListener;
 import me.dreamerzero.chatregulator.listener.plugin.ReloadListener;
+import me.dreamerzero.chatregulator.modules.Statistics;
 import me.dreamerzero.chatregulator.utils.Constants;
+import me.dreamerzero.chatregulator.utils.Placeholders;
 import net.byteflux.libby.Library;
 import net.byteflux.libby.VelocityLibraryManager;
 import me.dreamerzero.chatregulator.placeholders.RegulatorExpansion;
@@ -61,6 +63,8 @@ public class ChatRegulator {
     private final Path path;
     private final PluginManager manager;
     private IFormatter formatter;
+    private Statistics statistics;
+    private Placeholders placeholders;
 
     /**
      * InfractionPlayer list
@@ -101,6 +105,9 @@ public class ChatRegulator {
         );
         this.loadDependencies();
         Configuration.loadConfig(path, logger);
+
+        this.statistics = new Statistics();
+        this.placeholders = new Placeholders(this);
 
         if(server.getPluginManager().isLoaded("miniplaceholders")){
             this.formatter = new MiniPlaceholderFormatter();
@@ -157,6 +164,14 @@ public class ChatRegulator {
 
     public Map<UUID, InfractionPlayer> getChatPlayers(){
         return infractionPlayers.asMap();
+    }
+
+    public Statistics getStatistics() {
+        return this.statistics;
+    }
+
+    public Placeholders placeholders() {
+        return this.placeholders;
     }
 
     /**

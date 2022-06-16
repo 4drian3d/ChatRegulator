@@ -17,7 +17,6 @@ import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.enums.SourceType;
-import me.dreamerzero.chatregulator.modules.StatisticsUtils;
 import me.dreamerzero.chatregulator.result.IReplaceable;
 import me.dreamerzero.chatregulator.utils.GeneralUtils;
 import me.dreamerzero.chatregulator.utils.TestsUtils;
@@ -55,6 +54,5 @@ public final class CapsTest {
         assertTrue(result instanceof IReplaceable);
         String messageReplaced = ((IReplaceable)result).replaceInfraction();
         assertEquals("aaaaaaaaaa", messageReplaced);
-        StatisticsUtils.resetStatistics();
     }
 }

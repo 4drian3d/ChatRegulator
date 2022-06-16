@@ -6,6 +6,7 @@ import com.velocitypowered.api.proxy.Player;
 
 import org.jetbrains.annotations.NotNull;
 
+import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.ViolationCount;
 import me.dreamerzero.chatregulator.modules.Statistics;
@@ -18,13 +19,18 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
  * 
  * This class returns placeholders whether or not MiniPlaceholders is installed
  */
-public final class PlaceholderUtils {
+public final class Placeholders {
+    private final ChatRegulator plugin;
+
+    public Placeholders(ChatRegulator plugin) {
+        this.plugin = plugin;
+    }
     /**
      * Obtain placeholders from an {@link InfractionPlayer}
      * @param player the {@link InfractionPlayer}
      * @return placeholders based on this player
      */
-    public static @NotNull TagResolver getPlaceholders(final @NotNull InfractionPlayer player){
+    public @NotNull TagResolver getPlaceholders(final @NotNull InfractionPlayer player){
         final ViolationCount count = Objects.requireNonNull(player).getViolations();
         final TagResolver.Builder resolver = TagResolver.builder().resolvers(
             Placeholder.unparsed("player", player.username()),
@@ -50,8 +56,8 @@ public final class PlaceholderUtils {
      * Obtain the global placeholders
      * @return global placeholders
      */
-    public static @NotNull TagResolver getGlobalPlaceholders(){
-        final Statistics statistics = Statistics.getStatistics();
+    public @NotNull TagResolver getGlobalPlaceholders(){
+        final Statistics statistics = plugin.getStatistics();
         return TagResolver.resolver(
             integerPlaceholder("flood", statistics.getViolationCount(InfractionType.FLOOD)),
             integerPlaceholder("spam", statistics.getViolationCount(InfractionType.SPAM)),
@@ -66,6 +72,4 @@ public final class PlaceholderUtils {
     private static TagResolver.Single integerPlaceholder(String key, int value){
         return Placeholder.unparsed(key, Integer.toString(value));
     }
-
-    private PlaceholderUtils(){}
 }

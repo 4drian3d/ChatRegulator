@@ -22,7 +22,6 @@ import me.dreamerzero.chatregulator.enums.Components;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.enums.Permission;
 import me.dreamerzero.chatregulator.placeholders.formatter.IFormatter;
-import me.dreamerzero.chatregulator.utils.PlaceholderUtils;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -99,8 +98,8 @@ public final class BrigadierRegulator {
             .requires(Permission.COMMAND_STATS)
             .executes(cmd -> {
                 TagResolver resolver = cmd.getSource() instanceof Player player
-                    ? PlaceholderUtils.getPlaceholders(InfractionPlayer.get(player))
-                    : PlaceholderUtils.getGlobalPlaceholders();
+                    ? plugin.placeholders().getPlaceholders(InfractionPlayer.get(player))
+                    : plugin.placeholders().getGlobalPlaceholders();
                 sendLines(
                     cmd.getSource(),
                     Configuration.getMessages().getGeneralMessages().getStatsFormat(),
@@ -141,12 +140,12 @@ public final class BrigadierRegulator {
                     Optional<Player> optionalPlayer = plugin.getProxy().getPlayer(arg);
                     if(optionalPlayer.isPresent()){
                         InfractionPlayer infractionPlayer = InfractionPlayer.get(optionalPlayer.get());
-                        TagResolver placeholders = PlaceholderUtils.getPlaceholders(infractionPlayer);
+                        TagResolver placeholders = plugin.placeholders().getPlaceholders(infractionPlayer);
                         sendLines(source, Configuration.getMessages().getGeneralMessages().getPlayerFormat(), placeholders, plugin.getFormatter());
                     } else {
                         Optional<InfractionPlayer> opt = plugin.getChatPlayers().values().stream().filter(p -> p.username().equals(arg)).findAny();
                         if(opt.isPresent()){
-                            TagResolver placeholders = PlaceholderUtils.getPlaceholders(opt.get());
+                            TagResolver placeholders = plugin.placeholders().getPlaceholders(opt.get());
                             sendLines(source, Configuration.getMessages().getGeneralMessages().getPlayerFormat(), placeholders, plugin.getFormatter());
                         } else {
                             source.sendMessage(plugin.getFormatter().parse(
@@ -197,22 +196,22 @@ public final class BrigadierRegulator {
                         );
                         return 1;
                     }
-                    resetAll(p, cmd.getSource(), plugin.getFormatter());
+                    resetAll(p, cmd.getSource(), plugin);
                     return 1;
                 })
-                .then(resetWithPlayerSubcommand("infractions", InfractionType.REGULAR, Permission.COMMAND_RESET_REGULAR, plugin.getFormatter()))
-                .then(resetWithPlayerSubcommand("regular", InfractionType.REGULAR, Permission.COMMAND_RESET_REGULAR, plugin.getFormatter()))
-                .then(resetWithPlayerSubcommand("flood", InfractionType.FLOOD, Permission.COMMAND_RESET_FLOOD, plugin.getFormatter()))
-                .then(resetWithPlayerSubcommand("spam", InfractionType.SPAM, Permission.COMMAND_RESET_SPAM, plugin.getFormatter()))
-                .then(resetWithPlayerSubcommand("command", InfractionType.BCOMMAND, Permission.COMMAND_RESET_BCOMMAND, plugin.getFormatter()))
-                .then(resetWithPlayerSubcommand("unicode", InfractionType.UNICODE, Permission.COMMAND_RESET_UNICODE, plugin.getFormatter()))
-                .then(resetWithPlayerSubcommand("caps", InfractionType.CAPS, Permission.COMMAND_RESET_CAPS, plugin.getFormatter()))
-                .then(resetWithPlayerSubcommand("syntax", InfractionType.SYNTAX, Permission.COMMAND_RESET_SYNTAX, plugin.getFormatter()))
+                .then(resetWithPlayerSubcommand("infractions", InfractionType.REGULAR, Permission.COMMAND_RESET_REGULAR, plugin))
+                .then(resetWithPlayerSubcommand("regular", InfractionType.REGULAR, Permission.COMMAND_RESET_REGULAR, plugin))
+                .then(resetWithPlayerSubcommand("flood", InfractionType.FLOOD, Permission.COMMAND_RESET_FLOOD, plugin))
+                .then(resetWithPlayerSubcommand("spam", InfractionType.SPAM, Permission.COMMAND_RESET_SPAM, plugin))
+                .then(resetWithPlayerSubcommand("command", InfractionType.BCOMMAND, Permission.COMMAND_RESET_BCOMMAND, plugin))
+                .then(resetWithPlayerSubcommand("unicode", InfractionType.UNICODE, Permission.COMMAND_RESET_UNICODE, plugin))
+                .then(resetWithPlayerSubcommand("caps", InfractionType.CAPS, Permission.COMMAND_RESET_CAPS, plugin))
+                .then(resetWithPlayerSubcommand("syntax", InfractionType.SYNTAX, Permission.COMMAND_RESET_SYNTAX, plugin))
                 )
             .build();
     }
 
-    private static void resetAll(InfractionPlayer player, Audience source, IFormatter formatter){
+    private static void resetAll(InfractionPlayer player, Audience source, ChatRegulator plugin){
         player.getViolations().resetViolations(
             InfractionType.SPAM,
             InfractionType.FLOOD,
@@ -222,10 +221,10 @@ public final class BrigadierRegulator {
             InfractionType.CAPS,
             InfractionType.SYNTAX
         );
-        ConfigManager.sendResetMessage(source, InfractionType.NONE, player, formatter);
+        ConfigManager.sendResetMessage(source, InfractionType.NONE, player, plugin);
     }
 
-    private  static LiteralCommandNode<CommandSource> resetWithPlayerSubcommand(String subcommand, InfractionType type, Permission resetPermission, IFormatter formatter){
+    private  static LiteralCommandNode<CommandSource> resetWithPlayerSubcommand(String subcommand, InfractionType type, Permission resetPermission, ChatRegulator plugin){
         return LiteralArgumentBuilder
             .<CommandSource>literal(subcommand)
             .requires(resetPermission)
@@ -234,7 +233,7 @@ public final class BrigadierRegulator {
                 InfractionPlayer p = InfractionPlayer.get(arg);
                 if(p == null){
                     cmd.getSource().sendMessage(
-                        formatter.parse(
+                        plugin.getFormatter().parse(
                             Configuration.getMessages().getGeneralMessages().playerNotFound(),
                             cmd.getSource(),
                             Placeholder.unparsed("player", arg)
@@ -243,7 +242,7 @@ public final class BrigadierRegulator {
                     return 1;
                 }
                 p.getViolations().resetViolations(type);
-                ConfigManager.sendResetMessage(cmd.getSource(), type, p, formatter);
+                ConfigManager.sendResetMessage(cmd.getSource(), type, p, plugin);
                 return 1;
             }).build();
     }

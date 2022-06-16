@@ -12,7 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import me.dreamerzero.chatregulator.ChatRegulator;
+import me.dreamerzero.chatregulator.modules.Statistics;
 import me.dreamerzero.chatregulator.objects.TestPlayer;
+import me.dreamerzero.chatregulator.objects.TestPluginManager;
 import me.dreamerzero.chatregulator.objects.TestProxy;
 import me.dreamerzero.chatregulator.placeholders.formatter.IFormatter;
 import me.dreamerzero.chatregulator.placeholders.formatter.NormalFormatter;
@@ -58,10 +60,22 @@ public final class TestsUtils {
         ProxyServer proxy = createProxy();
         Logger logger = LoggerFactory.getLogger(TestsUtils.class);
         Path path = Path.of("build", "reports", "tests", "test");
-        return new ChatRegulator(proxy, logger, path, null){
+        return new ChatRegulator(proxy, logger, path, new TestPluginManager()){
+            Statistics statistics = new Statistics();
+            Placeholders placeholders = new Placeholders(this);
             @Override
             public IFormatter getFormatter(){
                 return new NormalFormatter();
+            }
+
+            @Override
+            public Statistics getStatistics(){
+                return statistics;
+            }
+
+            @Override
+            public Placeholders placeholders() {
+                return placeholders;
             }
         };
     }

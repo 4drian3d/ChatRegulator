@@ -12,7 +12,6 @@ import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.config.ConfigManager;
 import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.config.MainConfig;
-import me.dreamerzero.chatregulator.modules.Statistics;
 import me.dreamerzero.chatregulator.modules.checks.CapsCheck;
 import me.dreamerzero.chatregulator.modules.checks.FloodCheck;
 import me.dreamerzero.chatregulator.modules.checks.InfractionCheck;
@@ -85,8 +84,8 @@ public final class GeneralUtils {
                     return false;
                 } else {
                     DebugUtils.debug(bundle.player, bundle.string, bundle.type(), bundle.result, plugin);
-                    Statistics.getStatistics().addViolationCount(bundle.type());
-                    ConfigManager.sendWarningMessage(bundle.player, bundle.result, bundle.type(), plugin.getFormatter());
+                    plugin.getStatistics().addViolationCount(bundle.type());
+                    ConfigManager.sendWarningMessage(bundle.player, bundle.result, bundle.type(), plugin);
                     ConfigManager.sendAlertMessage(bundle.player, bundle.type(), plugin);
 
                     bundle.player.getViolations().addViolation(bundle.type);

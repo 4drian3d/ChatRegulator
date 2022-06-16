@@ -95,9 +95,9 @@ public final class Configuration {
         final HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
             .defaultOptions(opts -> opts
                 .shouldCopyDefaults(true)
-                .serializers(builder -> {
-                    builder.register(Pattern.class, new CustomPatternSerializer());
-                })
+                .serializers(builder -> 
+                    builder.register(Pattern.class, new CustomPatternSerializer())
+                )
                 .header("""
                     ChatRegulator | by 4drian3d
                     Blacklist of Commands and Regular Expressions

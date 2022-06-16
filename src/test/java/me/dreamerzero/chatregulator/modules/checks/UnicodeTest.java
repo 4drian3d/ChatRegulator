@@ -20,7 +20,6 @@ import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.enums.ControlType;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.enums.SourceType;
-import me.dreamerzero.chatregulator.modules.StatisticsUtils;
 import me.dreamerzero.chatregulator.modules.checks.UnicodeCheck.CharMode;
 import me.dreamerzero.chatregulator.result.IReplaceable;
 import me.dreamerzero.chatregulator.result.Result;
@@ -90,8 +89,6 @@ public final class UnicodeTest {
 
         String messageReplaced = replaceableResult.replaceInfraction();
         assertEquals("  áéíóú", messageReplaced);
-
-        StatisticsUtils.resetStatistics();
     }
 
     @Test

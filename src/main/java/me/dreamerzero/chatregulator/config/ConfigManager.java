@@ -4,11 +4,9 @@ import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.config.Messages.Alert;
 import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.result.Result;
-import me.dreamerzero.chatregulator.utils.PlaceholderUtils;
 import me.dreamerzero.chatregulator.enums.Components;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.enums.Permission;
-import me.dreamerzero.chatregulator.placeholders.formatter.IFormatter;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -25,17 +23,17 @@ public final class ConfigManager {
      * @param infractor offender
      * @param result the result of the infraction
      * @param type the infraction type
-     * @param formatter the formatter
+     * @param plugin the plugin
      */
-    public static void sendWarningMessage(InfractionPlayer infractor, Result result, InfractionType type, IFormatter formatter){
+    public static void sendWarningMessage(InfractionPlayer infractor, Result result, InfractionType type, ChatRegulator plugin){
         final String message = type.getMessages().get().getWarningMessage();
         final TagResolver placeholder = TagResolver.resolver(
             Placeholder.unparsed("infraction", result.getInfractionString()),
-            PlaceholderUtils.getPlaceholders(infractor));
+            plugin.placeholders().getPlaceholders(infractor));
         switch(((MainConfig.Warning)type.getConfig().get()).getWarningType()){
             case TITLE: sendTitle(message, infractor, placeholder); break;
-            case MESSAGE: infractor.sendMessage(formatter.parse(message, infractor.getPlayer(), placeholder)); break;
-            case ACTIONBAR: infractor.sendActionBar(formatter.parse(message, infractor.getPlayer(), placeholder)); break;
+            case MESSAGE: infractor.sendMessage(plugin.getFormatter().parse(message, infractor.getPlayer(), placeholder)); break;
+            case ACTIONBAR: infractor.sendActionBar(plugin.getFormatter().parse(message, infractor.getPlayer(), placeholder)); break;
         }
     }
 
@@ -78,7 +76,7 @@ public final class ConfigManager {
     public static void sendAlertMessage(final InfractionPlayer infractor, final InfractionType type, final ChatRegulator plugin){
         final Component message = plugin.getFormatter().parse(
             ((Alert)type.getMessages().get()).getAlertMessage(),
-            PlaceholderUtils.getPlaceholders(infractor)
+            plugin.placeholders().getPlaceholders(infractor)
         );
 
         plugin.getProxy().getAllPlayers().forEach(player -> {
@@ -98,21 +96,21 @@ public final class ConfigManager {
      * @param player the infraction player
      *               whose warnings have been reset
      */
-    public static void sendResetMessage(Audience sender, InfractionType type, InfractionPlayer player, IFormatter formatter){
+    public static void sendResetMessage(Audience sender, InfractionType type, InfractionPlayer player, ChatRegulator plugin){
         Messages.Config messages = Configuration.getMessages();
-        if(sender instanceof InfractionPlayer p){
-            if(p.isOnline()) sender = p.getPlayer();
+        if(sender instanceof InfractionPlayer p && p.isOnline()){
+            sender = p.getPlayer();
         }
-        final TagResolver resolver = PlaceholderUtils.getPlaceholders(player);
+        final TagResolver resolver = plugin.placeholders().getPlaceholders(player);
         sender.sendMessage(switch(type){
-            case REGULAR -> formatter.parse(messages.getInfractionsMessages().getResetMessage(), sender, resolver);
-            case FLOOD -> formatter.parse(messages.getFloodMessages().getResetMessage(), sender, resolver);
-            case SPAM -> formatter.parse(messages.getSpamMessages().getResetMessage(), sender, resolver);
-            case NONE -> formatter.parse(messages.getGeneralMessages().allReset(), sender, resolver);
-            case BCOMMAND -> formatter.parse(messages.getBlacklistMessages().getResetMessage(), sender, resolver);
-            case UNICODE -> formatter.parse(messages.getUnicodeMessages().getResetMessage(), sender, resolver);
-            case CAPS -> formatter.parse(messages.getCapsMessages().getResetMessage(), sender, resolver);
-            case SYNTAX -> formatter.parse(messages.getSyntaxMessages().getResetMessage(), sender, resolver);
+            case REGULAR -> plugin.getFormatter().parse(messages.getInfractionsMessages().getResetMessage(), sender, resolver);
+            case FLOOD -> plugin.getFormatter().parse(messages.getFloodMessages().getResetMessage(), sender, resolver);
+            case SPAM -> plugin.getFormatter().parse(messages.getSpamMessages().getResetMessage(), sender, resolver);
+            case NONE -> plugin.getFormatter().parse(messages.getGeneralMessages().allReset(), sender, resolver);
+            case BCOMMAND -> plugin.getFormatter().parse(messages.getBlacklistMessages().getResetMessage(), sender, resolver);
+            case UNICODE -> plugin.getFormatter().parse(messages.getUnicodeMessages().getResetMessage(), sender, resolver);
+            case CAPS -> plugin.getFormatter().parse(messages.getCapsMessages().getResetMessage(), sender, resolver);
+            case SYNTAX -> plugin.getFormatter().parse(messages.getSyntaxMessages().getResetMessage(), sender, resolver);
         });
     }
 }
