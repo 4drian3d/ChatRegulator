@@ -11,6 +11,7 @@ import com.velocitypowered.api.permission.Tristate;
 import com.velocitypowered.api.proxy.ConnectionRequestBuilder;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ServerConnection;
+import com.velocitypowered.api.proxy.crypto.IdentifiedKey;
 import com.velocitypowered.api.proxy.messages.ChannelIdentifier;
 import com.velocitypowered.api.proxy.player.PlayerSettings;
 import com.velocitypowered.api.proxy.player.ResourcePackInfo;
@@ -191,6 +192,11 @@ public final class TestPlayer implements Player{
     @Override
     public void spoofChatInput(String arg0) {
 
+    }
+
+    @Override
+    public IdentifiedKey getIdentifiedKey() {
+        return null;
     }
 
 }

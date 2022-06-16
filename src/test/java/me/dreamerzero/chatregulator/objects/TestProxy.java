@@ -5,6 +5,9 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Consumer;
+
+import org.jetbrains.annotations.NotNull;
 
 import com.velocitypowered.api.command.CommandManager;
 import com.velocitypowered.api.event.EventManager;
@@ -18,6 +21,7 @@ import com.velocitypowered.api.proxy.messages.ChannelRegistrar;
 import com.velocitypowered.api.proxy.player.ResourcePackInfo.Builder;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.proxy.server.ServerInfo;
+import com.velocitypowered.api.scheduler.ScheduledTask;
 import com.velocitypowered.api.scheduler.Scheduler;
 import com.velocitypowered.api.util.ProxyVersion;
 
@@ -115,6 +119,16 @@ public final class TestProxy implements ProxyServer {
         return new Scheduler(){
             @Override
             public TaskBuilder buildTask(Object arg0, Runnable arg1) {
+                return null;
+            }
+
+            @Override
+            public TaskBuilder buildTask(@NotNull Object plugin, @NotNull Consumer<ScheduledTask> consumer) {
+                return null;
+            }
+
+            @Override
+            public @NotNull Collection<ScheduledTask> tasksByPlugin(@NotNull Object plugin) {
                 return null;
             }
         };
