@@ -11,7 +11,8 @@ import me.dreamerzero.chatregulator.enums.InfractionType;
  * Manages the plugin's internal statistics
  */
 public final class Statistics {
-    private static final AtomicReference<Statistics> statistics = new AtomicReference<>(null);
+    private static final AtomicReference<Statistics> INSTANCE
+        = new AtomicReference<>(null);
     /**
      * Global Spam warning count
      */
@@ -55,13 +56,13 @@ public final class Statistics {
      * @return the global statistics
      */
     public static Statistics getStatistics(){
-        Statistics result = statistics.get();
+        Statistics result = INSTANCE.get();
 
         if (result == null) {
             result = new Statistics();
 
-            if (!statistics.compareAndSet(null, result)) {
-                result = statistics.get();
+            if (!INSTANCE.compareAndSet(null, result)) {
+                result = INSTANCE.get();
             }
         }
 

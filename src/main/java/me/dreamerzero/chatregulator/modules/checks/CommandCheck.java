@@ -98,7 +98,7 @@ public final class CommandCheck implements ICheck {
          */
         public Builder addBlockedCommand(String command){
             if(this.blockedCommands == null)
-                this.blockedCommands = new HashSet<String>();
+                this.blockedCommands = new HashSet<>();
             this.blockedCommands.add(command);
             return this;
         }

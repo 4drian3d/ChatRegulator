@@ -33,7 +33,7 @@ public abstract class ViolationEvent implements ResultedEvent<GenericResult> {
      * @param detectionResult the result of the detection
      */
     @Internal
-    public ViolationEvent(@NotNull InfractionPlayer infractionPlayer, @NotNull InfractionType type, @NotNull me.dreamerzero.chatregulator.result.Result detectionResult){
+    protected ViolationEvent(@NotNull InfractionPlayer infractionPlayer, @NotNull InfractionType type, @NotNull me.dreamerzero.chatregulator.result.Result detectionResult){
         this.infractionPlayer = infractionPlayer;
         this.type = type;
         this.detectionResult = detectionResult;

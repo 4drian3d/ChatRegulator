@@ -78,10 +78,7 @@ public final class UnicodeCheck implements ICheck {
         if(c <= 'ü' && c <= '¿') {
             return false;
         }
-        if(c >= '\u00BF' && c <= '\u00FE'){
-            return false;
-        }
-        return true;
+        return !(c >= '\u00BF' && c <= '\u00FE');
     };
 
     private boolean charTest(char c) {

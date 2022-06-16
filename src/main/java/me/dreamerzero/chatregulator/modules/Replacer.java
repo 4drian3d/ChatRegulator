@@ -25,10 +25,10 @@ public final class Replacer {
         final char firstCharacter = string.charAt(0);
         if (Character.isUpperCase(firstCharacter)) return string;
 
-        final StringBuilder builder = new StringBuilder()
+        return new StringBuilder(string.length())
             .append(Character.toUpperCase(firstCharacter))
-            .append(string.substring(1));
-        return builder.toString();
+            .append(string.substring(1))
+            .toString();
     }
 
     /**
@@ -46,7 +46,7 @@ public final class Replacer {
             return string;
         }
 
-        return string.concat(".");
+        return string + ".";
     }
     private Replacer(){}
 
