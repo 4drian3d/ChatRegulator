@@ -75,22 +75,22 @@ public final class GeneralUtils {
                     }
                 };
             })
-            .thenApplyAsync(violationEvent -> {
-                if(!violationEvent.getResult().isAllowed()) {
+            .thenApplyAsync(event -> {
+                if (event.getResult().isAllowed()) {
+                    DebugUtils.debug(bundle.player, bundle.string, bundle.type(), bundle.result, plugin);
+                    plugin.getStatistics().addViolationCount(bundle.type());
+                    ConfigManager.sendWarningMessage(bundle.player, bundle.result, bundle.type(), plugin);
+                    ConfigManager.sendAlertMessage(bundle.player, bundle.type(), plugin, event.getDetectionResult());
+
+                    bundle.player.getViolations().addViolation(bundle.type);
+                    CommandUtils.executeCommand(bundle.type, bundle.player, plugin);
+                    return true;
+                } else {
                     if(bundle.source() == SourceType.COMMAND)
                         bundle.player().lastCommand(bundle.string());
                     else
                         bundle.player().lastMessage(bundle.string());
                     return false;
-                } else {
-                    DebugUtils.debug(bundle.player, bundle.string, bundle.type(), bundle.result, plugin);
-                    plugin.getStatistics().addViolationCount(bundle.type());
-                    ConfigManager.sendWarningMessage(bundle.player, bundle.result, bundle.type(), plugin);
-                    ConfigManager.sendAlertMessage(bundle.player, bundle.type(), plugin);
-
-                    bundle.player.getViolations().addViolation(bundle.type);
-                    CommandUtils.executeCommand(bundle.type, bundle.player, plugin);
-                    return true;
                 }
         }).join();
     }

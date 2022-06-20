@@ -73,10 +73,17 @@ public final class ConfigManager {
      * @param infractor the player who committed the infraction
      * @param type the type of infraction
      */
-    public static void sendAlertMessage(final InfractionPlayer infractor, final InfractionType type, final ChatRegulator plugin){
+    public static void sendAlertMessage(
+        final InfractionPlayer infractor,
+        final InfractionType type,
+        final ChatRegulator plugin,
+        final Result result
+    ) {
         final Component message = plugin.getFormatter().parse(
             ((Alert)type.getMessages().get()).getAlertMessage(),
-            plugin.placeholders().getPlaceholders(infractor)
+            TagResolver.resolver(
+                plugin.placeholders().getPlaceholders(infractor),
+                Placeholder.unparsed("string", result.getInfractionString()))
         );
 
         plugin.getProxy().getAllPlayers().forEach(player -> {
