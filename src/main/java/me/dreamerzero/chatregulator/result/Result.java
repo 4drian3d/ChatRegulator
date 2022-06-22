@@ -38,7 +38,8 @@ public class Result {
     public boolean equals(Object o){
         if(this == o) return true;
         if(!(o instanceof Result that)) return false;
-        return that.infractionString.equals(this.infractionString) && that.infricted == this.infricted;
+        return that.infractionString.equals(this.infractionString)
+            && that.infricted == this.infricted;
     }
 
     @Override

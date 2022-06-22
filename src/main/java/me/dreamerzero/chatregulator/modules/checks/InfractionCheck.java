@@ -15,6 +15,7 @@ import me.dreamerzero.chatregulator.enums.ControlType;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.result.Result;
 import net.kyori.adventure.builder.AbstractBuilder;
+import me.dreamerzero.chatregulator.result.MultiPatternReplaceableResult;
 import me.dreamerzero.chatregulator.result.PatternResult;
 import me.dreamerzero.chatregulator.result.ReplaceableResult;
 
@@ -50,7 +51,8 @@ public final class InfractionCheck implements ICheck {
     @Override
     public CompletableFuture<Result> check(final @NotNull String string){
         return CompletableFuture.supplyAsync(() -> {
-            final List<Pattern> patterns = new ArrayList<>();
+            final List<Matcher> matchers = new ArrayList<>(5);
+            final List<Pattern> patterns = new ArrayList<>(5);
             boolean detected = false;
             for (final Pattern pattern : blockedWords) {
                 final Matcher match = pattern.matcher(string);
@@ -59,16 +61,18 @@ public final class InfractionCheck implements ICheck {
                     if (blockable) {
                         return new PatternResult(match.group(), blockable, pattern, match);
                     }
+                    matchers.add(match);
                     patterns.add(pattern);
                 }
             }
             return detected
-                ? new ReplaceableResult(patterns.toString(), true){
+                ? new MultiPatternReplaceableResult(string, true, matchers.toArray(Matcher[]::new)){
                     @Override
                     public String replaceInfraction(){
                         String original = string;
                         for (final Pattern pattern : patterns) {
-                            original = pattern.matcher(original).replaceAll(InfractionCheck::generateReplacement);
+                            original = pattern.matcher(original)
+                                .replaceAll(InfractionCheck::generateReplacement);
                         }
                         return original;
                     }
