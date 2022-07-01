@@ -38,7 +38,7 @@ public final class CommandUtils {
             return;
         }
 
-        final CommandsConfig config = ((Executable)type.getConfig().get()).getCommandsConfig();
+        final CommandsConfig config = ((Executable)type.getConfig()).getCommandsConfig();
         if(config.executeCommand() && infractor.getViolations().getCount(type) % config.violationsRequired() == 0){
             final String servername = player.getCurrentServer().map(sv -> sv.getServerInfo().getName()).orElse("");
             config.getCommandsToExecute().forEach(cmd -> {

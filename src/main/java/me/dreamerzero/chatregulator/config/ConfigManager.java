@@ -26,11 +26,11 @@ public final class ConfigManager {
      * @param plugin the plugin
      */
     public static void sendWarningMessage(InfractionPlayer infractor, Result result, InfractionType type, ChatRegulator plugin){
-        final String message = type.getMessages().get().getWarningMessage();
+        final String message = type.getMessages().getWarningMessage();
         final TagResolver placeholder = TagResolver.resolver(
             Placeholder.unparsed("infraction", result.getInfractionString()),
             plugin.placeholders().getPlaceholders(infractor));
-        switch(((MainConfig.Warning)type.getConfig().get()).getWarningType()){
+        switch(((MainConfig.Warning)type.getConfig()).getWarningType()){
             case TITLE: sendTitle(message, infractor, placeholder); break;
             case MESSAGE: infractor.sendMessage(plugin.getFormatter().parse(message, infractor.getPlayer(), placeholder)); break;
             case ACTIONBAR: infractor.sendActionBar(plugin.getFormatter().parse(message, infractor.getPlayer(), placeholder)); break;
@@ -80,7 +80,7 @@ public final class ConfigManager {
         final Result result
     ) {
         final Component message = plugin.getFormatter().parse(
-            ((Alert)type.getMessages().get()).getAlertMessage(),
+            ((Alert)type.getMessages()).getAlertMessage(),
             TagResolver.resolver(
                 plugin.placeholders().getPlaceholders(infractor),
                 Placeholder.unparsed("string", result.getInfractionString()))
