@@ -432,10 +432,10 @@ public final class Messages {
     public static class General{
         @Comment("""
             Violation statistics message
-            This message will appear when using the \"/chatregulator stats\" command
+            This message will appear when using the "/chatregulator stats" command
             Available Placeholders: <flood>, <spam>, <regular>, <command>, <unicode>, <caps>. <syntax>""")
         private List<String> stats = List.of(
-            "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
+            "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------| ",
             "<#3B4371>| <red>General Stats</red>",
             "<#3B4371>| <aqua>Regular Infractions:</aqua> <white><regular></white>",
             "<#3B4371>| <aqua>Flood Infractions:</aqua> <white><flood></white>",
@@ -449,10 +449,10 @@ public final class Messages {
 
         @Comment("""
             Player statistics message
-            This message will appear when using the command \"/chatregulator player <someplayer>\"
+            This message will appear when using the command "/chatregulator player <someplayer>"
             Available Placeholders: <player>, <flood>, <spam>, <regular>, <unicode>, <caps>, <syntax>""")
         private List<String> player = List.of(
-            "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
+            "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------| ",
             "<#3B4371>| <gold><player></gold> <red>Stats</red>",
             "<#3B4371>| <aqua>Regular Infractions:</aqua> <white><regular></white>",
             "<#3B4371>| <aqua>Flood Infractions:</aqua> <white><flood></white>",
@@ -580,13 +580,13 @@ public final class Messages {
             @Comment("Plugin main help message")
             @Setting(value = "main-help")
             private List<String> main = List.of(
-                "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
+                "<#3B4371>|--- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
                 "<#3B4371>| <gold>+ <hover:show_text:'<gradient:#ffd89b:#19547b>Click on a section to view its commands'><gradient:#CAC531:#F3F9A7>Command Help</gradient></hover>",
                 "<#3B4371>| <hover:show_text:'<gradient:#ff4b1f:#ff9068>This command shows you the global statistics of infractions</gradient>'><gradient:#FF5F6D:#FFC371><command> <aqua>stats</aqua></hover>",
                 "<#3B4371>| <click:run_command:'/chatr help player'><hover:show_text:'<gradient:#ff4b1f:#ff9068>Obtain the infractions of a specific player</gradient> <gray>[<yellow>Click here for more</yellow>]'><gradient:#FF5F6D:#FFC371><command> <aqua>player</aqua></hover></click>",
                 "<#3B4371>| <click:run_command:'/chatr help reset'><hover:show_text:'<gradient:#ff4b1f:#ff9068>Resets a player infractions</gradient> <gray>[<yellow>Click here for more</yellow>]'><gradient:#FF5F6D:#FFC371><command> <aqua>reset</aqua></hover></click>",
                 "<#3B4371>| <click:run_command:'/chatr help clear'><hover:show_text:'<gradient:#ff4b1f:#ff9068>Cleans the chat of a player, server or network</gradient> <gray>[<yellow>Click here for more</yellow>]'><gradient:#FF5F6D:#FFC371><command> <aqua>clear</aqua></hover></click>",
-                "<#3B4371>|----------------------|"
+                "<#3B4371>|----------------------| "
             );
 
             @Comment("Help message for \"/chatregulator player <player>\" command")
@@ -594,7 +594,7 @@ public final class Messages {
                 "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
                 "<#3B4371>| <gold>+ <gradient:#CAC531:#F3F9A7>Player Help</gradient>",
                 "<#3B4371>| <click:suggest_command:'/chatr player <player>'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command shows you a player infractions</gradient>'><gradient:#FF5F6D:#FFC371><command> <aqua>player</aqua> <player></hover>",
-                "<#3B4371>|----------------------|"
+                "<#3B4371>|----------------------| "
             );
 
             @Comment("Help message for \"/chatregulator reset\" subcommands")

@@ -16,6 +16,7 @@ import me.dreamerzero.chatregulator.modules.Statistics;
 import me.dreamerzero.chatregulator.objects.TestPlayer;
 import me.dreamerzero.chatregulator.objects.TestPluginManager;
 import me.dreamerzero.chatregulator.objects.TestProxy;
+import me.dreamerzero.chatregulator.placeholders.Placeholders;
 import me.dreamerzero.chatregulator.placeholders.formatter.IFormatter;
 import me.dreamerzero.chatregulator.placeholders.formatter.NormalFormatter;
 

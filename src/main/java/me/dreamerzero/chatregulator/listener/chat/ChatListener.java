@@ -41,7 +41,7 @@ public final class ChatListener {
             return;
         }
         final Player player = event.getPlayer();
-        final AtomicReference<String> message = new AtomicReference<String>(event.getMessage());
+        final AtomicReference<String> message = new AtomicReference<>(event.getMessage());
         final InfractionPlayer infractor = InfractionPlayer.get(player);
         final EventWrapper<PlayerChatEvent> wrapper = new ChatWrapper(event, continuation);
 

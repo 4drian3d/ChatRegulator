@@ -30,7 +30,8 @@ public final class ConfigManager {
         final TagResolver placeholder = TagResolver.resolver(
             Placeholder.unparsed("infraction", result.getInfractionString()),
             plugin.placeholders().getPlaceholders(infractor));
-        switch(((MainConfig.Warning)type.getConfig()).getWarningType()){
+        MainConfig.Warning config = (MainConfig.Warning)type.getConfig();
+        switch(config.getWarningType()){
             case TITLE: sendTitle(message, infractor, placeholder); break;
             case MESSAGE: infractor.sendMessage(plugin.getFormatter().parse(message, infractor.getPlayer(), placeholder)); break;
             case ACTIONBAR: infractor.sendActionBar(plugin.getFormatter().parse(message, infractor.getPlayer(), placeholder)); break;
@@ -38,11 +39,12 @@ public final class ConfigManager {
     }
 
     private static void sendTitle(String message, Audience player, TagResolver placeholder){
-        if (message.indexOf(';') != -1) {
+        int index = message.indexOf(';');
+        if (index != -1) {
             sendSingleTitle(player, message, placeholder);
         } else {
             final String[] titleParts = message.split(";");
-            if(titleParts.length == 1){
+            if (titleParts.length == 1) {
                 sendSingleTitle(player, titleParts[0], placeholder);
                 return;
             }

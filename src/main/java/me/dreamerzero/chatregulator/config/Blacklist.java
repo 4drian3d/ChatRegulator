@@ -21,15 +21,15 @@ public final class Blacklist {
             Infractions module in commands and general chat""")
         @Setting(value = "blocked-words")
         private Pattern[] blockedPatterns = {
-            Pattern.compile("f(u|v|4)ck", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("sh(i|@|l|j|1|y)t", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("d(i|@|l|j|1|y)c(k)?", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("b(i|@|l|j|1|y)tch", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("(a|@|4|x)w(3|@|e|x)b(o|@|0|x|8)n(a|@|4|x)d(o|@|0|x|8)", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("p(u|@|v)ssy", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("f[uv4@]ck", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("sh[i@lj1y]t", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("d[i@lj1y]c(k)?", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("b[i@lj1y]tch", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("[a@4x]w[3@ex]b[o@0x8]n[a@4x]d[o@0x8]", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("p[u@v]ssy", Pattern.CASE_INSENSITIVE),
             Pattern.compile("(?:(?:https?|ftp|file):\\/\\/|www\\.|ftp\\.)(?:\\([-A-Z0-9+&@#\\/%=~_|$?!:,.]*\\)|[-A-Z0-9+&@#\\/%=~_|$?!:,.])*(?:\\([-A-Z0-9+&@#\\/%=~_|$?!:,.]*\\)|[A-Z0-9+&@#\\/%=~_|$])", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("(i|@|l|j|1|y)mb(3|@|e|x)c(i|@|l|j|1|y)l", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("m(o|@|0|x|8)th(3|@|e|x)rf(u|@|v)ck(3|@|e|x)r", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("[i@lj1y]mb[3@ex]c[i@lj1y]l", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("m[o@0x8]th[3@ex]rf[u@v]ck[3@ex]r", Pattern.CASE_INSENSITIVE),
             Pattern.compile("\\$\\{(jndi|log4j|sys|env|main|marker|java|base64|lower|upper|web|docker|kubernetes|spring|jvmrunargs|date|ctx)\\:.*\\}", Pattern.CASE_INSENSITIVE)
         };
 

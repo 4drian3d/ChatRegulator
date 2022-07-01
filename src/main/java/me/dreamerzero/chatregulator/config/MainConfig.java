@@ -236,7 +236,7 @@ public final class MainConfig {
     public static class Flood implements Toggleable, Warning, Controllable, Executable {
         @Comment("""
             Enable flood check in the chat
-            (e.g.: \"aaaaaaaa\")""")
+            (e.g.: "aaaaaaaa")""")
         private boolean enabled = true;
 
         @Comment("""

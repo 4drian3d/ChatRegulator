@@ -40,7 +40,9 @@ public final class UnicodeTest {
         String illegal = "ƕƘaea";
         String expected = "  aea";
 
-        UnicodeCheck check = UnicodeCheck.builder().controlType(ControlType.REPLACE).build();
+        UnicodeCheck check = UnicodeCheck.builder()
+            .controlType(ControlType.REPLACE)
+            .build();
         Result result = check.check(illegal).join();
 
         assertTrue(result.isInfraction());
@@ -80,7 +82,9 @@ public final class UnicodeTest {
 
         assertTrue(GeneralUtils.allowedPlayer(player, InfractionType.UNICODE));
 
-        UnicodeCheck check = UnicodeCheck.builder().controlType(ControlType.REPLACE).build();
+        UnicodeCheck check = UnicodeCheck.builder()
+            .controlType(ControlType.REPLACE)
+            .build();
         Result result = check.check(randomMSG).join();
 
         assertTrue(GeneralUtils.callViolationEvent(new EventBundle(InfractionPlayer.get(player), randomMSG, InfractionType.UNICODE, result, SourceType.CHAT), TestsUtils.createRegulator()));
