@@ -199,7 +199,8 @@ public final class MainConfig {
 
         @Comment("""
             Sets the control format
-            Available options: BLOCK, REPLACE""")
+            Available options: BLOCK, REPLACE
+            Note that in the latest versions of Velocity, the REPLACE mode may NOT work""")
         @Setting(value = "control-type")
         private ControlType controlType = ControlType.BLOCK;
 
@@ -247,7 +248,8 @@ public final class MainConfig {
 
         @Comment("""
             Sets the control format
-            Available options: BLOCK, REPLACE""")
+            Available options: BLOCK, REPLACE
+            Note that in the latest versions of Velocity, the REPLACE mode may NOT work""")
         @Setting(value = "control-type")
         private ControlType controlType = ControlType.BLOCK;
 
@@ -378,7 +380,8 @@ public final class MainConfig {
 
         @Comment("""
             Sets the control format
-            Available options: BLOCK, REPLACE""")
+            Available options: BLOCK, REPLACE
+            Note that in the latest versions of Velocity, the REPLACE mode may NOT work""")
         @Setting(value = "control-type")
         private ControlType controlType = ControlType.BLOCK;
 
@@ -454,7 +457,8 @@ public final class MainConfig {
 
         @Comment("""
             Sets the control format
-            Available options: BLOCK, REPLACE""")
+            Available options: BLOCK, REPLACE
+            Note that in the latest versions of Velocity, the REPLACE mode may NOT work""")
         @Setting(value = "control-type")
         private ControlType controlType = ControlType.BLOCK;
 
