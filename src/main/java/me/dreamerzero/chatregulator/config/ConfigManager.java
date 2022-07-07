@@ -4,14 +4,12 @@ import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.config.Messages.Alert;
 import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.result.Result;
-import me.dreamerzero.chatregulator.enums.Components;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.enums.Permission;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import net.kyori.adventure.title.Title;
 
 /**
  * Utilities for using the configuration paths in an orderly manner
@@ -30,44 +28,8 @@ public final class ConfigManager {
         final TagResolver placeholder = TagResolver.resolver(
             Placeholder.unparsed("infraction", result.getInfractionString()),
             plugin.placeholders().getPlaceholders(infractor));
-        MainConfig.Warning config = (MainConfig.Warning)type.getConfig();
-        switch(config.getWarningType()){
-            case TITLE: sendTitle(message, infractor, placeholder); break;
-            case MESSAGE: infractor.sendMessage(plugin.getFormatter().parse(message, infractor.getPlayer(), placeholder)); break;
-            case ACTIONBAR: infractor.sendActionBar(plugin.getFormatter().parse(message, infractor.getPlayer(), placeholder)); break;
-        }
-    }
-
-    private static void sendTitle(String message, Audience player, TagResolver placeholder){
-        int index = message.indexOf(';');
-        if (index != -1) {
-            sendSingleTitle(player, message, placeholder);
-        } else {
-            final String[] titleParts = message.split(";");
-            if (titleParts.length == 1) {
-                sendSingleTitle(player, titleParts[0], placeholder);
-                return;
-            }
-            player.showTitle(
-                Title.title(
-                    Components.SPECIAL_MINIMESSAGE.deserialize(
-                        titleParts[0],
-                        placeholder),
-                    Components.SPECIAL_MINIMESSAGE.deserialize(
-                        titleParts[1],
-                        placeholder)
-                )
-            );
-        }
-    }
-
-    private static void sendSingleTitle(Audience aud, String title, TagResolver placeholder) {
-        aud.showTitle(
-            Title.title(
-                Component.empty(),
-                Components.SPECIAL_MINIMESSAGE.deserialize(
-                    title,
-                    placeholder)));
+        ((MainConfig.Warning)type.getConfig()).getWarningType()
+            .send(message, infractor, placeholder, plugin.getFormatter());
     }
 
     /**

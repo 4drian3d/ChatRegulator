@@ -27,4 +27,8 @@ public interface IFormatter {
         final @Nullable Audience audience,
         final @NotNull TagResolver extraResolver
     );
+
+    TagResolver resolver(Audience audience);
+
+    TagResolver resolver();
 }

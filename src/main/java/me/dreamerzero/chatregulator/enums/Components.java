@@ -20,15 +20,6 @@ public final class Components {
             StandardTags.translatable(),
             StandardTags.clickEvent()
         )).build();
-    public static final MiniMessage SPECIAL_MINIMESSAGE = MiniMessage.builder()
-        .tags(TagResolver.resolver(
-            StandardTags.color(),
-            StandardTags.decorations(),
-            StandardTags.font(),
-            StandardTags.gradient(),
-            StandardTags.keybind(),
-            StandardTags.translatable()
-        )).build();
 
     /**
      * Spaces component for "/chatregulator clear" command

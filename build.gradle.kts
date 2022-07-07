@@ -32,7 +32,7 @@ val caffeine = property("caffeine-version") as String
 dependencies {
     compileOnly("org.spongepowered:configurate-hocon:$configurate")
     compileOnly("com.github.ben-manes.caffeine:caffeine:$caffeine")
-    shadow("org.jetbrains:annotations:23.0.0")
+    compileOnly("org.jetbrains:annotations:23.0.0")
     shadow("net.byteflux:libby-velocity:1.1.5")
 
     compileOnly("com.github.4drian3d:MiniPlaceholders:1.1.1")
@@ -50,8 +50,6 @@ dependencies {
 }
 
 
-
-
 publishing {
     publications {
         create<MavenPublication>("maven") {
@@ -65,8 +63,8 @@ publishing {
 
 tasks.withType<Javadoc> {
     (options as StandardJavadocDocletOptions).links(
-        "https://jd.adventure.kyori.net/api/4.10.1/",
-        "https://jd.adventure.kyori.net/text-minimessage/4.10.1/",
+        "https://jd.adventure.kyori.net/api/4.11.0/",
+        "https://jd.adventure.kyori.net/text-minimessage/4.11.0/",
         "https://jd.papermc.io/velocity/3.0.0/"
     )
 }

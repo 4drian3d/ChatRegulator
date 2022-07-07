@@ -41,4 +41,14 @@ public final class NormalFormatter implements IFormatter {
     ) {
         return MiniMessage.miniMessage().deserialize(string, extraResolver);
     }
+
+    @Override
+    public TagResolver resolver(Audience audience) {
+        return TagResolver.empty();
+    }
+
+    @Override
+    public TagResolver resolver() {
+        return TagResolver.empty();
+    }
 }

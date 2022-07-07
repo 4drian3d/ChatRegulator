@@ -62,4 +62,14 @@ public final class MiniPlaceholderFormatter implements IFormatter {
             extraResolver
         );
     }
+
+    @Override
+    public TagResolver resolver(Audience audience) {
+        return MiniPlaceholders.getAudienceGlobalPlaceholders(audience);
+    }
+
+    @Override
+    public TagResolver resolver() {
+        return MiniPlaceholders.getGlobalPlaceholders();
+    }
 }
