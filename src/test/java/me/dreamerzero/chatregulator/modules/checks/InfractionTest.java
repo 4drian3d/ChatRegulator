@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 import java.nio.file.Path;
 import java.util.regex.Pattern;
@@ -47,9 +48,8 @@ public final class InfractionTest {
 
         var check = iCheck.check(original).join();
         assertTrue(check.isInfraction());
-        assertTrue(check instanceof IReplaceable);
-
-        String replaced = ((IReplaceable)check).replaceInfraction();
+        IReplaceable replaceable = assertInstanceOf(IReplaceable.class, check);
+        String replaced = replaceable.replaceInfraction();
 
         assertEquals(expected, replaced);
     }

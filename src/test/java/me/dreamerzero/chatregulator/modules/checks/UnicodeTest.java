@@ -4,6 +4,7 @@ package me.dreamerzero.chatregulator.modules.checks;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 import java.nio.file.Path;
 
@@ -12,6 +13,8 @@ import com.velocitypowered.api.proxy.Player;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.LoggerFactory;
 
 import me.dreamerzero.chatregulator.InfractionPlayer;
@@ -41,9 +44,7 @@ class UnicodeTest {
 
         assertTrue(result.isInfraction());
 
-        assertTrue(result instanceof IReplaceable);
-
-        IReplaceable replaceable = ((IReplaceable)result);
+        IReplaceable replaceable = assertInstanceOf(IReplaceable.class, result);
 
         assertEquals(expected, replaceable.replaceInfraction());
     }
@@ -64,7 +65,6 @@ class UnicodeTest {
 
     @Test
     void legalCheck(@TempDir Path path){
-        //load config
         Configuration.loadConfig(path, LoggerFactory.getLogger(UnicodeTest.class));
 
         assertFalse(UnicodeCheck.createCheck("Hello my friends").join().isInfraction());
@@ -91,33 +91,32 @@ class UnicodeTest {
                 InfractionType.UNICODE,
                 result, SourceType.CHAT
             ), TestsUtils.createRegulator(path)));
-        assertTrue(result instanceof IReplaceable);
-        IReplaceable replaceableResult = (IReplaceable)result;
+        
+        IReplaceable replaceableResult = assertInstanceOf(IReplaceable.class, result);
 
         String messageReplaced = replaceableResult.replaceInfraction();
         assertEquals("  áéíóú", messageReplaced);
     }
 
-    @Test
-    void builderTest() {
+    @ParameterizedTest
+    @ValueSource(strings = {"todos los años", "ñandu hahahaha"})
+    void builderTest(String msg) {
         UnicodeCheck.Builder builder = UnicodeCheck.builder()
             .characters('ñ');
 
         assertTrue(builder.charMode(CharMode.BLACKLIST).build()
-            .check("hola a todos ñ")
+            .check(msg)
             .thenApply(Result::isInfraction)
             .join());
         assertFalse(builder.charMode(CharMode.WHITELIST).build()
-            .check("hello everyone ñ")
+            .check(msg)
             .thenApply(Result::isInfraction)
             .join());
     }
 
-    @Test
-    void testDefaultCharMethod() {
-        char[] chars = {'a', 'h', 'b', 'g', 'e', 'd', 'l'};
-        for(final char c : chars) {
-            assertFalse(UnicodeCheck.defaultCharTest(c));
-        }
+    @ParameterizedTest
+    @ValueSource(chars = {'a', 'h', 'b', 'g', 'e', 'd', 'l'})
+    void testDefaultCharMethod(char character) {
+        assertFalse(UnicodeCheck.defaultCharTest(character));
     }
 }

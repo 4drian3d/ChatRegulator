@@ -1,6 +1,7 @@
 package me.dreamerzero.chatregulator.modules.checks;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
@@ -36,8 +37,8 @@ class CapsTest {
 
         CapsCheck.builder().limit(5).build().check(original).thenAccept(result -> {
             assertTrue(result.isInfraction());
-            assertTrue(result instanceof IReplaceable);
-            String replaced = ((IReplaceable)result).replaceInfraction();
+            IReplaceable replaceable = assertInstanceOf(IReplaceable.class, result);
+            String replaced = replaceable.replaceInfraction();
 
             assertEquals(expected, replaced);
         }).join();
@@ -55,8 +56,8 @@ class CapsTest {
                 message, InfractionType.CAPS,
                 result, SourceType.CHAT
             ), TestsUtils.createRegulator(path)));
-        assertTrue(result instanceof IReplaceable);
-        String messageReplaced = ((IReplaceable)result).replaceInfraction();
-        assertEquals("aaaaaaaaaa", messageReplaced);
+        IReplaceable replaceable = assertInstanceOf(IReplaceable.class, result);
+        String replaced = replaceable.replaceInfraction();
+        assertEquals("aaaaaaaaaa", replaced);
     }
 }

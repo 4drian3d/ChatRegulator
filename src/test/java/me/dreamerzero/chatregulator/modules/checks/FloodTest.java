@@ -2,23 +2,27 @@ package me.dreamerzero.chatregulator.modules.checks;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import me.dreamerzero.chatregulator.result.IReplaceable;
 
 class FloodTest {
-    @Test
+    @ParameterizedTest
+    @CsvSource({
+        "aa floOoOOOooOod aa, aa flod aa",
+        "helloooooooooooooo, hello"
+    })
     @DisplayName("Flood Check")
-    void floodCheck(){
-        String original = "aa floOoOOOooOod aa";
-        String expected = "aa flod aa";
-
+    void floodCheck(String original, String expected){
         var result = FloodCheck.builder().limit(5).build().check(original).join();
         assertTrue(result.isInfraction());
-        assertTrue(result instanceof IReplaceable);
-        String replaced = ((IReplaceable)result).replaceInfraction();
+        IReplaceable replaceable = assertInstanceOf(IReplaceable.class, result);
+        String replaced = replaceable.replaceInfraction();
 
         assertEquals(replaced, expected);
     }
@@ -30,9 +34,9 @@ class FloodTest {
 
         var result = FloodCheck.createCheck(original).join();
         assertTrue(result.isInfraction());
-        assertTrue(result instanceof IReplaceable);
+        IReplaceable replaceable = assertInstanceOf(IReplaceable.class, result);
         String replaced = "hello everyone";
-        String actual = ((IReplaceable)result).replaceInfraction();
-        assertEquals(replaced, actual, actual);
+        String actual = replaceable.replaceInfraction();
+        assertEquals(replaced, actual);
     }
 }

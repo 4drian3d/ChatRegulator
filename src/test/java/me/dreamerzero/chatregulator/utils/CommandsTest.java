@@ -9,17 +9,19 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.LoggerFactory;
 
 import me.dreamerzero.chatregulator.config.Configuration;
 
 class CommandsTest {
-    @Test
+    @ParameterizedTest(name = "{0}'s first argument is tell")
+    @ValueSource(strings = {"tell 4drian3d hola bb", "tell"})
     @DisplayName("First Argument")
-    void testFirstArgument(){
-        String original = "tell 4drian3d hola bb";
-
-        String expectedDetection = "tell";
+    void testFirstArgument(String original){
+        final String expectedDetection = "tell";
 
         String result = CommandUtils.getFirstArgument(original);
 
@@ -37,32 +39,29 @@ class CommandsTest {
         assertTrue(isCommand);
     }
 
-    @Test
+    @ParameterizedTest
+    @CsvSource({
+        "lp group Owner, lp group",
+        "lp group, lp",
+        "lppermissions, lp*"
+    })
     @DisplayName("Starting String")
-    void isStartingCommand(){
-        String firstcommand = "lp group Owner";
-        String firstconfig = "lp group";
-
-        assertTrue(CommandUtils.isStartingString(firstcommand, firstconfig));
-
-        String secondcommand = "lp group";
-        String secondconfusion = "lpermission";
-        String secondconfig = "lp";
-
-        assertTrue(CommandUtils.isStartingString(secondcommand, secondconfig));
-        assertFalse(CommandUtils.isStartingString(secondconfusion, secondconfig));
-
-        String thirdcommand = "lppermissions";
-
-        String thirdconfig = "lp*";
-
-        assertTrue(CommandUtils.isStartingString(thirdcommand, thirdconfig));
+    void isStartingCommand(String command, String config){
+        assertTrue(CommandUtils.isStartingString(command, config));
     }
 
     @Test
+    @DisplayName("Not starting string")
+    void notStartingString() {
+        String command = "lpermission";
+        String config = "lp";
+        assertFalse(CommandUtils.isStartingString(command, config));
+    }
+
+    @ParameterizedTest(name = "{0}'s last character is '!'")
+    @ValueSource(strings = {"Holaaaaaaa!", "!", "!!!!!!!!!!"})
     @DisplayName("Last Char")
-    void lastChar(){
-        final String string = "Holaaaaaaa!";
+    void lastChar(String string) {
         final char lastChar = '!';
 
         final char theLastChar = CommandUtils.getLastChar(string);
