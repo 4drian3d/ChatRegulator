@@ -5,18 +5,17 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
+import org.junit.jupiter.api.io.TempDir;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import me.dreamerzero.chatregulator.config.Configuration;
 
-public final class ReplacerTest {
+class ReplacerTest {
     @BeforeAll
-    static void loadConfig(){
-        Logger logger = LoggerFactory.getLogger(ReplacerTest.class);
-        Configuration.loadConfig(Path.of("build", "reports", "tests", "test"), logger);
+    static void loadConfig(@TempDir Path path){
+        Configuration.loadConfig(path, LoggerFactory.getLogger(ReplacerTest.class));
     }
 
     @Test

@@ -11,7 +11,7 @@ import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.enums.SourceType;
 import me.dreamerzero.chatregulator.utils.TestsUtils;
 
-public final class SpamTest {
+class SpamTest {
     @Test
     @DisplayName("Chat Test")
     void chatTest(){

@@ -2,10 +2,13 @@ package me.dreamerzero.chatregulator.utils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.nio.file.Path;
+
 import com.velocitypowered.api.proxy.Player;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.InfractionPlayer;
@@ -21,9 +24,9 @@ final class PlaceholderTest {
 
     @Test
     @DisplayName("Player Placeholders")
-    void playerPlaceholders(){
+    void playerPlaceholders(@TempDir Path path){
         Player p = TestsUtils.createNormalPlayer("Adrianed_04yt");
-        ChatRegulator plugin = TestsUtils.createRegulator();
+        ChatRegulator plugin = TestsUtils.createRegulator(path);
 
         InfractionPlayer player = InfractionPlayer.get(p);
 
@@ -55,8 +58,8 @@ final class PlaceholderTest {
 
     @Test
     @DisplayName("Global Placeholders")
-    void globalPlaceholders(){
-        ChatRegulator plugin = TestsUtils.createRegulator();
+    void globalPlaceholders(@TempDir Path path){
+        ChatRegulator plugin = TestsUtils.createRegulator(path);
         MiniMessage mm = MiniMessage.builder()
             .tags(TagResolver.resolver(
                 plugin.placeholders().getGlobalPlaceholders(),

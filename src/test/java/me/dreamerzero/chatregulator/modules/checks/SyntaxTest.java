@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-public final class SyntaxTest {
+class SyntaxTest {
     @Test
     @DisplayName("Syntax Blocker Check")
     void syntaxCheck(){

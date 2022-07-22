@@ -10,7 +10,7 @@ import com.velocitypowered.api.proxy.Player;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
+import org.junit.jupiter.api.io.TempDir;
 import org.slf4j.LoggerFactory;
 
 import me.dreamerzero.chatregulator.InfractionPlayer;
@@ -22,11 +22,10 @@ import me.dreamerzero.chatregulator.utils.GeneralUtils;
 import me.dreamerzero.chatregulator.utils.TestsUtils;
 import me.dreamerzero.chatregulator.utils.GeneralUtils.EventBundle;
 
-public final class CapsTest {
+class CapsTest {
     @BeforeAll
-    static void loadConfig(){
-        Logger logger = LoggerFactory.getLogger(InfractionTest.class);
-        Configuration.loadConfig(Path.of("build", "reports", "tests", "test"), logger);
+    static void loadConfig(@TempDir Path path){
+        Configuration.loadConfig(path, LoggerFactory.getLogger(InfractionTest.class));
     }
 
     @Test
@@ -45,12 +44,17 @@ public final class CapsTest {
     }
 
     @Test
-    void realTest(){
+    void realTest(@TempDir Path path){
         String message = "AAAAAAAAAA";
         Player player = TestsUtils.createRandomNormalPlayer();
         assertTrue(GeneralUtils.allowedPlayer(player, InfractionType.CAPS));
         var result = CapsCheck.createCheck(message).join();
-        assertTrue(GeneralUtils.checkAndCall(new EventBundle(InfractionPlayer.get(player), message, InfractionType.CAPS, result, SourceType.CHAT), TestsUtils.createRegulator()));
+        assertTrue(GeneralUtils.checkAndCall(
+            new EventBundle(
+                InfractionPlayer.get(player),
+                message, InfractionType.CAPS,
+                result, SourceType.CHAT
+            ), TestsUtils.createRegulator(path)));
         assertTrue(result instanceof IReplaceable);
         String messageReplaced = ((IReplaceable)result).replaceInfraction();
         assertEquals("aaaaaaaaaa", messageReplaced);

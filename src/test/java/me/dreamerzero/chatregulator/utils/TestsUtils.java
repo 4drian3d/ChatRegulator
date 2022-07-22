@@ -57,11 +57,10 @@ public final class TestsUtils {
         return builder.toString();
     }
 
-    public static ChatRegulator createRegulator(){
+    public static ChatRegulator createRegulator(Path temporaryPath){
         ProxyServer proxy = createProxy();
         Logger logger = LoggerFactory.getLogger(TestsUtils.class);
-        Path path = Path.of("build", "reports", "tests", "test");
-        return new ChatRegulator(proxy, logger, path, new TestPluginManager()){
+        return new ChatRegulator(proxy, logger, temporaryPath, new TestPluginManager()){
             Statistics statistics = new Statistics();
             Placeholders placeholders = new Placeholders(this);
             @Override

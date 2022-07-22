@@ -9,10 +9,9 @@ import java.nio.file.Path;
 
 import com.velocitypowered.api.proxy.Player;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
+import org.junit.jupiter.api.io.TempDir;
 import org.slf4j.LoggerFactory;
 
 import me.dreamerzero.chatregulator.InfractionPlayer;
@@ -27,12 +26,7 @@ import me.dreamerzero.chatregulator.utils.GeneralUtils;
 import me.dreamerzero.chatregulator.utils.TestsUtils;
 import me.dreamerzero.chatregulator.utils.GeneralUtils.EventBundle;
 
-public final class UnicodeTest {
-    @BeforeAll
-    static void loadConfig(){
-        Logger logger = LoggerFactory.getLogger(UnicodeTest.class);
-        Configuration.loadConfig(Path.of("build", "reports", "tests", "test"), logger);
-    }
+class UnicodeTest {
 
     @Test
     @DisplayName("Illegal Check")
@@ -69,14 +63,17 @@ public final class UnicodeTest {
     }
 
     @Test
-    void legalCheck(){
+    void legalCheck(@TempDir Path path){
+        //load config
+        Configuration.loadConfig(path, LoggerFactory.getLogger(UnicodeTest.class));
+
         assertFalse(UnicodeCheck.createCheck("Hello my friends").join().isInfraction());
         assertFalse(UnicodeCheck.createCheck("Hola").join().isInfraction());
         assertFalse(UnicodeCheck.createCheck("aeiou nosequemasponer").join().isInfraction());
     }
 
     @Test
-    void realTest(){
+    void realTest(@TempDir Path path){
         String randomMSG = "ƕƘáéíóú";
         Player player = TestsUtils.createRandomNormalPlayer();
 
@@ -87,7 +84,13 @@ public final class UnicodeTest {
             .build();
         Result result = check.check(randomMSG).join();
 
-        assertTrue(GeneralUtils.callViolationEvent(new EventBundle(InfractionPlayer.get(player), randomMSG, InfractionType.UNICODE, result, SourceType.CHAT), TestsUtils.createRegulator()));
+        assertTrue(GeneralUtils.callViolationEvent(
+            new EventBundle(
+                InfractionPlayer.get(player),
+                randomMSG,
+                InfractionType.UNICODE,
+                result, SourceType.CHAT
+            ), TestsUtils.createRegulator(path)));
         assertTrue(result instanceof IReplaceable);
         IReplaceable replaceableResult = (IReplaceable)result;
 

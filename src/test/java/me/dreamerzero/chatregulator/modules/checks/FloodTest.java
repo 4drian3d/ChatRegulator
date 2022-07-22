@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import me.dreamerzero.chatregulator.result.IReplaceable;
 
-public final class FloodTest {
+class FloodTest {
     @Test
     @DisplayName("Flood Check")
     void floodCheck(){

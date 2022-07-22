@@ -4,25 +4,20 @@ import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
+import org.junit.jupiter.api.io.TempDir;
 import org.slf4j.LoggerFactory;
 
 import me.dreamerzero.chatregulator.enums.ControlType;
 import me.dreamerzero.chatregulator.enums.WarningType;
 
-public final class ConfigurationTest {
-    @BeforeAll
-    static void loadConfig(){
-        Logger logger = LoggerFactory.getLogger(ConfigurationTest.class);
-        Configuration.loadConfig(Path.of("build", "reports", "tests", "test"), logger);
-    }
-
+class ConfigurationTest {
     @Test
     @DisplayName("Config Values")
-    void configValues(){
+    void configValues(@TempDir Path path){
+        Configuration.loadConfig(path, LoggerFactory.getLogger(ConfigurationTest.class));
+
         MainConfig.Config config = Configuration.getConfig();
 
         assertTrue(config.getCommandBlacklistConfig().enabled());

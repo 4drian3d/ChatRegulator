@@ -8,12 +8,12 @@ import java.nio.file.Path;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
+import org.junit.jupiter.api.io.TempDir;
 import org.slf4j.LoggerFactory;
 
 import me.dreamerzero.chatregulator.config.Configuration;
 
-public final class CommandsTest {
+class CommandsTest {
     @Test
     @DisplayName("First Argument")
     void testFirstArgument(){
@@ -28,9 +28,8 @@ public final class CommandsTest {
 
     @Test
     @DisplayName("Command Blacklisted")
-    void isCommandBlacklisted(){
-        Logger logger = LoggerFactory.getLogger(CommandsTest.class);
-        Configuration.loadConfig(Path.of("build", "reports", "tests", "test"), logger);
+    void isCommandBlacklisted(@TempDir Path path){
+        Configuration.loadConfig(path, LoggerFactory.getLogger(CommandsTest.class));
 
         String command = "execute for all";
         boolean isCommand = CommandUtils.isCommand(command);

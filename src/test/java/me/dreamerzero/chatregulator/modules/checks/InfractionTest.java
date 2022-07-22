@@ -3,7 +3,7 @@ package me.dreamerzero.chatregulator.modules.checks;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
+import org.junit.jupiter.api.io.TempDir;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -17,9 +17,8 @@ import me.dreamerzero.chatregulator.result.IReplaceable;
 
 public final class InfractionTest {
     @BeforeAll
-    static void loadConfig(){
-        Logger logger = LoggerFactory.getLogger(InfractionTest.class);
-        Configuration.loadConfig(Path.of("build", "reports", "tests", "test"), logger);
+    static void loadConfig(@TempDir Path path){
+        Configuration.loadConfig(path, LoggerFactory.getLogger(InfractionTest.class));
     }
 
     @Test
