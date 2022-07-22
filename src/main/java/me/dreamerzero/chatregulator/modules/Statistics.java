@@ -54,15 +54,16 @@ public final class Statistics {
      */
     public void addViolationCount(@NotNull InfractionType type){
         switch(type){
-            case SPAM -> this.spamCount++;
-            case FLOOD -> this.floodCount++;
-            case REGULAR -> this.regularCount++;
-            case BCOMMAND -> this.commandCount++;
-            case UNICODE -> this.unicodeViolations++;
-            case CAPS -> this.capsViolations++;
-            case SYNTAX -> this.syntaxViolations++;
-            case NONE -> this.globalViolations++;
+            case SPAM -> ++this.spamCount;
+            case FLOOD -> ++this.floodCount;
+            case REGULAR -> ++this.regularCount;
+            case BCOMMAND -> ++this.commandCount;
+            case UNICODE -> ++this.unicodeViolations;
+            case CAPS -> ++this.capsViolations;
+            case SYNTAX -> ++this.syntaxViolations;
+            case NONE -> {}
         }
+        ++this.globalViolations;
     }
 
     /**
