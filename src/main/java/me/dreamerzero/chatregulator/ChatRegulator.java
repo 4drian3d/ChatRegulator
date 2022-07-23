@@ -20,7 +20,10 @@ import org.jetbrains.annotations.ApiStatus.Internal;
 import org.slf4j.Logger;
 
 import me.dreamerzero.chatregulator.commands.BrigadierRegulator;
+import me.dreamerzero.chatregulator.config.Blacklist;
 import me.dreamerzero.chatregulator.config.Configuration;
+import me.dreamerzero.chatregulator.config.Loader;
+import me.dreamerzero.chatregulator.config.Messages;
 import me.dreamerzero.chatregulator.enums.Components;
 import me.dreamerzero.chatregulator.listener.chat.ChatListener;
 import me.dreamerzero.chatregulator.listener.command.CommandListener;
@@ -29,6 +32,7 @@ import me.dreamerzero.chatregulator.listener.list.JoinListener;
 import me.dreamerzero.chatregulator.listener.list.LeaveListener;
 import me.dreamerzero.chatregulator.listener.plugin.ReloadListener;
 import me.dreamerzero.chatregulator.modules.Statistics;
+import me.dreamerzero.chatregulator.modules.checks.FloodCheck;
 import me.dreamerzero.chatregulator.utils.Constants;
 import net.byteflux.libby.Library;
 import net.byteflux.libby.VelocityLibraryManager;
@@ -65,6 +69,9 @@ public class ChatRegulator {
     private IFormatter formatter;
     private Statistics statistics;
     private Placeholders placeholders;
+    private Configuration configuration;
+    private Messages messages;
+    private Blacklist blacklist;
 
     /**
      * InfractionPlayer list
@@ -104,7 +111,9 @@ public class ChatRegulator {
                     "<gradient:#f2709c:#ff9472>ChatRegulator</gradient> <gradient:#DAE2F8:#D4D3DD>Starting plugin...")
         );
         this.loadDependencies();
-        Configuration.loadConfig(path, logger);
+        if (!this.reloadConfig()) {
+            return;
+        }
 
         this.statistics = new Statistics();
         this.placeholders = new Placeholders(this);
@@ -121,7 +130,7 @@ public class ChatRegulator {
             new CommandListener(this),
             new JoinListener(),
             new LeaveListener(this),
-            new ReloadListener(path, logger),
+            new ReloadListener(this),
             new SpyListener(this)
         );
         BrigadierRegulator.registerCommand(this);
@@ -175,10 +184,51 @@ public class ChatRegulator {
     }
 
     /**
+     * Get the main Configuration
+     * @return the general configuration
+     */
+    public Configuration getConfig(){
+        return this.configuration;
+    }
+
+    /**
+     * Get the Blacklist configuration
+     * @return the Blacklist configuration
+     */
+    public Blacklist getBlacklist(){
+        return this.blacklist;
+    }
+
+    /**
+     * Get the Messages Configuration
+     * @return the Messages configuration
+     */
+    public Messages getMessages(){
+        return this.messages;
+    }
+
+    /**
      * Reload the plugin configuration
      */
-    public void reloadConfig(){
-        Configuration.loadConfig(path, logger);
+    public boolean reloadConfig(){
+        Configuration config = Loader.loadMainConfig(path, logger);
+        Messages msg = Loader.loadMessagesConfig(path, logger);
+        Blacklist bl = Loader.loadBlacklistConfig(path, logger);
+
+        if (config != null) {
+            this.configuration = config;
+            FloodCheck.setFloodRegex(config.getFloodConfig().getLimit());
+        }
+
+        if (msg != null) {
+            this.messages = msg;
+        }
+
+        if (bl != null) {
+            this.blacklist = bl;
+        }
+
+        return !(bl == null || config == null || msg == null);
     }
 
     private void loadDependencies() {

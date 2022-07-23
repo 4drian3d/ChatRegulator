@@ -11,7 +11,6 @@ import org.jetbrains.annotations.ApiStatus.Internal;
 
 import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.InfractionPlayer;
-import me.dreamerzero.chatregulator.config.Configuration;
 
 @Internal
 public final class LeaveListener {
@@ -38,8 +37,8 @@ public final class LeaveListener {
                     plugin.removePlayer(uuid);
                 }
             }).delay(
-                Configuration.getConfig().getGeneralConfig().deleteUsersTime(),
-                Configuration.getConfig().getGeneralConfig().unit()
+                plugin.getConfig().getGeneralConfig().deleteUsersTime(),
+                plugin.getConfig().getGeneralConfig().unit()
             ).schedule();
         });
     }

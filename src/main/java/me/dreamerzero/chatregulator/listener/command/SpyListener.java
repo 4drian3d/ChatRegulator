@@ -11,7 +11,6 @@ import org.jetbrains.annotations.ApiStatus.Internal;
 
 import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.config.Configuration;
-import me.dreamerzero.chatregulator.config.MainConfig;
 import me.dreamerzero.chatregulator.enums.Permission;
 import me.dreamerzero.chatregulator.modules.CommandSpy;
 import net.kyori.adventure.text.Component;
@@ -29,7 +28,7 @@ public final class SpyListener {
     @Subscribe(order = PostOrder.LAST)
     public EventTask onCommand(final CommandExecuteEvent event){
         final CommandSource source = event.getCommandSource();
-        final MainConfig.CommandSpy config = Configuration.getConfig().getCommandSpyConfig();
+        final Configuration.CommandSpy config = plugin.getConfig().getCommandSpyConfig();
         if(!event.getResult().isAllowed()
             || !config.enabled()
             || !(source instanceof final Player player)
@@ -43,7 +42,7 @@ public final class SpyListener {
 
             if(CommandSpy.shouldAnnounce(source, command, config)){
                 final Component message = plugin.getFormatter().parse(
-                    Configuration.getMessages().getCommandSpyMessages().getMessage(),
+                    plugin.getMessages().getCommandSpyMessages().getMessage(),
                     player,
                     TagResolver.resolver(
                         Placeholder.unparsed("command", command),

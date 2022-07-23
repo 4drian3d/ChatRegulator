@@ -8,7 +8,6 @@ import java.nio.file.Path;
 
 import com.velocitypowered.api.proxy.Player;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -16,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.config.Configuration;
+import me.dreamerzero.chatregulator.config.Loader;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.enums.SourceType;
 import me.dreamerzero.chatregulator.result.IReplaceable;
@@ -24,11 +24,6 @@ import me.dreamerzero.chatregulator.utils.TestsUtils;
 import me.dreamerzero.chatregulator.utils.GeneralUtils.EventBundle;
 
 class CapsTest {
-    @BeforeAll
-    static void loadConfig(@TempDir Path path){
-        Configuration.loadConfig(path, LoggerFactory.getLogger(InfractionTest.class));
-    }
-
     @Test
     @DisplayName("Caps Test")
     void capsTest(){
@@ -48,8 +43,9 @@ class CapsTest {
     void realTest(@TempDir Path path){
         String message = "AAAAAAAAAA";
         Player player = TestsUtils.createRandomNormalPlayer();
-        assertTrue(GeneralUtils.allowedPlayer(player, InfractionType.CAPS));
-        var result = CapsCheck.createCheck(message).join();
+        Configuration config = Loader.loadMainConfig(path, LoggerFactory.getLogger(CapsTest.class));
+        assertTrue(GeneralUtils.allowedPlayer(player, InfractionType.CAPS, config));
+        var result = CapsCheck.createCheck(message, config).join();
         assertTrue(GeneralUtils.checkAndCall(
             new EventBundle(
                 InfractionPlayer.get(player),

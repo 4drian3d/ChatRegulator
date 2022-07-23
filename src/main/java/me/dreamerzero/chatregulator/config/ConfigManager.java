@@ -24,11 +24,11 @@ public final class ConfigManager {
      * @param plugin the plugin
      */
     public static void sendWarningMessage(InfractionPlayer infractor, Result result, InfractionType type, ChatRegulator plugin){
-        final String message = type.getMessages().getWarningMessage();
+        final String message = type.getMessages(plugin.getMessages()).getWarningMessage();
         final TagResolver placeholder = TagResolver.resolver(
             Placeholder.unparsed("infraction", result.getInfractionString()),
             plugin.placeholders().getPlaceholders(infractor));
-        ((MainConfig.Warning)type.getConfig()).getWarningType()
+        ((Configuration.Warning)type.getConfig(plugin.getConfig())).getWarningType()
             .send(message, infractor, placeholder, plugin.getFormatter());
     }
 
@@ -44,7 +44,7 @@ public final class ConfigManager {
         final Result result
     ) {
         final Component message = plugin.getFormatter().parse(
-            ((Alert)type.getMessages()).getAlertMessage(),
+            ((Alert)type.getMessages(plugin.getMessages())).getAlertMessage(),
             TagResolver.resolver(
                 plugin.placeholders().getPlaceholders(infractor),
                 Placeholder.unparsed("string", result.getInfractionString()))
@@ -68,7 +68,7 @@ public final class ConfigManager {
      *               whose warnings have been reset
      */
     public static void sendResetMessage(Audience sender, InfractionType type, InfractionPlayer player, ChatRegulator plugin){
-        Messages.Config messages = Configuration.getMessages();
+        Messages messages = plugin.getMessages();
         if(sender instanceof InfractionPlayer p && p.isOnline()){
             sender = p.getPlayer();
         }

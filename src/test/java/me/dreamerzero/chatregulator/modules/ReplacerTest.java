@@ -1,23 +1,11 @@
 package me.dreamerzero.chatregulator.modules;
 
-import java.nio.file.Path;
-
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import me.dreamerzero.chatregulator.config.Configuration;
-
 class ReplacerTest {
-    @BeforeAll
-    static void loadConfig(@TempDir Path path){
-        Configuration.loadConfig(path, LoggerFactory.getLogger(ReplacerTest.class));
-    }
-
     @Test
     @DisplayName("First Letter Uppercase")
     void firstLetterUppercase(){

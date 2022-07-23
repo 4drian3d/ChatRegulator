@@ -10,8 +10,7 @@ import java.util.regex.Pattern;
 
 import org.jetbrains.annotations.NotNull;
 
-import me.dreamerzero.chatregulator.config.Configuration;
-import me.dreamerzero.chatregulator.enums.ControlType;
+import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.result.Result;
 import net.kyori.adventure.builder.AbstractBuilder;
@@ -25,13 +24,6 @@ import me.dreamerzero.chatregulator.result.ReplaceableResult;
 public final class InfractionCheck implements ICheck {
     private final Pattern[] blockedWords;
     private final boolean blockable;
-
-    private InfractionCheck(){
-        this(
-            Configuration.getConfig().getInfractionsConfig().isBlockable(),
-            Configuration.getBlacklist().getBlockedPatterns()
-        );
-    }
 
     private InfractionCheck(boolean blockable, Pattern... blockedWords){
         this.blockedWords = blockedWords;
@@ -95,8 +87,11 @@ public final class InfractionCheck implements ICheck {
         return InfractionType.REGULAR;
     }
 
-    public static @NotNull CompletableFuture<Result> createCheck(String string){
-        return new InfractionCheck().check(string);
+    public static @NotNull CompletableFuture<Result> createCheck(String string, ChatRegulator plugin){
+        return new InfractionCheck(
+            plugin.getConfig().getInfractionsConfig().isBlockable(),
+            plugin.getBlacklist().getBlockedPatterns()
+        ).check(string);
     }
 
     public static @NotNull InfractionCheck.Builder builder(){
@@ -137,10 +132,10 @@ public final class InfractionCheck implements ICheck {
         @Override
         public InfractionCheck build(){
             if(this.blockedWords == null){
-                this.blockedWords = List.of(Configuration.getBlacklist().getBlockedPatterns());
+                this.blockedWords = List.of();
             }
             if(!edited){
-                this.replaceable = Configuration.getConfig().getInfractionsConfig().getControlType() == ControlType.REPLACE;
+                this.replaceable = false;
             }
             return new InfractionCheck(!replaceable, blockedWords.toArray(Pattern[]::new));
         }

@@ -1,10 +1,8 @@
 package me.dreamerzero.chatregulator.modules.checks;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,21 +11,19 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import java.nio.file.Path;
 import java.util.regex.Pattern;
 
-import me.dreamerzero.chatregulator.config.Configuration;
+import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.result.IReplaceable;
+import me.dreamerzero.chatregulator.utils.TestsUtils;
 
 public final class InfractionTest {
-    @BeforeAll
-    static void loadConfig(@TempDir Path path){
-        Configuration.loadConfig(path, LoggerFactory.getLogger(InfractionTest.class));
-    }
 
     @Test
     @DisplayName("Check Test")
-    void detectionTest(){
+    void detectionTest(@TempDir Path path){
         String original = "asdasdasdadadSh1T dadasdad";
+        ChatRegulator plugin = TestsUtils.createRegulator(path);
 
-        assertTrue(InfractionCheck.createCheck(original).join().isInfraction());
+        assertTrue(InfractionCheck.createCheck(original, plugin).join().isInfraction());
     }
 
     @Test

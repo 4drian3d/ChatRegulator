@@ -9,9 +9,9 @@ import org.jetbrains.annotations.NotNull;
 
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.ChatRegulator;
-import me.dreamerzero.chatregulator.config.Configuration;
-import me.dreamerzero.chatregulator.config.MainConfig.CommandsConfig;
-import me.dreamerzero.chatregulator.config.MainConfig.Executable;
+import me.dreamerzero.chatregulator.config.Blacklist;
+import me.dreamerzero.chatregulator.config.Configuration.CommandsConfig;
+import me.dreamerzero.chatregulator.config.Configuration.Executable;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 
 /**
@@ -38,7 +38,7 @@ public final class CommandUtils {
             return;
         }
 
-        final CommandsConfig config = ((Executable)type.getConfig()).getCommandsConfig();
+        final CommandsConfig config = ((Executable)type.getConfig(plugin.getConfig())).getCommandsConfig();
         if(config.executeCommand() && infractor.getViolations().getCount(type) % config.violationsRequired() == 0){
             final String servername = player.getCurrentServer().map(sv -> sv.getServerInfo().getName()).orElse("");
             config.getCommandsToExecute().forEach(cmd -> {
@@ -62,9 +62,9 @@ public final class CommandUtils {
      * @param command the command executed
      * @return if the command is to be checked
      */
-    public static boolean isCommand(@NotNull String command) {
+    public static boolean isCommand(@NotNull String command, Blacklist blacklist) {
         final String firstArgument = getFirstArgument(Objects.requireNonNull(command));
-        return Configuration.getBlacklist().getBlockedCommands().stream()
+        return blacklist.getBlockedCommands().stream()
             .anyMatch(firstArgument::equalsIgnoreCase);
     }
 

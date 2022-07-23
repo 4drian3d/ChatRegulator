@@ -95,8 +95,8 @@ public final class UnicodeCheck implements ICheck {
         return InfractionType.UNICODE;
     }
 
-    public static CompletableFuture<Result> createCheck(String string){
-        final var unicode = Configuration.getConfig().getUnicodeConfig();
+    public static CompletableFuture<Result> createCheck(String string, Configuration config){
+        final var unicode = config.getUnicodeConfig();
         return new UnicodeCheck(
                 unicode.additionalChars().enabled()
                     ? unicode.additionalChars().chars()

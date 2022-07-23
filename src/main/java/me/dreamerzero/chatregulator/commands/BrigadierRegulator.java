@@ -17,7 +17,6 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.config.ConfigManager;
-import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.enums.Components;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.enums.Permission;
@@ -36,7 +35,7 @@ public final class BrigadierRegulator {
             .executes(cmd -> {
                 cmd.getSource().sendMessage(
                     plugin.getFormatter().parse(
-                        Configuration.getMessages().getGeneralMessages().getInfoMessage(),
+                        plugin.getMessages().getGeneralMessages().getInfoMessage(),
                         Placeholder.unparsed("command", cmd.getInput())));
                 return 1;
             })
@@ -66,27 +65,27 @@ public final class BrigadierRegulator {
             .<CommandSource>literal(command)
             .requires(Permission.COMMAND_HELP)
             .executes(cmd -> {
-                sendLines(cmd.getSource(), Configuration.getMessages().getGeneralMessages().getHelpMessages().getMainHelp(), chatrCommand, plugin.getFormatter());
+                sendLines(cmd.getSource(), plugin.getMessages().getGeneralMessages().getHelpMessages().getMainHelp(), chatrCommand, plugin.getFormatter());
                 return 1;
             })
             .then(LiteralArgumentBuilder
                 .<CommandSource>literal("clear")
                 .executes(cmd -> {
-                    sendLines(cmd.getSource(), Configuration.getMessages().getGeneralMessages().getHelpMessages().getClearHelp(), chatrCommand, plugin.getFormatter());
+                    sendLines(cmd.getSource(), plugin.getMessages().getGeneralMessages().getHelpMessages().getClearHelp(), chatrCommand, plugin.getFormatter());
                     return 1;
                 }).build()
             )
             .then(LiteralArgumentBuilder
                 .<CommandSource>literal("reset")
                 .executes(cmd -> {
-                    sendLines(cmd.getSource(), Configuration.getMessages().getGeneralMessages().getHelpMessages().getResethelp(), chatrCommand, plugin.getFormatter());
+                    sendLines(cmd.getSource(), plugin.getMessages().getGeneralMessages().getHelpMessages().getResethelp(), chatrCommand, plugin.getFormatter());
                     return 1;
                 })
             )
             .then(LiteralArgumentBuilder
                 .<CommandSource>literal("player")
                 .executes(cmd -> {
-                    sendLines(cmd.getSource(), Configuration.getMessages().getGeneralMessages().getHelpMessages().getPlayerHelp(), chatrCommand, plugin.getFormatter());
+                    sendLines(cmd.getSource(), plugin.getMessages().getGeneralMessages().getHelpMessages().getPlayerHelp(), chatrCommand, plugin.getFormatter());
                     return 1;
                 })
             ).build();
@@ -102,7 +101,7 @@ public final class BrigadierRegulator {
                     : plugin.placeholders().getGlobalPlaceholders();
                 sendLines(
                     cmd.getSource(),
-                    Configuration.getMessages().getGeneralMessages().getStatsFormat(),
+                    plugin.getMessages().getGeneralMessages().getStatsFormat(),
                     resolver,
                     plugin.getFormatter());
                 return 1;
@@ -116,7 +115,7 @@ public final class BrigadierRegulator {
             .executes(cmd -> {
                 cmd.getSource().sendMessage(
                     plugin.getFormatter().parse(
-                        Configuration.getMessages().getGeneralMessages().noArgument(),
+                        plugin.getMessages().getGeneralMessages().noArgument(),
                         cmd.getSource()
                     )
                 );
@@ -127,7 +126,7 @@ public final class BrigadierRegulator {
                 .suggests((ctx, builder) -> {
                     plugin.getChatPlayers().forEach((uuid, p) -> builder.suggest(p.username(), VelocityBrigadierMessage.tooltip(
                         plugin.getFormatter().parse(
-                            Configuration.getMessages().getGeneralMessages().getPlayerSuggestionsFormat(),
+                            plugin.getMessages().getGeneralMessages().getPlayerSuggestionsFormat(),
                             p,
                             Placeholder.unparsed("player", p.username())
                         )
@@ -141,15 +140,15 @@ public final class BrigadierRegulator {
                     if(optionalPlayer.isPresent()){
                         InfractionPlayer infractionPlayer = InfractionPlayer.get(optionalPlayer.get());
                         TagResolver placeholders = plugin.placeholders().getPlaceholders(infractionPlayer);
-                        sendLines(source, Configuration.getMessages().getGeneralMessages().getPlayerFormat(), placeholders, plugin.getFormatter());
+                        sendLines(source, plugin.getMessages().getGeneralMessages().getPlayerFormat(), placeholders, plugin.getFormatter());
                     } else {
                         Optional<InfractionPlayer> opt = plugin.getChatPlayers().values().stream().filter(p -> p.username().equals(arg)).findAny();
                         if(opt.isPresent()){
                             TagResolver placeholders = plugin.placeholders().getPlaceholders(opt.get());
-                            sendLines(source, Configuration.getMessages().getGeneralMessages().getPlayerFormat(), placeholders, plugin.getFormatter());
+                            sendLines(source, plugin.getMessages().getGeneralMessages().getPlayerFormat(), placeholders, plugin.getFormatter());
                         } else {
                             source.sendMessage(plugin.getFormatter().parse(
-                                Configuration.getMessages().getGeneralMessages().playerNotFound(),
+                                plugin.getMessages().getGeneralMessages().playerNotFound(),
                                 Placeholder.unparsed("player", arg)
                             ));
                         }
@@ -166,7 +165,7 @@ public final class BrigadierRegulator {
             .executes(cmd -> {
                 cmd.getSource().sendMessage(
                     plugin.getFormatter().parse(
-                        Configuration.getMessages().getGeneralMessages().noArgument(),
+                        plugin.getMessages().getGeneralMessages().noArgument(),
                         cmd.getSource()
                     )
                 );
@@ -177,7 +176,7 @@ public final class BrigadierRegulator {
                 .suggests((ctx, builder) -> {
                     plugin.getChatPlayers().forEach((uuid, p) -> builder.suggest(p.username(), VelocityBrigadierMessage.tooltip(
                         plugin.getFormatter().parse(
-                            Configuration.getMessages().getGeneralMessages().getPlayerSuggestionsFormat(),
+                            plugin.getMessages().getGeneralMessages().getPlayerSuggestionsFormat(),
                             p,
                             Placeholder.unparsed("player", p.username())
                         )
@@ -190,7 +189,7 @@ public final class BrigadierRegulator {
                     if(p == null){
                         cmd.getSource().sendMessage(
                             plugin.getFormatter().parse(
-                                Configuration.getMessages().getGeneralMessages().playerNotFound(),
+                                plugin.getMessages().getGeneralMessages().playerNotFound(),
                                 cmd.getSource(), Placeholder.unparsed("player", arg)
                             )
                         );
@@ -234,7 +233,7 @@ public final class BrigadierRegulator {
                 if(p == null){
                     cmd.getSource().sendMessage(
                         plugin.getFormatter().parse(
-                            Configuration.getMessages().getGeneralMessages().playerNotFound(),
+                            plugin.getMessages().getGeneralMessages().playerNotFound(),
                             cmd.getSource(),
                             Placeholder.unparsed("player", arg)
                         )
@@ -255,7 +254,7 @@ public final class BrigadierRegulator {
                 plugin.getProxy().sendMessage(Components.SPACES_COMPONENT);
                 cmd.getSource().sendMessage(
                     plugin.getFormatter().parse(
-                        Configuration.getMessages().getClearMessages().getGlobalMessage()
+                        plugin.getMessages().getClearMessages().getGlobalMessage()
                     )
                 );
                 return 1;
@@ -268,7 +267,7 @@ public final class BrigadierRegulator {
                         player.getCurrentServer().ifPresent(playerServer -> {
                             playerServer.getServer().sendMessage(Components.SPACES_COMPONENT);
                             player.sendMessage(plugin.getFormatter().parse(
-                                Configuration.getMessages().getClearMessages().getServerMessage(),
+                                plugin.getMessages().getClearMessages().getServerMessage(),
                                 player,
                                 Placeholder.unparsed("server", playerServer.getServerInfo().getName())
                             ));
@@ -276,7 +275,7 @@ public final class BrigadierRegulator {
                     } else {
                         cmd.getSource().sendMessage(
                             plugin.getFormatter().parse(
-                                Configuration.getMessages().getGeneralMessages().noArgument(),
+                                plugin.getMessages().getGeneralMessages().noArgument(),
                                 cmd.getSource()
                             )
                         );
@@ -296,14 +295,14 @@ public final class BrigadierRegulator {
                             serverObjetive.sendMessage(Components.SPACES_COMPONENT);
                             cmd.getSource().sendMessage(
                                 plugin.getFormatter().parse(
-                                    Configuration.getMessages().getClearMessages().getServerMessage(),
+                                    plugin.getMessages().getClearMessages().getServerMessage(),
                                     cmd.getSource(),
                                     serverPlaceholder
                                 )
                             );
                         }, () -> cmd.getSource().sendMessage(
                             plugin.getFormatter().parse(
-                                Configuration.getMessages().getClearMessages().getNotFoundServerMessage(),
+                                plugin.getMessages().getClearMessages().getNotFoundServerMessage(),
                                 cmd.getSource(),
                                 serverPlaceholder
                             )
@@ -318,7 +317,7 @@ public final class BrigadierRegulator {
                 .executes(cmd -> {
                     cmd.getSource().sendMessage(
                         plugin.getFormatter().parse(
-                            Configuration.getMessages().getGeneralMessages().noArgument(),
+                            plugin.getMessages().getGeneralMessages().noArgument(),
                             cmd.getSource()
                         )
                     );
@@ -329,7 +328,7 @@ public final class BrigadierRegulator {
                     .suggests((arg, builder) -> {
                         plugin.getChatPlayers().forEach((uuid, p) -> builder.suggest(p.username(), VelocityBrigadierMessage.tooltip(
                             plugin.getFormatter().parse(
-                                Configuration.getMessages().getGeneralMessages().getPlayerSuggestionsFormat(),
+                                plugin.getMessages().getGeneralMessages().getPlayerSuggestionsFormat(),
                                 p,
                                 Placeholder.unparsed("player", p.username())
                             )
@@ -343,14 +342,14 @@ public final class BrigadierRegulator {
                             playerObjetive.sendMessage(Components.SPACES_COMPONENT);
                             cmd.getSource().sendMessage(
                                 plugin.getFormatter().parse(
-                                    Configuration.getMessages().getClearMessages().getPlayerMessage(),
+                                    plugin.getMessages().getClearMessages().getPlayerMessage(),
                                     cmd.getSource(),
                                     serverPlaceholder
                                 )
                             );
                         }, () -> cmd.getSource().sendMessage(
                             plugin.getFormatter().parse(
-                                Configuration.getMessages().getClearMessages().getNotFoundServerMessage(),
+                                plugin.getMessages().getClearMessages().getNotFoundServerMessage(),
                                 cmd.getSource(),
                                 serverPlaceholder
                             )
@@ -365,7 +364,7 @@ public final class BrigadierRegulator {
                     plugin.getProxy().sendMessage(Components.SPACES_COMPONENT);
                     cmd.getSource().sendMessage(
                         plugin.getFormatter().parse(
-                            Configuration.getMessages().getClearMessages().getGlobalMessage(),
+                            plugin.getMessages().getClearMessages().getGlobalMessage(),
                             cmd.getSource()
                         )
                     );
@@ -382,7 +381,7 @@ public final class BrigadierRegulator {
             .executes(cmd -> {
                 cmd.getSource().sendMessage(
                     plugin.getFormatter().parse(
-                        Configuration.getMessages().getGeneralMessages().getReloadMessage()
+                        plugin.getMessages().getGeneralMessages().getReloadMessage()
                     )
                 );
                 plugin.reloadConfig();

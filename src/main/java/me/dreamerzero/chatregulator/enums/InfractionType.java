@@ -3,8 +3,7 @@ package me.dreamerzero.chatregulator.enums;
 import org.jetbrains.annotations.NotNull;
 
 import me.dreamerzero.chatregulator.config.Configuration;
-import me.dreamerzero.chatregulator.config.MainConfig;
-import me.dreamerzero.chatregulator.config.MainConfig.Toggleable;
+import me.dreamerzero.chatregulator.config.Configuration.Toggleable;
 import me.dreamerzero.chatregulator.config.Messages;
 import me.dreamerzero.chatregulator.config.Messages.Warning;
 
@@ -18,13 +17,13 @@ public enum InfractionType {
      */
     REGULAR(Permission.BYPASS_INFRACTIONS) {
         @Override
-        public Toggleable getConfig() {
-            return Configuration.getConfig().getInfractionsConfig();
+        public Toggleable getConfig(Configuration config) {
+            return config.getInfractionsConfig();
         }
 
         @Override
-        public Warning getMessages() {
-            return Configuration.getMessages().getInfractionsMessages();
+        public Warning getMessages(Messages messages) {
+            return messages.getInfractionsMessages();
         }
     },
     /**
@@ -33,13 +32,13 @@ public enum InfractionType {
      */
     FLOOD(Permission.BYPASS_FLOOD) {
         @Override
-        public Toggleable getConfig() {
-            return Configuration.getConfig().getFloodConfig();
+        public Toggleable getConfig(Configuration config) {
+            return config.getFloodConfig();
         }
 
         @Override
-        public Warning getMessages() {
-            return Configuration.getMessages().getFloodMessages();
+        public Warning getMessages(Messages messages) {
+            return messages.getFloodMessages();
         }
     },
     /**
@@ -48,13 +47,13 @@ public enum InfractionType {
      */
     SPAM(Permission.BYPASS_SPAM) {
         @Override
-        public Toggleable getConfig() {
-            return Configuration.getConfig().getSpamConfig();
+        public Toggleable getConfig(Configuration config) {
+            return config.getSpamConfig();
         }
 
         @Override
-        public Warning getMessages() {
-            return Configuration.getMessages().getSpamMessages();
+        public Warning getMessages(Messages messages) {
+            return messages.getSpamMessages();
         }
     },
     /**
@@ -62,13 +61,13 @@ public enum InfractionType {
      */
     BCOMMAND(Permission.BYPASS_BCOMMAND) {
         @Override
-        public Toggleable getConfig() {
-            return Configuration.getConfig().getCommandBlacklistConfig();
+        public Toggleable getConfig(Configuration config) {
+            return config.getCommandBlacklistConfig();
         }
 
         @Override
-        public Warning getMessages() {
-            return Configuration.getMessages().getBlacklistMessages();
+        public Warning getMessages(Messages messages) {
+            return messages.getBlacklistMessages();
         }
     },
     /**
@@ -76,13 +75,13 @@ public enum InfractionType {
      */
     UNICODE(Permission.BYPASS_UNICODE) {
         @Override
-        public Toggleable getConfig() {
-            return Configuration.getConfig().getUnicodeConfig();
+        public Toggleable getConfig(Configuration config) {
+            return config.getUnicodeConfig();
         }
 
         @Override
-        public Warning getMessages() {
-            return Configuration.getMessages().getUnicodeMessages();
+        public Warning getMessages(Messages messages) {
+            return messages.getUnicodeMessages();
         }
     },
     /**
@@ -90,13 +89,13 @@ public enum InfractionType {
      */
     CAPS(Permission.BYPASS_CAPS) {
         @Override
-        public Toggleable getConfig() {
-            return Configuration.getConfig().getCapsConfig();
+        public Toggleable getConfig(Configuration config) {
+            return config.getCapsConfig();
         }
 
         @Override
-        public Warning getMessages() {
-            return Configuration.getMessages().getCapsMessages();
+        public Warning getMessages(Messages messages) {
+            return messages.getCapsMessages();
         }
     },
     /**
@@ -105,13 +104,13 @@ public enum InfractionType {
      */
     SYNTAX(Permission.BYPASS_SYNTAX) {
         @Override
-        public Toggleable getConfig() {
-            return Configuration.getConfig().getSyntaxConfig();
+        public Toggleable getConfig(Configuration config) {
+            return config.getSyntaxConfig();
         }
 
         @Override
-        public Warning getMessages() {
-            return Configuration.getMessages().getSyntaxMessages();
+        public Warning getMessages(Messages messages) {
+            return messages.getSyntaxMessages();
         }
     },
     /**
@@ -120,12 +119,12 @@ public enum InfractionType {
      */
     NONE(Permission.NO_PERMISSION) {
         @Override
-        public Toggleable getConfig() {
+        public Toggleable getConfig(Configuration config) {
             return null;
         }
 
         @Override
-        public Warning getMessages() {
+        public Warning getMessages(Messages messages) {
             return null;
         }
     };
@@ -136,9 +135,9 @@ public enum InfractionType {
         this.bypassPermission = permission;
     }
 
-    public abstract MainConfig.Toggleable getConfig();
+    public abstract Configuration.Toggleable getConfig(Configuration config);
 
-    public abstract Messages.Warning getMessages();
+    public abstract Messages.Warning getMessages(Messages messages);
 
     /**
      * Get the bypass permission of this type
