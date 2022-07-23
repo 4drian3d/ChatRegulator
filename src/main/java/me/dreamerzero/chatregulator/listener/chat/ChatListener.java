@@ -54,7 +54,7 @@ public final class ChatListener {
         }
 
         if(plugin.getConfig().getFormatConfig().enabled()){
-            message.set(Replacer.applyFormat(message.get()));
+            message.set(Replacer.applyFormat(message.get(), plugin.getConfig()));
             event.setResult(ChatResult.message(message.get()));
         }
 

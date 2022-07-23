@@ -65,4 +65,8 @@ public final class Replacer {
     public static @NotNull String applyFormat(final @NotNull String string){
         return firstLetterUpercase(addFinalDot(string));
     }
+
+    public static @NotNull String applyFormat(final @NotNull String string, Configuration config){
+        return firstLetterUpercase(addFinalDot(string, config), config);
+    }
 }
