@@ -2,7 +2,10 @@ package me.dreamerzero.chatregulator.modules.checks;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
@@ -58,7 +61,7 @@ public final class InfractionCheck implements ICheck {
                 }
             }
             return detected
-                ? new MultiPatternReplaceableResult(string, true, matchers.toArray(Matcher[]::new)){
+                ? new MultiPatternReplaceableResult(string, true, matchers.toArray(new Matcher[0])){
                     @Override
                     public String replaceInfraction(){
                         String original = string;
@@ -99,7 +102,7 @@ public final class InfractionCheck implements ICheck {
     }
 
     public static class Builder implements AbstractBuilder<InfractionCheck> {
-        private List<Pattern> blockedWords;
+        private Set<Pattern> blockedWords;
         private boolean replaceable;
         private boolean edited = false;
 
@@ -107,7 +110,7 @@ public final class InfractionCheck implements ICheck {
 
         public Builder blockedPattern(Collection<Pattern> patterns){
             if(this.blockedWords == null) {
-                this.blockedWords = new ArrayList<>(patterns);
+                this.blockedWords = new HashSet<>(patterns);
             } else {
                 this.blockedWords.addAll(patterns);
             }
@@ -116,9 +119,9 @@ public final class InfractionCheck implements ICheck {
 
         public Builder blockedPatterns(Pattern... patterns){
             if(this.blockedWords == null) {
-                this.blockedWords = new ArrayList<>(List.of(patterns));
+                this.blockedWords = new HashSet<>(List.of(patterns));
             } else {
-                this.blockedWords.addAll(List.of(patterns));
+                Collections.addAll(this.blockedWords, patterns);
             }
             return this;
         }
@@ -132,12 +135,12 @@ public final class InfractionCheck implements ICheck {
         @Override
         public InfractionCheck build(){
             if(this.blockedWords == null){
-                this.blockedWords = List.of();
+                this.blockedWords = Collections.emptySet();
             }
             if(!edited){
                 this.replaceable = false;
             }
-            return new InfractionCheck(!replaceable, blockedWords.toArray(Pattern[]::new));
+            return new InfractionCheck(!replaceable, blockedWords.toArray(new Pattern[0]));
         }
     }
 }
