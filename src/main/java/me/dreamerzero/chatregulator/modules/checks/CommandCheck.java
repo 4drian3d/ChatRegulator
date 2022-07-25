@@ -12,6 +12,7 @@ import me.dreamerzero.chatregulator.config.Blacklist;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.result.Result;
 import me.dreamerzero.chatregulator.utils.CommandUtils;
+import net.kyori.adventure.builder.AbstractBuilder;
 
 /**
  * Check for verification of executed commands
@@ -63,7 +64,7 @@ public final class CommandCheck implements ICheck {
     }
 
     /**Command Check Builder */
-    public static class Builder {
+    public static class Builder implements AbstractBuilder<CommandCheck> {
         private Collection<String> blockedCommands;
 
         private Builder(){}
@@ -84,7 +85,12 @@ public final class CommandCheck implements ICheck {
          * @return this
          */
         public Builder blockedCommands(String... blockedCommands){
-            this.blockedCommands = Arrays.asList(blockedCommands);
+            if (this.blockedCommands == null) {
+                this.blockedCommands = new HashSet<>(Arrays.asList(blockedCommands));
+            } else {
+                Collections.addAll(this.blockedCommands, blockedCommands);
+            }
+            
             return this;
         }
 
@@ -104,6 +110,7 @@ public final class CommandCheck implements ICheck {
          * Build a new CommandCheck with the Builder values
          * @return a new CommandCheck
          */
+        @Override
         public CommandCheck build(){
             return new CommandCheck(blockedCommands == null ? Collections.emptyList() : blockedCommands);
         }
