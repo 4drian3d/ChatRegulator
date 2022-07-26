@@ -1,6 +1,7 @@
 package me.dreamerzero.chatregulator.modules.checks;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -26,7 +27,8 @@ public final class InfractionTest {
         assertTrue(InfractionCheck.createCheck(original, plugin).join().isInfraction());
     }
 
-    @Test
+    // Test correct pattern order
+    @RepeatedTest(3)
     @DisplayName("Replacement Test")
     void replaceMultiple(){
         InfractionCheck iCheck = InfractionCheck.builder()
@@ -48,5 +50,18 @@ public final class InfractionTest {
         String replaced = replaceable.replaceInfraction();
 
         assertEquals(expected, replaced);
+    }
+
+    @Test
+    void testReplacement() {
+        final Pattern testPattern = Pattern.compile("f[uv]ck[e3]rs");
+        final String original = "Hello fuckers";
+        final String expected = "Hello ***";
+
+        final String actual = testPattern.matcher(original)
+            .replaceAll(InfractionCheck::generateReplacement);
+
+        assertEquals(expected, actual);
+
     }
 }

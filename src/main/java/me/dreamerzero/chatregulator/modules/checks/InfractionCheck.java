@@ -3,7 +3,7 @@ package me.dreamerzero.chatregulator.modules.checks;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -76,8 +76,8 @@ public final class InfractionCheck implements ICheck {
         });
     }
 
-    private static String generateReplacement(MatchResult result) {
-        final int size = result.group().length()/2;
+    static String generateReplacement(final MatchResult result) {
+        final int size = result.group().length() / 2;
         final StringBuilder builder = new StringBuilder(size);
         for (int i = 0; i < size; i++) {
             builder.append('*');
@@ -110,7 +110,7 @@ public final class InfractionCheck implements ICheck {
 
         public Builder blockedPattern(Collection<Pattern> patterns){
             if(this.blockedWords == null) {
-                this.blockedWords = new HashSet<>(patterns);
+                this.blockedWords = new LinkedHashSet<>(patterns);
             } else {
                 this.blockedWords.addAll(patterns);
             }
@@ -119,7 +119,7 @@ public final class InfractionCheck implements ICheck {
 
         public Builder blockedPatterns(Pattern... patterns){
             if(this.blockedWords == null) {
-                this.blockedWords = new HashSet<>(List.of(patterns));
+                this.blockedWords = new LinkedHashSet<>(List.of(patterns));
             } else {
                 Collections.addAll(this.blockedWords, patterns);
             }
