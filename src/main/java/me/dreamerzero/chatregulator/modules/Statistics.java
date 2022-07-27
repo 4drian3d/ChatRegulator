@@ -10,42 +10,13 @@ import me.dreamerzero.chatregulator.enums.InfractionType;
  * Manages the plugin's internal statistics
  */
 public final class Statistics {
-    /**
-     * Global Spam warning count
-     */
     private int spamCount;
-    /**
-     * Global Flood warning count
-     */
     private int floodCount;
-    /**
-     * Global Regular Infractions warning count
-     */
     private int regularCount;
-
-    /**
-     * Global commands blocked executed
-     */
     private int commandCount;
-
-    /**
-     * Global Unicode caracters count
-     */
     private int unicodeViolations;
-
-    /**
-     * Global Caps violations count
-     */
     private int capsViolations;
-
-    /**
-     * Syntax Violations count
-     */
     private int syntaxViolations;
-
-    /**
-     * Global Violations count
-     */
     private int globalViolations;
 
     /**
@@ -82,36 +53,6 @@ public final class Statistics {
             case SYNTAX -> this.syntaxViolations;
             case NONE -> this.globalViolations;
         };
-    }
-
-    void resetViolationCount(){
-        this.spamCount = 0;
-        this.floodCount = 0;
-        this.regularCount = 0;
-        this.commandCount = 0;
-        this.unicodeViolations = 0;
-        this.capsViolations = 0;
-        this.syntaxViolations = 0;
-        this.globalViolations = 0;
-    }
-
-    void setViolationCount(InfractionType type, int amount){
-        switch(type){
-            case SPAM -> this.spamCount = amount;
-            case FLOOD -> this.floodCount = amount;
-            case REGULAR -> this.regularCount = amount;
-            case BCOMMAND -> this.commandCount = amount;
-            case UNICODE -> this.unicodeViolations = amount;
-            case CAPS -> this.capsViolations = amount;
-            case SYNTAX -> this.syntaxViolations = amount;
-            case NONE -> {
-                this.globalViolations = this.syntaxViolations +
-                    this.spamCount + this.floodCount +
-                    this.regularCount + this.commandCount +
-                    this.unicodeViolations + this.capsViolations;
-            }
-        }
-        
     }
 
     @Override
