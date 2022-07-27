@@ -22,13 +22,13 @@ public final class ViolationCount {
      */
     public void addViolation(@NotNull InfractionType type){
         switch(type){
-            case SPAM: this.spamViolations++; break;
-            case REGULAR: this.regularViolations++; break;
-            case FLOOD: this.floodViolations++; break;
-            case BCOMMAND: this.commandViolations++; break;
-            case UNICODE: this.unicodeViolations++; break;
-            case CAPS: this.capsviolations++; break;
-            case SYNTAX: this.syntaxviolations++; break;
+            case SPAM: ++this.spamViolations; break;
+            case REGULAR: ++this.regularViolations; break;
+            case FLOOD: ++this.floodViolations; break;
+            case BCOMMAND: ++this.commandViolations; break;
+            case UNICODE: ++this.unicodeViolations; break;
+            case CAPS: ++this.capsviolations; break;
+            case SYNTAX: ++this.syntaxviolations; break;
             case NONE: return;
         }
     }
@@ -56,7 +56,7 @@ public final class ViolationCount {
      * @param types the types
      */
     public void resetViolations(@NotNull InfractionType @NotNull... types){
-        for(InfractionType type : types){
+        for (InfractionType type : types){
             this.setViolations(type, 0);
         }
     }

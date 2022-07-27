@@ -9,6 +9,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
+import com.velocitypowered.api.event.proxy.ProxyReloadEvent;
 import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.PluginManager;
@@ -30,7 +31,6 @@ import me.dreamerzero.chatregulator.listener.command.CommandListener;
 import me.dreamerzero.chatregulator.listener.command.SpyListener;
 import me.dreamerzero.chatregulator.listener.list.JoinListener;
 import me.dreamerzero.chatregulator.listener.list.LeaveListener;
-import me.dreamerzero.chatregulator.listener.plugin.ReloadListener;
 import me.dreamerzero.chatregulator.modules.Statistics;
 import me.dreamerzero.chatregulator.modules.checks.FloodCheck;
 import me.dreamerzero.chatregulator.utils.Constants;
@@ -130,9 +130,9 @@ public class ChatRegulator {
             new CommandListener(this),
             new JoinListener(),
             new LeaveListener(this),
-            new ReloadListener(this),
             new SpyListener(this)
         );
+        server.getEventManager().register(this, ProxyReloadEvent.class, e -> reloadConfig());
         BrigadierRegulator.registerCommand(this);
 
         server.getConsoleCommandSource().sendMessage(
