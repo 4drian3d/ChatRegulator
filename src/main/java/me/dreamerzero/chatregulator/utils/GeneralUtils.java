@@ -117,8 +117,8 @@ public final class GeneralUtils {
                         event.resume();
                         return true;
                     }
-                    if(result instanceof final ReplaceableResult replaceableResult){
-                        string.set(replaceableResult.replaceInfraction());
+                    if(event.shouldReplace() && result instanceof final ReplaceableResult replaceable){
+                        string.set(replaceable.replaceInfraction());
                         event.setString(string.get());
                     }
                 }
@@ -138,7 +138,7 @@ public final class GeneralUtils {
                         event.resume();
                         return true;
                     }
-                    if(result instanceof final IReplaceable replaceable){
+                    if(event.shouldReplace() && result instanceof final IReplaceable replaceable){
                         string.set(replaceable.replaceInfraction());
                         event.setString(string.get());
                     }
@@ -159,7 +159,7 @@ public final class GeneralUtils {
                         event.resume();
                         return true;
                     }
-                    if(result instanceof final IReplaceable replaceable){
+                    if(event.shouldReplace() && result instanceof final IReplaceable replaceable){
                         string.set(replaceable.replaceInfraction());
                         event.setString(string.get());
                     }
@@ -180,7 +180,7 @@ public final class GeneralUtils {
                         event.resume();
                         return true;
                     }
-                    if(result instanceof final IReplaceable replaceable){
+                    if(event.shouldReplace() && result instanceof final IReplaceable replaceable){
                         string.set(replaceable.replaceInfraction());
                         event.setString(string.get());
                     }
@@ -195,7 +195,7 @@ public final class GeneralUtils {
                 plugin.getLogger().error("An Error ocurred on Spam Check", e);
                 return new Result("", false);
             }).join();
-            if(GeneralUtils.cooldownSpamCheck(result, player, plugin.getConfig())
+            if (GeneralUtils.cooldownSpamCheck(result, player, plugin.getConfig())
                 && GeneralUtils.callViolationEvent(new EventBundle(player, string.get(), InfractionType.SPAM, result, event.source()), plugin)
             ) {
                 event.cancel();

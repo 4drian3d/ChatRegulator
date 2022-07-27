@@ -26,4 +26,9 @@ public class ChatWrapper extends EventWrapper<PlayerChatEvent> {
     public SourceType source() {
         return SourceType.CHAT;
     }
+
+    @Override
+    public boolean shouldReplace() {
+        return event.getPlayer().getProtocolVersion().getProtocol() < 760;
+    }
 }
