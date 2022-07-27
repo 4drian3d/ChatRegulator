@@ -31,7 +31,8 @@ public class CommandWrapper extends EventWrapper<CommandExecuteEvent> {
     @Override
     public boolean shouldReplace() {
         if(event.getCommandSource() instanceof Player player) {
-            return player.getProtocolVersion().getProtocol() < 760;
+            return player.getIdentifiedKey() == null
+                || player.getProtocolVersion().getProtocol() < 760;
         }
         return true;
     }
