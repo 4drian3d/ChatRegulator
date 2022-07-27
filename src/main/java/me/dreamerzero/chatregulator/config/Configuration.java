@@ -1,162 +1,668 @@
 package me.dreamerzero.chatregulator.config;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Objects;
-import java.util.regex.Pattern;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
-import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.spongepowered.configurate.CommentedConfigurationNode;
-import org.spongepowered.configurate.ConfigurateException;
-import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
+import org.spongepowered.configurate.objectmapping.ConfigSerializable;
+import org.spongepowered.configurate.objectmapping.meta.Comment;
+import org.spongepowered.configurate.objectmapping.meta.Setting;
 
-import me.dreamerzero.chatregulator.modules.checks.FloodCheck;
+import me.dreamerzero.chatregulator.enums.ControlType;
+import me.dreamerzero.chatregulator.enums.WarningType;
+import me.dreamerzero.chatregulator.modules.checks.UnicodeCheck.CharMode;
 
 /**
- * The configuration paths available in the plugin
+ * Configuration values
  */
-public final class Configuration {
+@ConfigSerializable
+public class Configuration {
     private Configuration(){}
-    private static MainConfig.Config config;
-    private static Messages.Config messages;
-    private static Blacklist.Config blacklist;
+
+    /**Main Configuration */
+    @Comment("Regular infraction module")
+    private Infractions infractions = new Infractions();
+
+    @Comment("Flood Module")
+    private Flood flood = new Flood();
+
+    @Comment("Spam Module")
+    private Spam spam = new Spam();
+
+    @Comment("Command blacklist module")
+    @Setting(value = "command-blacklist")
+    private CommandBlacklist blacklist = new CommandBlacklist();
+
+    @Comment("Unicode Module")
+    private Unicode unicode = new Unicode();
+
+    @Comment("Caps Module")
+    private Caps caps = new Caps();
+
+    @Comment("Format Module")
+    private Format format = new Format();
+
+    @Comment("General Configurations")
+    private General general = new General();
+
+    @Comment("CommandSpy configuration")
+    private CommandSpy commandSpy = new CommandSpy();
+
+    @Comment("Syntax blocker configuration")
+    private Syntax syntax = new Syntax();
+
+    @Comment("""
+        Specify in which commands you want the violations to be detected
+        I recommend you to put chat commands, for example: /tell""")
+    @Setting(value = "commands-checked")
+    private Set<String> commandsChecked = Set.of(
+        "tell",
+        "etell",
+        "msg",
+        "emsg",
+        "chat",
+        "global",
+        "reply"
+    );
 
     /**
-     * Loads the plugin configuration
-     * @param path plugin path
-     * @param logger plugin logger
+     * Get the commands checked
+     * @return the commands checked
      */
-    public static void loadConfig(@NotNull Path path, @NotNull Logger logger){
-        Objects.requireNonNull(path, "plugin path");
-        Objects.requireNonNull(logger, "plugin logger");
-        loadMainConfig(path, logger);
-        loadMessagesConfig(path, logger);
-        loadBlacklistConfig(path, logger);
-
-        FloodCheck.setFloodRegex();
-    }
-
-    private static void loadMainConfig(Path path, Logger logger){
-        Path configPath = path.resolve("config.conf");
-        final HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
-            .defaultOptions(opts -> opts
-                .shouldCopyDefaults(true)
-                .header("""
-                    ChatRegulator | by 4drian3d
-                    Check the function of each configuration option at
-                    https://github.com/4drian3d/ChatRegulator/wiki/Configuration"""
-                )
-            )
-            .path(configPath)
-            .build();
-
-        try {
-            final CommentedConfigurationNode node = loader.load();
-            config = node.get(MainConfig.Config.class);
-            node.set(MainConfig.Config.class, config);
-            loader.save(node);
-        } catch (ConfigurateException exception){
-            logger.error("Could not load config.conf file, error: {}", exception.getMessage());
-        }
-    }
-
-    private static void loadMessagesConfig(Path path, Logger logger){
-        Path messagesConfig = path.resolve("messages.conf");
-        final HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
-            .defaultOptions(opts -> opts
-                .shouldCopyDefaults(true)
-                .header("""
-                    ChatRegulator | by 4drian3d
-                    To modify the plugin messages and to use the plugin in general
-                    I recommend that you have a basic knowledge of MiniMessage
-                    Guide: https://docs.adventure.kyori.net/minimessage.html#format
-                    Spanish Guide: https://gist.github.com/4drian3d/9ccce0ca1774285e38becb09b73728f3"""
-                )
-            )
-            .path(messagesConfig)
-            .build();
-
-        try {
-            final CommentedConfigurationNode node = loader.load();
-            messages = node.get(Messages.Config.class);
-            node.set(Messages.Config.class, messages);
-            loader.save(node);
-        } catch (ConfigurateException exception){
-            logger.error("Could not load messages.conf file, error: {}", exception.getMessage());
-        }
-    }
-
-    private static void loadBlacklistConfig(Path path, Logger logger){
-        Path blacklistConfig = path.resolve("blacklist.conf");
-        final HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
-            .defaultOptions(opts -> opts
-                .shouldCopyDefaults(true)
-                .serializers(builder -> 
-                    builder.register(Pattern.class, new CustomPatternSerializer())
-                )
-                .header("""
-                    ChatRegulator | by 4drian3d
-                    Blacklist of Commands and Regular Expressions
-                    To test each regular expression, use:
-                    https://regex101.com/
-                    If you are using patterns that include '\\', replace them with '\\\\'"""
-                )
-            )
-            .path(blacklistConfig)
-            .build();
-
-        try {
-            final CommentedConfigurationNode node = loader.load();
-            blacklist = node.get(Blacklist.Config.class);
-            node.set(Blacklist.Config.class, blacklist);
-            loader.save(node);
-        } catch (ConfigurateException exception){
-            if(checkConfig(blacklistConfig)){
-                logger.error("Your blacklist configuration contains '\\' character. Please change all of its usage for '\\\\'");
-            }
-            logger.error("Could not load blacklist.conf file, error: {}", exception.getMessage());
-        }
-    }
-
-    private static boolean checkConfig(final Path path) {
-        try (final BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
-            String line;
-            while((line = reader.readLine()) != null){
-                if(line.indexOf('\\') != -1 && !line.contains("\\\\")) {
-                    return true;
-                }
-            }
-            return false;
-        } catch(IOException e){
-            return false;
-        }
+    public Set<String> getCommandsChecked(){
+        return this.commandsChecked;
     }
 
     /**
-     * Get the main Configuration
+     * Get the command blacklist configuration
+     * @return the command blacklist configuration
+     */
+    public CommandBlacklist getCommandBlacklistConfig(){
+        return this.blacklist;
+    }
+
+    /**
+     * Get the infractions configuration
+     * @return the command blacklist configuration
+     */
+    public Infractions getInfractionsConfig(){
+        return this.infractions;
+    }
+
+    /**
+     * Get the flood configuration
+     * @return the flood configuration
+     */
+    public Flood getFloodConfig(){
+        return this.flood;
+    }
+
+    /**
+     * Get the spam configuration
+     * @return the spam configuration
+     */
+    public Spam getSpamConfig(){
+        return this.spam;
+    }
+
+    /**
+     * Get the unicode configuration
+     * @return the unicode configuration
+     */
+    public Unicode getUnicodeConfig(){
+        return this.unicode;
+    }
+
+    /**
+     * Get the caps configuration
+     * @return the caps configuration
+     */
+    public Caps getCapsConfig(){
+        return this.caps;
+    }
+
+    /**
+     * Get the formats configuration
+     * @return the formats configuration
+     */
+    public Format getFormatConfig(){
+        return this.format;
+    }
+
+    /**
+     * Get the general configuration
      * @return the general configuration
      */
-    public static MainConfig.Config getConfig(){
-        return config;
+    public General getGeneralConfig(){
+        return this.general;
     }
 
     /**
-     * Get the Blacklist configuration
-     * @return the Blacklist configuration
+     * Get the command spy configuration
+     * @return the command spy configuration
      */
-    public static Blacklist.Config getBlacklist(){
-        return blacklist;
+    public CommandSpy getCommandSpyConfig(){
+        return this.commandSpy;
     }
 
     /**
-     * Get the Messages Configuration
-     * @return the Messages configuration
+     * Get the syntax blocker configuration
+     * @return the syntax configuration
      */
-    public static Messages.Config getMessages(){
-        return messages;
+    public Syntax getSyntaxConfig(){
+        return this.syntax;
+    }
+
+    /**CommandBlacklist configuration */
+    @ConfigSerializable
+    public static class CommandBlacklist implements Executable, Warning, Toggleable {
+        @Comment("Enables command blocking")
+        private boolean enabled = true;
+
+        @Comment("""
+            Sets the form of warning
+            Available options: TITLE, ACTIONBAR, MESSAGE""")
+        @Setting(value = "warning-type")
+        private WarningType warningType = WarningType.MESSAGE;
+
+        @Comment("Commands to be executed in the command blacklist module")
+        private CommandBlacklist.Commands commands = new Commands();
+
+        @Override
+        public boolean enabled(){
+            return this.enabled;
+        }
+
+        @Override
+        public WarningType getWarningType(){
+            return this.warningType;
+        }
+
+        @Override
+        public CommandBlacklist.Commands getCommandsConfig(){
+            return this.commands;
+        }
+
+        /**Command Blacklist commands configuration */
+        @ConfigSerializable
+        public static class Commands extends CommandsConfig{}
+    }
+
+    /**Infractions configuration */
+    @ConfigSerializable
+    public static class Infractions implements Toggleable, Warning, Controllable, Executable {
+        @Comment("Enable violation checking in chat and commands")
+        private boolean enabled = true;
+
+        @Comment("""
+            Sets the form of warning
+            Available options: TITLE, ACTIONBAR, MESSAGE""")
+        @Setting(value = "warning-type")
+        private WarningType warningType = WarningType.MESSAGE;
+
+        @Comment("""
+            Sets the control format
+            Available options: BLOCK, REPLACE
+            Note that in the latest versions of Velocity, the REPLACE mode may NOT work""")
+        @Setting(value = "control-type")
+        private ControlType controlType = ControlType.BLOCK;
+
+        @Comment("Commands to be executed in the regular infraction module")
+        private Infractions.Commands commands = new Infractions.Commands();
+
+        @Override
+        public boolean enabled(){
+            return this.enabled;
+        }
+
+        @Override
+        public WarningType getWarningType(){
+            return this.warningType;
+        }
+
+        @Override
+        public ControlType getControlType(){
+            return this.controlType;
+        }
+
+        @Override
+        public CommandsConfig getCommandsConfig(){
+            return this.commands;
+        }
+
+        /**Infraction commands configuration */
+        @ConfigSerializable
+        public static class Commands extends CommandsConfig{}
+    }
+
+    /**Flood Configuration */
+    @ConfigSerializable
+    public static class Flood implements Toggleable, Warning, Controllable, Executable {
+        @Comment("""
+            Enable flood check in the chat
+            (e.g.: "aaaaaaaa")""")
+        private boolean enabled = true;
+
+        @Comment("""
+            Sets the form of warning
+            Available options: TITLE, ACTIONBAR, MESSAGE""")
+        @Setting(value = "warning-type")
+        private WarningType warningType = WarningType.MESSAGE;
+
+        @Comment("""
+            Sets the control format
+            Available options: BLOCK, REPLACE
+            Note that in the latest versions of Velocity, the REPLACE mode may NOT work""")
+        @Setting(value = "control-type")
+        private ControlType controlType = ControlType.BLOCK;
+
+        @Comment("Sets the maximum limit of repeated characters for a word not to be considered as Flood")
+        private int limit = 5;
+
+        @Comment("Commands to be executed in the flood module")
+        private Flood.Commands commands = new Flood.Commands();
+
+        @Override
+        public boolean enabled(){
+            return this.enabled;
+        }
+
+        @Override
+        public WarningType getWarningType(){
+            return this.warningType;
+        }
+
+        @Override
+        public ControlType getControlType(){
+            return this.controlType;
+        }
+
+        /**
+         * Get the flood limit
+         * @return the flood limit
+         */
+        public int getLimit(){
+            return this.limit;
+        }
+
+        @Override
+        public Flood.Commands getCommandsConfig(){
+            return this.commands;
+        }
+
+        /**Flood Commands configuration */
+        @ConfigSerializable
+        public static class Commands extends CommandsConfig{}
+    }
+
+    /**Spam Configuration */
+    @ConfigSerializable
+    public static class Spam implements Toggleable, Warning, Executable {
+
+        @Comment("Enable the spam module")
+        private boolean enabled = true;
+
+        @Comment("""
+            Sets the form of warning
+            Available options: TITLE, ACTIONBAR, MESSAGE""")
+        @Setting(value = "warning-type")
+        private WarningType warningType = WarningType.MESSAGE;
+
+        @Comment("Cooldown subcheck configuration")
+        private Spam.Cooldown cooldown = new Spam.Cooldown();
+
+        @Comment("Commands to be executed in the flood module")
+        private Spam.Commands commands = new Spam.Commands();
+
+        @Override
+        public boolean enabled(){
+            return this.enabled;
+        }
+
+        @Override
+        public WarningType getWarningType(){
+            return this.warningType;
+        }
+
+        /**
+         * Get the cooldown config
+         * @return the cooldown config
+         */
+        public Spam.Cooldown getCooldownConfig(){
+            return this.cooldown;
+        }
+
+        @Override
+        public Spam.Commands getCommandsConfig(){
+            return this.commands;
+        }
+
+        /**Spam cooldown configuration */
+        @ConfigSerializable
+        public static class Cooldown{
+            @Comment("Enables the cooldown submodule")
+            private boolean enabled = true;
+
+            @Comment("Set the time limit between each message")
+            private long limit = 2500;
+
+            @Comment("""
+                Time Unit of the cooldown limit
+                Available values: NANOSECONDS, MICROSECONDS, MILLISECONDS, SECONDS, MINUTES, HOURS, DAYS""")
+            private TimeUnit unit = TimeUnit.MILLISECONDS;
+
+            public boolean enabled(){
+                return this.enabled;
+            }
+
+            public long limit(){
+                return this.limit;
+            }
+
+            public TimeUnit unit() {
+                return this.unit;
+            }
+        }
+
+        /**Spam Commands configuration */
+        @ConfigSerializable
+        public static class Commands extends CommandsConfig{}
+    }
+
+    /**Unicode Configuration */
+    @ConfigSerializable
+    public static class Unicode implements Toggleable, Warning, Executable, Controllable {
+        @Comment("Enable the Unicode Module")
+        private boolean enabled = true;
+
+        @Comment("""
+            Sets the form of warning
+            Available options: TITLE, ACTIONBAR, MESSAGE""")
+        @Setting(value = "warning-type")
+        private WarningType warningType = WarningType.MESSAGE;
+
+        @Comment("""
+            Sets the control format
+            Available options: BLOCK, REPLACE
+            Note that in the latest versions of Velocity, the REPLACE mode may NOT work""")
+        @Setting(value = "control-type")
+        private ControlType controlType = ControlType.BLOCK;
+
+        @Comment("Commands to be executed in the unicode module")
+        private Unicode.Commands commands = new Unicode.Commands();
+
+        @Comment("Additional Characters to allow")
+        private Chars additionalChars = new Chars();
+
+        @Override
+        public boolean enabled(){
+            return this.enabled;
+        }
+
+        @Override
+        public WarningType getWarningType(){
+            return this.warningType;
+        }
+
+        @Override
+        public CommandsConfig getCommandsConfig(){
+            return this.commands;
+        }
+
+        @Override
+        public ControlType getControlType() {
+            return controlType;
+        }
+
+        public Chars additionalChars() {
+            return this.additionalChars;
+        }
+
+        /**Unicode Commands configuration */
+        @ConfigSerializable
+        public static class Commands extends CommandsConfig{}
+
+        @ConfigSerializable
+        public static class Chars implements Toggleable {
+            @Comment("Enables extra character check")
+            private boolean enabled = false;
+            @Comment("Sets the additional characters to check")
+            private char[] chars = {'ç'};
+            @Comment("""
+                Sets character checking mode
+                Modes Availables:
+                BLACKLIST: If one of the configured characters is detected, the check will be activated as an illegal character
+                WHITELIST: If a character is detected as illegal but is within the configured characters, its detection as an illegal character will be skipped""")
+            private CharMode mode = CharMode.BLACKLIST;
+
+            public char[] chars() {
+                return this.chars;
+            }
+
+            @Override
+            public boolean enabled() {
+                return this.enabled;
+            }
+
+            public CharMode charMode() {
+                return this.mode;
+            }
+
+        }
+    }
+
+    /**Caps Configuration */
+    @ConfigSerializable
+    public static class Caps implements Warning, Toggleable, Controllable, Executable{
+
+        @Comment("Enable the Caps limit Module")
+        private boolean enabled = true;
+
+        @Comment("""
+            Sets the control format
+            Available options: BLOCK, REPLACE
+            Note that in the latest versions of Velocity, the REPLACE mode may NOT work""")
+        @Setting(value = "control-type")
+        private ControlType controlType = ControlType.BLOCK;
+
+        @Comment("""
+            Sets the form of warning
+            Available options: TITLE, ACTIONBAR, MESSAGE""")
+        @Setting(value = "warning-type")
+        private WarningType warningType = WarningType.MESSAGE;
+
+        @Comment("Sets the maximum limit of caps in a sentence")
+        private int limit = 5;
+
+        @Comment("Commands to be executed in the caps module")
+        private Caps.Commands commands = new Caps.Commands();
+
+        @Override
+        public boolean enabled() {
+            return this.enabled;
+        }
+
+        @Override
+        public WarningType getWarningType() {
+            return this.warningType;
+        }
+
+        @Override
+        public ControlType getControlType(){
+            return this.controlType;
+        }
+
+        public int limit(){
+            return this.limit;
+        }
+
+        public CommandsConfig getCommandsConfig(){
+            return this.commands;
+        }
+
+        @ConfigSerializable
+        public static class Commands extends CommandsConfig{}
+    }
+
+    @ConfigSerializable
+    public static class Syntax implements Warning, Toggleable, Executable {
+
+        @Comment("Commands to be executed in the syntax module")
+        private Syntax.Commands commands = new Syntax.Commands();
+
+        @Comment("Enable the Syntax blocker Module")
+        private boolean enabled = true;
+
+        @Comment("""
+            Sets the form of warning
+            Available options: TITLE, ACTIONBAR, MESSAGE""")
+        @Setting(value = "warning-type")
+        private WarningType warningType = WarningType.MESSAGE;
+
+        @Override
+        public CommandsConfig getCommandsConfig() {
+            return this.commands;
+        }
+
+        @Override
+        public boolean enabled() {
+            return this.enabled;
+        }
+
+        @Override
+        public WarningType getWarningType() {
+            return this.warningType;
+        }
+
+        @ConfigSerializable
+        public static class Commands extends CommandsConfig{}
+
+    }
+
+    @ConfigSerializable
+    public static class Format implements Toggleable{
+        @Comment("Enable Format Module")
+        private boolean enabled = false;
+
+        @Comment("Set the first letter of a sentence in uppercase")
+        @Setting(value = "first-letter-uppercase")
+        private boolean firstLetterUppercase = true;
+
+        @Comment("Adds a final dot in each sentence")
+        @Setting(value = "final-dot")
+        private boolean finalDot = true;
+
+        @Override
+        public boolean enabled(){
+            return this.enabled;
+        }
+
+        public boolean setFirstLetterUppercase(){
+            return this.firstLetterUppercase;
+        }
+
+        public boolean setFinalDot(){
+            return this.finalDot;
+        }
+    }
+
+    @ConfigSerializable
+    public static class CommandSpy implements Toggleable{
+        @Comment("Enable CommandSpy module")
+        private boolean enabled = false;
+
+        @Comment("Commands to ignore")
+        private Set<String> ignoredCommands = Set.of(
+            "login",
+            "register",
+            "changepassword"
+        );
+
+        @Override
+        public boolean enabled() {
+            return this.enabled;
+        }
+
+        public Set<String> ignoredCommands(){
+            return this.ignoredCommands;
+        }
+    }
+
+    @ConfigSerializable
+    public static class General{
+        @Comment("Set the maximum time in which a user's violations will be saved after the user leaves your server")
+        @Setting(value = "delete-users-after")
+        private long deleteUsersAfter = 30;
+
+        @Comment("""
+            Set the time unit of the delete-users-after setting
+            Available values: NANOSECONDS, MICROSECONDS, MILLISECONDS, SECONDS, MINUTES, HOURS, DAYS""")
+        @Setting(value = "time-unit")
+        private TimeUnit unit = TimeUnit.SECONDS;
+
+        @Comment("Limit the ammount of users showed on autocompletion")
+        @Setting(value = "tab-complete-limit")
+        private int limitTabComplete = 40;
+
+        public long deleteUsersTime(){
+            return this.deleteUsersAfter;
+        }
+
+        public TimeUnit unit() {
+            return this.unit;
+        }
+
+        public int tabCompleteLimit(){
+            return this.limitTabComplete;
+        }
+    }
+
+    @ConfigSerializable
+    public static class CommandsConfig{
+        @Comment("Enable submodule")
+        @Setting(value = "execute-commands")
+        private boolean executeCommands = false;
+
+        @Comment("Violations required to execute the command")
+        @Setting(value = "violations-required")
+        private int violationsRequired = 2;
+
+        @Comment("Commands to execute")
+        @Setting(value = "commands-to-execute")
+        private Set<String> commandsToExecute = Set.of(
+                "mute <player> 1m You have been muted",
+                "example command"
+        );
+
+        public boolean executeCommand(){
+            return this.executeCommands;
+        }
+
+        public int violationsRequired(){
+            return this.violationsRequired;
+        }
+
+        public Set<String> getCommandsToExecute(){
+            return this.commandsToExecute;
+        }
+    }
+
+    public interface Warning{
+        WarningType getWarningType();
+    }
+
+    public interface Toggleable{
+        boolean enabled();
+    }
+
+    public interface Controllable{
+        ControlType getControlType();
+
+        default boolean isBlockable(){
+            return getControlType() == ControlType.BLOCK;
+        }
+    }
+
+    public interface Executable{
+        CommandsConfig getCommandsConfig();
     }
 }

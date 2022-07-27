@@ -11,7 +11,6 @@ import org.jetbrains.annotations.ApiStatus.Internal;
 
 import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.InfractionPlayer;
-import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.modules.Replacer;
 import me.dreamerzero.chatregulator.wrapper.event.ChatWrapper;
 import me.dreamerzero.chatregulator.wrapper.event.EventWrapper;
@@ -54,8 +53,8 @@ public final class ChatListener {
             return;
         }
 
-        if(Configuration.getConfig().getFormatConfig().enabled()){
-            message.set(Replacer.applyFormat(message.get()));
+        if(plugin.getConfig().getFormatConfig().enabled()){
+            message.set(Replacer.applyFormat(message.get(), plugin.getConfig()));
             event.setResult(ChatResult.message(message.get()));
         }
 

@@ -14,7 +14,8 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.LoggerFactory;
 
-import me.dreamerzero.chatregulator.config.Configuration;
+import me.dreamerzero.chatregulator.config.Blacklist;
+import me.dreamerzero.chatregulator.config.Loader;
 
 class CommandsTest {
     @ParameterizedTest(name = "{0}'s first argument is tell")
@@ -31,10 +32,10 @@ class CommandsTest {
     @Test
     @DisplayName("Command Blacklisted")
     void isCommandBlacklisted(@TempDir Path path){
-        Configuration.loadConfig(path, LoggerFactory.getLogger(CommandsTest.class));
+        Blacklist config = Loader.loadBlacklistConfig(path, LoggerFactory.getLogger(CommandsTest.class));
 
         String command = "execute for all";
-        boolean isCommand = CommandUtils.isCommand(command);
+        boolean isCommand = CommandUtils.isCommand(command, config);
 
         assertTrue(isCommand);
     }

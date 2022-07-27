@@ -18,10 +18,6 @@ import me.dreamerzero.chatregulator.result.ReplaceableResult;
 public final class CapsCheck implements ICheck {
     private final int limit;
 
-    private CapsCheck(){
-        this.limit = Configuration.getConfig().getCapsConfig().limit();
-    }
-
     private CapsCheck(int limit){
         this.limit = limit;
     }
@@ -46,8 +42,8 @@ public final class CapsCheck implements ICheck {
             : new Result(string, false));
     }
 
-    public static CompletableFuture<Result> createCheck(String string){
-        return new CapsCheck().check(string);
+    public static CompletableFuture<Result> createCheck(String string, Configuration config){
+        return new CapsCheck(config.getCapsConfig().limit()).check(string);
     }
 
     @Override
@@ -80,9 +76,7 @@ public final class CapsCheck implements ICheck {
 
         @Override
         public CapsCheck build(){
-            return limit == 0
-                ? new CapsCheck()
-                : new CapsCheck(limit);
+            return new CapsCheck(limit == 0 ? 5 : limit);
         }
     }
 }

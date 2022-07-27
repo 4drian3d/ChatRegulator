@@ -60,7 +60,7 @@ public final class TestsUtils {
     public static ChatRegulator createRegulator(Path temporaryPath){
         ProxyServer proxy = createProxy();
         Logger logger = LoggerFactory.getLogger(TestsUtils.class);
-        return new ChatRegulator(proxy, logger, temporaryPath, new TestPluginManager()){
+        ChatRegulator plugin = new ChatRegulator(proxy, logger, temporaryPath, new TestPluginManager()){
             Statistics statistics = new Statistics();
             Placeholders placeholders = new Placeholders(this);
             @Override
@@ -78,5 +78,7 @@ public final class TestsUtils {
                 return placeholders;
             }
         };
+        plugin.reloadConfig();
+        return plugin;
     }
 }

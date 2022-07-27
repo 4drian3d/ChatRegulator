@@ -10,7 +10,6 @@ import org.jetbrains.annotations.ApiStatus.Internal;
 
 import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.InfractionPlayer;
-import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.modules.checks.CommandCheck;
 import me.dreamerzero.chatregulator.modules.checks.SyntaxCheck;
 import me.dreamerzero.chatregulator.result.Result;
@@ -74,7 +73,7 @@ public final class CommandListener {
     }
 
     private boolean checkIfCanCheck(final String command, EventWrapper<?> wrapper) {
-        for(final String cmd : Configuration.getConfig().getCommandsChecked()){
+        for(final String cmd : plugin.getConfig().getCommandsChecked()){
             if(CommandUtils.isStartingString(command, cmd))
                 return false;
         }
@@ -83,7 +82,7 @@ public final class CommandListener {
     }
 
     private boolean syntax(InfractionPlayer player, String string, EventWrapper<?> event) {
-        if(allowedPlayer(player.getPlayer(), InfractionType.SYNTAX)
+        if(allowedPlayer(player.getPlayer(), InfractionType.SYNTAX, plugin.getConfig())
             && checkAndCall(
                 new EventBundle(
                     player,
@@ -106,13 +105,13 @@ public final class CommandListener {
     }
 
     private boolean blockedCommands(InfractionPlayer player, String string, EventWrapper<?> event) {
-        if(allowedPlayer(player.getPlayer(), InfractionType.BCOMMAND)
+        if(allowedPlayer(player.getPlayer(), InfractionType.BCOMMAND, plugin.getConfig())
             && checkAndCall(
                 new EventBundle(
                     player,
                     string,
                     InfractionType.BCOMMAND,
-                    CommandCheck.createCheck(string).exceptionallyAsync(e -> {
+                    CommandCheck.createCheck(string, plugin.getBlacklist()).exceptionallyAsync(e -> {
                         plugin.getLogger().error("An Error ocurred on Blocked Commands Check", e);
                         return new Result("", false);
                     }).join(),

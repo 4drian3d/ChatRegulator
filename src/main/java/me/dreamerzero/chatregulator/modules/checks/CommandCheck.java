@@ -2,15 +2,17 @@ package me.dreamerzero.chatregulator.modules.checks;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.concurrent.CompletableFuture;
 
 import org.jetbrains.annotations.NotNull;
 
-import me.dreamerzero.chatregulator.config.Configuration;
+import me.dreamerzero.chatregulator.config.Blacklist;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.result.Result;
 import me.dreamerzero.chatregulator.utils.CommandUtils;
+import net.kyori.adventure.builder.AbstractBuilder;
 
 /**
  * Check for verification of executed commands
@@ -18,12 +20,8 @@ import me.dreamerzero.chatregulator.utils.CommandUtils;
 public final class CommandCheck implements ICheck {
     private final Collection<String> blockedCommands;
 
-    private CommandCheck(){
-        this(Configuration.getBlacklist().getBlockedCommands());
-    }
-
-    private CommandCheck(Collection<String> blocledCommands){
-        this.blockedCommands = blocledCommands;
+    private CommandCheck(Collection<String> blockedCommands){
+        this.blockedCommands = blockedCommands;
     }
 
     /**
@@ -53,8 +51,8 @@ public final class CommandCheck implements ICheck {
      * @param string the string to check
      * @return a CompletableFuture with the result of this check
      */
-    public static CompletableFuture<Result> createCheck(String string){
-        return new CommandCheck().check(string);
+    public static CompletableFuture<Result> createCheck(String string, Blacklist blacklist){
+        return new CommandCheck(blacklist.getBlockedCommands()).check(string);
     }
 
     /**
@@ -66,7 +64,7 @@ public final class CommandCheck implements ICheck {
     }
 
     /**Command Check Builder */
-    public static class Builder {
+    public static class Builder implements AbstractBuilder<CommandCheck> {
         private Collection<String> blockedCommands;
 
         private Builder(){}
@@ -87,7 +85,12 @@ public final class CommandCheck implements ICheck {
          * @return this
          */
         public Builder blockedCommands(String... blockedCommands){
-            this.blockedCommands = Arrays.asList(blockedCommands);
+            if (this.blockedCommands == null) {
+                this.blockedCommands = new HashSet<>(Arrays.asList(blockedCommands));
+            } else {
+                Collections.addAll(this.blockedCommands, blockedCommands);
+            }
+            
             return this;
         }
 
@@ -107,8 +110,9 @@ public final class CommandCheck implements ICheck {
          * Build a new CommandCheck with the Builder values
          * @return a new CommandCheck
          */
+        @Override
         public CommandCheck build(){
-            return blockedCommands == null ? new CommandCheck() : new CommandCheck(blockedCommands);
+            return new CommandCheck(blockedCommands == null ? Collections.emptyList() : blockedCommands);
         }
     }
 }

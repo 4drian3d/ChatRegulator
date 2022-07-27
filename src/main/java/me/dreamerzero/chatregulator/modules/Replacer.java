@@ -16,9 +16,7 @@ public final class Replacer {
      * @return a string with the first character converted to uppercase
      */
     public static @NotNull String firstLetterUpercase(@NotNull final String string){
-        if(!Configuration.getConfig().getFormatConfig().setFirstLetterUppercase()
-            || Objects.requireNonNull(string).length() < 1
-        ) {
+        if(Objects.requireNonNull(string).length() < 1) {
             return string;
         }
 
@@ -31,6 +29,11 @@ public final class Replacer {
             .toString();
     }
 
+    public static @NotNull String firstLetterUpercase(@NotNull final String string, Configuration config){
+        if(!config.getFormatConfig().setFirstLetterUppercase()) return string;
+        return firstLetterUpercase(string);
+    }
+
     /**
      * Add a dot at the end of a string
      *
@@ -39,14 +42,18 @@ public final class Replacer {
      * @return the string converted
      */
     public static @NotNull String addFinalDot(@NotNull final String string){
-        if(!Configuration.getConfig().getFormatConfig().setFinalDot()
-            || Objects.requireNonNull(string).charAt(string.length()-1) == '.'
+        if(Objects.requireNonNull(string).charAt(string.length()-1) == '.'
             || string.length() <= 1
         ) {
             return string;
         }
 
         return string + ".";
+    }
+
+    public static String addFinalDot(final String string, Configuration config) {
+        if(!config.getFormatConfig().setFinalDot()) return string;
+        return addFinalDot(string);
     }
     private Replacer(){}
 
@@ -57,5 +64,9 @@ public final class Replacer {
      */
     public static @NotNull String applyFormat(final @NotNull String string){
         return firstLetterUpercase(addFinalDot(string));
+    }
+
+    public static @NotNull String applyFormat(final @NotNull String string, Configuration config){
+        return firstLetterUpercase(addFinalDot(string, config), config);
     }
 }

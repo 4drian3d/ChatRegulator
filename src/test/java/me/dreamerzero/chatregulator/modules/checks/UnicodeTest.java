@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.config.Configuration;
+import me.dreamerzero.chatregulator.config.Loader;
 import me.dreamerzero.chatregulator.enums.ControlType;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.enums.SourceType;
@@ -30,6 +31,7 @@ import me.dreamerzero.chatregulator.utils.TestsUtils;
 import me.dreamerzero.chatregulator.utils.GeneralUtils.EventBundle;
 
 class UnicodeTest {
+    @TempDir Path path;
 
     @Test
     @DisplayName("Illegal Check")
@@ -63,21 +65,21 @@ class UnicodeTest {
         assertTrue(result.isInfraction());
     }
 
-    @Test
-    void legalCheck(@TempDir Path path){
-        Configuration.loadConfig(path, LoggerFactory.getLogger(UnicodeTest.class));
+    @ParameterizedTest
+    @ValueSource(strings = {"Hello my friends", "hola, como van?"})
+    void legalCheck(String string){
+        Configuration config = Loader.loadMainConfig(path, LoggerFactory.getLogger(UnicodeTest.class));
 
-        assertFalse(UnicodeCheck.createCheck("Hello my friends").join().isInfraction());
-        assertFalse(UnicodeCheck.createCheck("Hola").join().isInfraction());
-        assertFalse(UnicodeCheck.createCheck("aeiou nosequemasponer").join().isInfraction());
+        assertFalse(UnicodeCheck.createCheck(string, config).join().isInfraction());
     }
 
     @Test
-    void realTest(@TempDir Path path){
+    void realTest(){
         String randomMSG = "ƕƘáéíóú";
         Player player = TestsUtils.createRandomNormalPlayer();
+        Configuration config = Loader.loadMainConfig(path, LoggerFactory.getLogger(UnicodeTest.class));
 
-        assertTrue(GeneralUtils.allowedPlayer(player, InfractionType.UNICODE));
+        assertTrue(GeneralUtils.allowedPlayer(player, InfractionType.UNICODE, config));
 
         UnicodeCheck check = UnicodeCheck.builder()
             .controlType(ControlType.REPLACE)

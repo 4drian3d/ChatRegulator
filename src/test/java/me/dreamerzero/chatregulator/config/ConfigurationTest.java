@@ -16,9 +16,7 @@ class ConfigurationTest {
     @Test
     @DisplayName("Config Values")
     void configValues(@TempDir Path path){
-        Configuration.loadConfig(path, LoggerFactory.getLogger(ConfigurationTest.class));
-
-        MainConfig.Config config = Configuration.getConfig();
+        Configuration config = Loader.loadMainConfig(path, LoggerFactory.getLogger(ConfigurationTest.class));
 
         assertTrue(config.getCommandBlacklistConfig().enabled());
         assertFalse(config.getFormatConfig().enabled());

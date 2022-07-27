@@ -7,7 +7,6 @@ import java.util.regex.Pattern;
 
 import org.jetbrains.annotations.NotNull;
 
-import me.dreamerzero.chatregulator.config.Configuration;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.result.Result;
 import net.kyori.adventure.builder.AbstractBuilder;
@@ -34,8 +33,8 @@ public final class FloodCheck implements ICheck {
     /**
      * Update the Flood pattern based in the configuration
      */
-    public static void setFloodRegex(){
-        floodPattern = Pattern.compile(STANDARD_PATTERN.replace(5+"", Configuration.getConfig().getFloodConfig().getLimit()+""), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+    public static void setFloodRegex(int limit){
+        floodPattern = Pattern.compile(STANDARD_PATTERN.replace(5+"", limit+""), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
     }
 
     /**

@@ -11,7 +11,6 @@ import me.dreamerzero.chatregulator.InfractionPlayer;
 import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.config.ConfigManager;
 import me.dreamerzero.chatregulator.config.Configuration;
-import me.dreamerzero.chatregulator.config.MainConfig;
 import me.dreamerzero.chatregulator.modules.checks.CapsCheck;
 import me.dreamerzero.chatregulator.modules.checks.FloodCheck;
 import me.dreamerzero.chatregulator.modules.checks.InfractionCheck;
@@ -38,8 +37,8 @@ public final class GeneralUtils {
      * @param type the infraction type
      * @return if the player can be checked
      */
-    public static boolean allowedPlayer(@NotNull Player player, InfractionType type){
-        return type.getConfig().enabled() && !type.bypassPermission().test(Objects.requireNonNull(player));
+    public static boolean allowedPlayer(@NotNull Player player, InfractionType type, Configuration config){
+        return type.getConfig(config).enabled() && !type.bypassPermission().test(Objects.requireNonNull(player));
     }
 
     /**
@@ -48,8 +47,8 @@ public final class GeneralUtils {
      * @param iplayer the infraction player
      * @return if the player has flagged for spam
      */
-    public static boolean cooldownSpamCheck(Result result, InfractionPlayer iplayer){
-        final MainConfig.Spam config = Configuration.getConfig().getSpamConfig();
+    public static boolean cooldownSpamCheck(Result result, InfractionPlayer iplayer, Configuration configuration){
+        final Configuration.Spam config = configuration.getSpamConfig();
         if(!result.isInfraction() || !config.getCooldownConfig().enabled()) {
             return false;
         }
@@ -107,13 +106,13 @@ public final class GeneralUtils {
     private GeneralUtils(){}
 
     public static boolean unicode(InfractionPlayer player, AtomicReference<String> string, EventWrapper<?> event, ChatRegulator plugin) {
-        return GeneralUtils.allowedPlayer(player.getPlayer(), InfractionType.UNICODE)
-            && UnicodeCheck.createCheck(string.get()).exceptionallyAsync(e -> {
+        return GeneralUtils.allowedPlayer(player.getPlayer(), InfractionType.UNICODE, plugin.getConfig())
+            && UnicodeCheck.createCheck(string.get(), plugin.getConfig()).exceptionallyAsync(e -> {
                 plugin.getLogger().error("An Error ocurred on Unicode Check", e);
                 return new Result("", false);
             }).thenApplyAsync(result -> {
                 if(GeneralUtils.checkAndCall(new EventBundle(player, string.get(), InfractionType.UNICODE, result, event.source()), plugin)){
-                    if(Configuration.getConfig().getUnicodeConfig().isBlockable()){
+                    if(plugin.getConfig().getUnicodeConfig().isBlockable()){
                         event.cancel();
                         event.resume();
                         return true;
@@ -128,13 +127,13 @@ public final class GeneralUtils {
     }
 
     public static boolean caps(InfractionPlayer player, AtomicReference<String> string, EventWrapper<?> event, ChatRegulator plugin) {
-        return GeneralUtils.allowedPlayer(player.getPlayer(), InfractionType.CAPS)
-            && CapsCheck.createCheck(string.get()).exceptionallyAsync(e -> {
+        return GeneralUtils.allowedPlayer(player.getPlayer(), InfractionType.CAPS, plugin.getConfig())
+            && CapsCheck.createCheck(string.get(), plugin.getConfig()).exceptionallyAsync(e -> {
                 plugin.getLogger().error("An Error ocurred on Caps Check", e);
                 return new Result("", false);
             }).thenApplyAsync(result -> {
                 if(GeneralUtils.checkAndCall(new EventBundle(player, string.get(), InfractionType.CAPS, result, event.source()), plugin)){
-                    if(Configuration.getConfig().getCapsConfig().isBlockable()){
+                    if(plugin.getConfig().getCapsConfig().isBlockable()){
                         event.cancel();
                         event.resume();
                         return true;
@@ -149,13 +148,13 @@ public final class GeneralUtils {
     }
 
     public static boolean flood(InfractionPlayer player, AtomicReference<String> string, EventWrapper<?> event, ChatRegulator plugin) {
-        return GeneralUtils.allowedPlayer(player.getPlayer(), InfractionType.FLOOD)
+        return GeneralUtils.allowedPlayer(player.getPlayer(), InfractionType.FLOOD, plugin.getConfig())
             && FloodCheck.createCheck(string.get()).exceptionallyAsync(e -> {
                 plugin.getLogger().error("An Error ocurred on Flood Check", e);
                 return new Result("", false);
             }).thenApplyAsync(result -> {
                 if(GeneralUtils.checkAndCall(new EventBundle(player, string.get(), InfractionType.FLOOD, result, event.source()), plugin)) {
-                    if(Configuration.getConfig().getFloodConfig().isBlockable()){
+                    if(plugin.getConfig().getFloodConfig().isBlockable()){
                         event.cancel();
                         event.resume();
                         return true;
@@ -170,13 +169,13 @@ public final class GeneralUtils {
     }
 
     public static boolean regular(InfractionPlayer player, AtomicReference<String> string, EventWrapper<?> event, ChatRegulator plugin) {
-        return GeneralUtils.allowedPlayer(player.getPlayer(), InfractionType.REGULAR)
-            && InfractionCheck.createCheck(string.get()).exceptionallyAsync(e -> {
+        return GeneralUtils.allowedPlayer(player.getPlayer(), InfractionType.REGULAR, plugin.getConfig())
+            && InfractionCheck.createCheck(string.get(), plugin).exceptionallyAsync(e -> {
                 plugin.getLogger().error("An Error ocurred on Regular Infraction Check", e);
                 return new Result("", false);
             }).thenApplyAsync(result -> {
                 if(GeneralUtils.checkAndCall(new EventBundle(player, string.get(), InfractionType.REGULAR, result, event.source()), plugin)) {
-                    if(Configuration.getConfig().getInfractionsConfig().isBlockable()){
+                    if(plugin.getConfig().getInfractionsConfig().isBlockable()){
                         event.cancel();
                         event.resume();
                         return true;
@@ -191,12 +190,12 @@ public final class GeneralUtils {
     }
 
     public static boolean spam(InfractionPlayer player, AtomicReference<String> string, EventWrapper<?> event, ChatRegulator plugin) {
-        if(GeneralUtils.allowedPlayer(player.getPlayer(), InfractionType.SPAM)) {
+        if(GeneralUtils.allowedPlayer(player.getPlayer(), InfractionType.SPAM, plugin.getConfig())) {
             final Result result = SpamCheck.createCheck(player, string.get(), event.source()).exceptionallyAsync(e -> {
                 plugin.getLogger().error("An Error ocurred on Spam Check", e);
                 return new Result("", false);
             }).join();
-            if(GeneralUtils.cooldownSpamCheck(result, player)
+            if(GeneralUtils.cooldownSpamCheck(result, player, plugin.getConfig())
                 && GeneralUtils.callViolationEvent(new EventBundle(player, string.get(), InfractionType.SPAM, result, event.source()), plugin)
             ) {
                 event.cancel();

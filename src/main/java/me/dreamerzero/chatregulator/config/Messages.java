@@ -7,125 +7,120 @@ import org.spongepowered.configurate.objectmapping.meta.Comment;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
 
 /**ChatRegulator Messages */
+@ConfigSerializable
 public final class Messages {
     private Messages(){}
 
+    @Comment("Configuration of command blacklist module messages")
+    @Setting(value = "command-blacklist")
+    private CommandBlacklist blacklist = new CommandBlacklist();
+
+    @Comment("Configuration of regular violation module messages")
+    private Infractions infractions = new Infractions();
+
+    @Comment("Configuration of flood module messages")
+    private Flood flood = new Flood();
+
+    @Comment("Configuration of spam module messages")
+    private Spam spam = new Spam();
+
+    @Comment("Configuration of unicode module messages")
+    private Unicode unicode = new Unicode();
+
+    @Comment("Configuration of caps module messages")
+    private Caps caps = new Caps();
+
+    @Comment("Configuration of syntax blocker module messages")
+    private Syntax syntax = new Syntax();
+
+    @Comment("Configuration of the messages of the /chatr clear command")
+    @Setting(value = "clear-chat")
+    private Clear clearChat = new Clear();
+
+    @Comment("Configuration of the messages of the command spy module")
+    private CommandSpy commandSpy = new CommandSpy();
+
+    @Comment("General Messages")
+    private General general = new General();
+
     /**
-     * Main Messages configuration
+     * Get the infractions messages
+     * @return the infractions messages
      */
-    @ConfigSerializable
-    public static class Config{
-        @Comment("Configuration of command blacklist module messages")
-        @Setting(value = "command-blacklist")
-        private CommandBlacklist blacklist = new CommandBlacklist();
+    public Infractions getInfractionsMessages(){
+        return this.infractions;
+    }
 
-        @Comment("Configuration of regular violation module messages")
-        private Infractions infractions = new Infractions();
+    /**
+     * Get the command blacklist messages
+     * @return the command blacklist messages
+     */
+    public CommandBlacklist getBlacklistMessages(){
+        return this.blacklist;
+    }
 
-        @Comment("Configuration of flood module messages")
-        private Flood flood = new Flood();
+    /**
+     * Get the floooood messages
+     * @return the flood messages
+     */
+    public Flood getFloodMessages(){
+        return this.flood;
+    }
 
-        @Comment("Configuration of spam module messages")
-        private Spam spam = new Spam();
+    /**
+     * Get the spam messages
+     * @return the spam messages
+     */
+    public Spam getSpamMessages(){
+        return this.spam;
+    }
 
-        @Comment("Configuration of unicode module messages")
-        private Unicode unicode = new Unicode();
+    /**
+     * Gét thé únícódé mésságés
+     * @return the unicode messages
+     */
+    public Unicode getUnicodeMessages(){
+        return this.unicode;
+    }
 
-        @Comment("Configuration of caps module messages")
-        private Caps caps = new Caps();
+    /**
+     * Get the CAPS messages
+     * @return the caps messages
+     */
+    public Caps getCapsMessages(){
+        return this.caps;
+    }
 
-        @Comment("Configuration of syntax blocker module messages")
-        private Syntax syntax = new Syntax();
+    /**
+     * Get the syntax:blocker messages
+     * @return the syntax messages
+     */
+    public Syntax getSyntaxMessages(){
+        return this.syntax;
+    }
 
-        @Comment("Configuration of the messages of the /chatr clear command")
-        @Setting(value = "clear-chat")
-        private Clear clearChat = new Clear();
+    /**
+     * Get the cleared chat messages
+     * @return the clear messages
+     */
+    public Clear getClearMessages(){
+        return this.clearChat;
+    }
 
-        @Comment("Configuration of the messages of the command spy module")
-        private CommandSpy commandSpy = new CommandSpy();
+    /**
+     * Get the command spy messages
+     * @return the command spy messages
+     */
+    public CommandSpy getCommandSpyMessages(){
+        return this.commandSpy;
+    }
 
-        @Comment("General Messages")
-        private General general = new General();
-
-        /**
-         * Get the infractions messages
-         * @return the infractions messages
-         */
-        public Infractions getInfractionsMessages(){
-            return this.infractions;
-        }
-
-        /**
-         * Get the command blacklist messages
-         * @return the command blacklist messages
-         */
-        public CommandBlacklist getBlacklistMessages(){
-            return this.blacklist;
-        }
-
-        /**
-         * Get the floooood messages
-         * @return the flood messages
-         */
-        public Flood getFloodMessages(){
-            return this.flood;
-        }
-
-        /**
-         * Get the spam messages
-         * @return the spam messages
-         */
-        public Spam getSpamMessages(){
-            return this.spam;
-        }
-
-        /**
-         * Gét thé únícódé mésságés
-         * @return the unicode messages
-         */
-        public Unicode getUnicodeMessages(){
-            return this.unicode;
-        }
-
-        /**
-         * Get the CAPS messages
-         * @return the caps messages
-         */
-        public Caps getCapsMessages(){
-            return this.caps;
-        }
-
-        /**
-         * Get the syntax:blocker messages
-         * @return the syntax messages
-         */
-        public Syntax getSyntaxMessages(){
-            return this.syntax;
-        }
-
-        /**
-         * Get the cleared chat messages
-         * @return the clear messages
-         */
-        public Clear getClearMessages(){
-            return this.clearChat;
-        }
-
-        /**
-         * Get the command spy messages
-         * @return the command spy messages
-         */
-        public CommandSpy getCommandSpyMessages(){
-            return this.commandSpy;
-        }
-
-        /**
-         * Get the general messages
-         * @return the general messages
-         */
-        public General getGeneralMessages(){
-            return this.general;
-        }
+    /**
+     * Get the general messages
+     * @return the general messages
+     */
+    public General getGeneralMessages(){
+        return this.general;
     }
 
     /**

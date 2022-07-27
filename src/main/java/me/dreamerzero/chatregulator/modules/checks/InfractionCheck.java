@@ -2,7 +2,10 @@ package me.dreamerzero.chatregulator.modules.checks;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
@@ -10,8 +13,7 @@ import java.util.regex.Pattern;
 
 import org.jetbrains.annotations.NotNull;
 
-import me.dreamerzero.chatregulator.config.Configuration;
-import me.dreamerzero.chatregulator.enums.ControlType;
+import me.dreamerzero.chatregulator.ChatRegulator;
 import me.dreamerzero.chatregulator.enums.InfractionType;
 import me.dreamerzero.chatregulator.result.Result;
 import net.kyori.adventure.builder.AbstractBuilder;
@@ -25,13 +27,6 @@ import me.dreamerzero.chatregulator.result.ReplaceableResult;
 public final class InfractionCheck implements ICheck {
     private final Pattern[] blockedWords;
     private final boolean blockable;
-
-    private InfractionCheck(){
-        this(
-            Configuration.getConfig().getInfractionsConfig().isBlockable(),
-            Configuration.getBlacklist().getBlockedPatterns()
-        );
-    }
 
     private InfractionCheck(boolean blockable, Pattern... blockedWords){
         this.blockedWords = blockedWords;
@@ -66,7 +61,7 @@ public final class InfractionCheck implements ICheck {
                 }
             }
             return detected
-                ? new MultiPatternReplaceableResult(string, true, matchers.toArray(Matcher[]::new)){
+                ? new MultiPatternReplaceableResult(string, true, matchers.toArray(new Matcher[0])){
                     @Override
                     public String replaceInfraction(){
                         String original = string;
@@ -81,8 +76,8 @@ public final class InfractionCheck implements ICheck {
         });
     }
 
-    private static String generateReplacement(MatchResult result) {
-        final int size = result.group().length()/2;
+    static String generateReplacement(final MatchResult result) {
+        final int size = result.group().length() / 2;
         final StringBuilder builder = new StringBuilder(size);
         for (int i = 0; i < size; i++) {
             builder.append('*');
@@ -95,8 +90,11 @@ public final class InfractionCheck implements ICheck {
         return InfractionType.REGULAR;
     }
 
-    public static @NotNull CompletableFuture<Result> createCheck(String string){
-        return new InfractionCheck().check(string);
+    public static @NotNull CompletableFuture<Result> createCheck(String string, ChatRegulator plugin){
+        return new InfractionCheck(
+            plugin.getConfig().getInfractionsConfig().isBlockable(),
+            plugin.getBlacklist().getBlockedPatterns()
+        ).check(string);
     }
 
     public static @NotNull InfractionCheck.Builder builder(){
@@ -104,7 +102,7 @@ public final class InfractionCheck implements ICheck {
     }
 
     public static class Builder implements AbstractBuilder<InfractionCheck> {
-        private List<Pattern> blockedWords;
+        private Set<Pattern> blockedWords;
         private boolean replaceable;
         private boolean edited = false;
 
@@ -112,7 +110,7 @@ public final class InfractionCheck implements ICheck {
 
         public Builder blockedPattern(Collection<Pattern> patterns){
             if(this.blockedWords == null) {
-                this.blockedWords = new ArrayList<>(patterns);
+                this.blockedWords = new LinkedHashSet<>(patterns);
             } else {
                 this.blockedWords.addAll(patterns);
             }
@@ -121,9 +119,9 @@ public final class InfractionCheck implements ICheck {
 
         public Builder blockedPatterns(Pattern... patterns){
             if(this.blockedWords == null) {
-                this.blockedWords = new ArrayList<>(List.of(patterns));
+                this.blockedWords = new LinkedHashSet<>(List.of(patterns));
             } else {
-                this.blockedWords.addAll(List.of(patterns));
+                Collections.addAll(this.blockedWords, patterns);
             }
             return this;
         }
@@ -137,12 +135,12 @@ public final class InfractionCheck implements ICheck {
         @Override
         public InfractionCheck build(){
             if(this.blockedWords == null){
-                this.blockedWords = List.of(Configuration.getBlacklist().getBlockedPatterns());
+                this.blockedWords = Collections.emptySet();
             }
             if(!edited){
-                this.replaceable = Configuration.getConfig().getInfractionsConfig().getControlType() == ControlType.REPLACE;
+                this.replaceable = false;
             }
-            return new InfractionCheck(!replaceable, blockedWords.toArray(Pattern[]::new));
+            return new InfractionCheck(!replaceable, blockedWords.toArray(new Pattern[0]));
         }
     }
 }
