@@ -27,4 +27,8 @@ tasks {
         archiveFileName.set("ChatRegulator.jar")
         configurations = listOf(project.configurations.shadow.get())
     }
+
+    build {
+        dependsOn(shadowJar)
+    }
 }

@@ -8,6 +8,7 @@ repositories {
 }
 
 dependencies {
+    compileOnly(project(":chatregulator-api"))
     compileOnly("org.kryptonmc", "api", "0.37.1")
     kapt("org.kryptonmc", "api", "0.37.1")
     compileOnly(kotlin("stdlib"))
