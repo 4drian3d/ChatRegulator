@@ -1,6 +1,6 @@
 plugins {
     java
-    id("org.spongepowered.plugin") version "0.11.3"
+    id("org.spongepowered.gradle.plugin") version "2.0.2"
 }
 
 // This may not be required, but has solved issues in the past
@@ -13,10 +13,4 @@ repositories {
 
 dependencies {
     compileOnly("org.spongepowered:spongeapi:8.0.0")
-}
-
-sponge {
-    plugin {
-        id = "chatregulator"
-    }
 }
