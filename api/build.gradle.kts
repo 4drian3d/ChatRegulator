@@ -2,6 +2,12 @@ plugins {
     java
 }
 
+dependencies {
+    compileOnly("net.kyori:adventure-api:4.11.0")
+    compileOnly("net.kyori:adventure-text-serializer-plain:4.11.0")
+    compileOnly("org.spongepowered:configurate-hocon:4.0.0")
+}
+
 java {
     withSourcesJar()
     withJavadocJar()
