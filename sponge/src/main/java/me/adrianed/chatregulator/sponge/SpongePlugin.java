@@ -1,5 +1,6 @@
 package me.adrianed.chatregulator.sponge;
 
+import org.spongepowered.api.Server;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.lifecycle.StartedEngineEvent;
 import org.spongepowered.plugin.builtin.jvm.Plugin;
