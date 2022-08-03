@@ -17,7 +17,7 @@ dependencies {
     shadow(project(":chatregulator-api"))
     shadow(project(":chatregulator-velocity"))
     shadow(project(":chatregulator-paper"))
-    //shadow(project(":chatregulator-krypton"))
+    shadow(project(":chatregulator-krypton"))
     shadow(project(":chatregulator-sponge"))
 }
 
