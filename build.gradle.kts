@@ -6,12 +6,19 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
+allprojects {
+    repositories {
+        mavenCentral()
+        maven("https://repo.papermc.io/repository/maven-public/")
+    }
+}
+
 dependencies {
     shadow(project(":chatregulator-api"))
-    shadow(project(":chatregulator-common"))
     shadow(project(":chatregulator-velocity"))
     shadow(project(":chatregulator-paper"))
     shadow(project(":chatregulator-krypton"))
+    shadow(project(":chatregulator-sponge"))
 }
 
 tasks {

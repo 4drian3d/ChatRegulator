@@ -1,4 +1,8 @@
 plugins {
-    // TODO: Possible kotlin plugin????
     java
+}
+
+dependencies {
+    compileOnly("com.velocitypowered:velocity-api:3.1.2-SNAPSHOT")
+    annotationProcessor("com.velocitypowered:velocity-api:3.1.2-SNAPSHOT")
 }
