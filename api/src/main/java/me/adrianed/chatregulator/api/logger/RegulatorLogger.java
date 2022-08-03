@@ -1,6 +1,6 @@
 package me.adrianed.chatregulator.api.logger;
 
-public interface RegulatorLogger {
+public sealed interface RegulatorLogger permits JavaLogger, SLF4JLogger, Log4JLogger {
     void info(String string);
 
     void info(String string, Throwable throwable);

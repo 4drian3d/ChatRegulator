@@ -6,6 +6,7 @@ dependencies {
     compileOnly("net.kyori:adventure-api:4.11.0")
     compileOnly("net.kyori:adventure-text-serializer-plain:4.11.0")
     compileOnly("org.spongepowered:configurate-hocon:4.0.0")
+    compileOnly("org.slf4j:slf4j-api:1.7.9")
 }
 
 java {
