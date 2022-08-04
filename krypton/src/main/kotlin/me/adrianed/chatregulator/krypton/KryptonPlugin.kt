@@ -6,6 +6,7 @@ import org.kryptonmc.api.Server
 import org.kryptonmc.api.event.Listener
 import org.kryptonmc.api.event.server.ServerStartEvent
 import org.kryptonmc.api.plugin.annotation.Plugin
+import org.kryptonmc.api.plugin.annotation.DataFolder
 
 import me.adrianed.chatregulator.api.RegulatorPlugin
 import me.adrianed.chatregulator.api.logger.Log4JLogger
@@ -25,7 +26,7 @@ import java.nio.file.Path
 class KryptonPlugin @Inject constructor(
     val server: Server,
     val kryptonLogger: Logger,
-    val path: Path
+    @DataFolder val path: Path
 ) : RegulatorPlugin {
     lateinit var config: Configuration
     lateinit var messages: Messages
