@@ -8,8 +8,10 @@ import org.spongepowered.plugin.builtin.jvm.Plugin;
 import com.google.inject.Inject;
 
 import me.adrianed.chatregulator.api.RegulatorPlugin;
+import me.adrianed.chatregulator.api.configuration.Blacklist;
 import me.adrianed.chatregulator.api.configuration.Configuration;
 import me.adrianed.chatregulator.api.configuration.Messages;
+import me.adrianed.chatregulator.api.event.EventManager;
 import me.adrianed.chatregulator.api.logger.Log4JLogger;
 import me.adrianed.chatregulator.api.logger.RegulatorLogger;
 
@@ -52,6 +54,18 @@ public class SpongePlugin implements RegulatorPlugin {
 
     @Override
     public Messages messages() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Blacklist blacklist() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public EventManager eventBus() {
         // TODO Auto-generated method stub
         return null;
     }

@@ -11,6 +11,7 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 
 import me.adrianed.chatregulator.api.RegulatorPlugin;
+import me.adrianed.chatregulator.api.configuration.Blacklist;
 import me.adrianed.chatregulator.api.configuration.Configuration;
 import me.adrianed.chatregulator.api.configuration.Messages;
 import me.adrianed.chatregulator.api.logger.RegulatorLogger;
@@ -54,6 +55,18 @@ public class VelocityPlugin implements RegulatorPlugin {
 
     @Override
     public Messages messages() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Blacklist blacklist() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public me.adrianed.chatregulator.api.event.EventManager eventBus() {
         // TODO Auto-generated method stub
         return null;
     }
