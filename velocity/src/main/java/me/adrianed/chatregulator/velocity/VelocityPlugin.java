@@ -4,6 +4,7 @@ import java.nio.file.Path;
 
 import org.slf4j.Logger;
 
+import com.google.inject.Inject;
 import com.velocitypowered.api.event.EventManager;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
@@ -27,6 +28,7 @@ public class VelocityPlugin implements RegulatorPlugin {
     private final EventManager eventManager;
     private final SLF4JLogger logger;
 
+    @Inject
     public VelocityPlugin(@DataDirectory Path path, ProxyServer proxy, EventManager eventManager, Logger logger) {
         this.path = path;
         this.proxy = proxy;
