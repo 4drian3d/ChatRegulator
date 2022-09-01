@@ -96,7 +96,10 @@ public final class CommandListener {
                 ),
                 plugin
             )
-        ){
+        ) {
+            if (!event.canBeModified()) {
+                return false;
+            }
             event.cancel();
             event.resume();
             return true;
@@ -120,6 +123,9 @@ public final class CommandListener {
                 plugin
             )
         ) {
+            if (!event.canBeModified()) {
+                return false;
+            }
             event.cancel();
             event.resume();
             return true;

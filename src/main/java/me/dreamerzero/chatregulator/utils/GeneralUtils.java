@@ -111,13 +111,16 @@ public final class GeneralUtils {
                 plugin.getLogger().error("An Error ocurred on Unicode Check", e);
                 return new Result("", false);
             }).thenApplyAsync(result -> {
-                if(GeneralUtils.checkAndCall(new EventBundle(player, string.get(), InfractionType.UNICODE, result, event.source()), plugin)){
+                if (GeneralUtils.checkAndCall(new EventBundle(player, string.get(), InfractionType.UNICODE, result, event.source()), plugin)){
+                    if (!event.canBeModified()) {
+                        return false;
+                    }
                     if(plugin.getConfig().getUnicodeConfig().isBlockable()){
                         event.cancel();
                         event.resume();
                         return true;
                     }
-                    if(event.shouldReplace() && result instanceof final ReplaceableResult replaceable){
+                    if(result instanceof final ReplaceableResult replaceable){
                         string.set(replaceable.replaceInfraction());
                         event.setString(string.get());
                     }
@@ -133,12 +136,15 @@ public final class GeneralUtils {
                 return new Result("", false);
             }).thenApplyAsync(result -> {
                 if(GeneralUtils.checkAndCall(new EventBundle(player, string.get(), InfractionType.CAPS, result, event.source()), plugin)){
+                    if (!event.canBeModified()) {
+                        return false;
+                    }
                     if(plugin.getConfig().getCapsConfig().isBlockable()){
                         event.cancel();
                         event.resume();
                         return true;
                     }
-                    if(event.shouldReplace() && result instanceof final IReplaceable replaceable){
+                    if(result instanceof final IReplaceable replaceable){
                         string.set(replaceable.replaceInfraction());
                         event.setString(string.get());
                     }
@@ -154,12 +160,15 @@ public final class GeneralUtils {
                 return new Result("", false);
             }).thenApplyAsync(result -> {
                 if(GeneralUtils.checkAndCall(new EventBundle(player, string.get(), InfractionType.FLOOD, result, event.source()), plugin)) {
+                    if (!event.canBeModified()) {
+                        return false;
+                    }
                     if(plugin.getConfig().getFloodConfig().isBlockable()){
                         event.cancel();
                         event.resume();
                         return true;
                     }
-                    if(event.shouldReplace() && result instanceof final IReplaceable replaceable){
+                    if(result instanceof final IReplaceable replaceable){
                         string.set(replaceable.replaceInfraction());
                         event.setString(string.get());
                     }
@@ -175,12 +184,15 @@ public final class GeneralUtils {
                 return new Result("", false);
             }).thenApplyAsync(result -> {
                 if(GeneralUtils.checkAndCall(new EventBundle(player, string.get(), InfractionType.REGULAR, result, event.source()), plugin)) {
+                    if (!event.canBeModified()) {
+                        return false;
+                    }
                     if(plugin.getConfig().getInfractionsConfig().isBlockable()){
                         event.cancel();
                         event.resume();
                         return true;
                     }
-                    if(event.shouldReplace() && result instanceof final IReplaceable replaceable){
+                    if(result instanceof final IReplaceable replaceable){
                         string.set(replaceable.replaceInfraction());
                         event.setString(string.get());
                     }
@@ -198,6 +210,9 @@ public final class GeneralUtils {
             if (GeneralUtils.cooldownSpamCheck(result, player, plugin.getConfig())
                 && GeneralUtils.callViolationEvent(new EventBundle(player, string.get(), InfractionType.SPAM, result, event.source()), plugin)
             ) {
+                if (!event.canBeModified()) {
+                    return false;
+                }
                 event.cancel();
                 event.resume();
                 return true;

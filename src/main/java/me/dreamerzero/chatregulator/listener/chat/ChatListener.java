@@ -44,7 +44,7 @@ public final class ChatListener {
         final InfractionPlayer infractor = InfractionPlayer.get(player);
         final EventWrapper<PlayerChatEvent> wrapper = new ChatWrapper(event, continuation);
 
-        if(unicode(infractor, message, wrapper, plugin)
+        if (unicode(infractor, message, wrapper, plugin)
             || caps(infractor, message, wrapper, plugin)
             || flood(infractor, message, wrapper, plugin)
             || regular(infractor, message, wrapper, plugin)

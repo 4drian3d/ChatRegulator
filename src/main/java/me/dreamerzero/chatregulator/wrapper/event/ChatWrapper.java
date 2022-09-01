@@ -3,6 +3,7 @@ package me.dreamerzero.chatregulator.wrapper.event;
 import com.velocitypowered.api.event.Continuation;
 import com.velocitypowered.api.event.player.PlayerChatEvent;
 import com.velocitypowered.api.event.player.PlayerChatEvent.ChatResult;
+import com.velocitypowered.api.network.ProtocolVersion;
 import com.velocitypowered.api.proxy.Player;
 
 import me.dreamerzero.chatregulator.enums.SourceType;
@@ -29,9 +30,9 @@ public class ChatWrapper extends EventWrapper<PlayerChatEvent> {
     }
 
     @Override
-    public boolean shouldReplace() {
+    public boolean canBeModified() {
         Player player = event.getPlayer();
         return player.getIdentifiedKey() == null
-            || player.getProtocolVersion().getProtocol() < 760;
+            || player.getProtocolVersion().compareTo(ProtocolVersion.MINECRAFT_1_19_1) < 0;
     }
 }

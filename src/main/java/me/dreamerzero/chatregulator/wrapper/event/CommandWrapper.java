@@ -3,6 +3,7 @@ package me.dreamerzero.chatregulator.wrapper.event;
 import com.velocitypowered.api.event.Continuation;
 import com.velocitypowered.api.event.command.CommandExecuteEvent;
 import com.velocitypowered.api.event.command.CommandExecuteEvent.CommandResult;
+import com.velocitypowered.api.network.ProtocolVersion;
 import com.velocitypowered.api.proxy.Player;
 
 import me.dreamerzero.chatregulator.enums.SourceType;
@@ -29,10 +30,10 @@ public class CommandWrapper extends EventWrapper<CommandExecuteEvent> {
     }
 
     @Override
-    public boolean shouldReplace() {
+    public boolean canBeModified() {
         if(event.getCommandSource() instanceof Player player) {
             return player.getIdentifiedKey() == null
-                || player.getProtocolVersion().getProtocol() < 760;
+                || player.getProtocolVersion().compareTo(ProtocolVersion.MINECRAFT_1_19_1) < 0;
         }
         return true;
     }
