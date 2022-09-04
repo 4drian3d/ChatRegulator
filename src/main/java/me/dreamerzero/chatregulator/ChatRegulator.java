@@ -7,6 +7,7 @@ import java.util.UUID;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.inject.Inject;
+import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.proxy.ProxyReloadEvent;
@@ -41,6 +42,7 @@ import me.dreamerzero.chatregulator.placeholders.RegulatorExpansion;
 import me.dreamerzero.chatregulator.placeholders.formatter.IFormatter;
 import me.dreamerzero.chatregulator.placeholders.formatter.MiniPlaceholderFormatter;
 import me.dreamerzero.chatregulator.placeholders.formatter.NormalFormatter;
+import me.dreamerzero.chatregulator.source.RegulatorCommandSource;
 
 /**
  * Plugin main class
@@ -66,6 +68,7 @@ public class ChatRegulator {
     private final Logger logger;
     private final Path path;
     private final PluginManager manager;
+    private CommandSource source;
     private IFormatter formatter;
     private Statistics statistics;
     private Placeholders placeholders;
@@ -105,7 +108,8 @@ public class ChatRegulator {
     @Subscribe
     @Internal
     public void onProxyInitialization(final ProxyInitializeEvent event) {
-        server.getConsoleCommandSource().sendMessage(
+        this.source = new RegulatorCommandSource(server.getEventManager(), server.getConsoleCommandSource());
+        source.sendMessage(
             Components.MESSAGE_MINIMESSAGE
                 .deserialize(
                     "<gradient:#f2709c:#ff9472>ChatRegulator</gradient> <gradient:#DAE2F8:#D4D3DD>Starting plugin...")
@@ -135,7 +139,7 @@ public class ChatRegulator {
         server.getEventManager().register(this, ProxyReloadEvent.class, e -> reloadConfig());
         BrigadierRegulator.registerCommand(this);
 
-        server.getConsoleCommandSource().sendMessage(
+        source.sendMessage(
             Components.MESSAGE_MINIMESSAGE
                 .deserialize(
                     "<gradient:#f2709c:#ff9472>ChatRegulator</gradient> <gradient:#DAE2F8:#D4D3DD>has started, have a very nice day</gradient>"
@@ -205,6 +209,10 @@ public class ChatRegulator {
      */
     public Messages getMessages(){
         return this.messages;
+    }
+
+    public CommandSource source() {
+        return this.source;
     }
 
     /**

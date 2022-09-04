@@ -42,12 +42,13 @@ public final class CommandUtils {
         if(config.executeCommand() && infractor.getViolations().getCount(type) % config.violationsRequired() == 0){
             final String servername = player.getCurrentServer().map(sv -> sv.getServerInfo().getName()).orElse("");
             config.getCommandsToExecute().forEach(cmd -> {
-                final String command = cmd.replace("<player>", infractor.username()).replace("<server>", servername);
+                final String command = cmd.replace("<player>", infractor.username())
+                    .replace("<server>", servername);
                 plugin.getProxy().getCommandManager()
-                    .executeAsync(plugin.getProxy().getConsoleCommandSource(), command)
+                    .executeAsync(plugin.source(), command)
                     .handleAsync((status, ex) -> {
                         if (ex != null) {
-                            plugin.getLogger().warn("Error executing command", ex);
+                            plugin.getLogger().warn("Error executing command {}", command, ex);
                         } else if(!status.booleanValue()) {
                             plugin.getLogger().warn("Error executing command {}", command);
                         }
