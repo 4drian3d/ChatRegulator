@@ -35,8 +35,8 @@ public final class ChatListener {
      */
     @Subscribe(order = PostOrder.FIRST)
     public void onChat(final PlayerChatEvent event, final Continuation continuation) {
-        if(!event.getResult().isAllowed()){
-            continuation.resume();
+        if(!event.getResult().isAllowed()) {
+            event.setResult(ChatResult.allowed());
             return;
         }
         final Player player = event.getPlayer();
@@ -60,5 +60,6 @@ public final class ChatListener {
 
         infractor.lastMessage(message.get());
         continuation.resume();
+        event.setResult(ChatResult.allowed());
     }
 }
