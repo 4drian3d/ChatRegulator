@@ -44,7 +44,7 @@ dependencies {
     testImplementation("org.spongepowered:configurate-hocon:$configurate")
     testImplementation(platform("org.junit:junit-bom:5.8.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
-    testImplementation("org.mockito:mockito-core:4.1.0")
+    testImplementation("org.mockito:mockito-core:4.11.0")
     testImplementation("com.velocitypowered:velocity-api:3.1.2-SNAPSHOT")
     testImplementation("com.github.ben-manes.caffeine:caffeine:$caffeine")
 }
