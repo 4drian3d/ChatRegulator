@@ -42,7 +42,7 @@ dependencies {
 
     testImplementation("org.slf4j:slf4j-api:1.7.36")
     testImplementation("org.spongepowered:configurate-hocon:$configurate")
-    testImplementation(platform("org.junit:junit-bom:5.8.1"))
+    testImplementation(platform("org.junit:junit-bom:5.9.2"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.mockito:mockito-core:4.1.0")
     testImplementation("com.velocitypowered:velocity-api:3.1.2-SNAPSHOT")
