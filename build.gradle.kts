@@ -40,7 +40,7 @@ dependencies {
     compileOnly("com.velocitypowered:velocity-api:3.1.2-SNAPSHOT")
     annotationProcessor("com.velocitypowered:velocity-api:3.1.2-SNAPSHOT")
 
-    testImplementation("org.slf4j:slf4j-api:1.7.36")
+    testImplementation("org.slf4j:slf4j-api:2.0.6")
     testImplementation("org.spongepowered:configurate-hocon:$configurate")
     testImplementation(platform("org.junit:junit-bom:5.9.2"))
     testImplementation("org.junit.jupiter:junit-jupiter")
