@@ -32,7 +32,7 @@ val caffeine = property("caffeine-version") as String
 dependencies {
     compileOnly("org.spongepowered:configurate-hocon:$configurate")
     compileOnly("com.github.ben-manes.caffeine:caffeine:$caffeine")
-    compileOnly("org.jetbrains:annotations:23.1.0")
+    compileOnly("org.jetbrains:annotations:24.0.0")
     shadow("net.byteflux:libby-velocity:1.1.5")
 
     compileOnly("com.github.4drian3d:MiniPlaceholders:1.3.1")
