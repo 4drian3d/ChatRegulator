@@ -29,7 +29,7 @@ configurate = { module = "org.spongepowered:configurate-hocon", version.ref = "c
 miniplaceholders = { group = "com.github.4drian3d", name = "MiniPlaceholders", version.ref = "miniplaceholders" }
 assetrj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
 caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version.ref = "caffeine" }
-libby = { group = "net.byteflux", name = "libby-bukkit", version.ref = "libby" }
+libby = { group = "net.byteflux", name = "libby-velocity", version.ref = "libby" }
 junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junit" }
 mockito = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
 slf4j = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j" }
