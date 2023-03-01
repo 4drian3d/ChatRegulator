@@ -60,7 +60,6 @@ blossom {
     replaceToken("{url}", property("url"))
     replaceToken("{configurate}", libs.versions.configurate)
     replaceToken("{geantyref}", libs.versions.geantyref)
-    replaceToken("{caffeine}", libs.versions.caffeine)
 }
 
 tasks {

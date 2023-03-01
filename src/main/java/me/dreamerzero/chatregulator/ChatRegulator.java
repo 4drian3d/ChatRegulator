@@ -64,10 +64,15 @@ import me.dreamerzero.chatregulator.source.RegulatorCommandSource;
     }
 )
 public class ChatRegulator {
-    private final ProxyServer server;
-    private final Logger logger;
-    private final Path path;
-    private final PluginManager manager;
+    @Inject
+    private ProxyServer server;
+    @Inject
+    private Logger logger;
+    @Inject
+    @DataDirectory
+    private Path path;
+    @Inject
+    private PluginManager pluginManager;
     private CommandSource source;
     private IFormatter formatter;
     private Statistics statistics;
@@ -81,26 +86,6 @@ public class ChatRegulator {
      */
     protected static final Cache<UUID, InfractionPlayer> infractionPlayers = Caffeine.newBuilder()
             .weakKeys().build();
-
-    /**
-     * Constructor for ChatRegulator Plugin
-     * @param server the proxy server
-     * @param logger logger
-     * @param path the plugin path
-     */
-    @Inject
-    @Internal
-    public ChatRegulator(
-        final ProxyServer server,
-        final Logger logger,
-        final @DataDirectory Path path,
-        final PluginManager pmanager
-    ) {
-        this.server = server;
-        this.path = path;
-        this.logger = logger;
-        this.manager = pmanager;
-    }
 
     /**
      * Initialization of the plugin
@@ -123,7 +108,7 @@ public class ChatRegulator {
         this.statistics = new Statistics();
         this.placeholders = new Placeholders(this);
 
-        if(server.getPluginManager().isLoaded("miniplaceholders")){
+        if (server.getPluginManager().isLoaded("miniplaceholders")){
             this.formatter = new MiniPlaceholderFormatter();
             RegulatorExpansion.getExpansion().register();
         } else {
@@ -241,7 +226,8 @@ public class ChatRegulator {
     }
 
     private void loadDependencies() {
-        final VelocityLibraryManager<ChatRegulator> libraryManager = new VelocityLibraryManager<>(logger, this.path, manager, this, "libs");
+        final var libraryManager
+                = new VelocityLibraryManager<>(logger, this.path, pluginManager, this, "libs");
 
         final Library hocon = Library.builder()
             .groupId("org{}spongepowered")
@@ -261,18 +247,11 @@ public class ChatRegulator {
             .version(Constants.GEANTYREF)
             .id("geantyref")
             .build();
-        final Library caffeine = Library.builder()
-            .groupId("com{}github{}ben-manes{}caffeine")
-            .artifactId("caffeine")
-            .version(Constants.CAFFEINE)
-            .id("caffeine")
-            .build();
 
         libraryManager.addMavenCentral();
         libraryManager.loadLibrary(hocon);
         libraryManager.loadLibrary(confCore);
         libraryManager.loadLibrary(geantyref);
-        libraryManager.loadLibrary(caffeine);
     }
 
     public void removePlayer(UUID uuid) {
