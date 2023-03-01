@@ -3,7 +3,10 @@ package io.github._4drian3d.chatregulator.plugin.config;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import com.velocitypowered.api.command.CommandSource;
 import io.github._4drian3d.chatregulator.api.enums.InfractionType;
+import io.github._4drian3d.chatregulator.api.enums.Permission;
+import io.github._4drian3d.chatregulator.api.utils.Commands;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
@@ -585,6 +588,11 @@ public class Configuration {
 
         public Set<String> ignoredCommands(){
             return this.ignoredCommands;
+        }
+
+        public boolean shouldAnnounce(CommandSource source, String command){
+            return ignoredCommands().contains(Commands.getFirstArgument(command))
+                    && Permission.BYPASS_COMMAND_SPY.test(source);
         }
     }
 

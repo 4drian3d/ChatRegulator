@@ -1,4 +1,4 @@
-package io.github._4drian3d.chatregulator.plugin.modules.checks;
+package io.github._4drian3d.chatregulator.modules.checks;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -1,5 +1,6 @@
 package io.github._4drian3d.chatregulator.plugin.modules;
 
+import io.github._4drian3d.chatregulator.plugin.Replacer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

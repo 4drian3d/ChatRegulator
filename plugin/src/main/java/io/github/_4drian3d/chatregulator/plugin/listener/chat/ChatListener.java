@@ -9,7 +9,7 @@ import com.velocitypowered.api.event.player.PlayerChatEvent.ChatResult;
 import com.velocitypowered.api.proxy.Player;
 import io.github._4drian3d.chatregulator.plugin.ChatRegulator;
 import io.github._4drian3d.chatregulator.plugin.InfractionPlayerImpl;
-import io.github._4drian3d.chatregulator.plugin.modules.Replacer;
+import io.github._4drian3d.chatregulator.plugin.Replacer;
 import io.github._4drian3d.chatregulator.plugin.wrapper.ChatWrapper;
 import io.github._4drian3d.chatregulator.plugin.wrapper.EventWrapper;
 import org.jetbrains.annotations.ApiStatus.Internal;

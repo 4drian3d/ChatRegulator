@@ -1,14 +1,12 @@
-package io.github._4drian3d.chatregulator.plugin.modules.checks;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
+package io.github._4drian3d.chatregulator.modules.checks;
 
 import io.github._4drian3d.chatregulator.api.checks.SyntaxCheck;
 import org.junit.jupiter.api.DisplayName;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SyntaxTest {
     @ParameterizedTest

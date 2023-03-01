@@ -13,7 +13,6 @@ import org.jetbrains.annotations.ApiStatus.Internal;
 import io.github._4drian3d.chatregulator.plugin.ChatRegulator;
 import io.github._4drian3d.chatregulator.plugin.config.Configuration;
 import io.github._4drian3d.chatregulator.api.enums.Permission;
-import io.github._4drian3d.chatregulator.plugin.modules.CommandSpy;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -38,7 +37,7 @@ public final class SpyListener {
         return EventTask.async(() -> {
             final String command = event.getCommand();
 
-            if(CommandSpy.shouldAnnounce(source, command, config)){
+            if(config.shouldAnnounce(source, command)){
                 final Component message = plugin.getFormatter().parse(
                     plugin.getMessages().getCommandSpyMessages().getMessage(),
                     player,

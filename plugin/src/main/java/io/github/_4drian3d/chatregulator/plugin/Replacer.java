@@ -1,4 +1,4 @@
-package io.github._4drian3d.chatregulator.plugin.modules;
+package io.github._4drian3d.chatregulator.plugin;
 
 import java.util.Objects;
 

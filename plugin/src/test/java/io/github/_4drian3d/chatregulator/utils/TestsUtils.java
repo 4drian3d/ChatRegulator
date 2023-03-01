@@ -5,9 +5,14 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 
+import io.github._4drian3d.chatregulator.objects.TestPlayer;
+import io.github._4drian3d.chatregulator.objects.TestProxy;
+import io.github._4drian3d.chatregulator.plugin.InfractionPlayerImpl;
 import io.github._4drian3d.chatregulator.plugin.StatisticsImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,26 +25,24 @@ import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.IFormatte
 import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.NormalFormatter;
 
 public final class TestsUtils {
-    public static Player createNormalPlayer(String name){
+    public static InfractionPlayerImpl createNormalPlayer(String name, ChatRegulator plugin){
         Player player = new TestPlayer(name, false);
 
-        return player;
+        return new InfractionPlayerImpl(player, plugin);
     }
 
-    public static Player createOperatorPlayer(String name){
+    public static InfractionPlayerImpl createOperatorPlayer(String name, ChatRegulator plugin){
         Player player = new TestPlayer(name, true);
 
-        return player;
+        return new InfractionPlayerImpl(player, plugin);
     }
 
     public static ProxyServer createProxy(){
-        ProxyServer proxy = new TestProxy();
-
-        return proxy;
+        return new TestProxy();
     }
 
-    public static Player createRandomNormalPlayer(){
-        return createNormalPlayer(createRandomString(10));
+    public static InfractionPlayerImpl createRandomNormalPlayer(ChatRegulator plugin){
+        return createNormalPlayer(createRandomString(10), plugin);
     }
 
     public static String createRandomString(int limit){
@@ -59,9 +62,13 @@ public final class TestsUtils {
     public static ChatRegulator createRegulator(Path temporaryPath){
         ProxyServer proxy = createProxy();
         Logger logger = LoggerFactory.getLogger(TestsUtils.class);
-        ChatRegulator plugin = new ChatRegulator(proxy, logger, temporaryPath, new TestPluginManager()){
+        Injector injector = Guice.createInjector(
+                binder -> {
+                    binder.bind(ProxyServer.class).toInstance(proxy);
+                }
+        );
+        ChatRegulator plugin = new ChatRegulator() {
             StatisticsImpl statistics = new StatisticsImpl();
-            Placeholders placeholders = new Placeholders(this);
             @Override
             public IFormatter getFormatter(){
                 return new NormalFormatter();
@@ -70,11 +77,6 @@ public final class TestsUtils {
             @Override
             public StatisticsImpl getStatistics(){
                 return statistics;
-            }
-
-            @Override
-            public Placeholders placeholders() {
-                return placeholders;
             }
         };
         plugin.reloadConfig();

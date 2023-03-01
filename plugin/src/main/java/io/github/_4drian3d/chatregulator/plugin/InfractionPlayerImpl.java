@@ -48,7 +48,7 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
     private Instant timeSinceLastMessage;
     private Instant timeSinceLastCommand;
 
-    InfractionPlayerImpl(Player player, ChatRegulator plugin) {
+    public InfractionPlayerImpl(Player player, ChatRegulator plugin) {
         this.player = Objects.requireNonNull(player);
         this.plugin = plugin;
         this.preLastMessage = " .";

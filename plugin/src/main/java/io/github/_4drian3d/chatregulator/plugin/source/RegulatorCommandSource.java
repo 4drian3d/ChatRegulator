@@ -10,11 +10,8 @@ import com.velocitypowered.api.permission.Tristate;
 
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.NotNull;
 
-/**
- * ChatRegulator CommandSource
- * <p>see https://jd.papermc.io/velocity/3.0.0/com/velocitypowered/api/proxy/ProxyServer.html#getConsoleCommandSource()</p>
- */
 public final class RegulatorCommandSource implements CommandSource {
     private PermissionFunction permissionFunction = PermissionFunction.ALWAYS_TRUE;
     private final Audience base;
@@ -33,7 +30,7 @@ public final class RegulatorCommandSource implements CommandSource {
     }
 
     @Override
-    public void sendMessage(Component component) {
+    public void sendMessage(@NotNull Component component) {
         this.base.sendMessage(component);
     }
 

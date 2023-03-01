@@ -1,4 +1,4 @@
-package io.github._4drian3d.chatregulator.plugin.objects;
+package io.github._4drian3d.chatregulator.objects;
 
 import java.util.concurrent.CompletableFuture;
 

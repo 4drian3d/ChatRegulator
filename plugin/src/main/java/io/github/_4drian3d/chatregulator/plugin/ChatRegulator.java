@@ -168,7 +168,6 @@ public class ChatRegulator implements ChatRegulatorAPI {
 
         if (config != null) {
             this.configuration = config;
-            FloodCheck.setFloodRegex(config.getFloodConfig().getLimit());
         }
 
         if (msg != null) {

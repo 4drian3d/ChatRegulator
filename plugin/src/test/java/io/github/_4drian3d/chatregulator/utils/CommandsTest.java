@@ -1,11 +1,8 @@
-package io.github._4drian3d.chatregulator.plugin.utils;
+package io.github._4drian3d.chatregulator.utils;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-
-import java.nio.file.Path;
-
+import io.github._4drian3d.chatregulator.api.utils.Commands;
+import io.github._4drian3d.chatregulator.plugin.config.Blacklist;
+import io.github._4drian3d.chatregulator.plugin.config.Loader;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -14,8 +11,9 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.LoggerFactory;
 
-import io.github._4drian3d.chatregulator.plugin.config.Blacklist;
-import io.github._4drian3d.chatregulator.plugin.config.Loader;
+import java.nio.file.Path;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class CommandsTest {
     @ParameterizedTest(name = "{0}'s first argument is tell")
@@ -35,7 +33,7 @@ class CommandsTest {
         Blacklist config = Loader.loadBlacklistConfig(path, LoggerFactory.getLogger(CommandsTest.class));
 
         String command = "execute for all";
-        boolean isCommand = Commands.isCommand(command, config);
+        boolean isCommand = config.isBlockedCommand(command);
 
         assertTrue(isCommand);
     }

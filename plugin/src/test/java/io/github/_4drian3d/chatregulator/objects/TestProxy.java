@@ -1,4 +1,4 @@
-package io.github._4drian3d.chatregulator.plugin.objects;
+package io.github._4drian3d.chatregulator.objects;
 
 import java.net.InetSocketAddress;
 import java.util.Collection;
@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+import io.github._4drian3d.chatregulator.utils.TestsUtils;
 import org.jetbrains.annotations.NotNull;
 
 import com.velocitypowered.api.command.CommandManager;
@@ -96,7 +97,7 @@ public final class TestProxy implements ProxyServer {
 
     @Override
     public Optional<Player> getPlayer(String name) {
-        return Optional.of(TestsUtils.createNormalPlayer(name));
+        return Optional.of(TestsUtils.createNormalPlayer(name, null).getPlayer());
     }
 
     @Override

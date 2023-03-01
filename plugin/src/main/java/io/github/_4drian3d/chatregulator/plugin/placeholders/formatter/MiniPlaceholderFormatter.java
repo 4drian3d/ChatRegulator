@@ -1,13 +1,12 @@
 package io.github._4drian3d.chatregulator.plugin.placeholders.formatter;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import io.github._4drian3dminiplaceholders.api.MiniPlaceholders;
+import me.dreamerzero.miniplaceholders.api.MiniPlaceholders;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public final class MiniPlaceholderFormatter implements IFormatter {
 

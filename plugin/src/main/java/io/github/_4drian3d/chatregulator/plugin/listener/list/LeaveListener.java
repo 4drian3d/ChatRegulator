@@ -35,7 +35,7 @@ public final class LeaveListener {
             return null;
         }
         return EventTask.async(() -> {
-            final InfractionPlayerImpl player = InfractionPlayerImpl.get(event.getPlayer());
+            final InfractionPlayerImpl player = plugin.getPlayerManager().onQuit(event.getPlayer());
             player.isOnline(false);
 
             final UUID uuid = event.getPlayer().getUniqueId();

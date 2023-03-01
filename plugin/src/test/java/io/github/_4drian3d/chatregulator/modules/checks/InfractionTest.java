@@ -1,6 +1,7 @@
-package io.github._4drian3d.chatregulator.plugin.modules.checks;
+package io.github._4drian3d.chatregulator.modules.checks;
 
 import io.github._4drian3d.chatregulator.api.checks.InfractionCheck;
+import io.github._4drian3d.chatregulator.utils.TestsUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;

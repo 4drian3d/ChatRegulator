@@ -70,7 +70,7 @@ public final class InfractionCheck implements ICheck {
         });
     }
 
-    static String generateReplacement(final MatchResult result) {
+    public static String generateReplacement(final MatchResult result) {
         final int size = result.group().length() / 2;
         return "*".repeat(size);
     }

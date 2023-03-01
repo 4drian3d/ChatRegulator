@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 
 import io.github._4drian3d.chatregulator.api.enums.InfractionType;
 
-import static io.github._4drian3d.chatregulator.plugin.placeholders.Placeholders.integerPlaceholder;
 import static io.github._4drian3d.chatregulator.plugin.utils.Placeholders.integer;
 
 /**

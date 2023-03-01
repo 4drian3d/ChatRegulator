@@ -1,17 +1,18 @@
 package io.github._4drian3d.chatregulator.modules.checks;
 
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-
-import java.nio.file.Path;
-
-import com.velocitypowered.api.proxy.Player;
-
 import io.github._4drian3d.chatregulator.api.checks.UnicodeCheck;
+import io.github._4drian3d.chatregulator.api.checks.UnicodeCheck.CharMode;
+import io.github._4drian3d.chatregulator.api.enums.ControlType;
+import io.github._4drian3d.chatregulator.api.enums.InfractionType;
+import io.github._4drian3d.chatregulator.api.enums.SourceType;
+import io.github._4drian3d.chatregulator.api.result.IReplaceable;
+import io.github._4drian3d.chatregulator.api.result.Result;
+import io.github._4drian3d.chatregulator.plugin.ChatRegulator;
 import io.github._4drian3d.chatregulator.plugin.InfractionPlayerImpl;
+import io.github._4drian3d.chatregulator.plugin.config.Configuration;
+import io.github._4drian3d.chatregulator.plugin.config.Loader;
+import io.github._4drian3d.chatregulator.utils.TestsUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -19,15 +20,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.LoggerFactory;
 
-import io.github._4drian3d.chatregulator.plugin.config.Configuration;
-import io.github._4drian3d.chatregulator.plugin.config.Loader;
-import io.github._4drian3d.chatregulator.api.enums.ControlType;
-import io.github._4drian3d.chatregulator.api.enums.InfractionType;
-import io.github._4drian3d.chatregulator.api.enums.SourceType;
-import io.github._4drian3d.chatregulator.api.checks.UnicodeCheck.CharMode;
-import io.github._4drian3d.chatregulator.api.result.IReplaceable;
-import io.github._4drian3d.chatregulator.api.result.Result;
-import io.github._4drian3d.chatregulator.plugin.utils.TestsUtils;
+import java.nio.file.Path;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class UnicodeTest {
     @TempDir Path path;
@@ -69,25 +64,24 @@ class UnicodeTest {
     void legalCheck(String string){
         Configuration config = Loader.loadMainConfig(path, LoggerFactory.getLogger(UnicodeTest.class));
 
+        // TODO: FIX THIS
         assertFalse(UnicodeCheck.createCheck(string, config).join().isInfraction());
     }
 
     @Test
-    void realTest(){
+    void realTest(@TempDir Path path){
         String randomMSG = "ƕƘáéíóú";
-        Player player = TestsUtils.createRandomNormalPlayer();
-        Configuration config = Loader.loadMainConfig(path, LoggerFactory.getLogger(UnicodeTest.class));
+        ChatRegulator plugin = TestsUtils.createRegulator(path);
+        InfractionPlayerImpl player = TestsUtils.createRandomNormalPlayer(plugin);
 
-        // TODO: fix this
-        //assertTrue((player.isA, UNICODE, config));
+        assertTrue(player.isAllowed(InfractionType.UNICODE));
 
         UnicodeCheck check = UnicodeCheck.builder()
             .controlType(ControlType.REPLACE)
             .build();
         Result result = check.check(randomMSG).join();
 
-        assertTrue(utils.callEvent(
-                InfractionPlayerImpl.get(player),
+        assertTrue(player.callEvent(
                 randomMSG,
                 InfractionType.UNICODE,
                 result, SourceType.CHAT

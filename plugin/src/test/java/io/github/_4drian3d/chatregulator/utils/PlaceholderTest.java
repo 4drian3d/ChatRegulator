@@ -1,23 +1,20 @@
 package io.github._4drian3d.chatregulator.utils;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.nio.file.Path;
-
-import com.velocitypowered.api.proxy.Player;
-
-import io.github._4drian3d.chatregulator.plugin.InfractionPlayerImpl;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
 import io.github._4drian3d.chatregulator.plugin.ChatRegulator;
+import io.github._4drian3d.chatregulator.plugin.InfractionPlayerImpl;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.nio.file.Path;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 final class PlaceholderTest {
     private static final PlainTextComponentSerializer PLAIN_SERIALIZER = PlainTextComponentSerializer.plainText();
@@ -25,10 +22,8 @@ final class PlaceholderTest {
     @Test
     @DisplayName("Player Placeholders")
     void playerPlaceholders(@TempDir Path path) {
-        Player p = TestsUtils.createNormalPlayer("Adrianed_04yt");
         ChatRegulator plugin = TestsUtils.createRegulator(path);
-
-        InfractionPlayerImpl player = plugin.getPlayerManager().getPlayer(p);
+        InfractionPlayerImpl player = TestsUtils.createNormalPlayer("Adrianed_04yt", plugin);
 
         MiniMessage mm = MiniMessage.builder()
                 .tags(TagResolver.resolver(
