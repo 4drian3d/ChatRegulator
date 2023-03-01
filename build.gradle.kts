@@ -23,7 +23,7 @@ java {
 dependencies {
     compileOnly(libs.configurate)
     compileOnly(libs.caffeine)
-    shadow(libs.libby)
+    implementation(libs.libby)
 
     compileOnly(libs.miniplaceholders)
 

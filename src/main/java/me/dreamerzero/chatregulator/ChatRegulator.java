@@ -79,7 +79,8 @@ public class ChatRegulator {
     /**
      * InfractionPlayer list
      */
-    protected static final Cache<UUID, InfractionPlayer> infractionPlayers = Caffeine.newBuilder().weakKeys().build();
+    protected static final Cache<UUID, InfractionPlayer> infractionPlayers = Caffeine.newBuilder()
+            .weakKeys().build();
 
     /**
      * Constructor for ChatRegulator Plugin
