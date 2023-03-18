@@ -16,7 +16,7 @@ runvelocity = "2.0.1"
 
 caffeine = "3.1.4"
 
-slf4j = "2.0.6"
+slf4j = "2.0.7"
 junit = "5.9.2"
 mockito = "5.1.1"
 
