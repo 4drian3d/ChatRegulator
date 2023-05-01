@@ -3,6 +3,7 @@ package io.github._4drian3d.chatregulator.api.checks;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.github._4drian3d.chatregulator.api.InfractionPlayer;
+import io.github._4drian3d.chatregulator.api.enums.ControlType;
 import io.github._4drian3d.chatregulator.api.enums.InfractionType;
 import io.github._4drian3d.chatregulator.api.result.CheckResult;
 import net.kyori.adventure.builder.AbstractBuilder;
@@ -23,9 +24,11 @@ public final class FloodCheck implements ICheck {
                     Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE)
             );
     private final Pattern pattern;
+    private final ControlType controlType;
 
-    private FloodCheck(Pattern pattern){
+    private FloodCheck(final Pattern pattern, final ControlType controlType) {
         this.pattern = pattern;
+        this.controlType = controlType;
     }
 
     /**
@@ -38,7 +41,11 @@ public final class FloodCheck implements ICheck {
         final Matcher matcher = pattern.matcher(requireNonNull(string));
 
         if (matcher.find()) {
-            return CheckResult.modified(matcher.replaceAll(match -> Character.toString(match.group().charAt(0))));
+            if (controlType == ControlType.BLOCK) {
+                return CheckResult.denied();
+            } else {
+                return CheckResult.modified(matcher.replaceAll(match -> Character.toString(match.group().charAt(0))));
+            }
         }
         return CheckResult.allowed();
     }
@@ -56,6 +63,7 @@ public final class FloodCheck implements ICheck {
     /**Flood Check Builder */
     public static class Builder implements AbstractBuilder<FloodCheck> {
         private Pattern pattern;
+        private ControlType controlType;
 
         Builder() {}
 
@@ -64,10 +72,16 @@ public final class FloodCheck implements ICheck {
             return this;
         }
 
+        public Builder controlType(ControlType controlType) {
+            this.controlType = controlType;
+            return this;
+        }
+
         @Override
         public @NotNull FloodCheck build(){
             requireNonNull(pattern);
-            return new FloodCheck(this.pattern);
+            requireNonNull(controlType);
+            return new FloodCheck(this.pattern, this.controlType);
         }
     }
 }

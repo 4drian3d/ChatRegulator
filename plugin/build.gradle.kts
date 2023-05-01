@@ -19,13 +19,13 @@ dependencies {
     compileOnly(libs.configurate)
     implementation(libs.libby)
     implementation(project(":chatregulator-api"))
+    implementation(libs.hexlogger)
 
     compileOnly(libs.miniplaceholders)
 
     compileOnly(libs.velocity)
     annotationProcessor(libs.velocity)
 
-    testImplementation(libs.slf4j)
     testImplementation(libs.configurate)
     testImplementation(platform(libs.junit.bom))
     testImplementation("org.junit.jupiter:junit-jupiter")
@@ -40,8 +40,6 @@ blossom {
     replaceToken("{version}", version)
     replaceToken("{description}", description)
     replaceToken("{url}", property("url"))
-    replaceToken("{configurate}", libs.versions.configurate)
-    replaceToken("{geantyref}", libs.versions.geantyref)
 }
 
 tasks {

@@ -44,7 +44,7 @@ public final class LeaveListener implements AwaitingEventExecutor<DisconnectEven
             proxyServer.getScheduler().buildTask(plugin, () -> {
                 if (proxyServer.getPlayer(uuid).isEmpty()) {
                     logger.debug("The player {} was removed", player.username());
-                    plugin.removePlayer(uuid);
+                    playerManager.removePlayer(uuid);
                 }
             }).delay(
                     configuration.getGeneralConfig().deleteUsersTime(),

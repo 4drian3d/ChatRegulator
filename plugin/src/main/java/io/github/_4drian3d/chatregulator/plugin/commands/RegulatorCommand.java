@@ -228,7 +228,7 @@ public final class RegulatorCommand {
                         .then(resetWithPlayerSubcommand("regular", InfractionType.REGULAR, Permission.COMMAND_RESET_REGULAR))
                         .then(resetWithPlayerSubcommand("flood", InfractionType.FLOOD, Permission.COMMAND_RESET_FLOOD))
                         .then(resetWithPlayerSubcommand("spam", InfractionType.SPAM, Permission.COMMAND_RESET_SPAM))
-                        .then(resetWithPlayerSubcommand("command", InfractionType.BCOMMAND, Permission.COMMAND_RESET_BCOMMAND))
+                        .then(resetWithPlayerSubcommand("command", InfractionType.BLOCKED_COMMAND, Permission.COMMAND_RESET_BLOCKEDCOMMAND))
                         .then(resetWithPlayerSubcommand("unicode", InfractionType.UNICODE, Permission.COMMAND_RESET_UNICODE))
                         .then(resetWithPlayerSubcommand("caps", InfractionType.CAPS, Permission.COMMAND_RESET_CAPS))
                         .then(resetWithPlayerSubcommand("syntax", InfractionType.SYNTAX, Permission.COMMAND_RESET_SYNTAX))

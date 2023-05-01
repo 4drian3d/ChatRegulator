@@ -6,6 +6,7 @@ import com.velocitypowered.api.event.*;
 import com.velocitypowered.api.event.player.PlayerChatEvent;
 import com.velocitypowered.api.event.player.PlayerChatEvent.ChatResult;
 import io.github._4drian3d.chatregulator.api.checks.*;
+import io.github._4drian3d.chatregulator.api.enums.SourceType;
 import io.github._4drian3d.chatregulator.api.result.CheckResult;
 import io.github._4drian3d.chatregulator.plugin.CheckProvider;
 import io.github._4drian3d.chatregulator.plugin.InfractionPlayerImpl;
@@ -67,7 +68,7 @@ public final class ChatListener implements AwaitingEventExecutor<PlayerChatEvent
                         finalMessage = Replacer.applyFormat(finalMessage, configuration);
                         event.setResult(ChatResult.message(finalMessage));
                     }
-                    infractor.lastMessage(finalMessage);
+                    infractor.getChain(SourceType.CHAT).executed(finalMessage);
                 }
                 continuation.resume();
             });

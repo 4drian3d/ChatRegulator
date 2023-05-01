@@ -1,6 +1,7 @@
 package io.github._4drian3d.chatregulator.api.checks;
 
 import io.github._4drian3d.chatregulator.api.InfractionPlayer;
+import io.github._4drian3d.chatregulator.api.enums.ControlType;
 import io.github._4drian3d.chatregulator.api.enums.InfractionType;
 import io.github._4drian3d.chatregulator.api.result.CheckResult;
 import net.kyori.adventure.builder.AbstractBuilder;
@@ -14,9 +15,11 @@ import java.util.Objects;
  */
 public final class CapsCheck implements ICheck {
     private final int limit;
+    private final ControlType controlType;
 
-    private CapsCheck(int limit){
+    private CapsCheck(int limit, ControlType controlType){
         this.limit = limit;
+        this.controlType = controlType;
     }
 
     @Override
@@ -26,7 +29,12 @@ public final class CapsCheck implements ICheck {
                 .filter(Character::isUpperCase)
                 .count() >= this.limit;
         if (aboveLimit) {
-            return CheckResult.modified(string.toLowerCase(Locale.ROOT));
+            if (controlType == ControlType.REPLACE) {
+                return CheckResult.modified(string.toLowerCase(Locale.ROOT));
+            } else {
+                return CheckResult.denied();
+            }
+
         } else {
             return CheckResult.allowed();
         }
@@ -48,6 +56,7 @@ public final class CapsCheck implements ICheck {
     /**Caps Check Builder */
     public static class Builder implements AbstractBuilder<CapsCheck> {
         private int limit;
+        private ControlType controlType;
         Builder(){}
 
         /**
@@ -60,9 +69,14 @@ public final class CapsCheck implements ICheck {
             return this;
         }
 
+        public Builder controlType(ControlType controlType) {
+            this.controlType = controlType;
+            return this;
+        }
+
         @Override
         public @NotNull CapsCheck build(){
-            return new CapsCheck(limit);
+            return new CapsCheck(limit, controlType);
         }
     }
 }

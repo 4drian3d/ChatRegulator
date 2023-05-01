@@ -2,24 +2,19 @@ package io.github._4drian3d.chatregulator.modules.checks;
 
 
 import io.github._4drian3d.chatregulator.api.checks.UnicodeCheck;
-import io.github._4drian3d.chatregulator.api.checks.UnicodeCheck.CharMode;
 import io.github._4drian3d.chatregulator.api.enums.ControlType;
 import io.github._4drian3d.chatregulator.api.enums.DetectionMode;
 import io.github._4drian3d.chatregulator.api.enums.InfractionType;
 import io.github._4drian3d.chatregulator.api.enums.SourceType;
 import io.github._4drian3d.chatregulator.api.result.CheckResult;
-import io.github._4drian3d.chatregulator.api.result.Result;
 import io.github._4drian3d.chatregulator.plugin.ChatRegulator;
 import io.github._4drian3d.chatregulator.plugin.InfractionPlayerImpl;
-import io.github._4drian3d.chatregulator.plugin.config.Configuration;
-import io.github._4drian3d.chatregulator.plugin.config.Loader;
 import io.github._4drian3d.chatregulator.utils.TestsUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 
@@ -37,13 +32,11 @@ class UnicodeTest {
         UnicodeCheck check = UnicodeCheck.builder()
             .controlType(ControlType.REPLACE)
             .build();
-        CheckResult result = check.check(null, illegal);
+        CheckResult result = check.check(TestsUtils.dummyPlayer(), illegal);
 
         assertTrue(result.isDenied());
-
-        /*IReplacable replaceable = assertInstanceOf(IRepaceable.class, result);
-
-        assertEquals(expected, replaceable.replaceInfraction());*/
+        CheckResult.ReplaceCheckResult replaceResult = assertInstanceOf(CheckResult.ReplaceCheckResult.class, result);
+        assertEquals(expected, replaceResult.replaced());
     }
 
     @Test
@@ -54,18 +47,9 @@ class UnicodeTest {
         var result = UnicodeCheck.builder()
             .characters('ñ')
             .build()
-            .check(null, illegal);
+            .check(TestsUtils.dummyPlayer(), illegal);
 
         assertTrue(result.isDenied());
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"Hello my friends", "hola, como van?"})
-    void legalCheck(String string){
-        Configuration config = Loader.loadMainConfig(path, LoggerFactory.getLogger(UnicodeTest.class));
-
-        // TODO: FIX THIS
-        //assertFalse(UnicodeCheck.createCheck(string, config).join().isInfraction());
     }
 
     @Test
@@ -79,18 +63,10 @@ class UnicodeTest {
         UnicodeCheck check = UnicodeCheck.builder()
             .controlType(ControlType.REPLACE)
             .build();
-        CheckResult result = check.check(null, randomMSG);
-
-        assertTrue(player.callEvent(
-                randomMSG,
-                InfractionType.UNICODE,
-                result, SourceType.CHAT
-            ));
-        
-        /*IReplaceable replaceableResult = assertInstanceOf(IReplaceable.class, result);
-
-        String messageReplaced = replaceableResult.replaceInfraction();
-        assertEquals("  áéíóú", messageReplaced);*/
+        CheckResult result = check.check(TestsUtils.dummyPlayer(), randomMSG);
+        assertTrue(result.shouldModify());
+        CheckResult.ReplaceCheckResult replaceResult = assertInstanceOf(CheckResult.ReplaceCheckResult.class, result);
+        assertEquals("  áéíóú", replaceResult.replaced());
     }
 
     @ParameterizedTest
@@ -100,9 +76,9 @@ class UnicodeTest {
             .characters('ñ');
 
         assertTrue(builder.charMode(DetectionMode.BLACKLIST).build()
-            .check(null, msg).isAllowed());
+            .check(TestsUtils.dummyPlayer(), msg).isAllowed());
         assertFalse(builder.charMode(DetectionMode.WHITELIST).build()
-            .check(null, msg).isAllowed());
+            .check(TestsUtils.dummyPlayer(), msg).isAllowed());
     }
 
     @ParameterizedTest

@@ -36,7 +36,7 @@ public enum Permission implements Predicate<CommandSource> {
     /**Spam Reset Subcommand */
     COMMAND_RESET_SPAM("chatregulator.command.reset.spam"),
     /**Command Reset Subcommand */
-    COMMAND_RESET_BCOMMAND("chatregulator.command.reset.command"),
+    COMMAND_RESET_BLOCKEDCOMMAND("chatregulator.command.reset.command"),
     /**Unicode Reset Subcommand */
     COMMAND_RESET_UNICODE("chatregulator.command.reset.unicode"),
     /**Caps Reset Subcommand */
@@ -57,8 +57,9 @@ public enum Permission implements Predicate<CommandSource> {
     BYPASS_FLOOD("chatregulator.bypass.flood"),
     /**Spam Check Bypass */
     BYPASS_SPAM("chatregulator.bypass.spam"),
+    BYPASS_COOLDOWN("chatregulator.bypass.cooldown"),
     /**Blocked Commands Bypass */
-    BYPASS_BCOMMAND("chatregulator.bypass.command"),
+    BYPASS_BLOCKEDCOMMAND("chatregulator.bypass.command"),
     /**Unicode Check Bypass */
     BYPASS_UNICODE("chatregulator.bypass.unicode"),
     /**Caps Check Bypass */

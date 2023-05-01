@@ -6,6 +6,7 @@ import com.velocitypowered.api.event.*;
 import com.velocitypowered.api.event.command.CommandExecuteEvent;
 import com.velocitypowered.api.proxy.Player;
 import io.github._4drian3d.chatregulator.api.checks.*;
+import io.github._4drian3d.chatregulator.api.enums.SourceType;
 import io.github._4drian3d.chatregulator.api.result.CheckResult;
 import io.github._4drian3d.chatregulator.api.utils.Commands;
 import io.github._4drian3d.chatregulator.plugin.CheckProvider;
@@ -87,9 +88,10 @@ public final class CommandListener implements AwaitingEventExecutor<CommandExecu
                     if (checkResult.shouldModify()) {
                         final CheckResult.ReplaceCheckResult replaceResult = (CheckResult.ReplaceCheckResult) checkResult;
                         final String replacedCommand = replaceResult.replaced();
-                        infractionPlayer.lastCommand(replacedCommand);
+                        infractionPlayer.getChain(SourceType.COMMAND).executed(replacedCommand);
                         return CommandExecuteEvent.CommandResult.command(replacedCommand);
                     }
+                    infractionPlayer.getChain(SourceType.COMMAND).executed(event.getCommand());
                     return CommandExecuteEvent.CommandResult.allowed();
                 });
             }).thenAccept(commandResult -> {

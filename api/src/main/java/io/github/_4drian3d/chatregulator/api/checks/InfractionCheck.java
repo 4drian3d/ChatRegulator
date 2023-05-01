@@ -86,7 +86,7 @@ public final class InfractionCheck implements ICheck {
         private Builder() {
         }
 
-        public Builder blockedPattern(Collection<Pattern> patterns) {
+        public Builder blockedPatterns(Collection<Pattern> patterns) {
             requireNonNull(patterns);
             if (this.blockedWords == null) {
                 this.blockedWords = new LinkedHashSet<>(patterns);

@@ -2,7 +2,7 @@ package io.github._4drian3d.chatregulator.utils;
 
 import io.github._4drian3d.chatregulator.api.utils.Commands;
 import io.github._4drian3d.chatregulator.plugin.config.Blacklist;
-import io.github._4drian3d.chatregulator.plugin.config.Loader;
+import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -30,7 +30,7 @@ class CommandsTest {
     @Test
     @DisplayName("Command Blacklisted")
     void isCommandBlacklisted(@TempDir Path path){
-        Blacklist config = Loader.loadBlacklistConfig(path, LoggerFactory.getLogger(CommandsTest.class));
+        Blacklist config = ConfigurationContainer.load(LoggerFactory.getLogger(CommandsTest.class), path,  Blacklist.class,"").get();
 
         String command = "execute for all";
         boolean isCommand = config.isBlockedCommand(command);

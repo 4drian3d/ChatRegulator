@@ -13,8 +13,6 @@ import io.github._4drian3d.chatregulator.plugin.config.Blacklist;
 import io.github._4drian3d.chatregulator.plugin.config.Configuration;
 import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
 
-import java.util.List;
-
 public class ProviderModule extends AbstractModule {
     @Singleton
     @Provides
@@ -27,7 +25,7 @@ public class ProviderModule extends AbstractModule {
             final Configuration configuration = configurationContainer.get();
             if (infractionPlayer.isAllowed(InfractionType.REGULAR) && configuration.isEnabled(InfractionType.REGULAR)) {
                 return InfractionCheck.builder()
-                        .blockedPattern(blacklistContainer.get().getBlockedPatterns())
+                        .blockedPatterns(blacklistContainer.get().getBlockedPatterns())
                         .controlType(configuration.getInfractionsConfig().getControlType())
                         .build();
             }
@@ -59,7 +57,7 @@ public class ProviderModule extends AbstractModule {
         return player -> {
             final InfractionPlayerImpl infractionPlayer = (InfractionPlayerImpl) player;
             final Configuration configuration = configurationContainer.get();
-            if (infractionPlayer.isAllowed(InfractionType.BCOMMAND) && configuration.isEnabled(InfractionType.BCOMMAND)) {
+            if (infractionPlayer.isAllowed(InfractionType.BLOCKED_COMMAND) && configuration.isEnabled(InfractionType.BLOCKED_COMMAND)) {
                 return CommandCheck.builder()
                         .blockedCommands(blacklistContainer.get().getBlockedCommands())
                         .build();
@@ -93,7 +91,6 @@ public class ProviderModule extends AbstractModule {
             if (infractionPlayer.isAllowed(InfractionType.SPAM) && configuration.isEnabled(InfractionType.SPAM)) {
                 return SpamCheck.builder()
                         .source(SourceType.COMMAND)
-                        // TODO: Configurable spam commands check
                         .build();
             }
             return null;
@@ -110,7 +107,6 @@ public class ProviderModule extends AbstractModule {
             if (infractionPlayer.isAllowed(InfractionType.SPAM) && configuration.isEnabled(InfractionType.SPAM)) {
                 return SpamCheck.builder()
                         .source(SourceType.CHAT)
-                        // TODO: Configurable spam chat check
                         .build();
             }
             return null;
@@ -125,8 +121,24 @@ public class ProviderModule extends AbstractModule {
             final Configuration configuration = configurationContainer.get();
             if (infractionPlayer.isAllowed(InfractionType.SPAM) && configuration.isEnabled(InfractionType.SPAM)) {
                 return SyntaxCheck.builder()
-                        // TODO: Configurable allowed commands
-                        .allowedCommands(List.of())
+                        .allowedCommands(configuration.getSyntaxConfig().getAllowedCommands())
+                        .build();
+            }
+            return null;
+        };
+    }
+
+    @Singleton
+    @Provides
+    @Named("command")
+    private CheckProvider<CooldownCheck> cooldown(ConfigurationContainer<Configuration> configurationContainer) {
+        return player -> {
+            final InfractionPlayerImpl infractionPlayer = (InfractionPlayerImpl) player;
+            final Configuration.Cooldown config = configurationContainer.get().getCooldownConfig();
+            if (infractionPlayer.isAllowed(InfractionType.COOLDOWN) && config.enabled()) {
+                return CooldownCheck.builder()
+                        .limit(config.limit())
+                        .timeUnit(config.unit())
                         .build();
             }
             return null;

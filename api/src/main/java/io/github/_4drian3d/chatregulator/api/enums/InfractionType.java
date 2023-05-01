@@ -12,10 +12,11 @@ public enum InfractionType {
      * the same word or command several times.
      */
     SPAM(Permission.BYPASS_SPAM),
+    COOLDOWN(Permission.BYPASS_UNICODE),
     /**
      * Represents a blocked command
      */
-    BCOMMAND(Permission.BYPASS_BCOMMAND),
+    BLOCKED_COMMAND(Permission.BYPASS_BLOCKEDCOMMAND),
     /**
      * Represents a Unicode check
      */

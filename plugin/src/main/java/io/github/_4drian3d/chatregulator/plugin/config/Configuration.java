@@ -11,12 +11,11 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
 
-import io.github._4drian3d.chatregulator.api.checks.UnicodeCheck.CharMode;
-
 /**
  * Configuration values
  */
 @ConfigSerializable
+@SuppressWarnings("FieldMayBeFinal")
 public class Configuration implements Section {
     public static final String HEADER = """
         ChatRegulator | by 4drian3d
@@ -32,6 +31,9 @@ public class Configuration implements Section {
 
     @Comment("Spam Module")
     private Spam spam = new Spam();
+
+    @Comment("Cooldown Module")
+    private Cooldown cooldown = new Cooldown();
 
     @Comment("Command blacklist module")
     @Setting(value = "command-blacklist")
@@ -107,6 +109,14 @@ public class Configuration implements Section {
      */
     public Spam getSpamConfig(){
         return this.spam;
+    }
+
+    /**
+     * Get the cooldown config
+     * @return the cooldown config
+     */
+    public Cooldown getCooldownConfig(){
+        return this.cooldown;
     }
 
     /**
@@ -312,10 +322,7 @@ public class Configuration implements Section {
         @Setting(value = "warning-type")
         private WarningType warningType = WarningType.MESSAGE;
 
-        @Comment("Cooldown subcheck configuration")
-        private Spam.Cooldown cooldown = new Spam.Cooldown();
-
-        @Comment("Commands to be executed in the flood module")
+        @Comment("Commands to be executed in the cooldown module")
         private Spam.Commands commands = new Spam.Commands();
 
         @Override
@@ -328,49 +335,67 @@ public class Configuration implements Section {
             return this.warningType;
         }
 
-        /**
-         * Get the cooldown config
-         * @return the cooldown config
-         */
-        public Spam.Cooldown getCooldownConfig(){
-            return this.cooldown;
-        }
+
 
         @Override
         public Spam.Commands getCommandsConfig(){
             return this.commands;
         }
 
-        /**Spam cooldown configuration */
-        @ConfigSerializable
-        public static class Cooldown{
-            @Comment("Enables the cooldown submodule")
-            private boolean enabled = true;
-
-            @Comment("Set the time limit between each message")
-            private long limit = 2500;
-
-            @Comment("""
-                Time Unit of the cooldown limit
-                Available values: NANOSECONDS, MICROSECONDS, MILLISECONDS, SECONDS, MINUTES, HOURS, DAYS""")
-            private TimeUnit unit = TimeUnit.MILLISECONDS;
-
-            public boolean enabled(){
-                return this.enabled;
-            }
-
-            public long limit(){
-                return this.limit;
-            }
-
-            public TimeUnit unit() {
-                return this.unit;
-            }
-        }
 
         /**Spam Commands configuration */
         @ConfigSerializable
-        public static class Commands extends CommandsConfig{}
+        public static class Commands extends CommandsConfig {}
+    }
+
+    /**Cooldown cooldown configuration */
+    @ConfigSerializable
+    public static class Cooldown implements Toggleable, Warning, Executable {
+        @Comment("Enables the cooldown submodule")
+        private boolean enabled = true;
+
+        @Comment("Set the time limit between each message")
+        private long limit = 2500;
+
+        @Comment("""
+                Time Unit of the cooldown limit
+                Available values: NANOSECONDS, MICROSECONDS, MILLISECONDS, SECONDS, MINUTES, HOURS, DAYS""")
+        private TimeUnit unit = TimeUnit.MILLISECONDS;
+
+        @Comment("""
+            Sets the form of warning
+            Available options: TITLE, ACTIONBAR, MESSAGE""")
+        @Setting(value = "warning-type")
+        private WarningType warningType = WarningType.MESSAGE;
+
+        @Comment("Commands to be executed in the cooldown module")
+        private Cooldown.Commands commands = new Cooldown.Commands();
+
+        public boolean enabled(){
+            return this.enabled;
+        }
+
+        public long limit(){
+            return this.limit;
+        }
+
+        public TimeUnit unit() {
+            return this.unit;
+        }
+
+        @Override
+        public WarningType getWarningType() {
+            return this.warningType;
+        }
+
+        @Override
+        public CommandsConfig getCommandsConfig() {
+            return null;
+        }
+
+        /**Cooldown Commands configuration */
+        @ConfigSerializable
+        public static class Commands extends CommandsConfig {}
     }
 
     /**Unicode Configuration */
@@ -523,6 +548,8 @@ public class Configuration implements Section {
         @Setting(value = "warning-type")
         private WarningType warningType = WarningType.MESSAGE;
 
+        private Set<String> allowedCommands = Set.of();
+
         @Override
         public CommandsConfig getCommandsConfig() {
             return this.commands;
@@ -536,6 +563,10 @@ public class Configuration implements Section {
         @Override
         public WarningType getWarningType() {
             return this.warningType;
+        }
+
+        public Set<String> getAllowedCommands() {
+            return this.allowedCommands;
         }
 
         @ConfigSerializable
@@ -666,10 +697,6 @@ public class Configuration implements Section {
 
     public interface Controllable{
         ControlType getControlType();
-
-        default boolean isBlockable(){
-            return getControlType() == ControlType.BLOCK;
-        }
     }
 
     public interface Executable{
@@ -681,7 +708,8 @@ public class Configuration implements Section {
             case REGULAR -> infractions.enabled();
             case FLOOD -> flood.enabled();
             case SPAM -> spam.enabled();
-            case BCOMMAND -> blacklist.enabled();
+            case COOLDOWN -> cooldown.enabled();
+            case BLOCKED_COMMAND ->  blacklist.enabled();
             case UNICODE -> unicode.enabled();
             case CAPS -> caps.enabled;
             case SYNTAX -> syntax.enabled();
@@ -694,7 +722,8 @@ public class Configuration implements Section {
             case REGULAR -> getInfractionsConfig();
             case FLOOD -> getFloodConfig();
             case SPAM -> getSpamConfig();
-            case BCOMMAND -> getCommandBlacklistConfig();
+            case COOLDOWN -> getCooldownConfig();
+            case BLOCKED_COMMAND -> getCommandBlacklistConfig();
             case UNICODE -> getUnicodeConfig();
             case CAPS -> getCapsConfig();
             case SYNTAX -> getSyntaxConfig();

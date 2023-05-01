@@ -1,20 +1,21 @@
 package io.github._4drian3d.chatregulator.modules.checks;
 
 import io.github._4drian3d.chatregulator.api.checks.InfractionCheck;
+import io.github._4drian3d.chatregulator.api.enums.ControlType;
+import io.github._4drian3d.chatregulator.api.result.CheckResult;
+import io.github._4drian3d.chatregulator.plugin.config.Blacklist;
+import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
 import io.github._4drian3d.chatregulator.utils.TestsUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 import java.util.regex.Pattern;
 
-import io.github._4drian3d.chatregulator.plugin.ChatRegulator;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class InfractionTest {
 
@@ -22,17 +23,21 @@ public final class InfractionTest {
     @DisplayName("Check Test")
     void detectionTest(@TempDir Path path){
         String original = "asdasdasdadadSh1T dadasdad";
-        ChatRegulator plugin = TestsUtils.createRegulator(path);
+        Blacklist configuration = ConfigurationContainer.load(LoggerFactory.getLogger(InfractionTest.class), path, Blacklist.class, "blacklist").get();
+        InfractionCheck check = InfractionCheck.builder()
+                        .controlType(ControlType.BLOCK)
+                        .blockedPatterns(configuration.getBlockedPatterns())
+                        .build();
 
-        assertTrue(InfractionCheck.createCheck(original, plugin).join().isInfraction());
+        assertTrue(check.check(TestsUtils.dummyPlayer(), original).isDenied());
     }
 
     // Test correct pattern order
     @RepeatedTest(3)
     @DisplayName("Replacement Test")
     void replaceMultiple(){
-        InfractionCheck iCheck = InfractionCheck.builder()
-            .replaceable(true)
+        InfractionCheck check = InfractionCheck.builder()
+            .controlType(ControlType.REPLACE)
             .blockedPatterns(
                 Pattern.compile("sh[ilj1y]t", Pattern.CASE_INSENSITIVE),
                 Pattern.compile("d[ilj1y]ck", Pattern.CASE_INSENSITIVE),
@@ -44,12 +49,10 @@ public final class InfractionTest {
         String original = "Hello D1cK sh1t f4ck mOtherfVck3r!!!";
         String expected = "Hello ** ** ** ******!!!";
 
-        var check = iCheck.check(original).join();
-        assertTrue(check.isInfraction());
-        /*IReplaeable replaceable = assertInstanceOf(IReplceable.class, check);
-        String replaced = replaceable.replaceInfraction();
-
-        assertEquals(expected, replaced);*/
+        CheckResult result = check.check(TestsUtils.dummyPlayer(), original);
+        assertTrue(result.shouldModify());
+        CheckResult.ReplaceCheckResult replaceResult = assertInstanceOf(CheckResult.ReplaceCheckResult.class, result);
+        assertEquals(expected, replaceResult.replaced());
     }
 
     @Test

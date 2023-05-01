@@ -1,14 +1,15 @@
 package io.github._4drian3d.chatregulator.modules.checks;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-
 import io.github._4drian3d.chatregulator.api.checks.FloodCheck;
+import io.github._4drian3d.chatregulator.api.enums.ControlType;
+import io.github._4drian3d.chatregulator.api.result.CheckResult;
+import io.github._4drian3d.chatregulator.utils.TestsUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FloodTest {
     @ParameterizedTest
@@ -17,25 +18,24 @@ class FloodTest {
         "helloooooooooooooo, hello"
     })
     @DisplayName("Flood Check")
-    void floodCheck(String original, String expected){
-        var result = FloodCheck.builder().limit(5).build().check(original).join();
-        assertTrue(result.isInfraction());
-        /*IReplaeable replaceable = assertInstanceOf(IReplaceble.class, result);
-        String replaced = replaceable.replaceInfraction();
-
-        assertEquals(replaced, expected);*/
+    void floodCheck(String original, String expected) {
+        CheckResult result = FloodCheck.builder()
+                .limit(5)
+                .controlType(ControlType.BLOCK)
+                .build()
+                .check(TestsUtils.dummyPlayer(), original);
+        assertTrue(result.isDenied());
     }
 
     @Test
     @DisplayName("MultiFlood Replacement")
     void multiFlood(){
         String original = "helloooooo everyoneeeeeee";
+        FloodCheck check = FloodCheck.builder()
+                .controlType(ControlType.REPLACE)
+                .limit(5)
+                .build();
 
-        /*var result = FloodCheck.createCheck(original).join();
-        assertTrue(result.isInfraction());*/
-        /*IReplacable replaceable = assertInstanceOf(IRepaceable.class, result);
-        String replaced = "hello everyone";
-        String actual = replaceable.replaceInfraction();
-        assertEquals(replaced, actual);*/
+        assertTrue(check.check(TestsUtils.dummyPlayer(), original).shouldModify());
     }
 }
