@@ -1,18 +1,18 @@
 package io.github._4drian3d.chatregulator.api.checks;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Predicate;
-
+import io.github._4drian3d.chatregulator.api.InfractionPlayer;
+import io.github._4drian3d.chatregulator.api.enums.ControlType;
+import io.github._4drian3d.chatregulator.api.enums.DetectionMode;
+import io.github._4drian3d.chatregulator.api.enums.InfractionType;
+import io.github._4drian3d.chatregulator.api.result.CheckResult;
+import net.kyori.adventure.builder.AbstractBuilder;
 import org.jetbrains.annotations.NotNull;
 
-import io.github._4drian3d.chatregulator.api.enums.ControlType;
-import io.github._4drian3d.chatregulator.api.enums.InfractionType;
-import io.github._4drian3d.chatregulator.api.result.ReplaceableResult;
-import io.github._4drian3d.chatregulator.api.result.Result;
-import net.kyori.adventure.builder.AbstractBuilder;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.Predicate;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Check for invalid characters
@@ -22,52 +22,16 @@ public final class UnicodeCheck implements ICheck {
     private final ControlType control;
     private final Predicate<Character> charPredicate;
 
-    private UnicodeCheck(char[] chars, ControlType control, CharMode mode) {
+    private UnicodeCheck(char[] chars, ControlType control, DetectionMode mode) {
         this.chars = chars;
         this.control = control;
         if (chars == null) {
             this.charPredicate = UnicodeCheck::defaultCharTest;
         } else {
-            this.charPredicate = (mode == CharMode.BLACKLIST)
+            this.charPredicate = (mode == DetectionMode.BLACKLIST)
                     ? c -> defaultCharTest(c) || charTest(c)
                     : c -> defaultCharTest(c) && !charTest(c);
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return A {@link Result} if the check was not successful or if the {@link ControlType} is {@link ControlType#BLOCK}
-     * else it will return a {@link ReplaceableResult}
-     */
-    @Override
-    public @NotNull CompletableFuture<Result> check(final @NotNull String string) {
-        return CompletableFuture.supplyAsync(() -> {
-            final char[] charArray = Objects.requireNonNull(string).toCharArray();
-            final Set<Character> results = new HashSet<>(charArray.length);
-
-            for (final char character : charArray) {
-                if (charPredicate.test(character)) {
-                    if (control == ControlType.BLOCK) {
-                        return new Result(string, true);
-                    }
-                    results.add(character);
-                }
-            }
-
-            return results.isEmpty()
-                    ? new Result(string, false)
-                    : new ReplaceableResult(results.toString(), true) {
-                @Override
-                public String replaceInfraction() {
-                    String replaced = string;
-                    for (final char character : results) {
-                        replaced = replaced.replace(character, ' ');
-                    }
-                    return replaced;
-                }
-            };
-        });
     }
 
     public static boolean defaultCharTest(char c) {
@@ -90,6 +54,31 @@ public final class UnicodeCheck implements ICheck {
     }
 
     @Override
+    public @NotNull CheckResult check(@NotNull InfractionPlayer player, final @NotNull String string) {
+        final char[] charArray = requireNonNull(string).toCharArray();
+        final Set<Character> results = new HashSet<>(charArray.length);
+
+        for (final char character : charArray) {
+            if (charPredicate.test(character)) {
+                if (control == ControlType.BLOCK) {
+                    return CheckResult.denied();
+                }
+                results.add(character);
+            }
+        }
+
+        if (results.isEmpty()) {
+            return CheckResult.allowed();
+        } else {
+            String replaced = string;
+            for (final char character : results) {
+                replaced = replaced.replace(character, ' ');
+            }
+            return CheckResult.modified(replaced);
+        }
+    }
+
+    @Override
     public @NotNull InfractionType type() {
         return InfractionType.UNICODE;
     }
@@ -101,7 +90,7 @@ public final class UnicodeCheck implements ICheck {
     public static class Builder implements AbstractBuilder<UnicodeCheck> {
         private char[] chars;
         private ControlType control = ControlType.REPLACE;
-        private CharMode mode = CharMode.BLACKLIST;
+        private DetectionMode mode = DetectionMode.BLACKLIST;
 
         private Builder() {
         }
@@ -128,19 +117,16 @@ public final class UnicodeCheck implements ICheck {
             return this;
         }
 
-        public Builder charMode(CharMode mode) {
+        public Builder charMode(DetectionMode mode) {
             this.mode = mode;
             return this;
         }
 
         @Override
         public @NotNull UnicodeCheck build() {
+            requireNonNull(control);
             return new UnicodeCheck(chars, control, mode);
         }
 
-    }
-
-    public enum CharMode {
-        WHITELIST, BLACKLIST
     }
 }

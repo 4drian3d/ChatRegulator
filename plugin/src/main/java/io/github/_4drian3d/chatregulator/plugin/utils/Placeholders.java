@@ -5,6 +5,6 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
 public final class Placeholders {
     public static TagResolver.Single integer(String key, int value) {
-        return Placeholder.unparsed(key, Integer.toString(value));
+        return Placeholder.parsed(key, Integer.toString(value));
     }
 }

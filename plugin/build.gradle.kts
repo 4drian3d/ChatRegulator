@@ -6,7 +6,6 @@ plugins {
 
 repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
-    maven("https://jitpack.io")
     maven("https://repo.alessiodp.com/releases/")
 }
 
@@ -18,7 +17,6 @@ java {
 
 dependencies {
     compileOnly(libs.configurate)
-    compileOnly(libs.caffeine)
     implementation(libs.libby)
     implementation(project(":chatregulator-api"))
 
@@ -33,7 +31,6 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation(libs.mockito)
     testImplementation(libs.velocity)
-    testImplementation(libs.caffeine)
 }
 
 blossom {

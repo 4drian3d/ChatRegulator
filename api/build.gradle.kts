@@ -20,7 +20,6 @@ dependencies {
     compileOnlyApi(libs.velocity)
 }
 
-
 publishing {
     publications {
         create<MavenPublication>("maven") {

@@ -4,23 +4,24 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import com.velocitypowered.api.command.CommandSource;
-import io.github._4drian3d.chatregulator.api.enums.InfractionType;
-import io.github._4drian3d.chatregulator.api.enums.Permission;
+import io.github._4drian3d.chatregulator.api.enums.*;
 import io.github._4drian3d.chatregulator.api.utils.Commands;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
 
-import io.github._4drian3d.chatregulator.api.enums.ControlType;
-import io.github._4drian3d.chatregulator.api.enums.WarningType;
 import io.github._4drian3d.chatregulator.api.checks.UnicodeCheck.CharMode;
 
 /**
  * Configuration values
  */
 @ConfigSerializable
-public class Configuration {
+public class Configuration implements Section {
+    public static final String HEADER = """
+        ChatRegulator | by 4drian3d
+        Check the function of each configuration option at
+        https://github.com/4drian3d/ChatRegulator/wiki/Configuration""";
 
     /**Main Configuration */
     @Comment("Regular infraction module")
@@ -436,7 +437,7 @@ public class Configuration {
                 Modes Availables:
                 BLACKLIST: If one of the configured characters is detected, the check will be activated as an illegal character
                 WHITELIST: If a character is detected as illegal but is within the configured characters, its detection as an illegal character will be skipped""")
-            private CharMode mode = CharMode.BLACKLIST;
+            private DetectionMode mode = DetectionMode.BLACKLIST;
 
             public char[] chars() {
                 return this.chars;
@@ -447,7 +448,7 @@ public class Configuration {
                 return this.enabled;
             }
 
-            public CharMode charMode() {
+            public DetectionMode detectionMode() {
                 return this.mode;
             }
 

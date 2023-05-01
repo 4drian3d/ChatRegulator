@@ -1,15 +1,13 @@
 package io.github._4drian3d.chatregulator.api.checks;
 
-import java.util.Locale;
-import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-
+import io.github._4drian3d.chatregulator.api.InfractionPlayer;
+import io.github._4drian3d.chatregulator.api.enums.InfractionType;
+import io.github._4drian3d.chatregulator.api.result.CheckResult;
+import net.kyori.adventure.builder.AbstractBuilder;
 import org.jetbrains.annotations.NotNull;
 
-import io.github._4drian3d.chatregulator.api.enums.InfractionType;
-import io.github._4drian3d.chatregulator.api.result.Result;
-import net.kyori.adventure.builder.AbstractBuilder;
-import io.github._4drian3d.chatregulator.api.result.ReplaceableResult;
+import java.util.Locale;
+import java.util.Objects;
 
 /**
  * Check for compliance with uppercase character limit in a string
@@ -21,24 +19,17 @@ public final class CapsCheck implements ICheck {
         this.limit = limit;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @return A {@link ReplaceableResult} if the check was successfully or a {@link Result} if not
-     */
     @Override
-    public @NotNull CompletableFuture<Result> check(final @NotNull String string) {
-        return CompletableFuture.supplyAsync(() -> Objects.requireNonNull(string)
-            .chars()
-            .filter(Character::isUpperCase)
-            .count() >= this.limit
-            ? new ReplaceableResult(string, true){
-                @Override
-                public String replaceInfraction(){
-                    return string.toLowerCase(Locale.ROOT);
-                }
-            }
-            : new Result(string, false));
+    public @NotNull CheckResult check(@NotNull InfractionPlayer player, @NotNull String string) {
+        boolean aboveLimit = Objects.requireNonNull(string)
+                .chars()
+                .filter(Character::isUpperCase)
+                .count() >= this.limit;
+        if (aboveLimit) {
+            return CheckResult.modified(string.toLowerCase(Locale.ROOT));
+        } else {
+            return CheckResult.allowed();
+        }
     }
 
     @Override
@@ -71,7 +62,7 @@ public final class CapsCheck implements ICheck {
 
         @Override
         public @NotNull CapsCheck build(){
-            return new CapsCheck(limit == 0 ? 5 : limit);
+            return new CapsCheck(limit);
         }
     }
 }

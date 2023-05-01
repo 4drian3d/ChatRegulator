@@ -1,6 +1,6 @@
 package io.github._4drian3d.chatregulator.plugin.placeholders.formatter;
 
-import me.dreamerzero.miniplaceholders.api.MiniPlaceholders;
+import io.github.miniplaceholders.api.MiniPlaceholders;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -25,7 +25,7 @@ public final class MiniPlaceholderFormatter implements IFormatter {
         final @NotNull String string,
         final @Nullable Audience audience
     ) {
-        if(audience == null){
+        if (audience == null){
             return parse(string);
         }
         return MiniMessage.miniMessage().deserialize(
@@ -40,7 +40,7 @@ public final class MiniPlaceholderFormatter implements IFormatter {
         final @Nullable Audience audience,
         final @NotNull TagResolver extraResolver
     ) {
-        if(audience == null){
+        if (audience == null){
             return parse(string, extraResolver);
         }
         return MiniMessage.miniMessage().deserialize(

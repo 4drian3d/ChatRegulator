@@ -6,16 +6,16 @@ import org.jetbrains.annotations.Nullable;
 
 /**Result of any Check */
 public class Result {
-    private final boolean infricted;
+    private final boolean inflicted;
     private final String infractionString;
 
     /**
      * Creates a new Result
      * @param infractionString the infraction string
-     * @param infricted if it was infricted
+     * @param inflicted if it was inflicted
      */
-    public Result(String infractionString, boolean infricted){
-        this.infricted = infricted;
+    public Result(String infractionString, boolean inflicted){
+        this.inflicted = inflicted;
         this.infractionString = infractionString;
     }
     /**
@@ -23,7 +23,7 @@ public class Result {
      * @return the result
      */
     public boolean isInfraction(){
-        return this.infricted;
+        return this.inflicted;
     }
 
     /**
@@ -39,16 +39,16 @@ public class Result {
         if(this == o) return true;
         if(!(o instanceof Result that)) return false;
         return that.infractionString.equals(this.infractionString)
-            && that.infricted == this.infricted;
+            && that.inflicted == this.inflicted;
     }
 
     @Override
     public int hashCode(){
-        return Objects.hash(this.infractionString, this.infricted);
+        return Objects.hash(this.infractionString, this.inflicted);
     }
 
     @Override
     public String toString(){
-        return "Result[infractionString="+this.infractionString+",infricted="+this.infricted+"]";
+        return "Result[infractionString="+this.infractionString+",infricted="+this.inflicted +"]";
     }
 }

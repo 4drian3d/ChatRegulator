@@ -1,17 +1,16 @@
 package io.github._4drian3d.chatregulator.api.checks;
 
+import io.github._4drian3d.chatregulator.api.InfractionPlayer;
+import io.github._4drian3d.chatregulator.api.enums.InfractionType;
+import io.github._4drian3d.chatregulator.api.result.CheckResult;
+import io.github._4drian3d.chatregulator.api.utils.Commands;
+import net.kyori.adventure.builder.AbstractBuilder;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.concurrent.CompletableFuture;
-
-import io.github._4drian3d.chatregulator.api.utils.Commands;
-import org.jetbrains.annotations.NotNull;
-
-import io.github._4drian3d.chatregulator.api.enums.InfractionType;
-import io.github._4drian3d.chatregulator.api.result.Result;
-import net.kyori.adventure.builder.AbstractBuilder;
 
 /**
  * Check for verification of executed commands
@@ -23,21 +22,14 @@ public final class CommandCheck implements ICheck {
         this.blockedCommands = blockedCommands;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @return A Result with the string with the command blocked and if the check was successful
-     */
     @Override
-    public @NotNull CompletableFuture<Result> check(@NotNull String string) {
-        return CompletableFuture.supplyAsync(() -> {
-            for (final String blockedCommand : blockedCommands){
-                if (Commands.isStartingString(string, blockedCommand)) {
-                    return new Result(string, true);
-                }
+    public @NotNull CheckResult check(@NotNull InfractionPlayer player, @NotNull String string) {
+        for (final String blockedCommand : blockedCommands){
+            if (Commands.isStartingString(string, blockedCommand)) {
+                return CheckResult.denied();
             }
-            return new Result(string, false);
-        });
+        }
+        return CheckResult.allowed();
     }
 
     @Override
@@ -90,8 +82,8 @@ public final class CommandCheck implements ICheck {
          * @return this
          */
         public Builder addBlockedCommand(String command){
-            if(this.blockedCommands == null)
-                this.blockedCommands = new HashSet<>();
+            if (this.blockedCommands == null) this.blockedCommands = new HashSet<>();
+
             this.blockedCommands.add(command);
             return this;
         }

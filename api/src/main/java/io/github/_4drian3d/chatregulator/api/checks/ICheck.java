@@ -1,26 +1,25 @@
 package io.github._4drian3d.chatregulator.api.checks;
 
-import java.util.concurrent.CompletableFuture;
-
-import org.jetbrains.annotations.NotNull;
-
+import io.github._4drian3d.chatregulator.api.InfractionPlayer;
 import io.github._4drian3d.chatregulator.api.enums.InfractionType;
+import io.github._4drian3d.chatregulator.api.result.CheckResult;
 import io.github._4drian3d.chatregulator.api.result.Result;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Base class of the checks used in the plugin
  */
-public interface ICheck {
+public sealed interface ICheck permits CapsCheck, CommandCheck, FloodCheck, InfractionCheck, SpamCheck, SyntaxCheck, UnicodeCheck {
     /**
      * Check if the delivered string contains any infraction
-     * ans returns a CompletableFuture with the correspondient Result
+     * ans returns a CompletableFuture with the corresponding Result
      * To see what check has returned, perform a check by instanceof
      * @param string the string to check
      * @see Result
      * @since 3.0.0
      * @return a CompletableFuture with the result of the check
      */
-    @NotNull CompletableFuture<Result> check(final @NotNull String string);
+    @NotNull CheckResult check(final @NotNull InfractionPlayer player, final @NotNull String string);
 
     /**
      * Get the {@link InfractionType} of this check

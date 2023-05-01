@@ -1,5 +1,6 @@
 package io.github._4drian3d.chatregulator.api.event;
 
+import io.github._4drian3d.chatregulator.api.result.CheckResult;
 import org.jetbrains.annotations.NotNull;
 
 import io.github._4drian3d.chatregulator.api.InfractionPlayer;
@@ -19,10 +20,11 @@ public final class ChatViolationEvent extends ViolationEvent {
      * @param message the chat message in which the violation was found
      */
     public ChatViolationEvent(
-        @NotNull InfractionPlayer infractionPlayer,
-        @NotNull InfractionType type,
-        @NotNull io.github._4drian3d.chatregulator.api.result.Result detectionResult,
-        @NotNull String message) {
+        final @NotNull InfractionPlayer infractionPlayer,
+        final @NotNull InfractionType type,
+        final @NotNull CheckResult detectionResult,
+        final @NotNull String message
+    ) {
 
             super(infractionPlayer, type, detectionResult);
             this.message = message;

@@ -1,10 +1,9 @@
 package io.github._4drian3d.chatregulator.api.checks;
 
+import io.github._4drian3d.chatregulator.api.InfractionPlayer;
+import io.github._4drian3d.chatregulator.api.enums.ControlType;
 import io.github._4drian3d.chatregulator.api.enums.InfractionType;
-import io.github._4drian3d.chatregulator.api.result.MultiPatternReplaceableResult;
-import io.github._4drian3d.chatregulator.api.result.PatternResult;
-import io.github._4drian3d.chatregulator.api.result.ReplaceableResult;
-import io.github._4drian3d.chatregulator.api.result.Result;
+import io.github._4drian3d.chatregulator.api.result.*;
 import net.kyori.adventure.builder.AbstractBuilder;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,61 +13,57 @@ import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.util.Objects.requireNonNull;
+
 /**
- * Utilities for the detection of restringed words
+ * Utilities for the detection of restricted words
  */
 public final class InfractionCheck implements ICheck {
     private final Pattern[] blockedWords;
-    private final boolean blockable;
+    private final ControlType controlType;
 
-    private InfractionCheck(boolean blockable, Pattern... blockedWords) {
+    private InfractionCheck(ControlType controlType, Pattern... blockedWords) {
         this.blockedWords = blockedWords;
-        this.blockable = blockable;
+        this.controlType = controlType;
+    }
+
+    @Override
+    public @NotNull CheckResult check(final @NotNull InfractionPlayer player, final @NotNull String string) {
+        final List<Matcher> matchers = new ArrayList<>();
+        boolean detected = false;
+        for (final Pattern pattern : blockedWords) {
+            final Matcher match = pattern.matcher(string);
+            if (match.find()) {
+                detected = true;
+                if (controlType == ControlType.BLOCK) {
+                    return CheckResult.denied();
+                }
+                matchers.add(match);
+            }
+        }
+
+        if (detected) {
+            String replaced = string;
+            for (final Matcher matcher : matchers) {
+                replaced = matcher.replaceAll(InfractionCheck::generateReplacement);
+            }
+            return CheckResult.modified(replaced);
+        } else {
+            return CheckResult.allowed();
+        }
     }
 
     /**
      * {@inheritDoc}
      *
      * @param string the string
-     * @return May return a {@link PatternResult} if the result was successful
+     * @return May return a  if the result was successful
      * and the check was set to only block the message.
-     * Or a {@link ReplaceableResult} if the check was successful
+     * Or a CheckResult if the check was successful
      * and is configured to replace multiple violations.
      * Or a {@link Result} if the check was not successful
      * @see ICheck
      */
-    @Override
-    public @NotNull CompletableFuture<Result> check(final @NotNull String string) {
-        return CompletableFuture.supplyAsync(() -> {
-            final List<Matcher> matchers = new ArrayList<>(5);
-            final List<Pattern> patterns = new ArrayList<>(5);
-            boolean detected = false;
-            for (final Pattern pattern : blockedWords) {
-                final Matcher match = pattern.matcher(string);
-                if (match.find()) {
-                    detected = true;
-                    if (blockable) {
-                        return new PatternResult(match.group(), blockable, pattern, match);
-                    }
-                    matchers.add(match);
-                    patterns.add(pattern);
-                }
-            }
-            return detected
-                    ? new MultiPatternReplaceableResult(string, true, matchers.toArray(new Matcher[0])) {
-                @Override
-                public String replaceInfraction() {
-                    String original = string;
-                    for (final Pattern pattern : patterns) {
-                        original = pattern.matcher(original)
-                                .replaceAll(InfractionCheck::generateReplacement);
-                    }
-                    return original;
-                }
-            }
-                    : new Result(string, false);
-        });
-    }
 
     public static String generateReplacement(final MatchResult result) {
         final int size = result.group().length() / 2;
@@ -86,13 +81,13 @@ public final class InfractionCheck implements ICheck {
 
     public static class Builder implements AbstractBuilder<InfractionCheck> {
         private Set<Pattern> blockedWords;
-        private boolean replaceable;
-        private boolean edited = false;
+        private ControlType controlType;
 
-        Builder() {
+        private Builder() {
         }
 
         public Builder blockedPattern(Collection<Pattern> patterns) {
+            requireNonNull(patterns);
             if (this.blockedWords == null) {
                 this.blockedWords = new LinkedHashSet<>(patterns);
             } else {
@@ -110,9 +105,8 @@ public final class InfractionCheck implements ICheck {
             return this;
         }
 
-        public Builder replaceable(boolean replaceable) {
-            this.replaceable = replaceable;
-            this.edited = true;
+        public Builder controlType(ControlType controlType) {
+            this.controlType =  requireNonNull(controlType);
             return this;
         }
 
@@ -121,10 +115,8 @@ public final class InfractionCheck implements ICheck {
             if (this.blockedWords == null) {
                 this.blockedWords = Collections.emptySet();
             }
-            if (!edited) {
-                this.replaceable = false;
-            }
-            return new InfractionCheck(!replaceable, blockedWords.toArray(new Pattern[0]));
+            requireNonNull(controlType);
+            return new InfractionCheck(controlType, blockedWords.toArray(new Pattern[0]));
         }
     }
 }

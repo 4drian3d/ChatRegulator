@@ -42,6 +42,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import static net.kyori.adventure.text.minimessage.MiniMessage.miniMessage;
+
 @Plugin(
     id = Constants.ID,
     name = Constants.NAME,
@@ -86,8 +88,7 @@ public class ChatRegulator implements ChatRegulatorAPI {
     public void onProxyInitialization(final ProxyInitializeEvent event) {
         this.source = new RegulatorCommandSource(server.getEventManager(), server.getConsoleCommandSource());
         source.sendMessage(
-            Components.MESSAGE_MINIMESSAGE
-                .deserialize(
+            miniMessage().deserialize(
                     "<gradient:#f2709c:#ff9472>ChatRegulator</gradient> <gradient:#DAE2F8:#D4D3DD>Starting plugin...")
         );
         this.loadDependencies();
@@ -117,10 +118,9 @@ public class ChatRegulator implements ChatRegulatorAPI {
         injector.getInstance(RegulatorCommand.class).registerCommand();
 
         source.sendMessage(
-            Components.MESSAGE_MINIMESSAGE
-                .deserialize(
-                    "<gradient:#f2709c:#ff9472>ChatRegulator</gradient> <gradient:#DAE2F8:#D4D3DD>has started, have a very nice day</gradient>"
-                )
+            miniMessage().deserialize(
+                "<gradient:#f2709c:#ff9472>ChatRegulator</gradient> <gradient:#DAE2F8:#D4D3DD>has started, have a very nice day</gradient>"
+            )
         );
     }
 

@@ -7,8 +7,8 @@ import com.velocitypowered.api.proxy.Player;
 import io.github._4drian3d.chatregulator.plugin.InfractionPlayerImpl;
 import io.github._4drian3d.chatregulator.api.enums.InfractionType;
 import io.github._4drian3d.chatregulator.plugin.PlayerManagerImpl;
-import me.dreamerzero.miniplaceholders.api.Expansion;
-import me.dreamerzero.miniplaceholders.api.utils.TagsUtils;
+import io.github.miniplaceholders.api.Expansion;
+import io.github.miniplaceholders.api.utils.TagsUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 

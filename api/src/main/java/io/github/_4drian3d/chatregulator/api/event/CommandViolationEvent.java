@@ -2,6 +2,7 @@ package io.github._4drian3d.chatregulator.api.event;
 
 import java.util.Objects;
 
+import io.github._4drian3d.chatregulator.api.result.CheckResult;
 import org.jetbrains.annotations.NotNull;
 
 import io.github._4drian3d.chatregulator.api.InfractionPlayer;
@@ -23,8 +24,9 @@ public final class CommandViolationEvent extends ViolationEvent {
     public CommandViolationEvent(
         @NotNull InfractionPlayer infractionPlayer,
         @NotNull InfractionType type,
-        @NotNull io.github._4drian3d.chatregulator.api.result.Result result,
-        @NotNull String command){
+        @NotNull CheckResult result,
+        @NotNull String command
+    ) {
 
             super(Objects.requireNonNull(infractionPlayer), type, Objects.requireNonNull(result));
             this.command = command;

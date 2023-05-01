@@ -1,8 +1,11 @@
-# ChatRegulator [![WorkFlow Status](https://img.shields.io/github/workflow/status/4drian3d/ChatRegulator/ChatRegulator%20Maven%20Build?&style=flat-square)](https://github.com/4drian3d/ChatRegulator/actions/workflows/ChatRegulatorBuild.yml) [![Version](https://img.shields.io/github/v/release/4drian3d/ChatRegulator?color=FFF0&style=flat-square)](https://github.com/4drian3d/ChatRegulator/releases)
-
+# ChatRegulator 
 A global chat regulator for Velocity
 
-[![Banner](https://i.imgur.com/F4lxNBq.jpg)](https://polymart.org/resource/chatregulator)
+[![WorkFlow](https://img.shields.io/github/actions/workflow/status/4drian3d/ChatRegulator/ChatRegulatorBuild.yml?style=flat-square)](https://github.com/4drian3d/ChatRegulator/actions)
+![Latest Version](https://img.shields.io/github/v/release/4drian3d/ChatRegulator?style=flat-square)
+[![Discord](https://img.shields.io/discord/899740810956910683?color=7289da&logo=Discord&label=Discord&style=flat-square)](https://discord.gg/5NMMzK5mAn)
+![Modrinth Downloads](https://img.shields.io/modrinth/dt/zK5VJgm6?logo=Modrinth&style=flat-square)
+![GitHub Downloads](https://img.shields.io/github/downloads/4drian3d/ChatRegulator/total?logo=GitHub&style=flat-square)
 
 ## Features
 

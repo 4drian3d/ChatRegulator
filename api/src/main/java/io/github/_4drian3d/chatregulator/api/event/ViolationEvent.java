@@ -5,6 +5,7 @@ import java.util.Objects;
 import com.velocitypowered.api.event.ResultedEvent;
 import com.velocitypowered.api.event.ResultedEvent.GenericResult;
 
+import io.github._4drian3d.chatregulator.api.result.CheckResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.ApiStatus.Internal;
 
@@ -14,7 +15,7 @@ import io.github._4drian3d.chatregulator.api.enums.InfractionType;
 /**
  * Basis for infringement events
  */
-public abstract class ViolationEvent implements ResultedEvent<GenericResult> {
+public sealed abstract class ViolationEvent implements ResultedEvent<GenericResult> permits ChatViolationEvent, CommandViolationEvent {
     /**
      * InfractionPlayer involved in detection
      */
@@ -23,7 +24,7 @@ public abstract class ViolationEvent implements ResultedEvent<GenericResult> {
      * Type of detection
      */
     private final InfractionType type;
-    private final io.github._4drian3d.chatregulator.api.result.Result detectionResult;
+    private final CheckResult detectionResult;
     private GenericResult result = GenericResult.allowed();
 
     /**
@@ -33,7 +34,11 @@ public abstract class ViolationEvent implements ResultedEvent<GenericResult> {
      * @param detectionResult the result of the detection
      */
     @Internal
-    protected ViolationEvent(@NotNull InfractionPlayer infractionPlayer, @NotNull InfractionType type, @NotNull io.github._4drian3d.chatregulator.api.result.Result detectionResult){
+    protected ViolationEvent(
+            @NotNull InfractionPlayer infractionPlayer,
+            @NotNull InfractionType type,
+            @NotNull CheckResult detectionResult
+    ) {
         this.infractionPlayer = infractionPlayer;
         this.type = type;
         this.detectionResult = detectionResult;
@@ -64,7 +69,7 @@ public abstract class ViolationEvent implements ResultedEvent<GenericResult> {
      * the detected string and more.
      * @return the detection performed
      */
-    public @NotNull io.github._4drian3d.chatregulator.api.result.Result getDetectionResult(){
+    public @NotNull CheckResult getDetectionResult(){
         return this.detectionResult;
     }
 

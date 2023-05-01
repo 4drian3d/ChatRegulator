@@ -1,61 +1,76 @@
 package io.github._4drian3d.chatregulator.plugin.listener.chat;
 
 import com.google.inject.Inject;
-import com.velocitypowered.api.event.Continuation;
-import com.velocitypowered.api.event.PostOrder;
-import com.velocitypowered.api.event.Subscribe;
+import com.google.inject.name.Named;
+import com.velocitypowered.api.event.*;
 import com.velocitypowered.api.event.player.PlayerChatEvent;
 import com.velocitypowered.api.event.player.PlayerChatEvent.ChatResult;
-import com.velocitypowered.api.proxy.Player;
-import io.github._4drian3d.chatregulator.plugin.ChatRegulator;
+import io.github._4drian3d.chatregulator.api.checks.*;
+import io.github._4drian3d.chatregulator.api.result.CheckResult;
+import io.github._4drian3d.chatregulator.plugin.CheckProvider;
 import io.github._4drian3d.chatregulator.plugin.InfractionPlayerImpl;
+import io.github._4drian3d.chatregulator.plugin.PlayerManagerImpl;
 import io.github._4drian3d.chatregulator.plugin.Replacer;
-import io.github._4drian3d.chatregulator.plugin.wrapper.ChatWrapper;
-import io.github._4drian3d.chatregulator.plugin.wrapper.EventWrapper;
-import org.jetbrains.annotations.ApiStatus.Internal;
+import io.github._4drian3d.chatregulator.plugin.config.Configuration;
+import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
+import io.github._4drian3d.chatregulator.plugin.lazy.LazyDetectionProvider;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.util.concurrent.atomic.AtomicReference;
 
-/**
- * ChatRegulator's Chat Listener
- */
-@Internal
-public final class ChatListener {
+public final class ChatListener implements AwaitingEventExecutor<PlayerChatEvent> {
     @Inject
-    private ChatRegulator plugin;
+    private ConfigurationContainer<Configuration> configurationContainer;
+    @Inject
+    private PlayerManagerImpl playerManager;
+    @Inject
+    private CheckProvider<UnicodeCheck> unicodeProvider;
+    @Inject
+    private CheckProvider<CapsCheck> capsProvider;
+    @Inject
+    private CheckProvider<FloodCheck> floodProvider;
+    @Inject
+    private CheckProvider<InfractionCheck> infractionProvider;
+    @Inject
+    @Named("chat")
+    private CheckProvider<SpamCheck> spamProvider;
 
-    /**
-     * Chat Listener for detections
-     *
-     * @param event        the chat event
-     * @param continuation the event cycle
-     */
-    @Subscribe(order = PostOrder.FIRST)
-    public void onChat(final PlayerChatEvent event, final Continuation continuation) {
+    // PostOrder.FIRST
+    @Override
+    public @Nullable EventTask executeAsync(PlayerChatEvent event) {
         if (!event.getResult().isAllowed()) {
-            continuation.resume();
-            return;
-        }
-        final Player player = event.getPlayer();
-        final AtomicReference<String> message = new AtomicReference<>(event.getMessage());
-        final InfractionPlayerImpl infractor = plugin.getPlayerManager().getPlayer(player);
-        final EventWrapper<PlayerChatEvent> wrapper = new ChatWrapper(event, continuation);
-
-        if (infractor.unicode(message, wrapper)
-                || infractor.caps(message, wrapper)
-                || infractor.flood(message, wrapper)
-                || infractor.regular(message, wrapper)
-                || infractor.spam(message, wrapper)
-        ) {
-            return;
+            return null;
         }
 
-        if (plugin.getConfig().getFormatConfig().enabled()) {
-            message.set(Replacer.applyFormat(message.get(), plugin.getConfig()));
-            event.setResult(ChatResult.message(message.get()));
-        }
+        return EventTask.withContinuation(continuation -> {
+            final InfractionPlayerImpl infractor = playerManager.getPlayer(event.getPlayer().getUniqueId());
 
-        infractor.lastMessage(message.get());
-        continuation.resume();
+            LazyDetectionProvider.checks(
+                    unicodeProvider,
+                    capsProvider,
+                    floodProvider,
+                    infractionProvider,
+                    spamProvider
+            )
+            .detect(infractor, event.getMessage())
+            .thenAccept(checkResult -> {
+                if (checkResult.isDenied()) {
+                    event.setResult(ChatResult.denied());
+                } else {
+                    String finalMessage = event.getMessage();
+                    if (checkResult.shouldModify()) {
+                        CheckResult.ReplaceCheckResult replaceResult = (CheckResult.ReplaceCheckResult) checkResult;
+                        finalMessage = replaceResult.replaced();
+                    }
+
+                    final Configuration configuration = configurationContainer.get();
+                    if (configuration.getFormatConfig().enabled()) {
+                        finalMessage = Replacer.applyFormat(finalMessage, configuration);
+                        event.setResult(ChatResult.message(finalMessage));
+                    }
+                    infractor.lastMessage(finalMessage);
+                }
+                continuation.resume();
+            });
+        });
     }
 }

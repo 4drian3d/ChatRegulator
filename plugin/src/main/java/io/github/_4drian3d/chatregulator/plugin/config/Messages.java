@@ -9,8 +9,13 @@ import org.spongepowered.configurate.objectmapping.meta.Setting;
 
 /**ChatRegulator Messages */
 @ConfigSerializable
-public final class Messages {
-    private Messages(){}
+public final class Messages implements Section {
+    public static final String HEADER = """
+        ChatRegulator | by 4drian3d
+        To modify the plugin messages and to use the plugin in general
+        I recommend that you have a basic knowledge of MiniMessage
+        Guide: https://docs.adventure.kyori.net/minimessage.html#format
+        Spanish Guide: https://gist.github.com/4drian3d/9ccce0ca1774285e38becb09b73728f3""";
 
     @Comment("Configuration of command blacklist module messages")
     @Setting(value = "command-blacklist")
