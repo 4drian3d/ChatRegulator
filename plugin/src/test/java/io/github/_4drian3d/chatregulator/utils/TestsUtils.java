@@ -21,20 +21,20 @@ public final class TestsUtils {
     public static InfractionPlayerImpl dummyPlayer() {
         return new InfractionPlayerImpl(new TestPlayer("", false), null);
     }
-    public static InfractionPlayerImpl createNormalPlayer(String name, ChatRegulator plugin){
+    public static InfractionPlayerImpl createNormalPlayer(String name){
         Player player = new TestPlayer(name, false);
 
         return new InfractionPlayerImpl(player, null);
     }
 
-    public static InfractionPlayerImpl createOperatorPlayer(String name, ChatRegulator plugin){
+    public static InfractionPlayerImpl createOperatorPlayer(String name){
         Player player = new TestPlayer(name, true);
 
         return new InfractionPlayerImpl(player, null);
     }
 
-    public static InfractionPlayerImpl createRandomNormalPlayer(ChatRegulator plugin){
-        return createNormalPlayer(createRandomString(10), plugin);
+    public static InfractionPlayerImpl createRandomNormalPlayer() {
+        return createNormalPlayer(createRandomString(10));
     }
 
     private static final Random rm = new Random();

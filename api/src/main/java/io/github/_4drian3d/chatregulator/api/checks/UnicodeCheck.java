@@ -34,14 +34,14 @@ public final class UnicodeCheck implements ICheck {
         }
     }
 
-    public static boolean defaultCharTest(char c) {
-        if (c >= ' ' && c <= '~') {
+    public static final boolean defaultCharTest(char c) {
+        if(c >= ' ' && c <= '~') {
             return false;
         }
-        if (c <= '¿') {
+        if(c <= 'ü' && c <= '¿') {
             return false;
         }
-        return !(c <= 'þ');
+        return !(c >= '\u00BF' && c <= '\u00FE');
     }
 
     private boolean charTest(char c) {

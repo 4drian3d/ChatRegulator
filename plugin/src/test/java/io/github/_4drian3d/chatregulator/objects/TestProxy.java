@@ -96,7 +96,7 @@ public final class TestProxy implements ProxyServer {
 
     @Override
     public Optional<Player> getPlayer(String name) {
-        return Optional.of(TestsUtils.createNormalPlayer(name, null).getPlayer());
+        return Optional.of(TestsUtils.createNormalPlayer(name).getPlayer());
     }
 
     @Override

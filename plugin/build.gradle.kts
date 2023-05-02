@@ -61,4 +61,9 @@ tasks {
         options.release.set(17)
         options.encoding = "UTF-8"
     }
+
+    compileTestJava {
+        options.encoding = "UTF-8"
+        options.release.set(17)
+    }
 }

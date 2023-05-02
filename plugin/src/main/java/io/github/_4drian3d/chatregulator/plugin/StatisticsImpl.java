@@ -40,7 +40,7 @@ public final class StatisticsImpl implements Statistics {
 
     public TagResolver getPlaceholders() {
         TagResolver.Builder builder = TagResolver.builder();
-        countMap.forEach(((infractionType, integer) -> builder.resolver(integer(infractionType.toString().toLowerCase(Locale.ROOT), integer))));
+        countMap.forEach(((infractionType, integer) -> builder.resolver(integer(infractionType.toString().toLowerCase(Locale.ROOT), integer == null ? 0 : integer))));
         return builder.build();
     }
 

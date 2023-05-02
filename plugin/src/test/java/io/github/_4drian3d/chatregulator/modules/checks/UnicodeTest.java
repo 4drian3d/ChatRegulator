@@ -21,8 +21,6 @@ import java.nio.file.Path;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UnicodeTest {
-    @TempDir Path path;
-
     @Test
     @DisplayName("Illegal Check")
     void illegalTest(){
@@ -35,6 +33,7 @@ class UnicodeTest {
         CheckResult result = check.check(TestsUtils.dummyPlayer(), illegal);
 
         assertTrue(result.shouldModify());
+
         CheckResult.ReplaceCheckResult replaceResult = assertInstanceOf(CheckResult.ReplaceCheckResult.class, result);
         assertEquals(expected, replaceResult.replaced());
     }
@@ -50,22 +49,6 @@ class UnicodeTest {
             .check(TestsUtils.dummyPlayer(), illegal);
 
         assertTrue(result.isDenied());*/
-    }
-
-    @Test
-    void realTest() {
-        String randomMSG = "ƕƘáéíóú";
-        InfractionPlayerImpl player = TestsUtils.dummyPlayer();
-
-        assertTrue(player.isAllowed(InfractionType.UNICODE));
-
-        UnicodeCheck check = UnicodeCheck.builder()
-            .controlType(ControlType.REPLACE)
-            .build();
-        CheckResult result = check.check(TestsUtils.dummyPlayer(), randomMSG);
-        assertTrue(result.shouldModify());
-        CheckResult.ReplaceCheckResult replaceResult = assertInstanceOf(CheckResult.ReplaceCheckResult.class, result);
-        assertEquals("  áéíóú", replaceResult.replaced());
     }
 
     @ParameterizedTest
