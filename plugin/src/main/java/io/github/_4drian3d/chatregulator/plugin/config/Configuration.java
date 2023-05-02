@@ -202,7 +202,7 @@ public class Configuration implements Section {
         public static class Commands extends CommandsConfig{}
     }
 
-    /**Infractions configuration */
+    /**Regex configuration */
     @ConfigSerializable
     public static class Infractions implements Toggleable, Warning, Controllable, Executable {
         @Comment("Enable violation checking in chat and commands")
@@ -705,7 +705,7 @@ public class Configuration implements Section {
 
     public boolean isEnabled(InfractionType type) {
         return switch(type) {
-            case REGULAR -> infractions.enabled();
+            case REGEX -> infractions.enabled();
             case FLOOD -> flood.enabled();
             case SPAM -> spam.enabled();
             case COOLDOWN -> cooldown.enabled();
@@ -713,13 +713,13 @@ public class Configuration implements Section {
             case UNICODE -> unicode.enabled();
             case CAPS -> caps.enabled;
             case SYNTAX -> syntax.enabled();
-            case NONE -> false;
+            case GLOBAL -> true;
         };
     }
 
     private @Nullable Object getConfig(InfractionType type) {
         return switch (type) {
-            case REGULAR -> getInfractionsConfig();
+            case REGEX -> getInfractionsConfig();
             case FLOOD -> getFloodConfig();
             case SPAM -> getSpamConfig();
             case COOLDOWN -> getCooldownConfig();
@@ -727,7 +727,7 @@ public class Configuration implements Section {
             case UNICODE -> getUnicodeConfig();
             case CAPS -> getCapsConfig();
             case SYNTAX -> getSyntaxConfig();
-            case NONE -> null;
+            case GLOBAL -> null;
         };
     }
 

@@ -1,6 +1,6 @@
 package io.github._4drian3d.chatregulator.modules.checks;
 
-import io.github._4drian3d.chatregulator.api.checks.InfractionCheck;
+import io.github._4drian3d.chatregulator.api.checks.RegexCheck;
 import io.github._4drian3d.chatregulator.api.enums.ControlType;
 import io.github._4drian3d.chatregulator.api.result.CheckResult;
 import io.github._4drian3d.chatregulator.plugin.config.Blacklist;
@@ -24,7 +24,7 @@ public final class InfractionTest {
     void detectionTest(@TempDir Path path){
         String original = "asdasdasdadadSh1T dadasdad";
         Blacklist configuration = ConfigurationContainer.load(LoggerFactory.getLogger(InfractionTest.class), path, Blacklist.class, "blacklist").get();
-        InfractionCheck check = InfractionCheck.builder()
+        RegexCheck check = RegexCheck.builder()
                         .controlType(ControlType.BLOCK)
                         .blockedPatterns(configuration.getBlockedPatterns())
                         .build();
@@ -36,7 +36,7 @@ public final class InfractionTest {
     @RepeatedTest(3)
     @DisplayName("Replacement Test")
     void replaceMultiple(){
-        InfractionCheck check = InfractionCheck.builder()
+        RegexCheck check = RegexCheck.builder()
             .controlType(ControlType.REPLACE)
             .blockedPatterns(
                 Pattern.compile("sh[ilj1y]t", Pattern.CASE_INSENSITIVE),
@@ -62,7 +62,7 @@ public final class InfractionTest {
         final String expected = "Hello ***";
 
         final String actual = testPattern.matcher(original)
-            .replaceAll(InfractionCheck::generateReplacement);
+            .replaceAll(RegexCheck::generateReplacement);
 
         assertEquals(expected, actual);
 

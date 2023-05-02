@@ -1,7 +1,7 @@
 package io.github._4drian3d.chatregulator.api.enums;
 
 public enum InfractionType {
-    REGULAR(Permission.BYPASS_INFRACTIONS),
+    REGEX(Permission.BYPASS_REGEX),
     /**
      * Represents an infraction for repeating
      * the same character several times in a row.
@@ -12,11 +12,11 @@ public enum InfractionType {
      * the same word or command several times.
      */
     SPAM(Permission.BYPASS_SPAM),
-    COOLDOWN(Permission.BYPASS_UNICODE),
+    COOLDOWN(Permission.BYPASS_COOLDOWN),
     /**
      * Represents a blocked command
      */
-    BLOCKED_COMMAND(Permission.BYPASS_BLOCKEDCOMMAND),
+    BLOCKED_COMMAND(Permission.BYPASS_BLOCKED_COMMAND),
     /**
      * Represents a Unicode check
      */
@@ -34,7 +34,7 @@ public enum InfractionType {
      * Used internally to represent a
      * multiple warning and in other cases more
      */
-    NONE(Permission.NO_PERMISSION);
+    GLOBAL(Permission.NO_PERMISSION);
 
     private final Permission bypassPermission;
 

@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Base class of the checks used in the plugin
  */
-public sealed interface ICheck permits CapsCheck, CommandCheck, CooldownCheck, FloodCheck, InfractionCheck, SpamCheck, SyntaxCheck, UnicodeCheck {
+public sealed interface ICheck permits CapsCheck, CommandCheck, CooldownCheck, FloodCheck, RegexCheck, SpamCheck, SyntaxCheck, UnicodeCheck {
     /**
      * Check if the delivered string contains any infraction
      * ans returns a CompletableFuture with the corresponding Result

@@ -3,11 +3,11 @@ package io.github._4drian3d.chatregulator.plugin;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.velocitypowered.api.event.EventManager;
+import com.velocitypowered.api.plugin.PluginManager;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import io.github._4drian3d.chatregulator.api.InfractionCount;
 import io.github._4drian3d.chatregulator.api.InfractionPlayer;
-import io.github._4drian3d.chatregulator.api.StringChain;
 import io.github._4drian3d.chatregulator.api.enums.InfractionType;
 import io.github._4drian3d.chatregulator.api.enums.Permission;
 import io.github._4drian3d.chatregulator.api.enums.SourceType;
@@ -19,6 +19,7 @@ import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
 import io.github._4drian3d.chatregulator.plugin.config.Messages;
 import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.IFormatter;
 import io.github._4drian3d.chatregulator.plugin.source.RegulatorCommandSource;
+import io.github.miniplaceholders.api.MiniPlaceholders;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -40,6 +41,8 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
     private ProxyServer proxyServer;
     @Inject
     private EventManager eventManager;
+    @Inject
+    private PluginManager pluginManager;
     @Inject
     private Logger logger;
     @Inject
@@ -94,7 +97,7 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
         return infractionCount;
     }
 
-    public @Nullable Player getPlayer() {
+    public Player getPlayer() {
         return this.player;
     }
 
@@ -174,12 +177,16 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
                 integer("flood", count.getCount(InfractionType.FLOOD)),
                 integer("spam", count.getCount(InfractionType.SPAM)),
                 integer("cooldown", count.getCount(InfractionType.COOLDOWN)),
-                integer("regular", count.getCount(InfractionType.REGULAR)),
+                integer("regex", count.getCount(InfractionType.REGEX)),
                 integer("unicode", count.getCount(InfractionType.UNICODE)),
                 integer("caps", count.getCount(InfractionType.CAPS)),
                 integer("command", count.getCount(InfractionType.BLOCKED_COMMAND)),
                 integer("syntax", count.getCount(InfractionType.SYNTAX))
         );
+
+        if (pluginManager.isLoaded("miniplaceholders")) {
+            resolver.resolver(MiniPlaceholders.getAudienceGlobalPlaceholders(this));
+        }
 
         return resolver.build();
     }
@@ -189,8 +196,12 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
             sender = requireNonNull(p.getPlayer());
         }
         final TagResolver resolver = getPlaceholders();
-        String resetMessage = requireNonNull(messagesContainer.get().getReset(type)).getResetMessage();
-        sender.sendMessage(formatter.parse(resetMessage, sender, resolver));
+
+        // TODO: Global messages reset
+        Messages.Reset messages = messagesContainer.get().getReset(type);
+        if (messages != null) {
+            sender.sendMessage(formatter.parse(messages.getResetMessage(), sender, resolver));
+        }
     }
 
     public boolean callEvent(String string, InfractionType type, CheckResult result, SourceType source) {

@@ -7,7 +7,6 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
 
-/**ChatRegulator Messages */
 @ConfigSerializable
 public final class Messages implements Section {
     public static final String HEADER = """
@@ -21,14 +20,17 @@ public final class Messages implements Section {
     @Setting(value = "command-blacklist")
     private CommandBlacklist blacklist = new CommandBlacklist();
 
-    @Comment("Configuration of regular violation module messages")
-    private Infractions infractions = new Infractions();
+    @Comment("Configuration of regex violation module messages")
+    private Regex infractions = new Regex();
 
     @Comment("Configuration of flood module messages")
     private Flood flood = new Flood();
 
     @Comment("Configuration of spam module messages")
     private Spam spam = new Spam();
+
+    @Comment("Configuration of cooldown module messages")
+    private Cooldown cooldown = new Cooldown();
 
     @Comment("Configuration of unicode module messages")
     private Unicode unicode = new Unicode();
@@ -49,89 +51,50 @@ public final class Messages implements Section {
     @Comment("General Messages")
     private General general = new General();
 
-    /**
-     * Get the infractions messages
-     * @return the infractions messages
-     */
-    public Infractions getInfractionsMessages(){
+    public Regex getRegexMessages(){
         return this.infractions;
     }
 
-    /**
-     * Get the command blacklist messages
-     * @return the command blacklist messages
-     */
     public CommandBlacklist getBlacklistMessages(){
         return this.blacklist;
     }
 
-    /**
-     * Get the floooood messages
-     * @return the flood messages
-     */
     public Flood getFloodMessages(){
         return this.flood;
     }
 
-    /**
-     * Get the spam messages
-     * @return the spam messages
-     */
     public Spam getSpamMessages(){
         return this.spam;
     }
 
-    /**
-     * Gét thé únícódé mésságés
-     * @return the unicode messages
-     */
     public Unicode getUnicodeMessages(){
         return this.unicode;
     }
 
-    /**
-     * Get the CAPS messages
-     * @return the caps messages
-     */
     public Caps getCapsMessages(){
         return this.caps;
     }
 
-    /**
-     * Get the syntax:blocker messages
-     * @return the syntax messages
-     */
+    public Cooldown getCooldownMessages() {
+        return this.cooldown;
+    }
+
     public Syntax getSyntaxMessages(){
         return this.syntax;
     }
 
-    /**
-     * Get the cleared chat messages
-     * @return the clear messages
-     */
     public Clear getClearMessages(){
         return this.clearChat;
     }
 
-    /**
-     * Get the command spy messages
-     * @return the command spy messages
-     */
     public CommandSpy getCommandSpyMessages(){
         return this.commandSpy;
     }
 
-    /**
-     * Get the general messages
-     * @return the general messages
-     */
     public General getGeneralMessages(){
         return this.general;
     }
 
-    /**
-     * Command Blacklist Messages
-     */
     @ConfigSerializable
     public static class CommandBlacklist implements Warning, Alert, Reset{
         @Comment("""
@@ -143,7 +106,7 @@ public final class Messages implements Section {
         @Comment("Message to be sent to staff with chatregulator.notifications permission")
         private String alert = "<red>The player <aqua><player></aqua> <red>has executed blocked commands in <aqua><server></aqua> server | String: <string>";
 
-        @Comment("StatisticsImpl Reset Confirmation Message")
+        @Comment("Statistics Reset Confirmation Message")
         private String reset = "<red>The commands infraction count for <player> was reset";
 
         @Override
@@ -162,11 +125,8 @@ public final class Messages implements Section {
         }
     }
 
-    /**
-     * Infractions Messages
-     */
     @ConfigSerializable
-    public static class Infractions implements Warning, Alert, Reset{
+    public static class Regex implements Warning, Alert, Reset{
         @Comment("""
             Message to be sent to the offender
             Depending on your warning-type section settings, it will be sent as Title, Actionbar or Message
@@ -176,7 +136,7 @@ public final class Messages implements Section {
         @Comment("Message to be sent to staff with chatregulator.notifications permission")
         private String alert = "<red>The player <aqua><player></aqua> <red>has said forbidden words in <aqua><server></aqua> server | String: <string>";
 
-        @Comment("StatisticsImpl Reset Confirmation Message")
+        @Comment("Statistics Reset Confirmation Message")
         private String reset = "<red>The infraction warning count for <player> was reset";
 
         @Override
@@ -195,9 +155,6 @@ public final class Messages implements Section {
         }
     }
 
-    /**
-     * Flood Messages
-     */
     @ConfigSerializable
     public static class Flood implements Warning, Alert, Reset{
         @Comment("""
@@ -209,7 +166,7 @@ public final class Messages implements Section {
         @Comment("Message to be sent to staff with chatregulator.notifications permission")
         private String alert = "<red>The player <aqua><player></aqua> <red>has make flood in <aqua><server></aqua> server | String: <string>";
 
-        @Comment("StatisticsImpl Reset Confirmation Message")
+        @Comment("Statistics Reset Confirmation Message")
         private String reset = "<red>The flood warning count for <player> was reset";
 
         @Override
@@ -228,9 +185,8 @@ public final class Messages implements Section {
         }
     }
 
-    /**Spam Messages */
     @ConfigSerializable
-    public static class Spam implements Warning, Alert, Reset{
+    public static class Spam implements Warning, Alert, Reset {
         @Comment("""
             Message to be sent to the offender
             Depending on your warning-type section settings, it will be sent as Title, Actionbar or Message
@@ -240,7 +196,7 @@ public final class Messages implements Section {
         @Comment("Message to be sent to staff with chatregulator.notifications permission")
         private String alert = "<red>The player <aqua><player></aqua> <red>was spamming the chat in <aqua><server></aqua> server | String: <string>";
 
-        @Comment("StatisticsImpl Reset Confirmation Message")
+        @Comment("Statistics Reset Confirmation Message")
         private String reset = "<red>The spam warning count for <player> was reset";
 
         @Override
@@ -259,9 +215,36 @@ public final class Messages implements Section {
         }
     }
 
-    /**
-     * Unicode Messages
-     */
+    @ConfigSerializable
+    public static class Cooldown implements Warning, Alert, Reset {
+        @Comment("""
+            Message to be sent to the offender
+            Depending on your warning-type section settings, it will be sent as Title, Actionbar or Message
+            In case you use the Title mode, put a ; to delimit the title and the subtitle""")
+        private String warning = "<red>Hello, it is not allowed to make spam on this server";
+
+        @Comment("Message to be sent to staff with chatregulator.notifications permission") // TODO: Change msg
+        private String alert = "<red>The player <aqua><player></aqua> <red>was spamming the chat in <aqua><server></aqua> server | String: <string>";
+
+        @Comment("Statistics Reset Confirmation Message")
+        private String reset = "<red>The spam warning count for <player> was reset";
+
+        @Override
+        public String getWarningMessage(){
+            return this.warning;
+        }
+
+        @Override
+        public String getAlertMessage(){
+            return this.alert;
+        }
+
+        @Override
+        public String getResetMessage(){
+            return this.reset;
+        }
+    }
+
     @ConfigSerializable
     public static class Unicode implements Warning, Alert, Reset{
         @Comment("""
@@ -273,7 +256,7 @@ public final class Messages implements Section {
         @Comment("Message to be sent to staff with chatregulator.notifications permission")
         private String alert = "<red>The player <aqua><player></aqua> <red>was using unicode symbols in the chat of <aqua><server></aqua> server | String: <string>";
 
-        @Comment("StatisticsImpl Reset Confirmation Message")
+        @Comment("Statistics Reset Confirmation Message")
         private String reset = "<red>The simbols sended count for <player> was reset";
 
         @Override
@@ -292,11 +275,8 @@ public final class Messages implements Section {
         }
     }
 
-    /**
-     * Caps Messages
-     */
     @ConfigSerializable
-    public static class Caps implements Warning, Alert, Reset{
+    public static class Caps implements Warning, Alert, Reset {
         @Comment("""
             Message to be sent to the offender
             Depending on your warning-type section settings, it will be sent as Title, Actionbar or Message
@@ -306,7 +286,7 @@ public final class Messages implements Section {
         @Comment("Message to be sent to staff with chatregulator.notifications permission")
         private String alert = "<red>The player <aqua><player></aqua> <red>was using many caps in the chat of <aqua><server></aqua> server | String: <string>";
 
-        @Comment("StatisticsImpl Reset Confirmation Message")
+        @Comment("Statistics Reset Confirmation Message")
         private String reset = "<red>The caps violation count for <player> was reset";
 
         @Override
@@ -325,7 +305,6 @@ public final class Messages implements Section {
         }
     }
 
-    /**Syntax Messages */
     @ConfigSerializable
     public static class Syntax implements Warning, Alert, Reset{
         @Comment("""
@@ -337,7 +316,7 @@ public final class Messages implements Section {
         @Comment("Message to be sent to staff with chatregulator.notifications permission")
         private String alert = "<red>The player <aqua><player></aqua> <red>was using commands with \"/command:subcommand\" syntax in the server <aqua><server></aqua> | String: <string>";
 
-        @Comment("StatisticsImpl Reset Confirmation Message")
+        @Comment("Statistics Reset Confirmation Message")
         private String reset = "<red>The syntax violation count for <player> was reset";
 
         @Override
@@ -357,9 +336,6 @@ public final class Messages implements Section {
 
     }
 
-    /**
-     * Clear chat Messages
-     */
     @ConfigSerializable
     public static class Clear{
         @Comment("Confirmation of global chat cleanup")
@@ -374,63 +350,36 @@ public final class Messages implements Section {
 
         @Comment("Confirmation of chat clearing for a user")
         private String player = "<gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> <aqua>The chat of the player <white><player></white> has been cleared";
-
-        /**
-         * Get the global cleared chat message
-         * @return the global clear message
-         */
+        
         public String getGlobalMessage(){
             return this.global;
         }
-
-        /**
-         * Get the server cleared chat message
-         * @return the server clear message
-         */
+        
         public String getServerMessage(){
             return this.server;
         }
-
-        /**
-         * Get the server not found message
-         * @return server not found message
-         */
+        
         public String getNotFoundServerMessage(){
             return this.serverNotFound;
         }
-
-        /**
-         * Get the clear player chat message
-         * @return the clear player chat message
-         */
+        
         public String getPlayerMessage(){
             return this.player;
         }
     }
 
-    /**
-     * CommandSpy Messages
-     */
     @ConfigSerializable
-    public static class CommandSpy{
+    public static class CommandSpy {
         @Comment("Message to send")
         private String message = "<gradient:red:yellow>CommandSpy</gradient> <white>| <aqua><player> <white>| <gray><command>";
 
-        /**
-         * Get the command spy message
-         * <p>Message to send to operators
-         * @return the command spy message
-         */
         public String getMessage(){
             return this.message;
         }
     }
 
-    /**
-     * General Messages
-     */
     @ConfigSerializable
-    public static class General{
+    public static class General {
         @Comment("""
             Violation statistics message
             This message will appear when using the "/chatregulator stats" command
@@ -492,59 +441,30 @@ public final class Messages implements Section {
         @Setting(value = "help-messages")
         private General.Help helpMessages = new General.Help();
 
-        /**
-         * Get the stats message
-         * @return the stats message
-         */
         public List<String> getStatsFormat(){
             return this.stats;
         }
 
-        /**
-         * Get the player message
-         * @return the player message
-         */
         public List<String> getPlayerFormat(){
             return this.player;
         }
 
-        /**
-         * Get the info message
-         * <p>Called on "/chatr"
-         * @return the main info message
-         */
         public String getInfoMessage(){
             return this.info;
         }
 
-        /**
-         * Get the message to send when deleting all statistics
-         * @return the reset all statistics message
-         */
         public String allReset(){
             return this.allReset;
         }
 
-        /**
-         * Get the "empty arguments" message
-         * @return the no argument message
-         */
         public String noArgument(){
             return this.withoutArgument;
         }
 
-        /**
-         * Get the player not found message
-         * @return the player not found message
-         */
         public String playerNotFound(){
             return this.playerNotFound;
         }
 
-        /**
-         * Get the reload message
-         * @return the reload message
-         */
         public String getReloadMessage(){
             return this.reloadMessage;
         }
@@ -553,19 +473,12 @@ public final class Messages implements Section {
             return this.playerSuggestionFormat;
         }
 
-        /**
-         * Get the help messages
-         * @return the help messages
-         */
         public General.Help getHelpMessages(){
             return this.helpMessages;
         }
 
-        /**
-         * Help Messages
-         */
         @ConfigSerializable
-        public static class Help{
+        public static class Help {
             @Comment("Plugin main help message")
             @Setting(value = "main-help")
             private List<String> main = List.of(
@@ -612,83 +525,47 @@ public final class Messages implements Section {
                 "<#3B4371>|----------------------|"
             );
 
-            /**
-             * Get main help message
-             * @return the main help message
-             */
             public List<String> getMainHelp(){
                 return this.main;
             }
 
-            /**
-             * Get the player help message
-             * @return the player help message
-             */
             public List<String> getPlayerHelp(){
                 return this.player;
             }
 
-            /**
-             * Get the reset help message
-             * @return the reset help message
-             */
             public List<String> getResethelp(){
                 return this.reset;
             }
 
-            /**
-             * Get the clear help message
-             * @return the clear help message
-             */
             public List<String> getClearHelp(){
                 return this.clear;
             }
         }
     }
 
-    /**
-     * Configuration sections that may have warning messages
-     */
     public interface Warning{
-        /**
-         * Get the warning message
-         * @return the warning message
-         */
         String getWarningMessage();
     }
 
-    /**
-     * Configuration sections that may have reset messages
-     */
     public interface Reset{
-        /**
-         * Get the reset message
-         * @return the reset message
-         */
         String getResetMessage();
     }
 
-    /**
-     * Configuration sections that may have alert messages
-     */
     public interface Alert{
-        /**
-         * Get the alert message
-         * @return the alert message
-         */
         String getAlertMessage();
     }
 
     private Object getMessages(InfractionType type) {
         return switch (type) {
-            case REGULAR -> getInfractionsMessages();
+            case REGEX -> getRegexMessages();
             case FLOOD -> getFloodMessages();
             case SPAM -> getSpamMessages();
-            case BCOMMAND -> getBlacklistMessages();
+            case COOLDOWN -> getCooldownMessages();
+            case BLOCKED_COMMAND -> getBlacklistMessages();
             case UNICODE -> getUnicodeMessages();
             case CAPS -> getCapsMessages();
             case SYNTAX -> getSyntaxMessages();
-            case NONE -> null;
+            case GLOBAL -> null;
         };
     }
 

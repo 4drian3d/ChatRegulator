@@ -45,9 +45,8 @@ public sealed abstract class ViolationEvent implements ResultedEvent<GenericResu
     }
 
     /**
-     * Get the InfractorPlayer that has committed the infraction
-     * To get the original player, check {@link InfractionPlayer#getPlayer()}
-     * @return the infractor
+     * Get the InfractionPlayer that has committed the infraction
+     * @return the player
      * @since 1.1.0
      */
     public @NotNull InfractionPlayer getInfractionPlayer(){

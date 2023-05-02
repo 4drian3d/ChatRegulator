@@ -34,7 +34,6 @@ public final class CapsCheck implements ICheck {
             } else {
                 return CheckResult.denied();
             }
-
         } else {
             return CheckResult.allowed();
         }

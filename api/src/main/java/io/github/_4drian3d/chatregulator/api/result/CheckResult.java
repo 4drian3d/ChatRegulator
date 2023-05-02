@@ -75,7 +75,7 @@ public sealed interface CheckResult {
 
         @Override
         public boolean shouldModify() {
-            return false;
+            return true;
         }
 
         public String replaced() {

@@ -26,13 +26,12 @@ import com.velocitypowered.api.scheduler.ScheduledTask;
 import com.velocitypowered.api.scheduler.Scheduler;
 import com.velocitypowered.api.util.ProxyVersion;
 
-import io.github._4drian3d.chatregulator.plugin.utils.TestsUtils;
 import net.kyori.adventure.text.Component;
 
 public final class TestProxy implements ProxyServer {
-    private PluginManager pManager;
-    private EventManager eManager;
-    private CommandManager cManager;
+    private final PluginManager pManager;
+    private final EventManager eManager;
+    private final CommandManager cManager;
 
     public TestProxy(){
         this.pManager = new TestPluginManager();
@@ -102,7 +101,7 @@ public final class TestProxy implements ProxyServer {
 
     @Override
     public Optional<Player> getPlayer(UUID arg0) {
-        return Optional.of(TestsUtils.createRandomNormalPlayer());
+        return Optional.ofNullable(TestsUtils.dummyPlayer().getPlayer());
     }
 
     @Override

@@ -1,29 +1,25 @@
 package io.github._4drian3d.chatregulator.plugin.source;
 
-import java.util.Objects;
-
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.velocitypowered.api.command.CommandSource;
-import com.velocitypowered.api.event.EventManager;
-import com.velocitypowered.api.event.permission.PermissionsSetupEvent;
 import com.velocitypowered.api.permission.PermissionFunction;
 import com.velocitypowered.api.permission.Tristate;
-
-import net.kyori.adventure.audience.Audience;
+import io.github._4drian3d.velocityhexlogger.HexLogger;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
+
+import java.util.Objects;
 
 @Singleton
 public final class RegulatorCommandSource implements CommandSource {
     private final PermissionFunction permissionFunction = PermissionFunction.ALWAYS_TRUE;
-    @Inject // TODO: HEXLogger
-    private Logger logger;
+    @Inject
+    private HexLogger logger;
 
-    @Override //HEXLOGGER
+    @Override
     public void sendMessage(@NotNull Component component) {
-        this.logger.info(component.toString());
+        this.logger.info(component);
     }
 
     @Override

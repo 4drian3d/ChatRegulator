@@ -16,15 +16,15 @@ import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
 public class ProviderModule extends AbstractModule {
     @Singleton
     @Provides
-    private CheckProvider<InfractionCheck> infractions(
+    private CheckProvider<RegexCheck> regex(
             ConfigurationContainer<Configuration> configurationContainer,
             ConfigurationContainer<Blacklist> blacklistContainer
     ) {
         return player -> {
             InfractionPlayerImpl infractionPlayer = (InfractionPlayerImpl) player;
             final Configuration configuration = configurationContainer.get();
-            if (infractionPlayer.isAllowed(InfractionType.REGULAR) && configuration.isEnabled(InfractionType.REGULAR)) {
-                return InfractionCheck.builder()
+            if (infractionPlayer.isAllowed(InfractionType.REGEX) && configuration.isEnabled(InfractionType.REGEX)) {
+                return RegexCheck.builder()
                         .blockedPatterns(blacklistContainer.get().getBlockedPatterns())
                         .controlType(configuration.getInfractionsConfig().getControlType())
                         .build();

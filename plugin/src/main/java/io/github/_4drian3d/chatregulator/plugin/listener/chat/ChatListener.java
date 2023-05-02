@@ -30,7 +30,7 @@ public final class ChatListener implements AwaitingEventExecutor<PlayerChatEvent
     @Inject
     private CheckProvider<FloodCheck> floodProvider;
     @Inject
-    private CheckProvider<InfractionCheck> infractionProvider;
+    private CheckProvider<RegexCheck> infractionProvider;
     @Inject
     @Named("chat")
     private CheckProvider<SpamCheck> spamProvider;

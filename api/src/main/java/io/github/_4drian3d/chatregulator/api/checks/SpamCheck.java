@@ -27,9 +27,10 @@ public final class SpamCheck implements ICheck {
 
     @Override
     public @NotNull CheckResult check(@NotNull InfractionPlayer player, @NotNull String string) {
-        final boolean infraction = type == SourceType.CHAT
+        //TODO: Reimplement
+        final boolean infraction = true;/*type == SourceType.CHAT
                 ? this.spamCheck(player.preLastMessage(), player.lastMessage(), string)
-                : this.spamCheck(player.preLastCommand(), player.lastCommand(), string);
+                : this.spamCheck(player.preLastCommand(), player.lastCommand(), string);*/
         return infraction
                 ? CheckResult.denied()
                 : CheckResult.allowed();

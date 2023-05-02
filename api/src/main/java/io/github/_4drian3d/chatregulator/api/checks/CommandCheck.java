@@ -34,7 +34,7 @@ public final class CommandCheck implements ICheck {
 
     @Override
     public @NotNull InfractionType type() {
-        return InfractionType.BCOMMAND;
+        return InfractionType.BLOCKED_COMMAND;
     }
 
     /**

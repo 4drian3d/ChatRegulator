@@ -13,10 +13,10 @@ class StatisticTest {
     @DisplayName("Global StatisticsImpl Test")
     void statisticTest(){
         StatisticsImpl stats = new StatisticsImpl();
-        stats.addInfractionCount(InfractionType.BCOMMAND);
+        stats.addInfractionCount(InfractionType.BLOCKED_COMMAND);
         stats.addInfractionCount(InfractionType.CAPS);
 
-        assertEquals(1, stats.getInfractionCount(InfractionType.BCOMMAND));
-        assertEquals(2, stats.getInfractionCount(InfractionType.NONE));
+        assertEquals(1, stats.getInfractionCount(InfractionType.BLOCKED_COMMAND));
+        assertEquals(2, stats.getInfractionCount(InfractionType.GLOBAL));
     }
 }

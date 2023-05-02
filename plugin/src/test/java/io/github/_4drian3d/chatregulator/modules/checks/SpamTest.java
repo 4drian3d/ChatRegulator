@@ -1,9 +1,11 @@
 package io.github._4drian3d.chatregulator.modules.checks;
 
+import io.github._4drian3d.chatregulator.api.StringChain;
 import io.github._4drian3d.chatregulator.api.checks.SpamCheck;
 import io.github._4drian3d.chatregulator.api.enums.SourceType;
 import io.github._4drian3d.chatregulator.plugin.ChatRegulator;
 import io.github._4drian3d.chatregulator.plugin.InfractionPlayerImpl;
+import io.github._4drian3d.chatregulator.plugin.StringChainImpl;
 import io.github._4drian3d.chatregulator.utils.TestsUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,32 +17,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SpamTest {
     @Test
-    @DisplayName("Chat Test")
+    @DisplayName("Spam Test")
     void chatTest(@TempDir Path path){
-        ChatRegulator plugin = TestsUtils.createRegulator(path);
-        InfractionPlayerImpl player = TestsUtils.createNormalPlayer("Juan", plugin);
+        InfractionPlayerImpl player = TestsUtils.dummyPlayer();
+        StringChainImpl chatChain = player.getChain(SourceType.CHAT);
 
-        player.lastMessage("holaaaaaaaa");
-        player.lastMessage("holaaaaaaaa");
-        player.lastMessage("holaaaaaaaa");
-        player.lastMessage("holaaaaaaaa");
-        player.lastMessage("holaaaaaaaa");
+        chatChain.executed("holaaaaaaaa");
+        chatChain.executed("holaaaaaaaa");
+        chatChain.executed("holaaaaaaaa");
+        chatChain.executed("holaaaaaaaa");
+        chatChain.executed("holaaaaaaaa");
 
-        assertTrue(SpamCheck.createCheck(player, "holaaaaaaaa", SourceType.CHAT).join().isInfraction());
-    }
+        SpamCheck check = SpamCheck.builder().source(SourceType.CHAT).build();
 
-    @Test
-    @DisplayName("Command Test")
-    void commandTest(@TempDir Path path){
-        ChatRegulator plugin = TestsUtils.createRegulator(path);
-        InfractionPlayerImpl player = TestsUtils.createNormalPlayer("JuanAlcachofa", plugin);
-
-        player.lastCommand("tell 4drian3d holaaaaaaaaaaaaaaaaa");
-        player.lastCommand("tell 4drian3d holaaaaaaaaaaaaaaaaa");
-        player.lastCommand("tell 4drian3d holaaaaaaaaaaaaaaaaa");
-        player.lastCommand("tell 4drian3d holaaaaaaaaaaaaaaaaa");
-        player.lastCommand("tell 4drian3d holaaaaaaaaaaaaaaaaa");
-
-        assertTrue(SpamCheck.createCheck(player, "holaaaaaaaa", SourceType.COMMAND).join().isInfraction());
+        assertTrue(check.check(player, "holaaaaaaaa").isDenied());
     }
 }

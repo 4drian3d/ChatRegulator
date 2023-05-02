@@ -35,7 +35,7 @@ public final class CommandListener implements AwaitingEventExecutor<CommandExecu
     @Inject
     private CheckProvider<FloodCheck> floodProvider;
     @Inject
-    private CheckProvider<InfractionCheck> infractionProvider;
+    private CheckProvider<RegexCheck> infractionProvider;
     @Inject
     @Named("command")
     private CheckProvider<SpamCheck> spamProvider;

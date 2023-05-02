@@ -5,6 +5,9 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.velocitypowered.api.proxy.Player;
 import io.github._4drian3d.chatregulator.api.PlayerManager;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public class PlayerManagerImpl implements PlayerManager {
@@ -25,5 +28,9 @@ public class PlayerManagerImpl implements PlayerManager {
 
     public void removePlayer(UUID uuid) {
 
+    }
+
+    public Collection<InfractionPlayerImpl> getPlayers() {
+        return infractionPlayers.asMap().values();
     }
 }

@@ -1,11 +1,5 @@
 package io.github._4drian3d.chatregulator.objects;
 
-import java.net.InetSocketAddress;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.UUID;
-
 import com.velocitypowered.api.network.ProtocolVersion;
 import com.velocitypowered.api.permission.Tristate;
 import com.velocitypowered.api.proxy.ConnectionRequestBuilder;
@@ -20,12 +14,16 @@ import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.util.GameProfile;
 import com.velocitypowered.api.util.GameProfile.Property;
 import com.velocitypowered.api.util.ModInfo;
-
+import net.kyori.adventure.identity.Identity;
+import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 
-import net.kyori.adventure.identity.Identity;
-import net.kyori.adventure.text.Component;
+import java.net.InetSocketAddress;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.UUID;
 
 public final class TestPlayer implements Player{
     private final boolean op;
@@ -137,6 +135,11 @@ public final class TestPlayer implements Player{
     @Override
     public PlayerSettings getPlayerSettings() {
         return null;
+    }
+
+    @Override
+    public boolean hasSentPlayerSettings() {
+        return true;
     }
 
     @Override

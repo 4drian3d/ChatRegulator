@@ -1,8 +1,11 @@
 package io.github._4drian3d.chatregulator.plugin;
 
+import java.util.EnumMap;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.google.common.base.Preconditions;
 import io.github._4drian3d.chatregulator.api.Statistics;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.NotNull;
@@ -12,31 +15,17 @@ import io.github._4drian3d.chatregulator.api.enums.InfractionType;
 import static io.github._4drian3d.chatregulator.plugin.utils.Placeholders.integer;
 
 public final class StatisticsImpl implements Statistics {
-    private final AtomicInteger spamCount = new AtomicInteger(0);
-    private final AtomicInteger floodCount = new AtomicInteger(0);
-    private final AtomicInteger regularCount = new AtomicInteger(0);
-    private final AtomicInteger commandCount = new AtomicInteger(0);
-    private final AtomicInteger unicodeViolations = new AtomicInteger(0);
-    private final AtomicInteger capsViolations = new AtomicInteger(0);
-    private final AtomicInteger syntaxViolations = new AtomicInteger(0);
-    private final AtomicInteger globalViolations = new AtomicInteger(0);
+    private final EnumMap<InfractionType, Integer> countMap = new EnumMap<>(InfractionType.class);
 
     /**
      * Add a violation to the overall violation count.
      * @param type the infraction type
      */
-    public void addInfractionCount(@NotNull InfractionType type){
-        switch(type){
-            case SPAM -> this.spamCount.incrementAndGet();
-            case FLOOD -> this.floodCount.incrementAndGet();
-            case REGULAR -> this.regularCount.incrementAndGet();
-            case BCOMMAND -> this.commandCount.incrementAndGet();
-            case UNICODE -> this.unicodeViolations.incrementAndGet();
-            case CAPS -> this.capsViolations.incrementAndGet();
-            case SYNTAX -> this.syntaxViolations.incrementAndGet();
-            case NONE -> {}
-        }
-        this.globalViolations.incrementAndGet();
+    public void addInfractionCount(@NotNull InfractionType type) {
+        Preconditions.checkArgument(type != InfractionType.GLOBAL);
+
+        countMap.merge(type, 1, Integer::sum);
+        countMap.merge(InfractionType.GLOBAL, 1, Integer::sum);
     }
 
     /**
@@ -46,28 +35,13 @@ public final class StatisticsImpl implements Statistics {
      */
     @Override
     public int getInfractionCount(@NotNull InfractionType type){
-        return switch(type){
-            case SPAM -> this.spamCount.get();
-            case FLOOD -> this.floodCount.get();
-            case REGULAR -> this.regularCount.get();
-            case BCOMMAND -> this.commandCount.get();
-            case UNICODE -> this.unicodeViolations.get();
-            case CAPS -> this.capsViolations.get();
-            case SYNTAX -> this.syntaxViolations.get();
-            case NONE -> this.globalViolations.get();
-        };
+        return countMap.get(type);
     }
 
     public TagResolver getPlaceholders() {
-        return TagResolver.resolver(
-                integer("flood", getInfractionCount(InfractionType.FLOOD)),
-                integer("spam", getInfractionCount(InfractionType.SPAM)),
-                integer("regular", getInfractionCount(InfractionType.REGULAR)),
-                integer("command", getInfractionCount(InfractionType.BCOMMAND)),
-                integer("unicode", getInfractionCount(InfractionType.UNICODE)),
-                integer("caps", getInfractionCount(InfractionType.CAPS)),
-                integer("syntax", getInfractionCount(InfractionType.SYNTAX))
-        );
+        TagResolver.Builder builder = TagResolver.builder();
+        countMap.forEach(((infractionType, integer) -> builder.resolver(integer(infractionType.toString().toLowerCase(Locale.ROOT), integer))));
+        return builder.build();
     }
 
     @Override
@@ -79,24 +53,18 @@ public final class StatisticsImpl implements Statistics {
             return false;
         }
 
-        return Objects.equals(this.globalViolations, that.globalViolations);
+        return Objects.equals(this.countMap, that.countMap);
     }
 
     @Override
     public int hashCode(){
-        return Objects.hash(this.globalViolations);
+        return Objects.hash(this.countMap);
     }
 
     @Override
     public String toString(){
-        return "StatisticsImpl["
-            +"regular="+this.regularCount
-            +",flood="+this.floodCount
-            +",spam="+this.spamCount
-            +",caps="+this.capsViolations
-            +",command="+this.commandCount
-            +",unicode="+this.unicodeViolations
-            +",syntax="+this.syntaxViolations
-            +"]";
+        final StringBuilder builder = new StringBuilder("StatisticsImpl[");
+        countMap.forEach(((infractionType, integer) -> builder.append(infractionType).append('=').append(integer)));
+        return builder.append("]").toString();
     }
 }

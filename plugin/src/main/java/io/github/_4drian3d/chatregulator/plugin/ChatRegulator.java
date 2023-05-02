@@ -72,7 +72,7 @@ public class ChatRegulator implements ChatRegulatorAPI {
                 ).map(injector::getInstance)
                 .forEach(listener -> eventManager.register(this, listener));
 
-        injector.getInstance(RegulatorCommand.class).registerCommand();
+        injector.getInstance(RegulatorCommand.class).register();
 
         logger.info(miniMessage().deserialize("<gradient:#DAE2F8:#D4D3DD>has been started"));
     }
