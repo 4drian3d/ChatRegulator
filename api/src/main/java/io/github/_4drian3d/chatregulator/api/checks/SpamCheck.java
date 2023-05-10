@@ -1,6 +1,7 @@
 package io.github._4drian3d.chatregulator.api.checks;
 
 import io.github._4drian3d.chatregulator.api.InfractionPlayer;
+import io.github._4drian3d.chatregulator.api.StringChain;
 import io.github._4drian3d.chatregulator.api.enums.InfractionType;
 import io.github._4drian3d.chatregulator.api.enums.SourceType;
 import io.github._4drian3d.chatregulator.api.result.CheckResult;
@@ -21,19 +22,28 @@ public final class SpamCheck implements ICheck {
         this.type = Objects.requireNonNull(type);
     }
 
-    private boolean spamCheck(final String pre, final String last, final String string){
-        return pre.equalsIgnoreCase(last) && last.contains(string);
-    }
-
     @Override
     public @NotNull CheckResult check(@NotNull InfractionPlayer player, @NotNull String string) {
-        //TODO: Reimplement
-        final boolean infraction = true;/*type == SourceType.CHAT
-                ? this.spamCheck(player.preLastMessage(), player.lastMessage(), string)
-                : this.spamCheck(player.preLastCommand(), player.lastCommand(), string);*/
-        return infraction
-                ? CheckResult.denied()
-                : CheckResult.allowed();
+        final StringChain chain = player.getChain(type);
+        final int originalSize = chain.size();
+        int size = originalSize;
+        if (size % 2 != 0) {
+            size--;
+        }
+        if (size == 0) {
+            return CheckResult.allowed();
+        }
+        for (int i = 0; i < size; i++) {
+            if (!chain.index(i).equalsIgnoreCase(chain.index(i + 1))) {
+                return CheckResult.allowed();
+            }
+        }
+
+        if (chain.index(originalSize - 1).equalsIgnoreCase(string)) {
+            return CheckResult.denied(type());
+        } else {
+            return CheckResult.allowed();
+        }
     }
 
     @Override

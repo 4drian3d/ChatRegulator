@@ -29,19 +29,17 @@ public final class RegexCheck implements ICheck {
     @Override
     public @NotNull CheckResult check(final @NotNull InfractionPlayer player, final @NotNull String string) {
         final List<Pattern> patterns = new ArrayList<>();
-        boolean detected = false;
         for (final Pattern pattern : blockedWords) {
             final Matcher match = pattern.matcher(string);
             if (match.find()) {
-                detected = true;
                 if (controlType == ControlType.BLOCK) {
-                    return CheckResult.denied();
+                    return CheckResult.denied(type());
                 }
                 patterns.add(pattern);
             }
         }
 
-        if (detected) {
+        if (patterns.size() != 0) {
             String replaced = string;
             for (final Pattern pattern : patterns) {
                 replaced = pattern.matcher(replaced).replaceAll(RegexCheck::generateReplacement);

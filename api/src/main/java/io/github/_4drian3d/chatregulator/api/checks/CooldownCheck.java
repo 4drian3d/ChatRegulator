@@ -24,7 +24,7 @@ public final class CooldownCheck implements ICheck {
     public @NotNull CheckResult check(@NotNull InfractionPlayer player, @NotNull String string) {
         final Instant lastExecuted = player.getChain(SourceType.COMMAND).lastExecuted();
         if (Duration.between(lastExecuted, Instant.now()).toMillis() < unit.toMillis(limit)) {
-            return CheckResult.denied();
+            return CheckResult.denied(type());
         }
         return CheckResult.allowed();
     }

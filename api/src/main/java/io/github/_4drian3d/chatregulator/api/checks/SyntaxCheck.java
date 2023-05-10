@@ -30,7 +30,7 @@ public final class SyntaxCheck implements ICheck {
         final String command = Commands.getFirstArgument(Objects.requireNonNull(string));
         final int index = command.indexOf(':');
         if (index != -1 && !allowedCommands.contains(command.substring(0, index))) {
-            return CheckResult.denied();
+            return CheckResult.denied(type());
         } else {
             return CheckResult.allowed();
         }

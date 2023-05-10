@@ -26,7 +26,7 @@ public final class CommandCheck implements ICheck {
     public @NotNull CheckResult check(@NotNull InfractionPlayer player, @NotNull String string) {
         for (final String blockedCommand : blockedCommands){
             if (Commands.isStartingString(string, blockedCommand)) {
-                return CheckResult.denied();
+                return CheckResult.denied(type());
             }
         }
         return CheckResult.allowed();

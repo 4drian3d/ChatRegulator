@@ -1,8 +1,11 @@
 package io.github._4drian3d.chatregulator.api.result;
 
+import io.github._4drian3d.chatregulator.api.enums.InfractionType;
+import org.jetbrains.annotations.NotNull;
+
 public sealed interface CheckResult {
-    static CheckResult denied() {
-        return DeniedCheckresult.INSTANCE;
+    static CheckResult denied(final @NotNull InfractionType type) {
+        return new DeniedCheckresult(type);
     }
 
     static CheckResult allowed() {
@@ -39,7 +42,11 @@ public sealed interface CheckResult {
     }
 
     final class DeniedCheckresult implements CheckResult {
-        private static final DeniedCheckresult INSTANCE = new DeniedCheckresult();
+        private final InfractionType infractionType;
+
+        public DeniedCheckresult(InfractionType type) {
+            this.infractionType = type;
+        }
 
         @Override
         public boolean isAllowed() {
@@ -54,6 +61,10 @@ public sealed interface CheckResult {
         @Override
         public boolean shouldModify() {
             return false;
+        }
+
+        public InfractionType infractionType() {
+            return this.infractionType;
         }
     }
 

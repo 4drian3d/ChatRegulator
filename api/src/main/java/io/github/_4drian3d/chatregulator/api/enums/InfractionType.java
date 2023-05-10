@@ -1,5 +1,7 @@
 package io.github._4drian3d.chatregulator.api.enums;
 
+import net.kyori.adventure.util.Index;
+
 public enum InfractionType {
     REGEX(Permission.BYPASS_REGEX),
     /**
@@ -35,6 +37,8 @@ public enum InfractionType {
      * multiple warning and in other cases more
      */
     GLOBAL(Permission.NO_PERMISSION);
+
+    public static final Index<String, InfractionType> INDEX = Index.create(InfractionType::toString, values());
 
     private final Permission bypassPermission;
 

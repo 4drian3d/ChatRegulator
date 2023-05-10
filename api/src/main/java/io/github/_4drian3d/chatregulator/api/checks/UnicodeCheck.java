@@ -34,14 +34,11 @@ public final class UnicodeCheck implements ICheck {
         }
     }
 
-    public static final boolean defaultCharTest(char c) {
-        if(c >= ' ' && c <= '~') {
+    public static boolean defaultCharTest(char c) {
+        if (c <= '¿') {
             return false;
         }
-        if(c <= 'ü' && c <= '¿') {
-            return false;
-        }
-        return !(c >= '\u00BF' && c <= '\u00FE');
+        return !(c <= 'þ');
     }
 
     private boolean charTest(char c) {
@@ -61,7 +58,7 @@ public final class UnicodeCheck implements ICheck {
         for (final char character : charArray) {
             if (charPredicate.test(character)) {
                 if (control == ControlType.BLOCK) {
-                    return CheckResult.denied();
+                    return CheckResult.denied(type());
                 }
                 results.add(character);
             }
@@ -117,7 +114,7 @@ public final class UnicodeCheck implements ICheck {
             return this;
         }
 
-        public Builder charMode(DetectionMode mode) {
+        public Builder detectionMode(DetectionMode mode) {
             this.mode = mode;
             return this;
         }

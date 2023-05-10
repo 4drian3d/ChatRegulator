@@ -32,7 +32,7 @@ public final class CapsCheck implements ICheck {
             if (controlType == ControlType.REPLACE) {
                 return CheckResult.modified(string.toLowerCase(Locale.ROOT));
             } else {
-                return CheckResult.denied();
+                return CheckResult.denied(type());
             }
         } else {
             return CheckResult.allowed();
