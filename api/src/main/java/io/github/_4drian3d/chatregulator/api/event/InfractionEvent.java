@@ -1,10 +1,5 @@
 package io.github._4drian3d.chatregulator.api.event;
 
-import java.util.Objects;
-
-import com.velocitypowered.api.event.ResultedEvent;
-import com.velocitypowered.api.event.ResultedEvent.GenericResult;
-
 import io.github._4drian3d.chatregulator.api.result.CheckResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.ApiStatus.Internal;
@@ -15,7 +10,7 @@ import io.github._4drian3d.chatregulator.api.enums.InfractionType;
 /**
  * Basis for infringement events
  */
-public sealed abstract class ViolationEvent implements ResultedEvent<GenericResult> permits ChatViolationEvent, CommandViolationEvent {
+public sealed abstract class InfractionEvent permits ChatInfractionEvent, CommandInfractionEvent {
     /**
      * InfractionPlayer involved in detection
      */
@@ -25,16 +20,15 @@ public sealed abstract class ViolationEvent implements ResultedEvent<GenericResu
      */
     private final InfractionType type;
     private final CheckResult detectionResult;
-    private GenericResult result = GenericResult.allowed();
 
     /**
-     * ViolationEvent Contructor
+     * InfractionEvent Constructor
      * @param infractionPlayer the player who committed the infraction
      * @param type the infraction type
      * @param detectionResult the result of the detection
      */
     @Internal
-    protected ViolationEvent(
+    protected InfractionEvent(
             @NotNull InfractionPlayer infractionPlayer,
             @NotNull InfractionType type,
             @NotNull CheckResult detectionResult
@@ -49,7 +43,7 @@ public sealed abstract class ViolationEvent implements ResultedEvent<GenericResu
      * @return the player
      * @since 1.1.0
      */
-    public @NotNull InfractionPlayer getInfractionPlayer(){
+    public @NotNull InfractionPlayer getInfractor(){
         return this.infractionPlayer;
     }
 
@@ -70,15 +64,5 @@ public sealed abstract class ViolationEvent implements ResultedEvent<GenericResu
      */
     public @NotNull CheckResult getDetectionResult(){
         return this.detectionResult;
-    }
-
-    @Override
-    public GenericResult getResult() {
-        return this.result;
-    }
-
-    @Override
-    public void setResult(GenericResult result) {
-        this.result = Objects.requireNonNull(result);
     }
 }

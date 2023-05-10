@@ -7,6 +7,7 @@ import com.velocitypowered.api.event.player.PlayerChatEvent;
 import com.velocitypowered.api.event.player.PlayerChatEvent.ChatResult;
 import io.github._4drian3d.chatregulator.api.checks.*;
 import io.github._4drian3d.chatregulator.api.enums.SourceType;
+import io.github._4drian3d.chatregulator.api.event.ChatInfractionEvent;
 import io.github._4drian3d.chatregulator.api.result.CheckResult;
 import io.github._4drian3d.chatregulator.plugin.CheckProvider;
 import io.github._4drian3d.chatregulator.plugin.InfractionPlayerImpl;
@@ -15,10 +16,12 @@ import io.github._4drian3d.chatregulator.plugin.Replacer;
 import io.github._4drian3d.chatregulator.plugin.config.Configuration;
 import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
 import io.github._4drian3d.chatregulator.plugin.lazy.LazyDetectionProvider;
+import io.github._4drian3d.chatregulator.plugin.listener.RegulatorExecutor;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.slf4j.Logger;
 
 
-public final class ChatListener implements AwaitingEventExecutor<PlayerChatEvent> {
+public final class ChatListener implements RegulatorExecutor<PlayerChatEvent> {
     @Inject
     private ConfigurationContainer<Configuration> configurationContainer;
     @Inject
@@ -34,8 +37,11 @@ public final class ChatListener implements AwaitingEventExecutor<PlayerChatEvent
     @Inject
     @Named("chat")
     private CheckProvider<SpamCheck> spamProvider;
+    @Inject
+    private Logger logger;
+    @Inject
+    private EventManager eventManager;
 
-    // PostOrder.FIRST
     @Override
     public @Nullable EventTask executeAsync(PlayerChatEvent event) {
         if (!event.getResult().isAllowed()) {
@@ -43,8 +49,7 @@ public final class ChatListener implements AwaitingEventExecutor<PlayerChatEvent
         }
 
         return EventTask.withContinuation(continuation -> {
-            final InfractionPlayerImpl infractor = playerManager.getPlayer(event.getPlayer().getUniqueId());
-
+            final InfractionPlayerImpl player = playerManager.getPlayer(event.getPlayer().getUniqueId());
             LazyDetectionProvider.checks(
                     unicodeProvider,
                     capsProvider,
@@ -52,10 +57,18 @@ public final class ChatListener implements AwaitingEventExecutor<PlayerChatEvent
                     infractionProvider,
                     spamProvider
             )
-            .detect(infractor, event.getMessage())
+            .detect(player, event.getMessage())
+            .exceptionally(ex -> {
+                logger.error("An error occurred while checking chat", ex);
+                return CheckResult.allowed();
+            })
             .thenAccept(checkResult -> {
                 if (checkResult.isDenied()) {
+                    final CheckResult.DeniedCheckresult deniedResult = (CheckResult.DeniedCheckresult) checkResult;
+                    eventManager.fireAndForget(new ChatInfractionEvent(player, deniedResult.infractionType(), checkResult, event.getMessage()));
+                    player.onDenied(deniedResult, event.getMessage());
                     event.setResult(ChatResult.denied());
+                    continuation.resume();
                 } else {
                     String finalMessage = event.getMessage();
                     if (checkResult.shouldModify()) {
@@ -68,10 +81,24 @@ public final class ChatListener implements AwaitingEventExecutor<PlayerChatEvent
                         finalMessage = Replacer.applyFormat(finalMessage, configuration);
                         event.setResult(ChatResult.message(finalMessage));
                     }
-                    infractor.getChain(SourceType.CHAT).executed(finalMessage);
+                    player.getChain(SourceType.CHAT).executed(finalMessage);
+                    continuation.resume();
                 }
-                continuation.resume();
+            })
+            .exceptionally(ex -> {
+                logger.error("An error occurred while setting chat result", ex);
+                return null;
             });
         });
+    }
+
+    @Override
+    public Class<PlayerChatEvent> eventClass() {
+        return PlayerChatEvent.class;
+    }
+
+    @Override
+    public PostOrder postOrder() {
+        return PostOrder.FIRST;
     }
 }

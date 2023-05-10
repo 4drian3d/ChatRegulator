@@ -4,10 +4,6 @@ plugins {
     signing
 }
 
-repositories {
-    maven("https://repo.papermc.io/repository/maven-public/")
-}
-
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(17))
@@ -20,16 +16,7 @@ dependencies {
     compileOnlyApi(libs.velocity)
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = group as String
-            artifactId = "chatregulator-api"
-            version = version
-            from(components["java"])
-        }
-    }
-}
+
 
 tasks {
     compileJava {
@@ -44,5 +31,16 @@ tasks {
             "https://jd.advntr.dev/text-minimessage/4.12.0/",
             "https://jd.papermc.io/velocity/3.0.0/"
         )
+    }
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = group as String
+            artifactId = "chatregulator-api"
+            version = version
+            from(components["java"])
+        }
     }
 }

@@ -4,10 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
-import io.github._4drian3d.chatregulator.plugin.config.Blacklist;
-import io.github._4drian3d.chatregulator.plugin.config.Configuration;
-import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
-import io.github._4drian3d.chatregulator.plugin.config.CustomPatternSerializer;
+import io.github._4drian3d.chatregulator.plugin.config.*;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
@@ -31,15 +28,28 @@ public class ConfigurationModule extends AbstractModule {
     @Provides
     private ConfigurationContainer<Blacklist> blacklist(
             Logger logger,
-            @DataDirectory  Path path
+            @DataDirectory Path path
     ) {
         return ConfigurationContainer.load(
                 logger, path, Blacklist.class, "blacklist",
                 loader -> loader.shouldCopyDefaults(true)
-                        .header(Configuration.HEADER)
+                        .header(Blacklist.HEADER)
                         .serializers(builder ->
                                 builder.register(Pattern.class, new CustomPatternSerializer())
                         )
+        );
+    }
+
+    @Singleton
+    @Provides
+    private ConfigurationContainer<Messages> messages(
+            Logger logger,
+            @DataDirectory Path path
+    ) {
+        return ConfigurationContainer.load(
+                logger, path, Messages.class, "messages",
+                loader -> loader.shouldCopyDefaults(true)
+                        .header(Messages.HEADER)
         );
     }
 }

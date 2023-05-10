@@ -11,17 +11,17 @@ import io.github._4drian3d.chatregulator.api.enums.InfractionType;
 /**
  * Event fired when recognizing an infraction in a command executed by a player.
  */
-public final class CommandViolationEvent extends ViolationEvent {
+public final class CommandInfractionEvent extends InfractionEvent {
     private final String command;
 
     /**
-     * Constructor of a CommandViolationEvent
+     * Constructor of a CommandInfractionEvent
      * @param infractionPlayer the player who committed the infraction
      * @param type the infraction type
      * @param command the executed command in which the violation was found
      * @param result the result of the detection
      */
-    public CommandViolationEvent(
+    public CommandInfractionEvent(
         @NotNull InfractionPlayer infractionPlayer,
         @NotNull InfractionType type,
         @NotNull CheckResult result,

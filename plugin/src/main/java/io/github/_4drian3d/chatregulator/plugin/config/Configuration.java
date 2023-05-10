@@ -23,8 +23,8 @@ public class Configuration implements Section {
         https://github.com/4drian3d/ChatRegulator/wiki/Configuration""";
 
     /**Main Configuration */
-    @Comment("Regular infraction module")
-    private Infractions infractions = new Infractions();
+    @Comment("Regular regex module")
+    private Regex regex = new Regex();
 
     @Comment("Flood Module")
     private Flood flood = new Flood();
@@ -88,11 +88,11 @@ public class Configuration implements Section {
     }
 
     /**
-     * Get the infractions configuration
+     * Get the regex configuration
      * @return the command blacklist configuration
      */
-    public Infractions getInfractionsConfig(){
-        return this.infractions;
+    public Regex getRegexConfig(){
+        return this.regex;
     }
 
     /**
@@ -204,7 +204,7 @@ public class Configuration implements Section {
 
     /**Regex configuration */
     @ConfigSerializable
-    public static class Infractions implements Toggleable, Warning, Controllable, Executable {
+    public static class Regex implements Toggleable, Warning, Controllable, Executable {
         @Comment("Enable violation checking in chat and commands")
         private boolean enabled = true;
 
@@ -221,8 +221,8 @@ public class Configuration implements Section {
         @Setting(value = "control-type")
         private ControlType controlType = ControlType.BLOCK;
 
-        @Comment("Commands to be executed in the regular infraction module")
-        private Infractions.Commands commands = new Infractions.Commands();
+        @Comment("Commands to be executed in the regular regex module")
+        private Regex.Commands commands = new Regex.Commands();
 
         @Override
         public boolean enabled(){
@@ -322,6 +322,10 @@ public class Configuration implements Section {
         @Setting(value = "warning-type")
         private WarningType warningType = WarningType.MESSAGE;
 
+        // todo comment
+        @Comment("")
+        private int similarStringCount = 5;
+
         @Comment("Commands to be executed in the cooldown module")
         private Spam.Commands commands = new Spam.Commands();
 
@@ -330,12 +334,14 @@ public class Configuration implements Section {
             return this.enabled;
         }
 
+        public int getSimilarStringCount() {
+            return similarStringCount;
+        }
+
         @Override
         public WarningType getWarningType(){
             return this.warningType;
         }
-
-
 
         @Override
         public Spam.Commands getCommandsConfig(){
@@ -390,7 +396,7 @@ public class Configuration implements Section {
 
         @Override
         public CommandsConfig getCommandsConfig() {
-            return null;
+            return this.commands;
         }
 
         /**Cooldown Commands configuration */
@@ -705,7 +711,7 @@ public class Configuration implements Section {
 
     public boolean isEnabled(InfractionType type) {
         return switch(type) {
-            case REGEX -> infractions.enabled();
+            case REGEX -> regex.enabled();
             case FLOOD -> flood.enabled();
             case SPAM -> spam.enabled();
             case COOLDOWN -> cooldown.enabled();
@@ -719,7 +725,7 @@ public class Configuration implements Section {
 
     private @Nullable Object getConfig(InfractionType type) {
         return switch (type) {
-            case REGEX -> getInfractionsConfig();
+            case REGEX -> getRegexConfig();
             case FLOOD -> getFloodConfig();
             case SPAM -> getSpamConfig();
             case COOLDOWN -> getCooldownConfig();
@@ -737,16 +743,6 @@ public class Configuration implements Section {
                 ?  null : (Warning) messages;
     }
 
-    public Toggleable getToggleable(InfractionType type) {
-        Object messages = getConfig(type);
-        return messages == null
-                ?  null : (Toggleable) messages;
-    }
-    public Controllable getControllable(InfractionType type) {
-        Object messages = getConfig(type);
-        return messages == null
-                ?  null : (Controllable) messages;
-    }
     public Executable getExecutable(InfractionType type) {
         Object messages = getConfig(type);
         return messages == null

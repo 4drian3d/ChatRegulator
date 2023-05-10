@@ -88,8 +88,8 @@ public class ResetArgument implements Argument {
                 .requires(resetPermission)
                 .executes(cmd -> {
                     String arg = cmd.getArgument("player", String.class);
-                    InfractionPlayerImpl p = playerManager.getPlayer(arg);
-                    if (p == null) {
+                    Player player = proxyServer.getPlayer(arg).orElse(null);
+                    if (player == null) {
                         cmd.getSource().sendMessage(
                                 formatter.parse(
                                         messagesContainer.get().getGeneralMessages().playerNotFound(),
@@ -99,6 +99,7 @@ public class ResetArgument implements Argument {
                         );
                         return Command.SINGLE_SUCCESS;
                     }
+                    InfractionPlayerImpl p = playerManager.getPlayer(player);
                     p.getInfractions().resetViolations(type);
                     p.sendResetMessage(cmd.getSource(), type);
                     return Command.SINGLE_SUCCESS;

@@ -3,12 +3,13 @@ metadata.format.version = "1.1"
 [versions]
 
 velocity = "3.2.0-SNAPSHOT"
+futures = "0.3.5"
+
 configurate = "4.1.2"
 assertj = "3.24.2"
 miniplaceholders = "2.1.0"
 hexlogger = "1.0.2"
 bstats = "3.0.1"
-libby = "1.1.5"
 
 blossom = "1.3.1"
 shadow = "7.1.2"
@@ -25,10 +26,11 @@ bstats = { module = "org.bstats:bstats-velocity", version.ref = "bstats" }
 configurate = { module = "org.spongepowered:configurate-hocon", version.ref = "configurate" }
 miniplaceholders = { group = "io.github.miniplaceholders", name = "miniplaceholders-api", version.ref = "miniplaceholders" }
 assetrj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
-libby = { group = "net.byteflux", name = "libby-velocity", version.ref = "libby" }
+
 junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junit" }
 mockito = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
 hexlogger = { group = "io.github.4drian3d", name = "velocityhexlogger", version.ref = "hexlogger" }
+futures = { group = "com.spotify", name = "completable-futures", version.ref = "futures" }
 
 [plugins]
 

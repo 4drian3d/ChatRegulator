@@ -26,7 +26,7 @@ public class ProviderModule extends AbstractModule {
             if (infractionPlayer.isAllowed(InfractionType.REGEX) && configuration.isEnabled(InfractionType.REGEX)) {
                 return RegexCheck.builder()
                         .blockedPatterns(blacklistContainer.get().getBlockedPatterns())
-                        .controlType(configuration.getInfractionsConfig().getControlType())
+                        .controlType(configuration.getRegexConfig().getControlType())
                         .build();
             }
             return null;
@@ -42,6 +42,7 @@ public class ProviderModule extends AbstractModule {
             if (infractionPlayer.isAllowed(InfractionType.CAPS) && configuration.isEnabled(InfractionType.CAPS)) {
                 return CapsCheck.builder()
                         .limit(configuration.getCapsConfig().limit())
+                        .controlType(configuration.getCapsConfig().getControlType())
                         .build();
             }
             return null;
@@ -75,6 +76,7 @@ public class ProviderModule extends AbstractModule {
             if (infractionPlayer.isAllowed(InfractionType.FLOOD) && configuration.isEnabled(InfractionType.FLOOD)) {
                 return FloodCheck.builder()
                         .limit(configuration.getFloodConfig().getLimit())
+                        .controlType(configuration.getFloodConfig().getControlType())
                         .build();
             }
             return null;
@@ -140,6 +142,27 @@ public class ProviderModule extends AbstractModule {
                         .limit(config.limit())
                         .timeUnit(config.unit())
                         .build();
+            }
+            return null;
+        };
+    }
+
+    @Singleton
+    @Provides
+    private CheckProvider<UnicodeCheck> unicode(ConfigurationContainer<Configuration> configurationContainer) {
+        return player -> {
+            final InfractionPlayerImpl infractionPlayer = (InfractionPlayerImpl) player;
+            final Configuration.Unicode config = configurationContainer.get().getUnicodeConfig();
+            if (infractionPlayer.isAllowed(InfractionType.UNICODE) && config.enabled()) {
+                if (config.additionalChars().enabled()) {
+                    return UnicodeCheck.builder()
+                            .characters(config.additionalChars().chars())
+                            .detectionMode(config.additionalChars().detectionMode())
+                            .controlType(config.getControlType())
+                            .build();
+                } else {
+                    return UnicodeCheck.builder().build();
+                }
             }
             return null;
         };

@@ -28,7 +28,7 @@ import static net.kyori.adventure.text.minimessage.MiniMessage.miniMessage;
         id = "chatregulator",
         name = "ChatRegulator",
         version = Constants.VERSION,
-        description = Constants.DESCRIPTION,
+        description = "A global chat regulator for your Velocity network",
         url = "https://modrinth.com/plugin/chatregulator",
         authors = {
                 "4drian3d"
@@ -59,18 +59,19 @@ public class ChatRegulator implements ChatRegulatorAPI {
         this.injector = injector.createChildInjector(
                 new ConfigurationModule(),
                 new ProviderModule(),
-                new PluginModule()
+                new PluginModule(statistics, playerManager)
         );
+        injector.injectMembers(playerManager);
         logger.info(miniMessage().deserialize("<gradient:#DAE2F8:#D4D3DD>Starting plugin..."));
 
         Stream.of(
-                        ChatListener.class,
-                        CommandListener.class,
-                        JoinListener.class,
-                        LeaveListener.class,
-                        SpyListener.class
-                ).map(injector::getInstance)
-                .forEach(listener -> eventManager.register(this, listener));
+                ChatListener.class,
+                CommandListener.class,
+                JoinListener.class,
+                LeaveListener.class,
+                SpyListener.class
+        ).map(injector::getInstance)
+        .forEach(executor -> executor.register(this, eventManager));
 
         injector.getInstance(RegulatorCommand.class).register();
 

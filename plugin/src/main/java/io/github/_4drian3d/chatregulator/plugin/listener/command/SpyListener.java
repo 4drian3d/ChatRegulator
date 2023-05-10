@@ -2,8 +2,8 @@ package io.github._4drian3d.chatregulator.plugin.listener.command;
 
 import com.google.inject.Inject;
 import com.velocitypowered.api.command.CommandSource;
-import com.velocitypowered.api.event.AwaitingEventExecutor;
 import com.velocitypowered.api.event.EventTask;
+import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.command.CommandExecuteEvent;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
@@ -11,12 +11,13 @@ import io.github._4drian3d.chatregulator.api.enums.Permission;
 import io.github._4drian3d.chatregulator.plugin.config.Configuration;
 import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
 import io.github._4drian3d.chatregulator.plugin.config.Messages;
+import io.github._4drian3d.chatregulator.plugin.listener.RegulatorExecutor;
 import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.IFormatter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
-public final class SpyListener implements AwaitingEventExecutor<CommandExecuteEvent> {
+public final class SpyListener implements RegulatorExecutor<CommandExecuteEvent> {
     @Inject
     private ConfigurationContainer<Configuration> configurationContainer;
     @Inject
@@ -26,7 +27,6 @@ public final class SpyListener implements AwaitingEventExecutor<CommandExecuteEv
     @Inject
     private ProxyServer proxyServer;
 
-    // PostOrder.LAST
     @Override
     public EventTask executeAsync(final CommandExecuteEvent event) {
         return EventTask.async(() -> {
@@ -58,5 +58,15 @@ public final class SpyListener implements AwaitingEventExecutor<CommandExecuteEv
                 proxyServer.getConsoleCommandSource().sendMessage(message);
             }
         });
+    }
+
+    @Override
+    public Class<CommandExecuteEvent> eventClass() {
+        return CommandExecuteEvent.class;
+    }
+
+    @Override
+    public PostOrder postOrder() {
+        return PostOrder.LAST;
     }
 }

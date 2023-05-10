@@ -2,7 +2,6 @@ package io.github._4drian3d.chatregulator.plugin;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import com.velocitypowered.api.event.EventManager;
 import com.velocitypowered.api.plugin.PluginManager;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
@@ -11,8 +10,6 @@ import io.github._4drian3d.chatregulator.api.InfractionPlayer;
 import io.github._4drian3d.chatregulator.api.enums.InfractionType;
 import io.github._4drian3d.chatregulator.api.enums.Permission;
 import io.github._4drian3d.chatregulator.api.enums.SourceType;
-import io.github._4drian3d.chatregulator.api.event.ChatViolationEvent;
-import io.github._4drian3d.chatregulator.api.event.CommandViolationEvent;
 import io.github._4drian3d.chatregulator.api.result.CheckResult;
 import io.github._4drian3d.chatregulator.plugin.config.Configuration;
 import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
@@ -27,7 +24,6 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.TitlePart;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.util.Objects;
@@ -40,8 +36,6 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
     @Inject
     private ProxyServer proxyServer;
     @Inject
-    private EventManager eventManager;
-    @Inject
     private PluginManager pluginManager;
     @Inject
     private Logger logger;
@@ -51,8 +45,6 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
     private ConfigurationContainer<Messages> messagesContainer;
     @Inject
     private IFormatter formatter;
-    @Inject
-    private StatisticsImpl statistics;
     @Inject
     private RegulatorCommandSource regulatorSource;
     private final StringChainImpl commandChain = new StringChainImpl();
@@ -65,6 +57,8 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
         this.player = requireNonNull(player);
         if (injector != null) {
             injector.injectMembers(this);
+            injector.injectMembers(chatChain);
+            injector.injectMembers(commandChain);
         }
         this.isOnline = true;
         this.username = player.getUsername();
@@ -106,7 +100,37 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
         return isOnline ? player : Audience.empty();
     }
 
-    public void sendWarningMessage(CheckResult result, InfractionType type) {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof final InfractionPlayerImpl other)) {
+            return false;
+        }
+        return Objects.equals(other.username, this.username)
+                && Objects.equals(other.getInfractions(), this.getInfractions());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.player, this.username);
+    }
+
+    @Override
+    public String toString() {
+        return "InfractionPlayerImpl["
+                + "name=" + this.username
+                + ",online=" + this.isOnline
+                + ",infraction-count=" + infractionCount
+                + "]";
+    }
+
+    public boolean isAllowed(InfractionType type) {
+        return configurationContainer.get().isEnabled(type) && !type.getBypassPermission().test(getPlayer());
+    }
+
+    private void sendWarningMessage(CheckResult result, InfractionType type) {
         final String message = requireNonNull(messagesContainer.get().getWarning(type)).getWarningMessage();
         final TagResolver.Builder builder = TagResolver.builder();
         builder.resolver(getPlaceholders());
@@ -146,7 +170,7 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
         sendTitlePart(TitlePart.SUBTITLE, formatter.parse(title, resolver));
     }
 
-    public void sendAlertMessage(final InfractionType type, final CheckResult result) {
+    private void sendAlertMessage(final InfractionType type, final CheckResult result) {
         final Messages.Alert messages = requireNonNull(messagesContainer.get().getAlert(type));
 
         final TagResolver.Builder builder = TagResolver.builder();
@@ -204,31 +228,6 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
         }
     }
 
-    public boolean callEvent(String string, InfractionType type, CheckResult result, SourceType source) {
-        final var event = source == SourceType.COMMAND
-                ? new CommandViolationEvent(this, type, result, string)
-                : new ChatViolationEvent(this, type, result, string);
-        return eventManager.fire(event)
-                .thenApply(executed -> {
-                    if (executed.getResult().isAllowed()) {
-                        debug(string, type);
-                        statistics.addInfractionCount(type);
-                        sendWarningMessage(result, type);
-                        sendAlertMessage(type, event.getDetectionResult());
-
-                        getInfractions().addViolation(type);
-                        executeCommands(type);
-                        return true;
-                    } else {
-                        /*if (source == SourceType.COMMAND)
-                            lastCommand(string);
-                        else
-                            lastMessage(string);*/
-                        return false;
-                    }
-                }).join();
-    }
-
     public void debug(String string, InfractionType detection) {
         if (logger.isDebugEnabled()) {
             logger.debug("User Detected: {}", username());
@@ -237,11 +236,15 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
         }
     }
 
-    public boolean isAllowed(InfractionType type) {
-        return configurationContainer.get().isEnabled(type) && !type.getBypassPermission().test(getPlayer());
+    public void onDenied(CheckResult.DeniedCheckresult result, String string) {
+        this.sendWarningMessage(result, result.infractionType());
+        this.sendAlertMessage(result.infractionType(), result);
+        this.getInfractions().addViolation(result.infractionType());
+        this.executeCommands(result.infractionType());
+        this.debug(string, result.infractionType());
     }
 
-    public void executeCommands(final @NotNull InfractionType type) {
+    private void executeCommands(final @NotNull InfractionType type) {
         final Player player = getPlayer();
         if (player == null) {
             return;
@@ -266,31 +269,5 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
                         });
             }
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof final InfractionPlayerImpl other)) {
-            return false;
-        }
-        return Objects.equals(other.username, this.username)
-                && Objects.equals(other.getInfractions(), this.getInfractions());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.player, this.username);
-    }
-
-    @Override
-    public String toString() {
-        return "InfractionPlayerImpl["
-                + "name=" + this.username
-                + ",online=" + this.isOnline
-                + ",infraction-count=" + infractionCount
-                + "]";
     }
 }

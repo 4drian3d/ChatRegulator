@@ -9,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import java.time.Instant;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 public final class StringChainImpl implements StringChain {
@@ -18,8 +17,8 @@ public final class StringChainImpl implements StringChain {
     @Inject
     private ConfigurationContainer<Configuration> configurationContainer;
     @Override
-    public Optional<String> index(int index) {
-        return Optional.of(queue.get(index));
+    public String index(int index) {
+        return queue.get(index);
     }
 
     @Override
@@ -37,6 +36,11 @@ public final class StringChainImpl implements StringChain {
         return lastExecuted.get();
     }
 
+    @Override
+    public int size() {
+        return queue.size();
+    }
+
     @NotNull
     @Override
     public Iterator<String> iterator() {
@@ -44,6 +48,9 @@ public final class StringChainImpl implements StringChain {
     }
 
     public void executed(String string) {
+        if (configurationContainer != null && configurationContainer.get().getSpamConfig().getSimilarStringCount() <= queue.size()) {
+            queue.removeFirst();
+        }
         queue.add(string);
         lastExecuted.set(Instant.now());
     }

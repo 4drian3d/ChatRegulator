@@ -1,16 +1,14 @@
 package io.github._4drian3d.chatregulator.plugin;
 
-import java.util.EnumMap;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import com.google.common.base.Preconditions;
 import io.github._4drian3d.chatregulator.api.Statistics;
+import io.github._4drian3d.chatregulator.api.enums.InfractionType;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.NotNull;
 
-import io.github._4drian3d.chatregulator.api.enums.InfractionType;
+import java.util.EnumMap;
+import java.util.Locale;
+import java.util.Objects;
 
 import static io.github._4drian3d.chatregulator.plugin.utils.Placeholders.integer;
 
@@ -28,19 +26,17 @@ public final class StatisticsImpl implements Statistics {
         countMap.merge(InfractionType.GLOBAL, 1, Integer::sum);
     }
 
-    /**
-     * Obtain the number of infractions of some type
-     * @param type the infraction type
-     * @return count of the respective infraction type
-     */
     @Override
     public int getInfractionCount(@NotNull InfractionType type){
         return countMap.get(type);
     }
 
     public TagResolver getPlaceholders() {
-        TagResolver.Builder builder = TagResolver.builder();
-        countMap.forEach(((infractionType, integer) -> builder.resolver(integer(infractionType.toString().toLowerCase(Locale.ROOT), integer == null ? 0 : integer))));
+        final TagResolver.Builder builder = TagResolver.builder();
+        InfractionType.INDEX.keyToValue().forEach(((s, infractionType) -> {
+            final Integer count = countMap.get(infractionType);
+            builder.resolver(integer(s.toLowerCase(Locale.ROOT), count == null ? 0 : count));
+        }));
         return builder.build();
     }
 

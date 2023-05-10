@@ -1,8 +1,8 @@
 package io.github._4drian3d.chatregulator.plugin.listener.list;
 
 import com.google.inject.Inject;
-import com.velocitypowered.api.event.AwaitingEventExecutor;
 import com.velocitypowered.api.event.EventTask;
+import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.connection.DisconnectEvent;
 import com.velocitypowered.api.proxy.ProxyServer;
 import io.github._4drian3d.chatregulator.plugin.ChatRegulator;
@@ -10,12 +10,13 @@ import io.github._4drian3d.chatregulator.plugin.InfractionPlayerImpl;
 import io.github._4drian3d.chatregulator.plugin.PlayerManagerImpl;
 import io.github._4drian3d.chatregulator.plugin.config.Configuration;
 import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
+import io.github._4drian3d.chatregulator.plugin.listener.RegulatorExecutor;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 
 import java.util.UUID;
 
-public final class LeaveListener implements AwaitingEventExecutor<DisconnectEvent> {
+public final class LeaveListener implements RegulatorExecutor<DisconnectEvent> {
     @Inject
     private ChatRegulator plugin;
     @Inject
@@ -26,8 +27,6 @@ public final class LeaveListener implements AwaitingEventExecutor<DisconnectEven
     private Logger logger;
     @Inject
     private ConfigurationContainer<Configuration> configurationContainer;
-
-    //PostOrder.LAST
 
     @Override
     public @Nullable EventTask executeAsync(DisconnectEvent event) {
@@ -51,5 +50,15 @@ public final class LeaveListener implements AwaitingEventExecutor<DisconnectEven
                     configuration.getGeneralConfig().unit()
             ).schedule();
         });
+    }
+
+    @Override
+    public Class<DisconnectEvent> eventClass() {
+        return DisconnectEvent.class;
+    }
+
+    @Override
+    public PostOrder postOrder() {
+        return PostOrder.LAST;
     }
 }

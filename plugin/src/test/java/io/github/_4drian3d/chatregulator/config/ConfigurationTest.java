@@ -26,7 +26,7 @@ class ConfigurationTest {
         assertEquals(2, config.getFloodConfig().getCommandsConfig().violationsRequired());
         assertEquals(2, config.getUnicodeConfig().getCommandsConfig().violationsRequired());
 
-        assertEquals(ControlType.BLOCK, config.getInfractionsConfig().getControlType());
+        assertEquals(ControlType.BLOCK, config.getRegexConfig().getControlType());
         assertEquals(WarningType.MESSAGE, config.getSpamConfig().getWarningType());
     }
 

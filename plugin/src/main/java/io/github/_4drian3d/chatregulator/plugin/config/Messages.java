@@ -383,16 +383,16 @@ public final class Messages implements Section {
         @Comment("""
             Violation statistics message
             This message will appear when using the "/chatregulator stats" command
-            Available Placeholders: <flood>, <spam>, <regular>, <command>, <unicode>, <caps>. <syntax>""")
+            Available Placeholders: <flood>, <spam>, <regex>, <command>, <unicode>, <caps>. <syntax>""")
         private List<String> stats = List.of(
             "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------| ",
             "<#3B4371>| <red>General Stats</red>",
-            "<#3B4371>| <aqua>Regular Infractions:</aqua> <white><regular></white>",
+            "<#3B4371>| <aqua>Regular Infractions:</aqua> <white><regex></white>",
             "<#3B4371>| <aqua>Flood Infractions:</aqua> <white><flood></white>",
             "<#3B4371>| <aqua>Spam Infractions:</aqua> <white><spam></white>",
             "<#3B4371>| <aqua>Caps Infractions:</aqua> <white><caps></white>",
-            "<#3B4371>| <aqua>Unicode Infractions:</aqua> <white><command></white>",
-            "<#3B4371>| <aqua>Command Infractions:</aqua> <white><unicode></white>",
+            "<#3B4371>| <aqua>Unicode Infractions:</aqua> <white><unicode></white>",
+            "<#3B4371>| <aqua>Command Infractions:</aqua> <white><blocked_command></white>",
             "<#3B4371>| <aqua>Syntax Infractions:</aqua> <white><syntax></white>",
             "<#3B4371>|------------------------|"
         );
@@ -400,16 +400,16 @@ public final class Messages implements Section {
         @Comment("""
             Player statistics message
             This message will appear when using the command "/chatregulator player <someplayer>"
-            Available Placeholders: <player>, <flood>, <spam>, <regular>, <unicode>, <caps>, <syntax>""")
+            Available Placeholders: <player>, <flood>, <spam>, <regex>, <unicode>, <caps>, <syntax>""")
         private List<String> player = List.of(
             "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------| ",
             "<#3B4371>| <gold><player></gold> <red>Stats</red>",
-            "<#3B4371>| <aqua>Regular Infractions:</aqua> <white><regular></white>",
+            "<#3B4371>| <aqua>Regular Infractions:</aqua> <white><regex></white>",
             "<#3B4371>| <aqua>Flood Infractions:</aqua> <white><flood></white>",
             "<#3B4371>| <aqua>Spam Infractions:</aqua> <white><spam></white>",
             "<#3B4371>| <aqua>Unicode Infractions:</aqua> <white><unicode></white>",
             "<#3B4371>| <aqua>Caps Infractions:</aqua> <white><caps></white>",
-            "<#3B4371>| <aqua>Command Infractions:</aqua> <white><command></white>",
+            "<#3B4371>| <aqua>Command Infractions:</aqua> <white><blocked_command></white>",
             "<#3B4371>| <aqua>Syntax Infractions:</aqua> <white><syntax></white>",
             "<#3B4371>|------------------------|"
         );
@@ -436,10 +436,6 @@ public final class Messages implements Section {
         @Comment("Suggestion format to send on '/chatr reset' command")
         @Setting(value = "player-suggestion-format")
         private String playerSuggestionFormat = "Reset <player> infractions";
-
-        @Comment("Help messages")
-        @Setting(value = "help-messages")
-        private General.Help helpMessages = new General.Help();
 
         public List<String> getStatsFormat(){
             return this.stats;
@@ -471,75 +467,6 @@ public final class Messages implements Section {
 
         public String getPlayerSuggestionsFormat(){
             return this.playerSuggestionFormat;
-        }
-
-        public General.Help getHelpMessages(){
-            return this.helpMessages;
-        }
-
-        @ConfigSerializable
-        public static class Help {
-            @Comment("Plugin main help message")
-            @Setting(value = "main-help")
-            private List<String> main = List.of(
-                "<#3B4371>|--- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
-                "<#3B4371>| <gold>+ <hover:show_text:'<gradient:#ffd89b:#19547b>Click on a section to view its commands'><gradient:#CAC531:#F3F9A7>Command Help</gradient></hover>",
-                "<#3B4371>| <hover:show_text:'<gradient:#ff4b1f:#ff9068>This command shows you the global statistics of infractions</gradient>'><gradient:#FF5F6D:#FFC371><command> <aqua>stats</aqua></hover>",
-                "<#3B4371>| <click:run_command:'/chatr help player'><hover:show_text:'<gradient:#ff4b1f:#ff9068>Obtain the infractions of a specific player</gradient> <gray>[<yellow>Click here for more</yellow>]'><gradient:#FF5F6D:#FFC371><command> <aqua>player</aqua></hover></click>",
-                "<#3B4371>| <click:run_command:'/chatr help reset'><hover:show_text:'<gradient:#ff4b1f:#ff9068>Resets a player infractions</gradient> <gray>[<yellow>Click here for more</yellow>]'><gradient:#FF5F6D:#FFC371><command> <aqua>reset</aqua></hover></click>",
-                "<#3B4371>| <click:run_command:'/chatr help clear'><hover:show_text:'<gradient:#ff4b1f:#ff9068>Cleans the chat of a player, server or network</gradient> <gray>[<yellow>Click here for more</yellow>]'><gradient:#FF5F6D:#FFC371><command> <aqua>clear</aqua></hover></click>",
-                "<#3B4371>|----------------------| "
-            );
-
-            @Comment("Help message for \"/chatregulator player <player>\" command")
-            private List<String> player = List.of(
-                "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
-                "<#3B4371>| <gold>+ <gradient:#CAC531:#F3F9A7>Player Help</gradient>",
-                "<#3B4371>| <click:suggest_command:'/chatr player <player>'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command shows you a player infractions</gradient>'><gradient:#FF5F6D:#FFC371><command> <aqua>player</aqua> <player></hover>",
-                "<#3B4371>|----------------------| "
-            );
-
-            @Comment("Help message for \"/chatregulator reset\" subcommands")
-            private List<String> reset = List.of(
-                "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
-                "<#3B4371>| <gold>+ <gradient:#CAC531:#F3F9A7>Reset Help</gradient>",
-                "<#3B4371>| <click:suggest_command:'/chatr <player> reset'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will reset all infractions of a player</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <green><player> <aqua>reset</aqua></hover>",
-                "<#3B4371>| <click:suggest_command:'/chatr <player> reset all'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will reset all infractions of a player</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <green><player> <aqua>reset</aqua> all</hover>",
-                "<#3B4371>| <click:suggest_command:'/chatr <player> reset infractions'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will restart a player regular infractions.</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <green><player> <aqua>reset</aqua> infractions</hover>",
-                "<#3B4371>| <click:suggest_command:'/chatr <player> reset flood'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will reset a player flood infractions</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <green><player> <aqua>reset</aqua> flood</hover>",
-                "<#3B4371>| <click:suggest_command:'/chatr <player> reset spam'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will reset a player spam violations</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <green><player> <aqua>reset</aqua> spam</hover>",
-                "<#3B4371>| <click:suggest_command:'/chatr <player> reset command'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will reset a player blocked commands executions</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <green><player> <aqua>command</aqua> command</hover>",
-                "<#3B4371>| <click:suggest_command:'/chatr <player> reset unicode'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will reset a player unicode violations</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <green><player> <aqua>reset</aqua> unicode</hover>",
-                "<#3B4371>| <click:suggest_command:'/chatr <player> reset caps'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will reset a player caps violations</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <green><player> <aqua>reset</aqua> caps</hover>",
-                "<#3B4371>| <click:suggest_command:'/chatr <player> reset syntax'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will reset a player syntax violations</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <green><player> <aqua>reset</aqua> syntax</hover>",
-                "<#3B4371>|----------------------|"
-            );
-
-            @Comment("Help message for \"/chatregulator clear\" subcommands")
-            private List<String> clear = List.of(
-                "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------|",
-                "<#3B4371>| <gold>+ <gradient:#CAC531:#F3F9A7>Clear Help</gradient>",
-                "<#3B4371>| <click:suggest_command:'/chatr clear'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will clear the chat of the entire network</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <aqua>clear</aqua></hover>",
-                "<#3B4371>| <click:suggest_command:'/chatr clear server <server>'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will clear the chat of an entire server</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <aqua>clear</aqua> <green>server <white><server></hover>",
-                "<#3B4371>| <click:suggest_command:'/chatr clear player <player>'><hover:show_text:'<gradient:#ff4b1f:#ff9068>This command will clear a player chat</gradient>'><gradient:#FF5F6D:#FFC371><command></gradient> <aqua>clear</aqua> <green>player <white><player></hover>",
-                "<#3B4371>|----------------------|"
-            );
-
-            public List<String> getMainHelp(){
-                return this.main;
-            }
-
-            public List<String> getPlayerHelp(){
-                return this.player;
-            }
-
-            public List<String> getResethelp(){
-                return this.reset;
-            }
-
-            public List<String> getClearHelp(){
-                return this.clear;
-            }
         }
     }
 

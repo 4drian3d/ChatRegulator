@@ -9,17 +9,17 @@ import io.github._4drian3d.chatregulator.api.enums.InfractionType;
 /**
  * Event fired when recognizing an infraction in the chat of a player
  */
-public final class ChatViolationEvent extends ViolationEvent {
+public final class ChatInfractionEvent extends InfractionEvent {
     private final String message;
 
     /**
-     * Constructor of a ChatViolationEvent
+     * Constructor of a ChatInfractionEvent
      * @param infractionPlayer the player who committed the infraction
      * @param type the infraction type
      * @param detectionResult the detection result
      * @param message the chat message in which the violation was found
      */
-    public ChatViolationEvent(
+    public ChatInfractionEvent(
         final @NotNull InfractionPlayer infractionPlayer,
         final @NotNull InfractionType type,
         final @NotNull CheckResult detectionResult,
