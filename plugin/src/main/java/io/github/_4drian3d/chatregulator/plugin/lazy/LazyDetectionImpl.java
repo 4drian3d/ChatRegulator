@@ -4,7 +4,6 @@ import io.github._4drian3d.chatregulator.api.InfractionPlayer;
 import io.github._4drian3d.chatregulator.api.LazyDetection;
 import io.github._4drian3d.chatregulator.api.checks.ICheck;
 import io.github._4drian3d.chatregulator.api.result.CheckResult;
-import io.github._4drian3d.chatregulator.plugin.CheckProvider;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;

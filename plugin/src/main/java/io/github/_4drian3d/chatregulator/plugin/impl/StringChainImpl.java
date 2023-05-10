@@ -1,4 +1,4 @@
-package io.github._4drian3d.chatregulator.plugin;
+package io.github._4drian3d.chatregulator.plugin.impl;
 
 import com.google.inject.Inject;
 import io.github._4drian3d.chatregulator.api.StringChain;

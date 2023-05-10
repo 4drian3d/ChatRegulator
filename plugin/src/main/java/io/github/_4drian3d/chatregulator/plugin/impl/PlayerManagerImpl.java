@@ -1,4 +1,4 @@
-package io.github._4drian3d.chatregulator.plugin;
+package io.github._4drian3d.chatregulator.plugin.impl;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;

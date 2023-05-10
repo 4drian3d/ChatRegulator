@@ -9,6 +9,8 @@ import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
 import io.github._4drian3d.chatregulator.api.ChatRegulatorAPI;
 import io.github._4drian3d.chatregulator.plugin.commands.RegulatorCommand;
+import io.github._4drian3d.chatregulator.plugin.impl.PlayerManagerImpl;
+import io.github._4drian3d.chatregulator.plugin.impl.StatisticsImpl;
 import io.github._4drian3d.chatregulator.plugin.listener.chat.ChatListener;
 import io.github._4drian3d.chatregulator.plugin.listener.command.CommandListener;
 import io.github._4drian3d.chatregulator.plugin.listener.command.SpyListener;

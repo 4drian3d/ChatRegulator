@@ -34,7 +34,7 @@ public final class InfractionCount {
      * @param types the types
      */
     public void resetViolations(@NotNull InfractionType @NotNull... types){
-        for (InfractionType type : types){
+        for (final InfractionType type : types){
             this.setViolations(type, 0);
         }
     }
@@ -45,7 +45,7 @@ public final class InfractionCount {
      * @return the count
      */
     public int getCount(@NotNull InfractionType type){
-        return infractionMap.get(type);
+        return infractionMap.computeIfAbsent(type, $ -> 0);
     }
 
     @Override

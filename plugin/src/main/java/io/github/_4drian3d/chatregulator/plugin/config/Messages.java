@@ -379,7 +379,7 @@ public final class Messages implements Section {
     }
 
     @ConfigSerializable
-    public static class General {
+    public static class General implements Reset {
         @Comment("""
             Violation statistics message
             This message will appear when using the "/chatregulator stats" command
@@ -419,7 +419,7 @@ public final class Messages implements Section {
 
         @Comment("Message to send when resetting all infractions of a player")
         @Setting(value = "all-reset")
-        private String allReset = "<red>The warning count for <player> was reset";
+        private String allReset = "<red>The infractions count for <player> was reset";
 
         @Comment("Message to be sent when no argument is entered in a subcommand requiring argument")
         @Setting(value = "without-argument")
@@ -449,10 +449,6 @@ public final class Messages implements Section {
             return this.info;
         }
 
-        public String allReset(){
-            return this.allReset;
-        }
-
         public String noArgument(){
             return this.withoutArgument;
         }
@@ -467,6 +463,11 @@ public final class Messages implements Section {
 
         public String getPlayerSuggestionsFormat(){
             return this.playerSuggestionFormat;
+        }
+
+        @Override
+        public String getResetMessage() {
+            return this.allReset;
         }
     }
 
@@ -492,14 +493,13 @@ public final class Messages implements Section {
             case UNICODE -> getUnicodeMessages();
             case CAPS -> getCapsMessages();
             case SYNTAX -> getSyntaxMessages();
-            case GLOBAL -> null;
+            case GLOBAL -> getGeneralMessages();
         };
     }
 
     public Reset getReset(InfractionType type) {
         Object messages = getMessages(type);
-        return messages == null
-                ?  null : (Reset) messages;
+        return (Reset) messages;
     }
 
     public Warning getWarning(InfractionType type) {

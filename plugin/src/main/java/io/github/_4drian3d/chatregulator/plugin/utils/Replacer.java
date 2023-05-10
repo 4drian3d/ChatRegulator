@@ -1,4 +1,4 @@
-package io.github._4drian3d.chatregulator.plugin;
+package io.github._4drian3d.chatregulator.plugin.utils;
 
 import java.util.Objects;
 
@@ -24,10 +24,8 @@ public final class Replacer {
         final char firstCharacter = string.charAt(0);
         if (Character.isUpperCase(firstCharacter)) return string;
 
-        return new StringBuilder(string.length())
-                .append(Character.toUpperCase(firstCharacter))
-                .append(string.substring(1))
-                .toString();
+        return Character.toUpperCase(firstCharacter) +
+                string.substring(1);
     }
 
     public static @NotNull String firstLetterUppercase(@NotNull final String string, Configuration config) {

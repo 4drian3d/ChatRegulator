@@ -322,8 +322,7 @@ public class Configuration implements Section {
         @Setting(value = "warning-type")
         private WarningType warningType = WarningType.MESSAGE;
 
-        // todo comment
-        @Comment("")
+        @Comment("The number of similar commands or chats messages sent by a player to consider as spam")
         private int similarStringCount = 5;
 
         @Comment("Commands to be executed in the cooldown module")

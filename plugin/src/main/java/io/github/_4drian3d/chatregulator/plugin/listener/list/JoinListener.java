@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import com.velocitypowered.api.event.EventTask;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.connection.PostLoginEvent;
-import io.github._4drian3d.chatregulator.plugin.PlayerManagerImpl;
+import io.github._4drian3d.chatregulator.plugin.impl.PlayerManagerImpl;
 import io.github._4drian3d.chatregulator.plugin.listener.RegulatorExecutor;
 
 public final class JoinListener implements RegulatorExecutor<PostLoginEvent> {

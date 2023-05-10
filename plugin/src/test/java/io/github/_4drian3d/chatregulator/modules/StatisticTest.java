@@ -2,7 +2,7 @@ package io.github._4drian3d.chatregulator.modules;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import io.github._4drian3d.chatregulator.plugin.StatisticsImpl;
+import io.github._4drian3d.chatregulator.plugin.impl.StatisticsImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

@@ -8,8 +8,8 @@ import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.VelocityBrigadierMessage;
 import com.velocitypowered.api.proxy.ProxyServer;
 import io.github._4drian3d.chatregulator.api.enums.Permission;
-import io.github._4drian3d.chatregulator.plugin.InfractionPlayerImpl;
-import io.github._4drian3d.chatregulator.plugin.PlayerManagerImpl;
+import io.github._4drian3d.chatregulator.plugin.impl.InfractionPlayerImpl;
+import io.github._4drian3d.chatregulator.plugin.impl.PlayerManagerImpl;
 import io.github._4drian3d.chatregulator.plugin.config.Configuration;
 import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
 import io.github._4drian3d.chatregulator.plugin.config.Messages;
@@ -18,8 +18,6 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
 import java.util.Optional;
-
-import static io.github._4drian3d.chatregulator.plugin.commands.RegulatorCommand.*;
 
 public class PlayerArgument implements Argument {
     @Inject

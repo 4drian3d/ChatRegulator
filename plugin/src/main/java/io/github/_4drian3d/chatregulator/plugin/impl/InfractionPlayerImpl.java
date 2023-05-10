@@ -1,4 +1,4 @@
-package io.github._4drian3d.chatregulator.plugin;
+package io.github._4drian3d.chatregulator.plugin.impl;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -221,11 +221,8 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
         }
         final TagResolver resolver = getPlaceholders();
 
-        // TODO: Global messages reset
         Messages.Reset messages = messagesContainer.get().getReset(type);
-        if (messages != null) {
-            sender.sendMessage(formatter.parse(messages.getResetMessage(), sender, resolver));
-        }
+        sender.sendMessage(formatter.parse(messages.getResetMessage(), sender, resolver));
     }
 
     public void debug(String string, InfractionType detection) {

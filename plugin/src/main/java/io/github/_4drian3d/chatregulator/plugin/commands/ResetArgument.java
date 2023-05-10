@@ -10,8 +10,8 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import io.github._4drian3d.chatregulator.api.enums.InfractionType;
 import io.github._4drian3d.chatregulator.api.enums.Permission;
-import io.github._4drian3d.chatregulator.plugin.InfractionPlayerImpl;
-import io.github._4drian3d.chatregulator.plugin.PlayerManagerImpl;
+import io.github._4drian3d.chatregulator.plugin.impl.InfractionPlayerImpl;
+import io.github._4drian3d.chatregulator.plugin.impl.PlayerManagerImpl;
 import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
 import io.github._4drian3d.chatregulator.plugin.config.Messages;
 import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.IFormatter;
@@ -71,7 +71,7 @@ public class ResetArgument implements Argument {
                             p.sendResetMessage(cmd.getSource(), InfractionType.GLOBAL);
                             return Command.SINGLE_SUCCESS;
                         })
-                        .then(subReset("infractions", InfractionType.REGEX, Permission.COMMAND_RESET_REGEX))
+                        .then(subReset("regex", InfractionType.REGEX, Permission.COMMAND_RESET_REGEX))
                         .then(subReset("regular", InfractionType.REGEX, Permission.COMMAND_RESET_REGEX))
                         .then(subReset("flood", InfractionType.FLOOD, Permission.COMMAND_RESET_FLOOD))
                         .then(subReset("spam", InfractionType.SPAM, Permission.COMMAND_RESET_SPAM))
