@@ -58,13 +58,14 @@ public class ChatRegulator implements ChatRegulatorAPI {
 
     @Subscribe
     public void onProxyInitialization(final ProxyInitializeEvent event) {
+        final long start = System.currentTimeMillis();
         this.injector = injector.createChildInjector(
                 new ConfigurationModule(),
                 new ProviderModule(),
                 new PluginModule(statistics, playerManager)
         );
         injector.injectMembers(playerManager);
-        logger.info(miniMessage().deserialize("<gradient:#DAE2F8:#D4D3DD>Starting plugin..."));
+        logger.info(miniMessage().deserialize("<gradient:#A0E2F8:#D4A0FF>Starting plugin..."));
 
         Stream.of(
                 ChatListener.class,
@@ -77,7 +78,8 @@ public class ChatRegulator implements ChatRegulatorAPI {
 
         injector.getInstance(RegulatorCommand.class).register();
 
-        logger.info(miniMessage().deserialize("<gradient:#DAE2F8:#D4D3DD>has been started"));
+        final long end = System.currentTimeMillis();
+        logger.info(miniMessage().deserialize("<gradient:#A0E2F8:#D4A0FF>Correctly started in "+(end-start)+"ms"));
     }
 
     @Override

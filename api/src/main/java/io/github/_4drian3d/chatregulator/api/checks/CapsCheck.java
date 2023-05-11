@@ -56,7 +56,7 @@ public final class CapsCheck implements ICheck {
     public static class Builder implements AbstractBuilder<CapsCheck> {
         private int limit;
         private ControlType controlType;
-        Builder(){}
+        Builder() {}
 
         /**
          * Set the new caps limit

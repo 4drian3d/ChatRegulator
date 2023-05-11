@@ -16,8 +16,6 @@ dependencies {
     compileOnlyApi(libs.velocity)
 }
 
-
-
 tasks {
     compileJava {
         options.release.set(17)
