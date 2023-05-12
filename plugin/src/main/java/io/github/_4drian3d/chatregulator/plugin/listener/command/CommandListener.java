@@ -80,8 +80,7 @@ public final class CommandListener implements RegulatorExecutor<CommandExecuteEv
             })
             .thenCompose(checkResult -> {
                 if (checkResult.isDenied()) {
-                    final CheckResult.DeniedCheckresult deniedResult = (CheckResult.DeniedCheckresult) checkResult;
-                    return CompletableFuture.completedFuture(CheckResult.denied(deniedResult.infractionType()));
+                    return CompletableFuture.completedFuture(checkResult);
                 }
 
                 if (!checkIfCanCheck(event.getCommand())) {

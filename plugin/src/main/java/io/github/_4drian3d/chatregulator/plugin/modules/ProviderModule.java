@@ -121,7 +121,7 @@ public class ProviderModule extends AbstractModule {
         return player -> {
             final InfractionPlayerImpl infractionPlayer = (InfractionPlayerImpl) player;
             final Configuration configuration = configurationContainer.get();
-            if (infractionPlayer.isAllowed(InfractionType.SPAM) && configuration.isEnabled(InfractionType.SPAM)) {
+            if (infractionPlayer.isAllowed(InfractionType.SYNTAX) && configuration.isEnabled(InfractionType.SYNTAX)) {
                 return SyntaxCheck.builder()
                         .allowedCommands(configuration.getSyntaxConfig().getAllowedCommands())
                         .build();
