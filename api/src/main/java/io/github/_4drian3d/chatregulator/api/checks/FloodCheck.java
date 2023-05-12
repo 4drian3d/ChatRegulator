@@ -17,7 +17,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Check to detect incoherent messages containing floods
  */
-public final class FloodCheck implements ICheck {
+public final class FloodCheck implements Check {
     private static final LoadingCache<Integer, Pattern> floodPatternCache = Caffeine.newBuilder()
             .build(length -> Pattern.compile(
                     "(\\w)\\1{"+length+",}|(\\w{28,})|([^\\wñ]{20,})|(^.{220,}$)",
@@ -34,7 +34,7 @@ public final class FloodCheck implements ICheck {
     /**
      * {@inheritDoc}
      *
-     * @return a CheckResult with the Result of the check
+     * @return a CheckResult with the CheckResult of the check
      */
     @Override
     public @NotNull CheckResult check(@NotNull InfractionPlayer player, @NotNull String string) {

@@ -2,16 +2,16 @@ package io.github._4drian3d.chatregulator.plugin.lazy;
 
 import io.github._4drian3d.chatregulator.api.InfractionPlayer;
 import io.github._4drian3d.chatregulator.api.LazyDetection;
-import io.github._4drian3d.chatregulator.api.checks.ICheck;
+import io.github._4drian3d.chatregulator.api.checks.Check;
 import io.github._4drian3d.chatregulator.api.result.CheckResult;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class LazyDetectionImpl implements LazyDetection {
-    private final CheckProvider<? extends ICheck>[] checks;
+    private final CheckProvider<? extends Check>[] checks;
 
-    LazyDetectionImpl(final CheckProvider<? extends ICheck>[] checks) {
+    LazyDetectionImpl(final CheckProvider<? extends Check>[] checks) {
         this.checks = checks;
     }
 
@@ -19,8 +19,8 @@ public class LazyDetectionImpl implements LazyDetection {
     public CompletableFuture<CheckResult> detect(final InfractionPlayer player, final String string) {
         return CompletableFuture.supplyAsync(() -> {
             AtomicReference<String> modifiedString = new AtomicReference<>(string);
-            for (final CheckProvider<? extends ICheck> provider : checks) {
-                final ICheck providedCheck = provider.provide(player);
+            for (final CheckProvider<? extends Check> provider : checks) {
+                final Check providedCheck = provider.provide(player);
                 if (providedCheck == null) {
                     continue;
                 }

@@ -2,6 +2,7 @@ package io.github._4drian3d.chatregulator.api.checks;
 
 import io.github._4drian3d.chatregulator.api.InfractionPlayer;
 import io.github._4drian3d.chatregulator.api.StringChain;
+import io.github._4drian3d.chatregulator.api.annotations.Required;
 import io.github._4drian3d.chatregulator.api.enums.InfractionType;
 import io.github._4drian3d.chatregulator.api.enums.SourceType;
 import io.github._4drian3d.chatregulator.api.result.CheckResult;
@@ -15,7 +16,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Detection of command/message spamming
  */
-public final class SpamCheck implements ICheck {
+public final class SpamCheck implements Check {
     private final SourceType type;
 
     private SpamCheck(final @NotNull SourceType type){
@@ -60,6 +61,7 @@ public final class SpamCheck implements ICheck {
 
         Builder() {}
 
+        @Required
         public Builder source(SourceType source){
             this.source = source;
             return this;

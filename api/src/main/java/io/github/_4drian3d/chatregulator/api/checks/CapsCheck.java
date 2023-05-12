@@ -1,6 +1,7 @@
 package io.github._4drian3d.chatregulator.api.checks;
 
 import io.github._4drian3d.chatregulator.api.InfractionPlayer;
+import io.github._4drian3d.chatregulator.api.annotations.Required;
 import io.github._4drian3d.chatregulator.api.enums.ControlType;
 import io.github._4drian3d.chatregulator.api.enums.InfractionType;
 import io.github._4drian3d.chatregulator.api.result.CheckResult;
@@ -13,7 +14,7 @@ import java.util.Objects;
 /**
  * Check for compliance with uppercase character limit in a string
  */
-public final class CapsCheck implements ICheck {
+public final class CapsCheck implements Check {
     private final int limit;
     private final ControlType controlType;
 
@@ -63,11 +64,12 @@ public final class CapsCheck implements ICheck {
          * @param limit the new limit
          * @return this
          */
-        public Builder limit(int limit){
+        public Builder limit(int limit) {
             this.limit = limit;
             return this;
         }
 
+        @Required
         public Builder controlType(ControlType controlType) {
             this.controlType = controlType;
             return this;

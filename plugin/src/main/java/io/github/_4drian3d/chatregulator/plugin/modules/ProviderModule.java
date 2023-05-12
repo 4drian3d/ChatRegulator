@@ -133,7 +133,7 @@ public class ProviderModule extends AbstractModule {
     @Singleton
     @Provides
     @Named("command")
-    private CheckProvider<CooldownCheck> cooldown(ConfigurationContainer<Configuration> configurationContainer) {
+    private CheckProvider<CooldownCheck> commandCooldown(ConfigurationContainer<Configuration> configurationContainer) {
         return player -> {
             final InfractionPlayerImpl infractionPlayer = (InfractionPlayerImpl) player;
             final Configuration.Cooldown config = configurationContainer.get().getCooldownConfig();
@@ -141,6 +141,25 @@ public class ProviderModule extends AbstractModule {
                 return CooldownCheck.builder()
                         .limit(config.limit())
                         .timeUnit(config.unit())
+                        .source(SourceType.COMMAND)
+                        .build();
+            }
+            return null;
+        };
+    }
+
+    @Singleton
+    @Provides
+    @Named("chat")
+    private CheckProvider<CooldownCheck> chatCooldown(ConfigurationContainer<Configuration> configurationContainer) {
+        return player -> {
+            final InfractionPlayerImpl infractionPlayer = (InfractionPlayerImpl) player;
+            final Configuration.Cooldown config = configurationContainer.get().getCooldownConfig();
+            if (infractionPlayer.isAllowed(InfractionType.COOLDOWN) && config.enabled()) {
+                return CooldownCheck.builder()
+                        .limit(config.limit())
+                        .timeUnit(config.unit())
+                        .source(SourceType.CHAT)
                         .build();
             }
             return null;

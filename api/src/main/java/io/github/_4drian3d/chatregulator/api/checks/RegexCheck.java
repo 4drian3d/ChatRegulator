@@ -1,6 +1,7 @@
 package io.github._4drian3d.chatregulator.api.checks;
 
 import io.github._4drian3d.chatregulator.api.InfractionPlayer;
+import io.github._4drian3d.chatregulator.api.annotations.Required;
 import io.github._4drian3d.chatregulator.api.enums.ControlType;
 import io.github._4drian3d.chatregulator.api.enums.InfractionType;
 import io.github._4drian3d.chatregulator.api.result.*;
@@ -17,7 +18,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Utilities for the detection of restricted words
  */
-public final class RegexCheck implements ICheck {
+public final class RegexCheck implements Check {
     private final Pattern[] blockedWords;
     private final ControlType controlType;
 
@@ -90,6 +91,7 @@ public final class RegexCheck implements ICheck {
             return this;
         }
 
+        @Required
         public Builder controlType(ControlType controlType) {
             this.controlType = requireNonNull(controlType);
             return this;

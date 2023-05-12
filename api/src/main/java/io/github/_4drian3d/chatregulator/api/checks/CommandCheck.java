@@ -15,7 +15,7 @@ import java.util.HashSet;
 /**
  * Check for verification of executed commands
  */
-public final class CommandCheck implements ICheck {
+public final class CommandCheck implements Check {
     private final Collection<String> blockedCommands;
 
     private CommandCheck(Collection<String> blockedCommands){
@@ -81,7 +81,7 @@ public final class CommandCheck implements ICheck {
          * @param command the command to add
          * @return this
          */
-        public Builder addBlockedCommand(String command){
+        public Builder blockedCommand(String command){
             if (this.blockedCommands == null) this.blockedCommands = new HashSet<>();
 
             this.blockedCommands.add(command);

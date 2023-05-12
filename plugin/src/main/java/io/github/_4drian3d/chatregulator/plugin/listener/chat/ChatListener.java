@@ -38,6 +38,9 @@ public final class ChatListener implements RegulatorExecutor<PlayerChatEvent> {
     @Named("chat")
     private CheckProvider<SpamCheck> spamProvider;
     @Inject
+    @Named("chat")
+    private CheckProvider<CooldownCheck> cooldownProvider;
+    @Inject
     private Logger logger;
     @Inject
     private EventManager eventManager;
@@ -51,6 +54,7 @@ public final class ChatListener implements RegulatorExecutor<PlayerChatEvent> {
         return EventTask.withContinuation(continuation -> {
             final InfractionPlayerImpl player = playerManager.getPlayer(event.getPlayer().getUniqueId());
             LazyDetectionProvider.checks(
+                    cooldownProvider,
                     unicodeProvider,
                     capsProvider,
                     floodProvider,

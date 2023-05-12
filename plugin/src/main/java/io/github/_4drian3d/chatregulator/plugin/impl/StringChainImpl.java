@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public final class StringChainImpl implements StringChain {
     private final LinkedList<String> queue = new LinkedList<>();
-    private final AtomicReference<Instant> lastExecuted = new AtomicReference<>();
+    private final AtomicReference<Instant> lastExecuted = new AtomicReference<>(Instant.now());
     @Inject
     private ConfigurationContainer<Configuration> configurationContainer;
     @Override
@@ -47,7 +47,7 @@ public final class StringChainImpl implements StringChain {
         return queue.iterator();
     }
 
-    public void executed(String string) {
+    public void executed(final String string) {
         if (configurationContainer != null && configurationContainer.get().getSpamConfig().getSimilarStringCount() <= queue.size()) {
             queue.removeFirst();
         }

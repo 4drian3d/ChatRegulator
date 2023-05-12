@@ -1,6 +1,7 @@
 package io.github._4drian3d.chatregulator.api.checks;
 
 import io.github._4drian3d.chatregulator.api.InfractionPlayer;
+import io.github._4drian3d.chatregulator.api.annotations.Required;
 import io.github._4drian3d.chatregulator.api.enums.ControlType;
 import io.github._4drian3d.chatregulator.api.enums.DetectionMode;
 import io.github._4drian3d.chatregulator.api.enums.InfractionType;
@@ -17,7 +18,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Check for invalid characters
  */
-public final class UnicodeCheck implements ICheck {
+public final class UnicodeCheck implements Check {
     private final char[] chars;
     private final ControlType control;
     private final Predicate<Character> charPredicate;
@@ -109,11 +110,13 @@ public final class UnicodeCheck implements ICheck {
          * @param control the control type
          * @return this
          */
+        @Required
         public Builder controlType(ControlType control) {
             this.control = control;
             return this;
         }
 
+        @Required
         public Builder detectionMode(DetectionMode mode) {
             this.mode = mode;
             return this;

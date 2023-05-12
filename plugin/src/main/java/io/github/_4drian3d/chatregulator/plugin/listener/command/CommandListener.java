@@ -44,6 +44,9 @@ public final class CommandListener implements RegulatorExecutor<CommandExecuteEv
     @Named("command")
     private CheckProvider<SpamCheck> spamProvider;
     @Inject
+    @Named("command")
+    private CheckProvider<CooldownCheck> cooldownProvider;
+    @Inject
     private Logger logger;
     @Inject
     private EventManager eventManager;
@@ -69,7 +72,8 @@ public final class CommandListener implements RegulatorExecutor<CommandExecuteEv
 
             LazyDetectionProvider.checks(
                     commandProvider,
-                    syntaxProvider
+                    syntaxProvider,
+                    cooldownProvider
             ).detect(infractionPlayer, event.getCommand())
             .exceptionally(ex -> {
                 logger.error("An error occurred while checking Command and Syntax", ex);
