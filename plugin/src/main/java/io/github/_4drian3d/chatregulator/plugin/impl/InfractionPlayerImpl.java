@@ -170,7 +170,7 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
         sendTitlePart(TitlePart.SUBTITLE, formatter.parse(title, resolver));
     }
 
-    private void sendAlertMessage(final InfractionType type, final CheckResult result) {
+    private void sendAlertMessage(final InfractionType type, final CheckResult result, final String original) {
         final Messages.Alert messages = requireNonNull(messagesContainer.get().getAlert(type));
 
         final TagResolver.Builder builder = TagResolver.builder();
@@ -179,7 +179,7 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
         if (result instanceof CheckResult.ReplaceCheckResult replaceResult) {
             builder.resolver(Placeholder.unparsed("string", replaceResult.replaced()));
         } else {
-            builder.resolver(Placeholder.unparsed("string", ""));
+            builder.resolver(Placeholder.unparsed("string", original));
         }
 
         final Component message = formatter.parse(messages.getAlertMessage(), builder.build());
@@ -235,7 +235,7 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
 
     public void onDenied(CheckResult.DeniedCheckresult result, String string) {
         this.sendWarningMessage(result, result.infractionType());
-        this.sendAlertMessage(result.infractionType(), result);
+        this.sendAlertMessage(result.infractionType(), result, string);
         this.getInfractions().addViolation(result.infractionType());
         this.executeCommands(result.infractionType());
         this.debug(string, result.infractionType());
