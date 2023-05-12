@@ -204,7 +204,7 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
                 integer("regex", count.getCount(InfractionType.REGEX)),
                 integer("unicode", count.getCount(InfractionType.UNICODE)),
                 integer("caps", count.getCount(InfractionType.CAPS)),
-                integer("command", count.getCount(InfractionType.BLOCKED_COMMAND)),
+                integer("blocked_command", count.getCount(InfractionType.BLOCKED_COMMAND)),
                 integer("syntax", count.getCount(InfractionType.SYNTAX))
         );
 

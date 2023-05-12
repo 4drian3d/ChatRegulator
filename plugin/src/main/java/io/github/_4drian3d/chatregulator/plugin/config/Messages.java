@@ -104,7 +104,7 @@ public final class Messages implements Section {
         private String warning = "<red>Hello, it is not allowed to use blocked commands";
 
         @Comment("Message to be sent to staff with chatregulator.notifications permission")
-        private String alert = "<red>The player <aqua><player></aqua> <red>has executed blocked commands in <aqua><server></aqua> server | String: <string>";
+        private String alert = "<red>The player <aqua><player></aqua> <red>has executed blocked commands | String: <string>";
 
         @Comment("Statistics Reset Confirmation Message")
         private String reset = "<red>The commands infraction count for <player> was reset";
@@ -134,7 +134,7 @@ public final class Messages implements Section {
         private String warning = "<red>Hello, it is not allowed to use dirty words on this server";
 
         @Comment("Message to be sent to staff with chatregulator.notifications permission")
-        private String alert = "<red>The player <aqua><player></aqua> <red>has said forbidden words in <aqua><server></aqua> server | String: <string>";
+        private String alert = "<red>The player <aqua><player></aqua> <red>has said forbidden words | String: <string>";
 
         @Comment("Statistics Reset Confirmation Message")
         private String reset = "<red>The infraction warning count for <player> was reset";
@@ -164,7 +164,7 @@ public final class Messages implements Section {
         private String warning = "<red>Hello, it is not allowed to make flood on this server";
 
         @Comment("Message to be sent to staff with chatregulator.notifications permission")
-        private String alert = "<red>The player <aqua><player></aqua> <red>has make flood in <aqua><server></aqua> server | String: <string>";
+        private String alert = "<red>The player <aqua><player></aqua> <red>has make flood | String: <string>";
 
         @Comment("Statistics Reset Confirmation Message")
         private String reset = "<red>The flood warning count for <player> was reset";
@@ -194,7 +194,7 @@ public final class Messages implements Section {
         private String warning = "<red>Hello, it is not allowed to make spam on this server";
 
         @Comment("Message to be sent to staff with chatregulator.notifications permission")
-        private String alert = "<red>The player <aqua><player></aqua> <red>was spamming the chat in <aqua><server></aqua> server | String: <string>";
+        private String alert = "<red>The player <aqua><player></aqua> <red>was spamming the chat | String: <string>";
 
         @Comment("Statistics Reset Confirmation Message")
         private String reset = "<red>The spam warning count for <player> was reset";
@@ -223,8 +223,8 @@ public final class Messages implements Section {
             In case you use the Title mode, put a ; to delimit the title and the subtitle""")
         private String warning = "<red>Hello, it is not allowed to make spam on this server";
 
-        @Comment("Message to be sent to staff with chatregulator.notifications permission") // TODO: Change msg
-        private String alert = "<red>The player <aqua><player></aqua> <red>was spamming the chat in <aqua><server></aqua> server | String: <string>";
+        @Comment("Message to be sent to staff with chatregulator.notifications permission")
+        private String alert = "<red>The player <aqua><player></aqua> <red>writing too fast | String: <string>";
 
         @Comment("Statistics Reset Confirmation Message")
         private String reset = "<red>The spam warning count for <player> was reset";
@@ -254,7 +254,7 @@ public final class Messages implements Section {
         private String warning = "<red>Hello, it is not allowed to use this symbols";
 
         @Comment("Message to be sent to staff with chatregulator.notifications permission")
-        private String alert = "<red>The player <aqua><player></aqua> <red>was using unicode symbols in the chat of <aqua><server></aqua> server | String: <string>";
+        private String alert = "<red>The player <aqua><player></aqua> <red>was using unauthorized unicode symbols | String: <string>";
 
         @Comment("Statistics Reset Confirmation Message")
         private String reset = "<red>The simbols sended count for <player> was reset";
@@ -284,7 +284,7 @@ public final class Messages implements Section {
         private String warning = "<red>Hello, it is not allowed to use too many caps";
 
         @Comment("Message to be sent to staff with chatregulator.notifications permission")
-        private String alert = "<red>The player <aqua><player></aqua> <red>was using many caps in the chat of <aqua><server></aqua> server | String: <string>";
+        private String alert = "<red>The player <aqua><player></aqua> <red>was using many capital letters | String: <string>";
 
         @Comment("Statistics Reset Confirmation Message")
         private String reset = "<red>The caps violation count for <player> was reset";
@@ -314,7 +314,7 @@ public final class Messages implements Section {
         private String warning = "<red>Hello, it is not allowed to use this type of commands";
 
         @Comment("Message to be sent to staff with chatregulator.notifications permission")
-        private String alert = "<red>The player <aqua><player></aqua> <red>was using commands with \"/command:subcommand\" syntax in the server <aqua><server></aqua> | String: <string>";
+        private String alert = "<red>The player <aqua><player></aqua> <red>was using commands with invalid syntax | String: <string>";
 
         @Comment("Statistics Reset Confirmation Message")
         private String reset = "<red>The syntax violation count for <player> was reset";
