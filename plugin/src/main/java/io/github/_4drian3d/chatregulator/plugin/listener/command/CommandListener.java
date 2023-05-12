@@ -6,7 +6,6 @@ import com.velocitypowered.api.event.*;
 import com.velocitypowered.api.event.command.CommandExecuteEvent;
 import com.velocitypowered.api.proxy.Player;
 import io.github._4drian3d.chatregulator.api.checks.*;
-import io.github._4drian3d.chatregulator.api.enums.InfractionType;
 import io.github._4drian3d.chatregulator.api.enums.SourceType;
 import io.github._4drian3d.chatregulator.api.event.CommandInfractionEvent;
 import io.github._4drian3d.chatregulator.api.result.CheckResult;
@@ -81,7 +80,8 @@ public final class CommandListener implements RegulatorExecutor<CommandExecuteEv
             })
             .thenCompose(checkResult -> {
                 if (checkResult.isDenied()) {
-                    return CompletableFuture.completedFuture(CheckResult.denied(InfractionType.GLOBAL));
+                    final CheckResult.DeniedCheckresult deniedResult = (CheckResult.DeniedCheckresult) checkResult;
+                    return CompletableFuture.completedFuture(CheckResult.denied(deniedResult.infractionType()));
                 }
 
                 if (!checkIfCanCheck(event.getCommand())) {
@@ -107,10 +107,8 @@ public final class CommandListener implements RegulatorExecutor<CommandExecuteEv
                 } else {
                     if (result.isDenied()){
                         final CheckResult.DeniedCheckresult deniedResult = (CheckResult.DeniedCheckresult) result;
-                        if (deniedResult.infractionType() != InfractionType.GLOBAL) {
-                            eventManager.fireAndForget(new CommandInfractionEvent(infractionPlayer, deniedResult.infractionType(), result, event.getCommand()));
-                            infractionPlayer.onDenied(deniedResult, event.getCommand());
-                        }
+                        eventManager.fireAndForget(new CommandInfractionEvent(infractionPlayer, deniedResult.infractionType(), result, event.getCommand()));
+                        infractionPlayer.onDenied(deniedResult, event.getCommand());
                         event.setResult(CommandExecuteEvent.CommandResult.denied());
                         continuation.resume();
                     }
