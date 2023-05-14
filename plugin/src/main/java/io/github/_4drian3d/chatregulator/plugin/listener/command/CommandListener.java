@@ -75,7 +75,7 @@ public final class CommandListener implements RegulatorExecutor<CommandExecuteEv
                     cooldownProvider
             ).detect(infractionPlayer, event.getCommand())
             .exceptionally(ex -> {
-                logger.error("An error occurred while checking Command and Syntax", ex);
+                logger.error("An error occurred while checking initial command checks", ex);
                 return CheckResult.allowed();
             })
             .thenCompose(checkResult -> {
@@ -110,16 +110,17 @@ public final class CommandListener implements RegulatorExecutor<CommandExecuteEv
                         infractionPlayer.onDenied(deniedResult, event.getCommand());
                         event.setResult(CommandExecuteEvent.CommandResult.denied());
                         continuation.resume();
+                        return null;
                     }
                     if (result.shouldModify()) {
                         final CheckResult.ReplaceCheckResult replaceResult = (CheckResult.ReplaceCheckResult) result;
                         final String replacedCommand = replaceResult.replaced();
                         infractionPlayer.getChain(SourceType.COMMAND).executed(replacedCommand);
                         event.setResult(CommandExecuteEvent.CommandResult.command(replacedCommand));
-                        continuation.resume();
+                    } else {
+                        infractionPlayer.getChain(SourceType.COMMAND).executed(event.getCommand());
+                        event.setResult(CommandExecuteEvent.CommandResult.allowed());
                     }
-                    infractionPlayer.getChain(SourceType.COMMAND).executed(event.getCommand());
-                    event.setResult(CommandExecuteEvent.CommandResult.allowed());
                     continuation.resume();
                 }
                 return null;

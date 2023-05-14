@@ -19,6 +19,7 @@ public final class SyntaxCheck implements Check {
     SyntaxCheck(Collection<String> allowedCommands) {
         this.allowedCommands = allowedCommands;
     }
+
     @Override
     public @NotNull CheckResult check(@NotNull InfractionPlayer player, @NotNull String string) {
         final String command = Commands.getFirstArgument(requireNonNull(string));
