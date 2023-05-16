@@ -176,11 +176,12 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
         final TagResolver.Builder builder = TagResolver.builder();
         builder.resolver(getPlaceholders());
 
-        if (result instanceof CheckResult.ReplaceCheckResult replaceResult) {
+        if (result instanceof final CheckResult.ReplaceCheckResult replaceResult) {
             builder.resolver(Placeholder.unparsed("string", replaceResult.replaced()));
         } else {
             builder.resolver(Placeholder.unparsed("string", original));
         }
+        builder.resolver(Placeholder.unparsed("original", original));
 
         final Component message = formatter.parse(messages.getAlertMessage(), builder.build());
 
