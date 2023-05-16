@@ -59,15 +59,7 @@ public class ResetArgument implements Argument {
                             }
                             final InfractionPlayerImpl p = playerManager.getPlayer(player);
 
-                            p.getInfractions().resetViolations(
-                                    InfractionType.SPAM,
-                                    InfractionType.FLOOD,
-                                    InfractionType.REGEX,
-                                    InfractionType.BLOCKED_COMMAND,
-                                    InfractionType.UNICODE,
-                                    InfractionType.CAPS,
-                                    InfractionType.SYNTAX
-                            );
+                            p.getInfractions().resetViolations(InfractionType.GLOBAL);
                             p.sendResetMessage(cmd.getSource(), InfractionType.GLOBAL);
                             return Command.SINGLE_SUCCESS;
                         })

@@ -3,7 +3,7 @@ package io.github._4drian3d.chatregulator.modules.checks;
 import io.github._4drian3d.chatregulator.api.checks.CapsCheck;
 import io.github._4drian3d.chatregulator.api.enums.ControlType;
 import io.github._4drian3d.chatregulator.api.result.CheckResult;
-import io.github._4drian3d.chatregulator.plugin.config.Configuration;
+import io.github._4drian3d.chatregulator.plugin.config.Checks;
 import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
 import io.github._4drian3d.chatregulator.utils.TestsUtils;
 import org.junit.jupiter.api.DisplayName;
@@ -36,7 +36,7 @@ class CapsTest {
     void realTest(@TempDir Path path){
         String message = "AAAAAAAAAA";
 
-        Configuration config = ConfigurationContainer.load(LoggerFactory.getLogger(CapsTest.class), path, Configuration.class, "config").get();
+        Checks config = ConfigurationContainer.load(LoggerFactory.getLogger(CapsTest.class), path, Checks.class, "config").get();
 
         CapsCheck check = CapsCheck.builder()
                 .limit(config.getCapsConfig().limit())

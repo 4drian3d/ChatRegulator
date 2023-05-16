@@ -26,6 +26,19 @@ public class ConfigurationModule extends AbstractModule {
 
     @Singleton
     @Provides
+    private ConfigurationContainer<Checks> checksContainer(
+            Logger logger,
+            @DataDirectory  Path path
+    ) {
+        return ConfigurationContainer.load(
+                logger, path, Checks.class, "checks",
+                loader -> loader.shouldCopyDefaults(true)
+                        .header(Configuration.HEADER)
+        );
+    }
+
+    @Singleton
+    @Provides
     private ConfigurationContainer<Blacklist> blacklist(
             Logger logger,
             @DataDirectory Path path

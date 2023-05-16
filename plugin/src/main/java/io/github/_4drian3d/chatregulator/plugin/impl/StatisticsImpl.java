@@ -3,16 +3,20 @@ package io.github._4drian3d.chatregulator.plugin.impl;
 import com.google.common.base.Preconditions;
 import io.github._4drian3d.chatregulator.api.Statistics;
 import io.github._4drian3d.chatregulator.api.enums.InfractionType;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.Context;
+import net.kyori.adventure.text.minimessage.ParsingException;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumMap;
 import java.util.Locale;
 import java.util.Objects;
 
-import static io.github._4drian3d.chatregulator.plugin.utils.Placeholders.integer;
-
-public final class StatisticsImpl implements Statistics {
+public final class StatisticsImpl implements Statistics, TagResolver {
     private final EnumMap<InfractionType, Integer> countMap = new EnumMap<>(InfractionType.class);
 
     /**
@@ -23,21 +27,37 @@ public final class StatisticsImpl implements Statistics {
         Preconditions.checkArgument(type != InfractionType.GLOBAL);
 
         countMap.merge(type, 1, Integer::sum);
-        countMap.merge(InfractionType.GLOBAL, 1, Integer::sum);
     }
 
     @Override
-    public int getInfractionCount(@NotNull InfractionType type){
+    public int getInfractionCount(@NotNull InfractionType type) {
+        if (type == InfractionType.GLOBAL) {
+            int count = 0;
+            for (final int infraction : countMap.values()) {
+                count += infraction;
+            }
+            return count;
+        }
         return countMap.get(type);
     }
 
-    public TagResolver getPlaceholders() {
-        final TagResolver.Builder builder = TagResolver.builder();
-        InfractionType.INDEX.keyToValue().forEach(((s, infractionType) -> {
-            final Integer count = countMap.get(infractionType);
-            builder.resolver(integer(s.toLowerCase(Locale.ROOT), count == null ? 0 : count));
-        }));
-        return builder.build();
+    @Override
+    public @Nullable Tag resolve(@NotNull String name, @NotNull ArgumentQueue arguments, @NotNull Context ctx) throws ParsingException {
+        final InfractionType type = InfractionType.INDEX.value(name.toUpperCase(Locale.ROOT));
+        if (type == null) {
+            return null;
+        }
+        final Integer count = countMap.get(type);
+        return Tag.selfClosingInserting(Component.text(count == null ? 0 : count));
+    }
+
+    @Override
+    public boolean has(final @NotNull String name) {
+        final InfractionType type = InfractionType.INDEX.value(name.toUpperCase(Locale.ROOT));
+        if (type == null) {
+            return false;
+        }
+        return countMap.get(type) != null;
     }
 
     @Override

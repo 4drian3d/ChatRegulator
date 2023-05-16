@@ -13,11 +13,11 @@ public final class InfractionCount {
      * Adds an infraction to the count of any type of player infraction.
      * @param type the infraction type
      */
-    public void addViolation(@NotNull InfractionType type){
-        infractionMap.merge(type, 1, Integer::sum);
-        if (type != InfractionType.GLOBAL) {
-            infractionMap.merge(InfractionType.GLOBAL, 1, Integer::sum);
+    public void addViolation(@NotNull InfractionType type) {
+        if (type == InfractionType.GLOBAL) {
+            throw new IllegalArgumentException("Invalid InfractionType provided");
         }
+        infractionMap.merge(type, 1, Integer::sum);
     }
 
     /**
@@ -25,7 +25,10 @@ public final class InfractionCount {
      * @param type the type of infraction
      * @param newViolationsCount the new number of infractions
      */
-    public void setViolations(@NotNull InfractionType type, int newViolationsCount){
+    public void setViolations(final @NotNull InfractionType type, final int newViolationsCount) {
+        if (type == InfractionType.GLOBAL) {
+            throw new IllegalArgumentException("Invalid InfractionType provided");
+        }
         infractionMap.put(type, newViolationsCount);
     }
 
@@ -33,8 +36,12 @@ public final class InfractionCount {
      * Reset the count of infraction of any type of this player
      * @param types the types
      */
-    public void resetViolations(@NotNull InfractionType @NotNull... types){
-        for (final InfractionType type : types){
+    public void resetViolations(final @NotNull InfractionType @NotNull... types) {
+        for (final InfractionType type : types) {
+            if (type == InfractionType.GLOBAL) {
+                infractionMap.clear();
+                return;
+            }
             this.setViolations(type, 0);
         }
     }
@@ -44,7 +51,14 @@ public final class InfractionCount {
      * @param type the violation type
      * @return the count
      */
-    public int getCount(@NotNull InfractionType type){
+    public int getCount(final @NotNull InfractionType type) {
+        if (type == InfractionType.GLOBAL) {
+            int count = 0;
+            for (final int infraction : infractionMap.values()) {
+                count += infraction;
+            }
+            return count;
+        }
         return infractionMap.computeIfAbsent(type, $ -> 0);
     }
 
@@ -61,7 +75,7 @@ public final class InfractionCount {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         final StringBuilder builder = new StringBuilder("ViolationCount[");
         infractionMap.forEach(((infractionType, integer) -> builder.append(infractionType).append('=').append(integer)));
         return builder.append("]").toString();

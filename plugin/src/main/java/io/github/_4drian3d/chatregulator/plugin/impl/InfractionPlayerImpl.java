@@ -11,9 +11,10 @@ import io.github._4drian3d.chatregulator.api.enums.InfractionType;
 import io.github._4drian3d.chatregulator.api.enums.Permission;
 import io.github._4drian3d.chatregulator.api.enums.SourceType;
 import io.github._4drian3d.chatregulator.api.result.CheckResult;
-import io.github._4drian3d.chatregulator.plugin.config.Configuration;
+import io.github._4drian3d.chatregulator.plugin.config.Checks;
 import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
 import io.github._4drian3d.chatregulator.plugin.config.Messages;
+import io.github._4drian3d.chatregulator.plugin.placeholders.PlayerResolver;
 import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.IFormatter;
 import io.github._4drian3d.chatregulator.plugin.source.RegulatorCommandSource;
 import io.github.miniplaceholders.api.MiniPlaceholders;
@@ -28,7 +29,6 @@ import org.slf4j.Logger;
 
 import java.util.Objects;
 
-import static io.github._4drian3d.chatregulator.plugin.utils.Placeholders.integer;
 import static java.util.Objects.requireNonNull;
 
 public final class InfractionPlayerImpl implements InfractionPlayer {
@@ -40,7 +40,7 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
     @Inject
     private Logger logger;
     @Inject
-    private ConfigurationContainer<Configuration> configurationContainer;
+    private ConfigurationContainer<Checks> configurationContainer;
     @Inject
     private ConfigurationContainer<Messages> messagesContainer;
     @Inject
@@ -50,6 +50,7 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
     private final StringChainImpl commandChain = new StringChainImpl();
     private final StringChainImpl chatChain = new StringChainImpl();
     private final InfractionCount infractionCount = new InfractionCount();
+    private final PlayerResolver resolver = new PlayerResolver(this);
     private boolean isOnline;
     private final String username;
 
@@ -140,7 +141,7 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
         }
 
         final TagResolver resolver = builder.build();
-        final Configuration.Warning configuration = configurationContainer.get().getWarning(type);
+        final Checks.Warning configuration = configurationContainer.get().getWarning(type);
 
         switch (configuration.getWarningType()) {
             case TITLE -> {
@@ -195,25 +196,14 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
     }
 
     public @NotNull TagResolver getPlaceholders() {
-        final InfractionCount count = getInfractions();
-        final TagResolver.Builder resolver = TagResolver.builder().resolvers(
-                Placeholder.parsed("player", username()),
-                Placeholder.parsed("name", username()),
-                integer("flood", count.getCount(InfractionType.FLOOD)),
-                integer("spam", count.getCount(InfractionType.SPAM)),
-                integer("cooldown", count.getCount(InfractionType.COOLDOWN)),
-                integer("regex", count.getCount(InfractionType.REGEX)),
-                integer("unicode", count.getCount(InfractionType.UNICODE)),
-                integer("caps", count.getCount(InfractionType.CAPS)),
-                integer("blocked_command", count.getCount(InfractionType.BLOCKED_COMMAND)),
-                integer("syntax", count.getCount(InfractionType.SYNTAX))
-        );
+        final TagResolver.Builder builder = TagResolver.builder();
+        builder.resolver(this.resolver);
 
         if (pluginManager.isLoaded("miniplaceholders")) {
-            resolver.resolver(MiniPlaceholders.getAudienceGlobalPlaceholders(this));
+            builder.resolver(MiniPlaceholders.getAudienceGlobalPlaceholders(this));
         }
 
-        return resolver.build();
+        return builder.build();
     }
 
     public void sendResetMessage(Audience sender, InfractionType type) {
@@ -248,7 +238,7 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
             return;
         }
 
-        final Configuration.CommandsConfig config = configurationContainer.get().getExecutable(type).getCommandsConfig();
+        final Checks.CommandsConfig config = configurationContainer.get().getExecutable(type).getCommandsConfig();
         if (config.executeCommand() && getInfractions().getCount(type) % config.violationsRequired() == 0) {
             final String serverName = player.getCurrentServer().map(sv -> sv.getServerInfo().getName()).orElse("");
 

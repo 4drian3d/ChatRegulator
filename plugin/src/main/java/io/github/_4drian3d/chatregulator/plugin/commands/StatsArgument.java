@@ -34,7 +34,7 @@ public class StatsArgument implements Argument{
                         InfractionPlayerImpl infractionPlayer = playerManager.getPlayer(player);
                         resolver = infractionPlayer.getPlaceholders();
                     } else {
-                        resolver = statistics.getPlaceholders();
+                        resolver = statistics;
                     }
                     sendLines(
                             cmd.getSource(),

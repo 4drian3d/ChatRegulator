@@ -2,6 +2,7 @@ package io.github._4drian3d.chatregulator.config;
 
 import java.nio.file.Path;
 
+import io.github._4drian3d.chatregulator.plugin.config.Checks;
 import io.github._4drian3d.chatregulator.plugin.config.Configuration;
 import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
 import org.junit.jupiter.api.DisplayName;
@@ -18,16 +19,17 @@ class ConfigurationTest {
     @Test
     @DisplayName("Config Values")
     void configValues(@TempDir Path path){
-        Configuration config = ConfigurationContainer.load(LoggerFactory.getLogger(ConfigurationTest.class), path, Configuration.class, "").get();
+        Checks checks = ConfigurationContainer.load(LoggerFactory.getLogger(ConfigurationTest.class), path, Checks.class, "test").get();
+        Configuration config = ConfigurationContainer.load(LoggerFactory.getLogger(ConfigurationTest.class), path, Configuration.class, "config").get();
 
-        assertTrue(config.getCommandBlacklistConfig().enabled());
+        assertTrue(checks.getCommandBlacklistConfig().enabled());
         assertFalse(config.getFormatConfig().enabled());
 
-        assertEquals(2, config.getFloodConfig().getCommandsConfig().violationsRequired());
-        assertEquals(2, config.getUnicodeConfig().getCommandsConfig().violationsRequired());
+        assertEquals(2, checks.getFloodConfig().getCommandsConfig().violationsRequired());
+        assertEquals(2, checks.getUnicodeConfig().getCommandsConfig().violationsRequired());
 
-        assertEquals(ControlType.BLOCK, config.getRegexConfig().getControlType());
-        assertEquals(WarningType.MESSAGE, config.getSpamConfig().getWarningType());
+        assertEquals(ControlType.BLOCK, checks.getRegexConfig().getControlType());
+        assertEquals(WarningType.MESSAGE, checks.getSpamConfig().getWarningType());
     }
 
 }

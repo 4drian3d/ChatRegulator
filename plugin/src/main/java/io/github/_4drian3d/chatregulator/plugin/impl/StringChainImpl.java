@@ -2,7 +2,7 @@ package io.github._4drian3d.chatregulator.plugin.impl;
 
 import com.google.inject.Inject;
 import io.github._4drian3d.chatregulator.api.StringChain;
-import io.github._4drian3d.chatregulator.plugin.config.Configuration;
+import io.github._4drian3d.chatregulator.plugin.config.Checks;
 import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,7 +15,7 @@ public final class StringChainImpl implements StringChain {
     private final LinkedList<String> queue = new LinkedList<>();
     private final AtomicReference<Instant> lastExecuted = new AtomicReference<>(Instant.now());
     @Inject
-    private ConfigurationContainer<Configuration> configurationContainer;
+    private ConfigurationContainer<Checks> checksContainer;
     @Override
     public String index(int index) {
         return queue.get(index);
@@ -48,7 +48,7 @@ public final class StringChainImpl implements StringChain {
     }
 
     public void executed(final String string) {
-        if (configurationContainer != null && configurationContainer.get().getSpamConfig().getSimilarStringCount() <= queue.size()) {
+        if (checksContainer != null && checksContainer.get().getSpamConfig().getSimilarStringCount() <= queue.size()) {
             queue.removeFirst();
         }
         queue.add(string);
