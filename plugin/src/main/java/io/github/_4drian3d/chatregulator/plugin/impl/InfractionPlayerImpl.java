@@ -12,6 +12,7 @@ import io.github._4drian3d.chatregulator.api.enums.Permission;
 import io.github._4drian3d.chatregulator.api.enums.SourceType;
 import io.github._4drian3d.chatregulator.api.result.CheckResult;
 import io.github._4drian3d.chatregulator.plugin.config.Checks;
+import io.github._4drian3d.chatregulator.plugin.config.Configuration;
 import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
 import io.github._4drian3d.chatregulator.plugin.config.Messages;
 import io.github._4drian3d.chatregulator.plugin.placeholders.PlayerResolver;
@@ -40,13 +41,17 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
     @Inject
     private Logger logger;
     @Inject
-    private ConfigurationContainer<Checks> configurationContainer;
+    private ConfigurationContainer<Checks> checksContainer;
+    @Inject
+    private ConfigurationContainer<Configuration> configurationContainer;
     @Inject
     private ConfigurationContainer<Messages> messagesContainer;
     @Inject
     private IFormatter formatter;
     @Inject
     private RegulatorCommandSource regulatorSource;
+    @Inject
+    private FileLogger fileLogger;
     private final StringChainImpl commandChain = new StringChainImpl();
     private final StringChainImpl chatChain = new StringChainImpl();
     private final InfractionCount infractionCount = new InfractionCount();
@@ -128,7 +133,7 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
     }
 
     public boolean isAllowed(InfractionType type) {
-        return configurationContainer.get().isEnabled(type) && !type.getBypassPermission().test(getPlayer());
+        return checksContainer.get().isEnabled(type) && !type.getBypassPermission().test(getPlayer());
     }
 
     private void sendWarningMessage(CheckResult result, InfractionType type) {
@@ -141,7 +146,7 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
         }
 
         final TagResolver resolver = builder.build();
-        final Checks.Warning configuration = configurationContainer.get().getWarning(type);
+        final Checks.Warning configuration = checksContainer.get().getWarning(type);
 
         switch (configuration.getWarningType()) {
             case TITLE -> {
@@ -192,7 +197,13 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
             }
         }
 
-        proxyServer.getConsoleCommandSource().sendMessage(message);
+        if (configurationContainer.get().getLog().warningLog()) {
+            regulatorSource.sendMessage(message);
+        }
+
+        if (fileLogger != null) {
+            fileLogger.log(message);
+        }
     }
 
     public @NotNull TagResolver getPlaceholders() {
@@ -238,7 +249,7 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
             return;
         }
 
-        final Checks.CommandsConfig config = configurationContainer.get().getExecutable(type).getCommandsConfig();
+        final Checks.CommandsConfig config = checksContainer.get().getExecutable(type).getCommandsConfig();
         if (config.executeCommand() && getInfractions().getCount(type) % config.violationsRequired() == 0) {
             final String serverName = player.getCurrentServer().map(sv -> sv.getServerInfo().getName()).orElse("");
 

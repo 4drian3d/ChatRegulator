@@ -46,8 +46,8 @@ public final class LeaveListener implements RegulatorExecutor<DisconnectEvent> {
                     playerManager.removePlayer(uuid);
                 }
             }).delay(
-                    configuration.getGeneralConfig().deleteUsersTime(),
-                    configuration.getGeneralConfig().unit()
+                    configuration.deleteUsersTime(),
+                    configuration.unit()
             ).schedule();
         });
     }

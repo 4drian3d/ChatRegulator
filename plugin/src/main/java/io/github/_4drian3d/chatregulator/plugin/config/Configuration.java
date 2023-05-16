@@ -18,14 +18,14 @@ public final class Configuration implements Section {
         Check the function of each configuration option at
         https://github.com/4drian3d/ChatRegulator/wiki/Configuration""";
 
-    @Comment("Format Module")
-    private Format format = new Format();
-
-    @Comment("General Configurations")
-    private General general = new General();
+    @Comment("Formatter Module")
+    private Formatter formatter = new Formatter();
 
     @Comment("CommandSpy configuration")
     private CommandSpy commandSpy = new CommandSpy();
+
+    @Comment("Settings on the log of alert messages in console or files")
+    private Log log = new Log();
 
     @Comment("""
         Specify in which commands you want the violations to be detected
@@ -41,24 +41,50 @@ public final class Configuration implements Section {
         "reply"
     );
 
+    @Comment("Set the maximum time in which a user's violations will be saved after the user leaves your server")
+    @Setting(value = "delete-users-after")
+    private long deleteUsersAfter = 30;
+
+    @Comment("""
+            Set the time unit of the delete-users-after setting
+            Available values: NANOSECONDS, MICROSECONDS, MILLISECONDS, SECONDS, MINUTES, HOURS, DAYS""")
+    @Setting(value = "time-unit")
+    private TimeUnit unit = TimeUnit.SECONDS;
+
+    @Comment("Limit the amount of users showed on autocompletion")
+    @Setting(value = "tab-complete-limit")
+    private int limitTabComplete = 40;
+
+    public long deleteUsersTime(){
+        return this.deleteUsersAfter;
+    }
+
+    public TimeUnit unit() {
+        return this.unit;
+    }
+
+    public int tabCompleteLimit(){
+        return this.limitTabComplete;
+    }
+
     public Set<String> getCommandsChecked(){
         return this.commandsChecked;
     }
 
-    public Format getFormatConfig(){
-        return this.format;
-    }
-
-    public General getGeneralConfig(){
-        return this.general;
+    public Formatter getFormatterConfig(){
+        return this.formatter;
     }
 
     public CommandSpy getCommandSpyConfig(){
         return this.commandSpy;
     }
 
+    public Log getLog() {
+        return this.log;
+    }
+
     @ConfigSerializable
-    public static class Format {
+    public static class Formatter {
         @Comment("Enable Format Module")
         private boolean enabled = false;
 
@@ -106,31 +132,45 @@ public final class Configuration implements Section {
     }
 
     @ConfigSerializable
-    public static class General {
-        @Comment("Set the maximum time in which a user's violations will be saved after the user leaves your server")
-        @Setting(value = "delete-users-after")
-        private long deleteUsersAfter = 30;
+    public static class Log {
+        @Comment("Toggle to show in console the alert message in case of check detection")
+        private boolean warningLog = true;
+        private File file = new File();
 
-        @Comment("""
-            Set the time unit of the delete-users-after setting
-            Available values: NANOSECONDS, MICROSECONDS, MILLISECONDS, SECONDS, MINUTES, HOURS, DAYS""")
-        @Setting(value = "time-unit")
-        private TimeUnit unit = TimeUnit.SECONDS;
-
-        @Comment("Limit the amount of users showed on autocompletion")
-        @Setting(value = "tab-complete-limit")
-        private int limitTabComplete = 40;
-
-        public long deleteUsersTime(){
-            return this.deleteUsersAfter;
+        public boolean warningLog() {
+            return warningLog;
         }
 
-        public TimeUnit unit() {
-            return this.unit;
+        public File getFile() {
+            return file;
         }
 
-        public int tabCompleteLimit(){
-            return this.limitTabComplete;
+        @ConfigSerializable
+        public static class File {
+            @Comment("Sets whether this module will be activated")
+            private boolean enabled = false;
+            @Comment("Sets the format of the file in which the log will be written")
+            private String fileFormat = "'infractions'-dd-MM-yy'.txt'";
+            @Comment("Sets the log format")
+            private String logFormat = "[<time>] <message>";
+            @Comment("Sets the time format")
+            private String timeFormat = "HH:mm:ss";
+
+            public boolean isEnabled() {
+                return enabled;
+            }
+
+            public String getFileFormat() {
+                return fileFormat;
+            }
+
+            public String getLogFormat() {
+                return logFormat;
+            }
+
+            public String getTimeFormat() {
+                return timeFormat;
+            }
         }
     }
 }

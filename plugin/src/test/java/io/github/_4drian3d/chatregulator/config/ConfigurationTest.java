@@ -23,7 +23,7 @@ class ConfigurationTest {
         Configuration config = ConfigurationContainer.load(LoggerFactory.getLogger(ConfigurationTest.class), path, Configuration.class, "config").get();
 
         assertTrue(checks.getCommandBlacklistConfig().enabled());
-        assertFalse(config.getFormatConfig().enabled());
+        assertFalse(config.getFormatterConfig().enabled());
 
         assertEquals(2, checks.getFloodConfig().getCommandsConfig().violationsRequired());
         assertEquals(2, checks.getUnicodeConfig().getCommandsConfig().violationsRequired());

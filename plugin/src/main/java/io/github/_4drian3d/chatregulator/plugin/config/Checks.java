@@ -440,7 +440,8 @@ public final class Checks implements Section {
         @Setting(value = "warning-type")
         private WarningType warningType = WarningType.MESSAGE;
 
-        private Set<String> allowedCommands = Set.of();
+        @Comment("Allowed syntax command executions")
+        private Set<String> allowedCommands = Set.of("luckperms");
 
         @Override
         public CommandsConfig getCommandsConfig() {

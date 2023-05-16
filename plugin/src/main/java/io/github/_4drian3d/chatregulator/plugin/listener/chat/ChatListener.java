@@ -81,7 +81,7 @@ public final class ChatListener implements RegulatorExecutor<PlayerChatEvent> {
                     }
 
                     final Configuration configuration = configurationContainer.get();
-                    if (configuration.getFormatConfig().enabled()) {
+                    if (configuration.getFormatterConfig().enabled()) {
                         finalMessage = Replacer.applyFormat(finalMessage, configuration);
                         event.setResult(ChatResult.message(finalMessage));
                     }

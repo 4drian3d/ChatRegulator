@@ -29,7 +29,7 @@ public final class Replacer {
     }
 
     public static @NotNull String firstLetterUppercase(@NotNull final String string, Configuration config) {
-        if (!config.getFormatConfig().setFirstLetterUppercase()) return string;
+        if (!config.getFormatterConfig().setFirstLetterUppercase()) return string;
         return firstLetterUppercase(string);
     }
 
@@ -51,7 +51,7 @@ public final class Replacer {
     }
 
     public static String addFinalDot(final String string, Configuration config) {
-        return config.getFormatConfig().setFinalDot()
+        return config.getFormatterConfig().setFinalDot()
                 ? addFinalDot(string)
                 : string;
     }

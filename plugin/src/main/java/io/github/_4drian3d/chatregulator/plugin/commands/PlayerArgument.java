@@ -47,7 +47,7 @@ public class PlayerArgument implements Argument {
                         .suggests((ctx, builder) -> {
                             playerManager.getPlayers()
                                     .stream()
-                                    .limit(configurationContainer.get().getGeneralConfig().tabCompleteLimit())
+                                    .limit(configurationContainer.get().tabCompleteLimit())
                                     .forEach((player) -> builder.suggest(
                                             player.username(),
                                             VelocityBrigadierMessage.tooltip(
