@@ -257,7 +257,7 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
                 final String commandToExecute = command.replace("<player>", username())
                         .replace("<server>", serverName);
                 proxyServer.getCommandManager()
-                        .executeAsync(regulatorSource, command)
+                        .executeAsync(regulatorSource, commandToExecute)
                         .handleAsync((status, ex) -> {
                             if (ex != null) {
                                 logger.warn("Error executing command {}", commandToExecute, ex);
