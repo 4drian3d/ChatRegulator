@@ -43,6 +43,7 @@ public class ProviderModule extends AbstractModule {
                 return CapsCheck.builder()
                         .limit(configuration.getCapsConfig().limit())
                         .controlType(configuration.getCapsConfig().getControlType())
+                        .algorithm(configuration.getCapsConfig().getAlgorithm())
                         .build();
             }
             return null;

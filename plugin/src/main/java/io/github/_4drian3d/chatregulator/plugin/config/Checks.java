@@ -1,9 +1,6 @@
 package io.github._4drian3d.chatregulator.plugin.config;
 
-import io.github._4drian3d.chatregulator.api.enums.ControlType;
-import io.github._4drian3d.chatregulator.api.enums.DetectionMode;
-import io.github._4drian3d.chatregulator.api.enums.InfractionType;
-import io.github._4drian3d.chatregulator.api.enums.WarningType;
+import io.github._4drian3d.chatregulator.api.enums.*;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
@@ -392,7 +389,17 @@ public final class Checks implements Section {
         @Setting(value = "warning-type")
         private WarningType warningType = WarningType.MESSAGE;
 
-        @Comment("Sets the maximum limit of caps in a sentence")
+        @Comment("""
+                Select caps detection algorithm
+                AMOUNT
+                |- In case the provided string has a specific amount of capital letters,
+                   it will be detected
+                PERCENTAGE
+                |- In case the provided string has a higher percentage of capital letters than specified,
+                   it will be detected""")
+        private CapsAlgorithm algorithm = CapsAlgorithm.AMOUNT;
+
+        @Comment("Sets the uppercase limit in a sentence according to the selected detection algorithm")
         private int limit = 5;
 
         @Comment("Commands to be executed in the caps module")
@@ -411,6 +418,10 @@ public final class Checks implements Section {
         @Override
         public ControlType getControlType(){
             return this.controlType;
+        }
+
+        public CapsAlgorithm getAlgorithm() {
+            return algorithm;
         }
 
         public int limit(){
