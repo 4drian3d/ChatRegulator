@@ -13,18 +13,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class SpamTest {
     @Test
     @DisplayName("Spam Test")
-    void chatTest(){
+    void chatTest() {
         InfractionPlayerImpl player = TestsUtils.dummyPlayer();
         StringChainImpl chatChain = player.getChain(SourceType.CHAT);
+        final String string = "holaaaaaaaa";
 
-        chatChain.executed("holaaaaaaaa");
-        chatChain.executed("holaaaaaaaa");
-        chatChain.executed("holaaaaaaaa");
-        chatChain.executed("holaaaaaaaa");
-        chatChain.executed("holaaaaaaaa");
+        chatChain.executed(string);
+        chatChain.executed(string);
+        chatChain.executed(string);
+        chatChain.executed(string);
+        chatChain.executed(string);
 
-        SpamCheck check = SpamCheck.builder().source(SourceType.CHAT).build();
+        SpamCheck.Builder builder = SpamCheck.builder().source(SourceType.CHAT);
 
-        assertTrue(check.check(player, "holaaaaaaaa").isDenied());
+        assertTrue(builder.similarLimit(5).build().check(player, string).isDenied());
+        assertTrue(builder.similarLimit(6).build().check(player, string).isAllowed());
     }
 }

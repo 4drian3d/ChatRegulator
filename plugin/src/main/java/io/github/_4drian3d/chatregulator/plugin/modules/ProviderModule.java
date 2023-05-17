@@ -94,6 +94,7 @@ public class ProviderModule extends AbstractModule {
             if (infractionPlayer.isAllowed(InfractionType.SPAM) && configuration.isEnabled(InfractionType.SPAM)) {
                 return SpamCheck.builder()
                         .source(SourceType.COMMAND)
+                        .similarLimit(configuration.getSpamConfig().getSimilarStringCount())
                         .build();
             }
             return null;
@@ -110,6 +111,7 @@ public class ProviderModule extends AbstractModule {
             if (infractionPlayer.isAllowed(InfractionType.SPAM) && configuration.isEnabled(InfractionType.SPAM)) {
                 return SpamCheck.builder()
                         .source(SourceType.CHAT)
+                        .similarLimit(configuration.getSpamConfig().getSimilarStringCount())
                         .build();
             }
             return null;

@@ -48,8 +48,16 @@ public final class StringChainImpl implements StringChain {
     }
 
     public void executed(final String string) {
-        if (checksContainer != null && checksContainer.get().getSpamConfig().getSimilarStringCount() <= queue.size()) {
-            queue.removeFirst();
+        if (checksContainer != null) {
+            final int similarCount = checksContainer.get().getSpamConfig().getSimilarStringCount();
+            final int size = queue.size();
+            if (similarCount < size) {
+                while (similarCount < queue.size() + 1) {
+                    queue.removeFirst();
+                }
+            } else if (similarCount == size) {
+                queue.removeFirst();
+            }
         }
         queue.add(string);
         lastExecuted.set(Instant.now());
