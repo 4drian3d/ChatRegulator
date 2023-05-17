@@ -9,6 +9,7 @@ import com.velocitypowered.api.command.CommandSource;
 import io.github._4drian3d.chatregulator.api.enums.Permission;
 import io.github._4drian3d.chatregulator.plugin.config.Blacklist;
 import io.github._4drian3d.chatregulator.plugin.config.Configuration;
+import io.github._4drian3d.chatregulator.plugin.config.Checks;
 import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
 import io.github._4drian3d.chatregulator.plugin.config.Messages;
 import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.IFormatter;
@@ -18,6 +19,8 @@ public class ReloadArgument implements Argument {
     private IFormatter formatter;
     @Inject
     private ConfigurationContainer<Configuration> configurationContainer;
+    @Inject
+    private ConfigurationContainer<Checks> checksContainer;
     @Inject
     private ConfigurationContainer<Messages> messagesContainer;
     @Inject
@@ -32,8 +35,9 @@ public class ReloadArgument implements Argument {
                     CompletableFutures.combine(
                             messagesContainer.reload(),
                             configurationContainer.reload(),
+                            checksContainer.reload(),
                             blacklistContainer.reload(),
-                            (a, b, c) -> a && b && c
+                            (a, b, c, d) -> a && b && c && d
                     ).thenAccept(
                         result -> cmd.getSource().sendMessage(formatter.parse(messagesContainer.get().getGeneralMessages().getReloadMessage()))
                     );
