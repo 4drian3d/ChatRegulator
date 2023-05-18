@@ -8,8 +8,9 @@ import io.github._4drian3d.chatregulator.api.enums.SourceType;
 import io.github._4drian3d.chatregulator.api.result.CheckResult;
 import net.kyori.adventure.builder.AbstractBuilder;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
-import java.util.Objects;
+import java.util.Iterator;
 
 import static java.util.Objects.requireNonNull;
 
@@ -32,17 +33,23 @@ public final class SpamCheck implements Check {
         if (size < similarLimit) {
             return CheckResult.allowed();
         }
-        for (int i = 0; i + 1 < size; i++) {
-            if (!chain.index(i).equalsIgnoreCase(chain.index(i + 1))) {
+
+        final Iterator<String> it = chain.iterator();
+        String actual;
+        String previous = null;
+        while(it.hasNext()) {
+            actual = it.next();
+            if (previous != null && !actual.equalsIgnoreCase(previous)) {
                 return CheckResult.allowed();
             }
+            previous = actual;
         }
-
-        if (chain.last().equalsIgnoreCase(string)) {
-            return CheckResult.denied(type());
-        } else {
-            return CheckResult.allowed();
-        }
+		
+		if (chain.last().equalsIgnoreCase(string)) {
+			return CheckResult.denied(type());
+		} else {
+			return CheckResult.allowed();
+		}
     }
 
     @Override
@@ -61,13 +68,13 @@ public final class SpamCheck implements Check {
         Builder() {}
 
         @Required
-        public Builder source(SourceType source){
+        public Builder source(final @NotNull SourceType source){
             this.source = source;
             return this;
         }
 
         @Required
-        public Builder similarLimit(int limit) {
+        public Builder similarLimit(final @Range(from = 2, to = 255) int limit) {
             this.similarLimit = limit;
             return this;
         }
