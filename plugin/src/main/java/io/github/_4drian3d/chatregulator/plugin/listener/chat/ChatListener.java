@@ -65,8 +65,7 @@ public final class ChatListener implements RegulatorExecutor<PlayerChatEvent> {
             .exceptionally(ex -> {
                 logger.error("An error occurred while checking chat", ex);
                 return CheckResult.allowed();
-            })
-            .thenAccept(checkResult -> {
+            }).thenAccept(checkResult -> {
                 if (checkResult.isDenied()) {
                     final CheckResult.DeniedCheckresult deniedResult = (CheckResult.DeniedCheckresult) checkResult;
                     eventManager.fireAndForget(new ChatInfractionEvent(player, deniedResult.infractionType(), checkResult, event.getMessage()));
@@ -85,12 +84,12 @@ public final class ChatListener implements RegulatorExecutor<PlayerChatEvent> {
                         finalMessage = Replacer.applyFormat(finalMessage, configuration);
                         event.setResult(ChatResult.message(finalMessage));
                     }
-                    player.getChain(SourceType.CHAT).executed(finalMessage);
+                    player.getChain(SourceType.CHAT).executed(event.getMessage());
                     continuation.resume();
                 }
-            })
-            .exceptionally(ex -> {
+            }).exceptionally(ex -> {
                 logger.error("An error occurred while setting chat result", ex);
+				continuation.resume();
                 return null;
             });
         });
@@ -103,6 +102,6 @@ public final class ChatListener implements RegulatorExecutor<PlayerChatEvent> {
 
     @Override
     public PostOrder postOrder() {
-        return PostOrder.FIRST;
+        return PostOrder.EARLY;
     }
 }

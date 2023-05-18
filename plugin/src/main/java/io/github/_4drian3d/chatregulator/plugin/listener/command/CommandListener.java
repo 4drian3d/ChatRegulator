@@ -77,8 +77,7 @@ public final class CommandListener implements RegulatorExecutor<CommandExecuteEv
             .exceptionally(ex -> {
                 logger.error("An error occurred while checking initial command checks", ex);
                 return CheckResult.allowed();
-            })
-            .thenCompose(checkResult -> {
+            }).thenCompose(checkResult -> {
                 if (checkResult.isDenied()) {
                     return CompletableFuture.completedFuture(checkResult);
                 }
@@ -124,7 +123,11 @@ public final class CommandListener implements RegulatorExecutor<CommandExecuteEv
                     continuation.resume();
                 }
                 return null;
-            });
+            }).exceptionally(ex -> {
+				logger.error("An error occurred while setting chat result", ex);
+				continuation.resume();
+				return null;
+			});
         });
     }
 
@@ -135,6 +138,6 @@ public final class CommandListener implements RegulatorExecutor<CommandExecuteEv
 
     @Override
     public PostOrder postOrder() {
-        return PostOrder.FIRST;
+        return PostOrder.EARLY;
     }
 }
