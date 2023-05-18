@@ -53,8 +53,8 @@ public final class FileLogger {
         try (final BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8, CREATE, WRITE, APPEND)) {
             final var fileConfig = configurationContainer.get().getLog().getFile();
             final String message = fileConfig.getLogFormat()
-                    .replace("time", DateTimeFormatter.ofPattern(fileConfig.getTimeFormat()).format(LocalDateTime.now()))
-                    .replace("message", string);
+                    .replace("<time>", DateTimeFormatter.ofPattern(fileConfig.getTimeFormat()).format(LocalDateTime.now()))
+                    .replace("<message>", string);
             writer.write(message);
             writer.newLine();
         } catch (IOException e) {
