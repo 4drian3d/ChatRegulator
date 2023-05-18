@@ -7,6 +7,7 @@ import io.github._4drian3d.chatregulator.api.enums.ControlType;
 import io.github._4drian3d.chatregulator.api.enums.InfractionType;
 import io.github._4drian3d.chatregulator.api.result.CheckResult;
 import net.kyori.adventure.builder.AbstractBuilder;
+import org.checkerframework.checker.index.qual.NonNegative;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Matcher;
@@ -19,6 +20,8 @@ import static java.util.Objects.requireNonNull;
  */
 public final class FloodCheck implements Check {
     private static final LoadingCache<Integer, Pattern> floodPatternCache = Caffeine.newBuilder()
+            .maximumSize(3)
+            .initialCapacity(1)
             .build(length -> Pattern.compile(
                     "(\\w)\\1{"+length+",}|(\\w{28,})|([^\\wñ]{20,})|(^.{220,}$)",
                     Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE)
@@ -67,7 +70,7 @@ public final class FloodCheck implements Check {
 
         Builder() {}
 
-        public Builder limit(int limit){
+        public Builder limit(@NonNegative int limit){
             this.pattern = floodPatternCache.get(limit);
             return this;
         }
