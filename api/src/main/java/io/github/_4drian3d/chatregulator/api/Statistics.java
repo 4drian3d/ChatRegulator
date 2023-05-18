@@ -1,6 +1,7 @@
 package io.github._4drian3d.chatregulator.api;
 
 import io.github._4drian3d.chatregulator.api.enums.InfractionType;
+import org.checkerframework.checker.index.qual.NonNegative;
 import org.jetbrains.annotations.NotNull;
 
 public interface Statistics {
@@ -9,5 +10,5 @@ public interface Statistics {
      * @param type the infraction type
      * @return count of the respective infraction type
      */
-    int getInfractionCount(@NotNull InfractionType type);
+    @NonNegative int getInfractionCount(final @NotNull InfractionType type);
 }

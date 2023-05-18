@@ -81,7 +81,7 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
     }
 
     @Override
-    public StringChainImpl getChain(final SourceType sourceType) {
+    public @NotNull StringChainImpl getChain(final @NotNull SourceType sourceType) {
         return switch (sourceType) {
             case CHAT -> chatChain;
             case COMMAND -> commandChain;
@@ -161,14 +161,14 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
                     }
                     showTitle(
                             Title.title(
-                                    formatter.parse(titleParts[0], getPlayer(), resolver),
-                                    formatter.parse(titleParts[1], getPlayer(), resolver)
+                                    formatter.parse(titleParts[0], this, resolver),
+                                    formatter.parse(titleParts[1], this, resolver)
                             )
                     );
                 }
             }
-            case ACTIONBAR -> sendActionBar(formatter.parse(message, getPlayer(), resolver));
-            case MESSAGE -> sendMessage(formatter.parse(message, getPlayer(), resolver));
+            case ACTIONBAR -> sendActionBar(formatter.parse(message, this, resolver));
+            case MESSAGE -> sendMessage(formatter.parse(message, this, resolver));
         }
     }
 
@@ -251,14 +251,16 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
 
         final Checks.CommandsConfig config = checksContainer.get().getExecutable(type).getCommandsConfig();
         if (config.executeCommand() && getInfractions().getCount(type) % config.violationsRequired() == 0) {
-            final String serverName = player.getCurrentServer().map(sv -> sv.getServerInfo().getName()).orElse("");
+            final String serverName = player.getCurrentServer()
+                    .map(sv -> sv.getServerInfo().getName())
+                    .orElse("");
 
             for (final String command : config.getCommandsToExecute()) {
                 final String commandToExecute = command.replace("<player>", username())
                         .replace("<server>", serverName);
                 proxyServer.getCommandManager()
                         .executeAsync(regulatorSource, commandToExecute)
-                        .handleAsync((status, ex) -> {
+                        .handle((status, ex) -> {
                             if (ex != null) {
                                 logger.warn("Error executing command {}", commandToExecute, ex);
                             } else if (!status) {

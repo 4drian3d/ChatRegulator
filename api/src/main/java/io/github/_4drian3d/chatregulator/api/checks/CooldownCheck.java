@@ -6,6 +6,7 @@ import io.github._4drian3d.chatregulator.api.enums.InfractionType;
 import io.github._4drian3d.chatregulator.api.enums.SourceType;
 import io.github._4drian3d.chatregulator.api.result.CheckResult;
 import net.kyori.adventure.builder.AbstractBuilder;
+import org.checkerframework.checker.index.qual.NonNegative;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
@@ -47,18 +48,18 @@ public final class CooldownCheck implements Check {
         private SourceType source;
 
         @Required
-        public Builder timeUnit(TimeUnit unit) {
+        public Builder timeUnit(final @NotNull TimeUnit unit) {
             this.unit = unit;
             return this;
         }
 
-        public Builder limit(long limit) {
+        public Builder limit(final @NonNegative long limit) {
             this.limit = limit;
             return this;
         }
 
         @Required
-        public Builder source(SourceType source) {
+        public Builder source(final @NotNull SourceType source) {
             this.source = source;
             return this;
         }

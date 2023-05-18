@@ -4,11 +4,12 @@ import io.github._4drian3d.chatregulator.api.InfractionPlayer;
 import io.github._4drian3d.chatregulator.api.LazyDetection;
 import io.github._4drian3d.chatregulator.api.checks.Check;
 import io.github._4drian3d.chatregulator.api.result.CheckResult;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class LazyDetectionImpl implements LazyDetection {
+public final class LazyDetectionImpl implements LazyDetection {
     private final CheckProvider<? extends Check>[] checks;
 
     LazyDetectionImpl(final CheckProvider<? extends Check>[] checks) {
@@ -16,9 +17,9 @@ public class LazyDetectionImpl implements LazyDetection {
     }
 
     @Override
-    public CompletableFuture<CheckResult> detect(final InfractionPlayer player, final String string) {
+    public @NotNull CompletableFuture<CheckResult> detect(final @NotNull InfractionPlayer player, final @NotNull String string) {
         return CompletableFuture.supplyAsync(() -> {
-            AtomicReference<String> modifiedString = new AtomicReference<>(string);
+            final AtomicReference<String> modifiedString = new AtomicReference<>(string);
             for (final CheckProvider<? extends Check> provider : checks) {
                 final Check providedCheck = provider.provide(player);
                 if (providedCheck == null) {
@@ -33,7 +34,7 @@ public class LazyDetectionImpl implements LazyDetection {
                     return result;
                 }
 
-                if (result.shouldModify() && result instanceof CheckResult.ReplaceCheckResult replaceCheckResult) {
+                if (result instanceof final CheckResult.ReplaceCheckResult replaceCheckResult) {
                     modifiedString.set(replaceCheckResult.replaced());
                 }
             }

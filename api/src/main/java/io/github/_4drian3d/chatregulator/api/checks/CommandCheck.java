@@ -56,7 +56,7 @@ public final class CommandCheck implements Check {
          * @param blockedCommands the blocked commands
          * @return this
          */
-        public Builder blockedCommands(Collection<String> blockedCommands){
+        public Builder blockedCommands(final @NotNull Collection<@NotNull String> blockedCommands){
             this.blockedCommands = blockedCommands;
             return this;
         }
@@ -66,7 +66,7 @@ public final class CommandCheck implements Check {
          * @param blockedCommands the blocked commands
          * @return this
          */
-        public Builder blockedCommands(String... blockedCommands){
+        public Builder blockedCommands(final @NotNull String @NotNull ... blockedCommands){
             if (this.blockedCommands == null) {
                 this.blockedCommands = new HashSet<>(Arrays.asList(blockedCommands));
             } else {
@@ -81,7 +81,7 @@ public final class CommandCheck implements Check {
          * @param command the command to add
          * @return this
          */
-        public Builder blockedCommand(String command){
+        public Builder blockedCommand(@NotNull String command){
             if (this.blockedCommands == null) this.blockedCommands = new HashSet<>();
 
             this.blockedCommands.add(command);

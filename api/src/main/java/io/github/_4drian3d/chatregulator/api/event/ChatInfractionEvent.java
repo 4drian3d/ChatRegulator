@@ -25,9 +25,8 @@ public final class ChatInfractionEvent extends InfractionEvent {
         final @NotNull CheckResult detectionResult,
         final @NotNull String message
     ) {
-
-            super(infractionPlayer, type, detectionResult);
-            this.message = message;
+        super(infractionPlayer, type, detectionResult);
+        this.message = message;
     }
 
     /**

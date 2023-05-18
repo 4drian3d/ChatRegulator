@@ -1,12 +1,12 @@
 package io.github._4drian3d.chatregulator.api.event;
 
-import java.util.Objects;
-
 import io.github._4drian3d.chatregulator.api.result.CheckResult;
 import org.jetbrains.annotations.NotNull;
 
 import io.github._4drian3d.chatregulator.api.InfractionPlayer;
 import io.github._4drian3d.chatregulator.api.enums.InfractionType;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Event fired when recognizing an infraction in a command executed by a player.
@@ -27,9 +27,8 @@ public final class CommandInfractionEvent extends InfractionEvent {
         @NotNull CheckResult result,
         @NotNull String command
     ) {
-
-            super(Objects.requireNonNull(infractionPlayer), type, Objects.requireNonNull(result));
-            this.command = command;
+        super(requireNonNull(infractionPlayer), type, requireNonNull(result));
+        this.command = command;
     }
 
     /**

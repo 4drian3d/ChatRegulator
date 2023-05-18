@@ -3,7 +3,8 @@ package io.github._4drian3d.chatregulator.api.utils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 public class Commands {
     /**
@@ -12,7 +13,7 @@ public class Commands {
      * @return the first argument
      */
     public static @NotNull String getFirstArgument(final @NotNull String string) {
-        final int index = Objects.requireNonNull(string).indexOf(" ");
+        final int index = requireNonNull(string).indexOf(" ");
         if (index == -1) {
             return string;
         }
@@ -28,7 +29,7 @@ public class Commands {
      * @return if a string starts with another string
      */
     public static boolean isStartingString(@NotNull String string, @NotNull String startingString){
-        if(Objects.requireNonNull(string).length() < Objects.requireNonNull(startingString).length()){
+        if (requireNonNull(string).length() < requireNonNull(startingString).length()){
             return false;
         }
         startingString = startingString.toLowerCase(Locale.ROOT);
@@ -46,8 +47,8 @@ public class Commands {
      * @param string the string
      * @return the last character
      */
-    public static char getLastChar(@NotNull String string){
-        return string.charAt(string.length()-1);
+    public static char getLastChar(final @NotNull String string){
+        return requireNonNull(string).charAt(string.length()-1);
     }
 
 }

@@ -1,11 +1,9 @@
 package io.github._4drian3d.chatregulator.api.event;
 
-import io.github._4drian3d.chatregulator.api.result.CheckResult;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.ApiStatus.Internal;
-
 import io.github._4drian3d.chatregulator.api.InfractionPlayer;
 import io.github._4drian3d.chatregulator.api.enums.InfractionType;
+import io.github._4drian3d.chatregulator.api.result.CheckResult;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Basis for infringement events
@@ -27,11 +25,10 @@ public sealed abstract class InfractionEvent permits ChatInfractionEvent, Comman
      * @param type the infraction type
      * @param detectionResult the result of the detection
      */
-    @Internal
     protected InfractionEvent(
-            @NotNull InfractionPlayer infractionPlayer,
-            @NotNull InfractionType type,
-            @NotNull CheckResult detectionResult
+            final @NotNull InfractionPlayer infractionPlayer,
+            final @NotNull InfractionType type,
+            final @NotNull CheckResult detectionResult
     ) {
         this.infractionPlayer = infractionPlayer;
         this.type = type;

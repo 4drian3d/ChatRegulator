@@ -11,8 +11,6 @@ public enum Permission implements Predicate<CommandSource> {
     /**General Command */
     COMMAND("chatregulator.command"),
 
-    /**Help Subcommand */
-    COMMAND_HELP("chatregulator.command.help"),
     /**Stats Subcommand */
     COMMAND_STATS("chatregulator.command.stats"),
     /**Player Subcommand */

@@ -11,11 +11,11 @@ public final class Components {
     public static final Component SPACES_COMPONENT;
 
     static {
-        TextComponent.Builder builder = Component.text();
-        for(int i = 0; i < 100; i++){
-            builder.append(Component.newline());
+        final TextComponent.Builder builder = Component.text();
+        for (int i = 0; i < 100; i++) {
+            builder.appendNewline();
         }
-        SPACES_COMPONENT = builder.build();
+        SPACES_COMPONENT = builder.build().compact();
     }
-    private Components(){}
+    private Components() {}
 }

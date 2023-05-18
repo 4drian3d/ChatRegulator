@@ -7,6 +7,7 @@ import com.google.inject.Injector;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import io.github._4drian3d.chatregulator.api.PlayerManager;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -20,7 +21,7 @@ public class PlayerManagerImpl implements PlayerManager {
     private ProxyServer proxyServer;
 
     @Override
-    public InfractionPlayerImpl getPlayer(UUID uuid) {
+    public InfractionPlayerImpl getPlayer(@NotNull UUID uuid) {
         return infractionPlayers.get(uuid, (id) -> new InfractionPlayerImpl(proxyServer.getPlayer(uuid).orElseThrow(), injector));
     }
 

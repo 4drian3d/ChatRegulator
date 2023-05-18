@@ -66,8 +66,9 @@ public class ClearArgument implements Argument {
                                     return builder.buildFuture();
                                 })
                                 .executes(cmd -> {
-                                    String arg = cmd.getArgument("server", String.class);
-                                    TagResolver serverPlaceholder = Placeholder.unparsed("server", arg);
+                                    final String arg = cmd.getArgument("server", String.class);
+                                    final TagResolver serverPlaceholder = Placeholder.unparsed("server", arg);
+
                                     proxyServer.getServer(arg).ifPresentOrElse(serverObjective -> {
                                         serverObjective.sendMessage(Components.SPACES_COMPONENT);
                                         cmd.getSource().sendMessage(
@@ -105,8 +106,9 @@ public class ClearArgument implements Argument {
                                     return builder.buildFuture();
                                 })
                                 .executes(cmd -> {
-                                    String arg = cmd.getArgument("player", String.class);
-                                    TagResolver serverPlaceholder = Placeholder.unparsed("player", arg);
+                                    final String arg = cmd.getArgument("player", String.class);
+                                    final TagResolver serverPlaceholder = Placeholder.unparsed("player", arg);
+
                                     proxyServer.getPlayer(arg).ifPresentOrElse(playerObjective -> {
                                         playerObjective.sendMessage(Components.SPACES_COMPONENT);
                                         cmd.getSource().sendMessage(

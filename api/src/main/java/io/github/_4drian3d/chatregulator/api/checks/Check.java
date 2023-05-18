@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 public sealed interface Check permits CapsCheck, CommandCheck, CooldownCheck, FloodCheck, RegexCheck, SpamCheck, SyntaxCheck, UnicodeCheck {
     /**
      * Check if the delivered string contains any infraction
-     * ans returns a CompletableFuture with the corresponding CheckResult
+     * and returns a CompletableFuture with the corresponding CheckResult
      * To see what check has returned, perform a check by instanceof
      * @param string the string to check
      * @see CheckResult

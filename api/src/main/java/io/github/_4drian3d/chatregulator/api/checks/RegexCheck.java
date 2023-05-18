@@ -72,7 +72,7 @@ public final class RegexCheck implements Check {
         private Builder() {
         }
 
-        public Builder blockedPatterns(Collection<Pattern> patterns) {
+        public Builder blockedPatterns(final @NotNull Collection<@NotNull Pattern> patterns) {
             requireNonNull(patterns);
             if (this.blockedWords == null) {
                 this.blockedWords = new ArrayList<>(patterns);
@@ -82,7 +82,7 @@ public final class RegexCheck implements Check {
             return this;
         }
 
-        public Builder blockedPatterns(Pattern... patterns) {
+        public Builder blockedPatterns(final @NotNull Pattern @NotNull ... patterns) {
             if (this.blockedWords == null) {
                 this.blockedWords = new ArrayList<>(List.of(patterns));
             } else {
@@ -92,7 +92,7 @@ public final class RegexCheck implements Check {
         }
 
         @Required
-        public Builder controlType(ControlType controlType) {
+        public Builder controlType(final @NotNull ControlType controlType) {
             this.controlType = requireNonNull(controlType);
             return this;
         }

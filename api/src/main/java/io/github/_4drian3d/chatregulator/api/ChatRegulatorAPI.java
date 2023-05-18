@@ -1,7 +1,9 @@
 package io.github._4drian3d.chatregulator.api;
 
-public interface ChatRegulatorAPI {
-    PlayerManager getPlayerManager();
+import org.jetbrains.annotations.NotNull;
 
-    Statistics getStatistics();
+public interface ChatRegulatorAPI {
+    @NotNull PlayerManager getPlayerManager();
+
+    @NotNull Statistics getStatistics();
 }

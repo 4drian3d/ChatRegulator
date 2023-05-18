@@ -1,15 +1,18 @@
 package io.github._4drian3d.chatregulator.api;
 
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.jetbrains.annotations.NotNull;
+
 import java.time.Instant;
 
-public interface StringChain extends Iterable<String> {
-    String index(int index);
+public interface StringChain extends Iterable<@NotNull String> {
+    @NotNull String index(final @NonNegative int index);
 
-    String first();
+    @NotNull String first();
 
-    String last();
+    @NotNull String last();
 
-    Instant lastExecuted();
+    @NotNull Instant lastExecuted();
 
-    int size();
+    @NonNegative int size();
 }

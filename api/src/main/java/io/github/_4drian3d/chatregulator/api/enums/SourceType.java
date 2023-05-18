@@ -13,5 +13,5 @@ public enum SourceType {
      * Represents a detection made when the player
      * has written a comment in the chat.
      */
-    CHAT;
+    CHAT
 }

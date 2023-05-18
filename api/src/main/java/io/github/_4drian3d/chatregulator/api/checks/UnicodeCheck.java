@@ -99,7 +99,7 @@ public final class UnicodeCheck implements Check {
          * @param chars the characters
          * @return this
          */
-        public Builder characters(char... chars) {
+        public Builder characters(final char @NotNull ... chars) {
             this.chars = chars;
             return this;
         }
@@ -111,13 +111,13 @@ public final class UnicodeCheck implements Check {
          * @return this
          */
         @Required
-        public Builder controlType(ControlType control) {
+        public Builder controlType(final @NotNull ControlType control) {
             this.control = control;
             return this;
         }
 
         @Required
-        public Builder detectionMode(DetectionMode mode) {
+        public Builder detectionMode(final @NotNull DetectionMode mode) {
             this.mode = mode;
             return this;
         }

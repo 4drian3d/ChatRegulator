@@ -16,6 +16,5 @@ public enum WarningType {
     /**
      * Simple message format
      */
-    MESSAGE;
-
+    MESSAGE
 }

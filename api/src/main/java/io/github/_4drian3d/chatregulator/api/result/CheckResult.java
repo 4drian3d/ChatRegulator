@@ -3,16 +3,18 @@ package io.github._4drian3d.chatregulator.api.result;
 import io.github._4drian3d.chatregulator.api.enums.InfractionType;
 import org.jetbrains.annotations.NotNull;
 
+import static java.util.Objects.requireNonNull;
+
 public sealed interface CheckResult {
-    static CheckResult denied(final @NotNull InfractionType type) {
+    static @NotNull CheckResult denied(final @NotNull InfractionType type) {
         return new DeniedCheckresult(type);
     }
 
-    static CheckResult allowed() {
+    static @NotNull CheckResult allowed() {
         return AllowedCheckResult.INSTANCE;
     }
 
-    static CheckResult modified(final String modifier) {
+    static @NotNull CheckResult modified(final @NotNull String modifier) {
         return new ReplaceCheckResult(modifier);
     }
 
@@ -71,7 +73,7 @@ public sealed interface CheckResult {
     final class ReplaceCheckResult implements CheckResult {
         private final String modified;
         private ReplaceCheckResult(final String modified) {
-            this.modified = modified;
+            this.modified = requireNonNull(modified);
         }
 
         @Override

@@ -17,22 +17,22 @@ public final class StringChainImpl implements StringChain {
     @Inject
     private ConfigurationContainer<Checks> checksContainer;
     @Override
-    public String index(int index) {
+    public @NotNull String index(int index) {
         return queue.get(index);
     }
 
     @Override
-    public String first() {
+    public @NotNull String first() {
         return queue.getFirst();
     }
 
     @Override
-    public String last() {
+    public @NotNull String last() {
         return queue.getLast();
     }
 
     @Override
-    public Instant lastExecuted() {
+    public @NotNull Instant lastExecuted() {
         return lastExecuted.get();
     }
 

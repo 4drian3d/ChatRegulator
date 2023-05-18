@@ -46,7 +46,7 @@ public final class SyntaxCheck implements Check {
 
         Builder() {}
 
-        public Builder allowedCommands(Collection<String> commands){
+        public Builder allowedCommands(final @NotNull Collection<@NotNull String> commands){
             this.allowedCommands.addAll(commands);
             return this;
         }

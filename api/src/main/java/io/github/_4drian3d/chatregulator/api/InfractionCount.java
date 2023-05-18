@@ -1,6 +1,7 @@
 package io.github._4drian3d.chatregulator.api;
 
 import io.github._4drian3d.chatregulator.api.enums.InfractionType;
+import org.checkerframework.checker.index.qual.NonNegative;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumMap;
@@ -13,7 +14,7 @@ public final class InfractionCount {
      * Adds an infraction to the count of any type of player infraction.
      * @param type the infraction type
      */
-    public void addViolation(@NotNull InfractionType type) {
+    public void addViolation(final @NotNull InfractionType type) {
         if (type == InfractionType.GLOBAL) {
             throw new IllegalArgumentException("Invalid InfractionType provided");
         }
@@ -51,7 +52,7 @@ public final class InfractionCount {
      * @param type the violation type
      * @return the count
      */
-    public int getCount(final @NotNull InfractionType type) {
+    public @NonNegative int getCount(final @NotNull InfractionType type) {
         if (type == InfractionType.GLOBAL) {
             int count = 0;
             for (final int infraction : infractionMap.values()) {
@@ -63,7 +64,7 @@ public final class InfractionCount {
     }
 
     @Override
-    public boolean equals(Object o){
+    public boolean equals(final Object o){
         if (this==o) return true;
         if (!(o instanceof final InfractionCount that)) return false;
         return Objects.equals(this.infractionMap, that.infractionMap);

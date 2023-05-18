@@ -6,10 +6,10 @@ import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.permission.PermissionFunction;
 import com.velocitypowered.api.permission.Tristate;
 import io.github._4drian3d.velocityhexlogger.HexLogger;
+import net.kyori.adventure.audience.MessageType;
+import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Objects;
 
 @Singleton
 public final class RegulatorCommandSource implements CommandSource {
@@ -18,25 +18,14 @@ public final class RegulatorCommandSource implements CommandSource {
     private HexLogger logger;
 
     @Override
-    public void sendMessage(@NotNull Component component) {
-        this.logger.info(component);
+    @SuppressWarnings("all")
+    public void sendMessage(@NotNull Identity source, @NotNull Component message, @NotNull MessageType type) {
+        this.logger.info(message);
     }
 
     @Override
     public Tristate getPermissionValue(String permission) {
         return permissionFunction.getPermissionValue(permission);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(permissionFunction);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        return obj instanceof RegulatorCommandSource;
     }
 
     @Override
@@ -46,5 +35,4 @@ public final class RegulatorCommandSource implements CommandSource {
                 permissionFunction +
                 "]";
     }
-    
 }

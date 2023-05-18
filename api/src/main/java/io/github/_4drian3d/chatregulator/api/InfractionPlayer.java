@@ -21,7 +21,7 @@ public interface InfractionPlayer extends ForwardingAudience.Single {
      */
     boolean isOnline();
 
-    StringChain getChain(SourceType sourceType);
+    @NotNull StringChain getChain(final @NotNull SourceType sourceType);
 
     /**
      * Get the infractions count of the player

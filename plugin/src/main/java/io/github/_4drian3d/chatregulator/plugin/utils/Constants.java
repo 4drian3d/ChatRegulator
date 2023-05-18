@@ -6,5 +6,5 @@ import org.jetbrains.annotations.ApiStatus.Internal;
 public final class Constants {
     public static final String VERSION = "{version}";
 
-    private Constants(){}
+    private Constants() {}
 }

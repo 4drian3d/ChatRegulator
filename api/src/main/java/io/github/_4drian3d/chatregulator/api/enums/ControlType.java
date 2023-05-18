@@ -12,5 +12,5 @@ public enum ControlType {
     /**
      * Replace the infraction
      */
-    REPLACE;
+    REPLACE
 }

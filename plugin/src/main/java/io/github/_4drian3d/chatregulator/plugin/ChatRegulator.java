@@ -21,6 +21,7 @@ import io.github._4drian3d.chatregulator.plugin.modules.PluginModule;
 import io.github._4drian3d.chatregulator.plugin.modules.ProviderModule;
 import io.github._4drian3d.chatregulator.plugin.utils.Constants;
 import io.github._4drian3d.velocityhexlogger.HexLogger;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.stream.Stream;
 
@@ -83,12 +84,12 @@ public class ChatRegulator implements ChatRegulatorAPI {
     }
 
     @Override
-    public StatisticsImpl getStatistics() {
+    public @NotNull StatisticsImpl getStatistics() {
         return this.statistics;
     }
 
     @Override
-    public PlayerManagerImpl getPlayerManager() {
+    public @NotNull PlayerManagerImpl getPlayerManager() {
         return this.playerManager;
     }
 }

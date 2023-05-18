@@ -114,8 +114,7 @@ public final class Checks implements Section {
 
         @Comment("""
             Sets the control format
-            Available options: BLOCK, REPLACE
-            Note that in the latest versions of Velocity, the REPLACE mode may NOT work""")
+            Available options: BLOCK, REPLACE""")
         @Setting(value = "control-type")
         private ControlType controlType = ControlType.BLOCK;
 
@@ -148,9 +147,7 @@ public final class Checks implements Section {
 
     @ConfigSerializable
     public static class Flood implements Toggleable, Warning, Controllable, Executable {
-        @Comment("""
-            Enable flood check in the chat
-            (e.g.: "aaaaaaaa")""")
+        @Comment("Enable flood check in the chat")
         private boolean enabled = true;
 
         @Comment("""
@@ -161,8 +158,7 @@ public final class Checks implements Section {
 
         @Comment("""
             Sets the control format
-            Available options: BLOCK, REPLACE
-            Note that in the latest versions of Velocity, the REPLACE mode may NOT work""")
+            Available options: BLOCK, REPLACE""")
         @Setting(value = "control-type")
         private ControlType controlType = ControlType.BLOCK;
 
@@ -303,8 +299,7 @@ public final class Checks implements Section {
 
         @Comment("""
             Sets the control format
-            Available options: BLOCK, REPLACE
-            Note that in the latest versions of Velocity, the REPLACE mode may NOT work""")
+            Available options: BLOCK, REPLACE""")
         @Setting(value = "control-type")
         private ControlType controlType = ControlType.BLOCK;
 
@@ -349,7 +344,7 @@ public final class Checks implements Section {
             private char[] chars = {'ç'};
             @Comment("""
                 Sets character checking mode
-                Modes Availables:
+                Modes Available:
                 BLACKLIST: If one of the configured characters is detected, the check will be activated as an illegal character
                 WHITELIST: If a character is detected as illegal but is within the configured characters, its detection as an illegal character will be skipped""")
             private DetectionMode mode = DetectionMode.BLACKLIST;

@@ -7,6 +7,7 @@ import io.github._4drian3d.chatregulator.api.enums.ControlType;
 import io.github._4drian3d.chatregulator.api.enums.InfractionType;
 import io.github._4drian3d.chatregulator.api.result.CheckResult;
 import net.kyori.adventure.builder.AbstractBuilder;
+import org.checkerframework.checker.index.qual.NonNegative;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
@@ -78,7 +79,7 @@ public final class CapsCheck implements Check {
          * @param limit the new limit
          * @return this
          */
-        public Builder limit(int limit) {
+        public Builder limit(@NonNegative int limit) {
             this.limit = limit;
             return this;
         }
