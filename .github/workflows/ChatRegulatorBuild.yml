@@ -32,4 +32,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: ChatRegulator
-        path: build/libs/ChatRegulator.jar
+        path: plugin/build/libs/ChatRegulator-*.jar
