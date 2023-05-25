@@ -10,13 +10,14 @@ import org.jetbrains.annotations.NotNull;
  */
 public sealed interface Check permits CapsCheck, CommandCheck, CooldownCheck, FloodCheck, RegexCheck, SpamCheck, SyntaxCheck, UnicodeCheck {
     /**
-     * Check if the delivered string contains any infraction
-     * and returns a CompletableFuture with the corresponding CheckResult
-     * To see what check has returned, perform a check by instanceof
+     * Check if the provided string contains any infraction
+     * and returns the corresponding CheckResult
+     *
      * @param string the string to check
+     * @param player the player
      * @see CheckResult
      * @since 3.0.0
-     * @return a CompletableFuture with the result of the check
+     * @return a result from the check
      */
     @NotNull CheckResult check(final @NotNull InfractionPlayer player, final @NotNull String string);
 

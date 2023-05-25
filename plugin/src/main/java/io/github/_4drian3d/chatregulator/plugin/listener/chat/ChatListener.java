@@ -12,10 +12,10 @@ import io.github._4drian3d.chatregulator.api.result.CheckResult;
 import io.github._4drian3d.chatregulator.plugin.lazy.CheckProvider;
 import io.github._4drian3d.chatregulator.plugin.impl.InfractionPlayerImpl;
 import io.github._4drian3d.chatregulator.plugin.impl.PlayerManagerImpl;
+import io.github._4drian3d.chatregulator.plugin.lazy.LazyDetection;
 import io.github._4drian3d.chatregulator.plugin.utils.Replacer;
 import io.github._4drian3d.chatregulator.plugin.config.Configuration;
 import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
-import io.github._4drian3d.chatregulator.plugin.lazy.LazyDetectionProvider;
 import io.github._4drian3d.chatregulator.plugin.listener.RegulatorExecutor;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
@@ -53,7 +53,7 @@ public final class ChatListener implements RegulatorExecutor<PlayerChatEvent> {
 
         return EventTask.withContinuation(continuation -> {
             final InfractionPlayerImpl player = playerManager.getPlayer(event.getPlayer().getUniqueId());
-            LazyDetectionProvider.checks(
+            LazyDetection.checks(
                     cooldownProvider,
                     unicodeProvider,
                     capsProvider,
@@ -74,8 +74,7 @@ public final class ChatListener implements RegulatorExecutor<PlayerChatEvent> {
                     continuation.resume();
                 } else {
                     String finalMessage = event.getMessage();
-                    if (checkResult.shouldModify()) {
-                        CheckResult.ReplaceCheckResult replaceResult = (CheckResult.ReplaceCheckResult) checkResult;
+                    if (checkResult instanceof final CheckResult.ReplaceCheckResult replaceResult) {
                         finalMessage = replaceResult.replaced();
                     }
 
@@ -89,7 +88,7 @@ public final class ChatListener implements RegulatorExecutor<PlayerChatEvent> {
                 }
             }).exceptionally(ex -> {
                 logger.error("An error occurred while setting chat result", ex);
-				continuation.resume();
+                continuation.resume();
                 return null;
             });
         });

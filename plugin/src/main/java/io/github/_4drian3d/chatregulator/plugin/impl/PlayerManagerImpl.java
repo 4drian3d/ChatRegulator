@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.UUID;
 
-public class PlayerManagerImpl implements PlayerManager {
+public final class PlayerManagerImpl implements PlayerManager {
     private final Cache<UUID, InfractionPlayerImpl> infractionPlayers = Caffeine.newBuilder()
             .weakKeys().build();
     @Inject
@@ -21,11 +21,18 @@ public class PlayerManagerImpl implements PlayerManager {
     private ProxyServer proxyServer;
 
     @Override
-    public InfractionPlayerImpl getPlayer(@NotNull UUID uuid) {
-        return infractionPlayers.get(uuid, (id) -> new InfractionPlayerImpl(proxyServer.getPlayer(uuid).orElseThrow(), injector));
+    public @NotNull InfractionPlayerImpl getPlayer(@NotNull UUID uuid) {
+        InfractionPlayerImpl infractionPlayer = infractionPlayers.getIfPresent(uuid);
+        if (infractionPlayer != null) {
+            return infractionPlayer;
+        }
+        final Player player = proxyServer.getPlayer(uuid).orElseThrow();
+        infractionPlayers.put(uuid, infractionPlayer = new InfractionPlayerImpl(player, injector));
+
+        return infractionPlayer;
     }
 
-    public InfractionPlayerImpl getPlayer(Player player) {
+    public InfractionPlayerImpl getPlayer(final Player player) {
         return infractionPlayers.get(player.getUniqueId(), (id) -> new InfractionPlayerImpl(player, injector));
     }
 

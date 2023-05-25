@@ -7,6 +7,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.EnumMap;
 import java.util.Objects;
 
+/**
+ * Record of Infractions by a player
+ */
 public final class InfractionCount {
     private final EnumMap<InfractionType, Integer> infractionMap = new EnumMap<>(InfractionType.class);
 

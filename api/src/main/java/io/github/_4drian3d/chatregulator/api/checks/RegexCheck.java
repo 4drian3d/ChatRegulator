@@ -61,7 +61,12 @@ public final class RegexCheck implements Check {
         return InfractionType.REGEX;
     }
 
-    public static @NotNull RegexCheck.Builder builder() {
+    /**
+     * Creates a new Builder
+     *
+     * @return a new RegexCheck Builder
+     */
+    public static @NotNull Builder builder() {
         return new RegexCheck.Builder();
     }
 

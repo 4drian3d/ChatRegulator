@@ -33,8 +33,7 @@ public enum InfractionType {
      */
     SYNTAX(Permission.BYPASS_SYNTAX),
     /**
-     * Used internally to represent a
-     * multiple warning and in other cases more
+     * Used to represent all infractions
      */
     GLOBAL(Permission.NO_PERMISSION);
 

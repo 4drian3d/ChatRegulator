@@ -38,8 +38,9 @@ public final class CommandCheck implements Check {
     }
 
     /**
-     * Create a new builder for CommandCheck
-     * @return a new CommandCheck.Builder
+     * Creates a new builder
+     *
+     * @return a new CommandCheck Builder
      */
     public static CommandCheck.Builder builder(){
         return new CommandCheck.Builder();

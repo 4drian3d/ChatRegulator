@@ -18,7 +18,7 @@ public final class CooldownCheck implements Check {
     private final long limit;
     private final SourceType sourceType;
 
-    private CooldownCheck(TimeUnit unit, long limit, SourceType sourceType) {
+    private CooldownCheck(final TimeUnit unit, final long limit, final SourceType sourceType) {
         this.limit = limit;
         this.unit = unit;
         this.sourceType = sourceType;
@@ -38,14 +38,24 @@ public final class CooldownCheck implements Check {
         return InfractionType.COOLDOWN;
     }
 
+    /**
+     * Creates a new Builder
+     *
+     * @return a new CooldownCheck Builder
+     */
     public static Builder builder() {
         return new Builder();
     }
 
+    /**
+     * Cooldown Check Builder
+     */
     public static class Builder implements AbstractBuilder<CooldownCheck> {
         private TimeUnit unit;
         private long limit;
         private SourceType source;
+
+        private Builder() {}
 
         @Required
         public Builder timeUnit(final @NotNull TimeUnit unit) {

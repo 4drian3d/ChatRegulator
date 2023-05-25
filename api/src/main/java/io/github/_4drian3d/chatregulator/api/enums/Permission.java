@@ -66,7 +66,9 @@ public enum Permission implements Predicate<CommandSource> {
     BYPASS_COMMAND_SPY("chatregulator.bypass.commandspy"),
     /**Syntax Check Bypass */
     BYPASS_SYNTAX("chatregulator.bypass.syntax"),
-
+    /**
+     * No permission
+     */
     NO_PERMISSION("chatregulator.no-permission");
 
     private final String permission;

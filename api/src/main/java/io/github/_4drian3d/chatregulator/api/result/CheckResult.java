@@ -5,19 +5,45 @@ import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Result of any check
+ */
 public sealed interface CheckResult {
+    /**
+     * Successful detection in a check
+     *
+     * @param type the InfractionType detected
+     * @return the result
+     */
     static @NotNull CheckResult denied(final @NotNull InfractionType type) {
         return new DeniedCheckresult(type);
     }
 
+    /**
+     * Allowed result of a check
+     *
+     * @return the result
+     */
     static @NotNull CheckResult allowed() {
         return AllowedCheckResult.INSTANCE;
     }
 
+    /**
+     * Successful detection in a check
+     * <p>Contrary to a denied result, it must be modified as configured in its creation</p>
+     *
+     * @param modifier the modified result
+     * @return the result
+     */
     static @NotNull CheckResult modified(final @NotNull String modifier) {
-        return new ReplaceCheckResult(modifier);
+        return new ReplaceCheckResult(requireNonNull(modifier));
     }
 
+    /**
+     * Check if a check has been unsuccessful and that the detection chain can be followed
+     *
+     * @return true if the check was not successful
+     */
     boolean isAllowed();
 
     boolean isDenied();
@@ -26,6 +52,8 @@ public sealed interface CheckResult {
 
     final class AllowedCheckResult implements CheckResult {
         private static final AllowedCheckResult INSTANCE = new AllowedCheckResult();
+
+        private AllowedCheckResult() {}
 
         @Override
         public boolean isAllowed() {
@@ -46,7 +74,7 @@ public sealed interface CheckResult {
     final class DeniedCheckresult implements CheckResult {
         private final InfractionType infractionType;
 
-        public DeniedCheckresult(InfractionType type) {
+        private DeniedCheckresult(InfractionType type) {
             this.infractionType = type;
         }
 
@@ -73,7 +101,7 @@ public sealed interface CheckResult {
     final class ReplaceCheckResult implements CheckResult {
         private final String modified;
         private ReplaceCheckResult(final String modified) {
-            this.modified = requireNonNull(modified);
+            this.modified = modified;
         }
 
         @Override

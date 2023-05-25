@@ -81,10 +81,18 @@ public final class UnicodeCheck implements Check {
         return InfractionType.UNICODE;
     }
 
+    /**
+     * Creates a new Builder
+     *
+     * @return a new UnicodeCheck Builder
+     */
     public static UnicodeCheck.Builder builder() {
         return new UnicodeCheck.Builder();
     }
 
+    /**
+     * Unicode Check Builder
+     */
     public static class Builder implements AbstractBuilder<UnicodeCheck> {
         private char[] chars;
         private ControlType control = ControlType.REPLACE;

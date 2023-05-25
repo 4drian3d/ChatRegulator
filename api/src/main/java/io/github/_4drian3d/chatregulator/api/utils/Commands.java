@@ -6,9 +6,10 @@ import java.util.Locale;
 
 import static java.util.Objects.requireNonNull;
 
-public class Commands {
+public final class Commands {
     /**
      * Get the first argument of a string
+     *
      * @param string the string
      * @return the first argument
      */
@@ -24,6 +25,7 @@ public class Commands {
      * Check if a string starts with another string, checking for its arguments
      * If the second string has a "*" symbol at the end,
      * it will be checked by means of a {@link String#startsWith(String)}
+     *
      * @param string the base string
      * @param startingString the starting string
      * @return if a string starts with another string
@@ -44,6 +46,7 @@ public class Commands {
 
     /**
      * Get the last character of a string
+     *
      * @param string the string
      * @return the last character
      */

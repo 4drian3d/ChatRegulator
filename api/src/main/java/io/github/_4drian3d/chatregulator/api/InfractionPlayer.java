@@ -21,6 +21,12 @@ public interface InfractionPlayer extends ForwardingAudience.Single {
      */
     boolean isOnline();
 
+    /**
+     * Commands and Messages Execution Chain from a player
+     *
+     * @param sourceType the source of this chain
+     * @return the command or chat chain of this player
+     */
     @NotNull StringChain getChain(final @NotNull SourceType sourceType);
 
     /**

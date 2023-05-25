@@ -1,7 +1,6 @@
 package io.github._4drian3d.chatregulator.api.checks;
 
 import io.github._4drian3d.chatregulator.api.InfractionPlayer;
-import io.github._4drian3d.chatregulator.api.annotations.Required;
 import io.github._4drian3d.chatregulator.api.enums.CapsAlgorithm;
 import io.github._4drian3d.chatregulator.api.enums.ControlType;
 import io.github._4drian3d.chatregulator.api.enums.InfractionType;
@@ -60,8 +59,9 @@ public final class CapsCheck implements Check {
     }
 
     /**
-     * Create a builder
-     * @return a new CapsCheck.Builder
+     * Creates a new builder
+     *
+     * @return a new CapsCheck Builder
      */
     public static CapsCheck.Builder builder(){
         return new CapsCheck.Builder();
@@ -76,22 +76,36 @@ public final class CapsCheck implements Check {
 
         /**
          * Set the new caps limit
+         *
          * @param limit the new limit
-         * @return this
+         * @return this builder
          */
-        public Builder limit(@NonNegative int limit) {
+        public Builder limit(final @NonNegative int limit) {
             this.limit = limit;
             return this;
         }
 
-        @Required
-        public Builder controlType(ControlType controlType) {
-            this.controlType = controlType;
+        /**
+         * Sets the ControlType of this check
+         * <p>If no ControlType is provided, the ControlType.BLOCK will be used</p>
+         *
+         * @param controlType the control type
+         * @return this builder
+         */
+        public Builder controlType(final @NotNull ControlType controlType) {
+            this.controlType = requireNonNull(controlType);
             return this;
         }
 
-        public Builder algorithm(CapsAlgorithm algorithm) {
-            this.algorithm = algorithm;
+        /**
+         * Sets the Caps algorithm of this check
+         * <p>If no Algorithm is provided, the CapsAlgorithm.AMOUNT will be used</p>
+         *
+         * @param algorithm the algorithm to be used
+         * @return this builder
+         */
+        public Builder algorithm(final @NotNull CapsAlgorithm algorithm) {
+            this.algorithm = requireNonNull(algorithm);
             return this;
         }
 

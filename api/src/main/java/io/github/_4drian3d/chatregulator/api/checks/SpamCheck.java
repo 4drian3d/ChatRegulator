@@ -45,11 +45,11 @@ public final class SpamCheck implements Check {
             previous = actual;
         }
 		
-		if (chain.last().equalsIgnoreCase(string)) {
-			return CheckResult.denied(type());
-		} else {
-			return CheckResult.allowed();
-		}
+        if (chain.last().equalsIgnoreCase(string)) {
+            return CheckResult.denied(type());
+        } else {
+            return CheckResult.allowed();
+        }
     }
 
     @Override
@@ -57,15 +57,23 @@ public final class SpamCheck implements Check {
         return InfractionType.SPAM;
     }
 
+    /**
+     * Creates a new Builder
+     *
+     * @return a new SpamCheck Builder
+     */
     public static Builder builder() {
         return new Builder();
     }
 
+    /**
+     * Spam Check builder
+     */
     public static final class Builder implements AbstractBuilder<SpamCheck> {
         private SourceType source;
         private int similarLimit;
 
-        Builder() {}
+        private Builder() {}
 
         @Required
         public Builder source(final @NotNull SourceType source){

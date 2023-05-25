@@ -15,7 +15,7 @@ import io.github._4drian3d.chatregulator.plugin.impl.InfractionPlayerImpl;
 import io.github._4drian3d.chatregulator.plugin.impl.PlayerManagerImpl;
 import io.github._4drian3d.chatregulator.plugin.config.Configuration;
 import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
-import io.github._4drian3d.chatregulator.plugin.lazy.LazyDetectionProvider;
+import io.github._4drian3d.chatregulator.plugin.lazy.LazyDetection;
 import io.github._4drian3d.chatregulator.plugin.listener.RegulatorExecutor;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
@@ -69,7 +69,7 @@ public final class CommandListener implements RegulatorExecutor<CommandExecuteEv
         return EventTask.withContinuation(continuation -> {
             final InfractionPlayerImpl infractionPlayer = playerManager.getPlayer(player);
 
-            LazyDetectionProvider.checks(
+            LazyDetection.checks(
                     commandProvider,
                     syntaxProvider,
                     cooldownProvider
@@ -86,7 +86,7 @@ public final class CommandListener implements RegulatorExecutor<CommandExecuteEv
                     return CompletableFuture.completedFuture(CheckResult.allowed());
                 }
 
-                return LazyDetectionProvider.checks(
+                return LazyDetection.checks(
                         unicodeProvider,
                         capsProvider,
                         floodProvider,
@@ -103,16 +103,14 @@ public final class CommandListener implements RegulatorExecutor<CommandExecuteEv
                     logger.error("An error occurred while calculating command result", ex);
                     continuation.resume();
                 } else {
-                    if (result.isDenied()){
-                        final CheckResult.DeniedCheckresult deniedResult = (CheckResult.DeniedCheckresult) result;
+                    if (result instanceof final CheckResult.DeniedCheckresult deniedResult) {
                         eventManager.fireAndForget(new CommandInfractionEvent(infractionPlayer, deniedResult.infractionType(), result, event.getCommand()));
                         infractionPlayer.onDenied(deniedResult, event.getCommand());
                         event.setResult(CommandExecuteEvent.CommandResult.denied());
                         continuation.resume();
                         return null;
                     }
-                    if (result.shouldModify()) {
-                        final CheckResult.ReplaceCheckResult replaceResult = (CheckResult.ReplaceCheckResult) result;
+                    if (result instanceof final CheckResult.ReplaceCheckResult replaceResult) {
                         final String replacedCommand = replaceResult.replaced();
                         infractionPlayer.getChain(SourceType.COMMAND).executed(replacedCommand);
                         event.setResult(CommandExecuteEvent.CommandResult.command(replacedCommand));
@@ -124,10 +122,10 @@ public final class CommandListener implements RegulatorExecutor<CommandExecuteEv
                 }
                 return null;
             }).exceptionally(ex -> {
-				logger.error("An error occurred while setting chat result", ex);
-				continuation.resume();
-				return null;
-			});
+                logger.error("An error occurred while setting chat result", ex);
+                continuation.resume();
+                return null;
+            });
         });
     }
 

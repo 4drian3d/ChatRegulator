@@ -36,15 +36,22 @@ public final class SyntaxCheck implements Check {
         return InfractionType.SYNTAX;
     }
 
-
+    /**
+     * Creates a new Builder
+     *
+     * @return a new SyntaxCheck Builder
+     */
     public static Builder builder(){
         return new Builder();
     }
 
+    /**
+     * Syntax Check Builder
+     */
     public static class Builder implements AbstractBuilder<SyntaxCheck> {
         private final Set<String> allowedCommands = new HashSet<>();
 
-        Builder() {}
+        private Builder() {}
 
         public Builder allowedCommands(final @NotNull Collection<@NotNull String> commands){
             this.allowedCommands.addAll(commands);

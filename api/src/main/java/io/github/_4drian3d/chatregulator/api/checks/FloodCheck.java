@@ -34,11 +34,6 @@ public final class FloodCheck implements Check {
         this.controlType = controlType;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @return a CheckResult with the CheckResult of the check
-     */
     @Override
     public @NotNull CheckResult check(@NotNull InfractionPlayer player, @NotNull String string) {
         final Matcher matcher = pattern.matcher(requireNonNull(string));
@@ -59,6 +54,11 @@ public final class FloodCheck implements Check {
         return InfractionType.FLOOD;
     }
 
+    /**
+     * Creates a new Builder
+     *
+     * @return a new FloodCheck Builder
+     */
     public static FloodCheck.Builder builder(){
         return new FloodCheck.Builder();
     }
