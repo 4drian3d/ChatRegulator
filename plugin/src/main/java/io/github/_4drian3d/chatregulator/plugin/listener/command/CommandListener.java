@@ -66,9 +66,9 @@ public final class CommandListener implements RegulatorExecutor<CommandExecuteEv
             return null;
         }
 
-        return EventTask.withContinuation(continuation -> {
-            final InfractionPlayerImpl infractionPlayer = playerManager.getPlayer(player);
+        final InfractionPlayerImpl infractionPlayer = playerManager.getPlayer(player);
 
+        return EventTask.resumeWhenComplete(
             LazyDetection.checks(
                     commandProvider,
                     syntaxProvider,
@@ -101,13 +101,11 @@ public final class CommandListener implements RegulatorExecutor<CommandExecuteEv
             }).handle((result, ex) -> {
                 if (ex != null) {
                     logger.error("An error occurred while calculating command result", ex);
-                    continuation.resume();
                 } else {
                     if (result instanceof final CheckResult.DeniedCheckresult deniedResult) {
                         eventManager.fireAndForget(new CommandInfractionEvent(infractionPlayer, deniedResult.infractionType(), result, event.getCommand()));
                         infractionPlayer.onDenied(deniedResult, event.getCommand());
                         event.setResult(CommandExecuteEvent.CommandResult.denied());
-                        continuation.resume();
                         return null;
                     }
                     if (result instanceof final CheckResult.ReplaceCheckResult replaceResult) {
@@ -118,15 +116,13 @@ public final class CommandListener implements RegulatorExecutor<CommandExecuteEv
                         infractionPlayer.getChain(SourceType.COMMAND).executed(event.getCommand());
                         event.setResult(CommandExecuteEvent.CommandResult.allowed());
                     }
-                    continuation.resume();
                 }
                 return null;
             }).exceptionally(ex -> {
                 logger.error("An error occurred while setting chat result", ex);
-                continuation.resume();
                 return null;
-            });
-        });
+            })
+        );
     }
 
     @Override

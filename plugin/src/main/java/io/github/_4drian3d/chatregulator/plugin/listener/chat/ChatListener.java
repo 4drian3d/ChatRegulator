@@ -51,47 +51,45 @@ public final class ChatListener implements RegulatorExecutor<PlayerChatEvent> {
             return null;
         }
 
-        return EventTask.withContinuation(continuation -> {
-            final InfractionPlayerImpl player = playerManager.getPlayer(event.getPlayer().getUniqueId());
-            LazyDetection.checks(
+        final InfractionPlayerImpl player = playerManager.getPlayer(event.getPlayer());
+
+        return EventTask.resumeWhenComplete(
+                LazyDetection.checks(
                     cooldownProvider,
                     unicodeProvider,
                     capsProvider,
                     floodProvider,
                     infractionProvider,
                     spamProvider
-            )
-            .detect(player, event.getMessage())
-            .exceptionally(ex -> {
-                logger.error("An error occurred while checking chat", ex);
-                return CheckResult.allowed();
-            }).thenAccept(checkResult -> {
-                if (checkResult.isDenied()) {
-                    final CheckResult.DeniedCheckresult deniedResult = (CheckResult.DeniedCheckresult) checkResult;
-                    eventManager.fireAndForget(new ChatInfractionEvent(player, deniedResult.infractionType(), checkResult, event.getMessage()));
-                    player.onDenied(deniedResult, event.getMessage());
-                    event.setResult(ChatResult.denied());
-                    continuation.resume();
-                } else {
-                    String finalMessage = event.getMessage();
-                    if (checkResult instanceof final CheckResult.ReplaceCheckResult replaceResult) {
-                        finalMessage = replaceResult.replaced();
-                    }
+                )
+                .detect(player, event.getMessage())
+                .exceptionally(ex -> {
+                    logger.error("An error occurred while checking chat", ex);
+                    return CheckResult.allowed();
+                }).thenAccept(checkResult -> {
+                    if (checkResult.isDenied()) {
+                        final CheckResult.DeniedCheckresult deniedResult = (CheckResult.DeniedCheckresult) checkResult;
+                        eventManager.fireAndForget(new ChatInfractionEvent(player, deniedResult.infractionType(), checkResult, event.getMessage()));
+                        player.onDenied(deniedResult, event.getMessage());
+                        event.setResult(ChatResult.denied());
+                    } else {
+                        String finalMessage = event.getMessage();
+                        if (checkResult instanceof final CheckResult.ReplaceCheckResult replaceResult) {
+                            finalMessage = replaceResult.replaced();
+                        }
 
-                    final Configuration configuration = configurationContainer.get();
-                    if (configuration.getFormatterConfig().enabled()) {
-                        finalMessage = Replacer.applyFormat(finalMessage, configuration);
-                        event.setResult(ChatResult.message(finalMessage));
+                        final Configuration configuration = configurationContainer.get();
+                        if (configuration.getFormatterConfig().enabled()) {
+                            finalMessage = Replacer.applyFormat(finalMessage, configuration);
+                            event.setResult(ChatResult.message(finalMessage));
+                        }
+                        player.getChain(SourceType.CHAT).executed(event.getMessage());
                     }
-                    player.getChain(SourceType.CHAT).executed(event.getMessage());
-                    continuation.resume();
-                }
-            }).exceptionally(ex -> {
-                logger.error("An error occurred while setting chat result", ex);
-                continuation.resume();
-                return null;
-            });
-        });
+                }).exceptionally(ex -> {
+                    logger.error("An error occurred while setting chat result", ex);
+                    return null;
+                })
+        );
     }
 
     @Override
