@@ -102,9 +102,9 @@ public final class CommandListener implements RegulatorExecutor<CommandExecuteEv
                 if (ex != null) {
                     logger.error("An error occurred while calculating command result", ex);
                 } else {
-                    if (result instanceof final CheckResult.DeniedCheckresult deniedResult) {
+                    if (result instanceof final CheckResult.DeniedCheckResult deniedResult) {
                         eventManager.fireAndForget(new CommandInfractionEvent(infractionPlayer, deniedResult.infractionType(), result, event.getCommand()));
-                        infractionPlayer.onDenied(deniedResult, event.getCommand());
+                        infractionPlayer.onDetected(deniedResult, event.getCommand());
                         event.setResult(CommandExecuteEvent.CommandResult.denied());
                         return null;
                     }
@@ -114,7 +114,6 @@ public final class CommandListener implements RegulatorExecutor<CommandExecuteEv
                         event.setResult(CommandExecuteEvent.CommandResult.command(replacedCommand));
                     } else {
                         infractionPlayer.getChain(SourceType.COMMAND).executed(event.getCommand());
-                        event.setResult(CommandExecuteEvent.CommandResult.allowed());
                     }
                 }
                 return null;

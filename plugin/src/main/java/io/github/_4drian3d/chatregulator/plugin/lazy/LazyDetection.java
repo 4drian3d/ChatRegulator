@@ -2,9 +2,12 @@ package io.github._4drian3d.chatregulator.plugin.lazy;
 
 import io.github._4drian3d.chatregulator.api.InfractionPlayer;
 import io.github._4drian3d.chatregulator.api.checks.Check;
+import io.github._4drian3d.chatregulator.api.enums.InfractionType;
 import io.github._4drian3d.chatregulator.api.result.CheckResult;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -22,7 +25,7 @@ public final class LazyDetection {
 
     public @NotNull CompletableFuture<CheckResult> detect(final @NotNull InfractionPlayer player, final @NotNull String string) {
         return CompletableFuture.supplyAsync(() -> {
-            final AtomicReference<String> modifiedString = new AtomicReference<>(string);
+            final AtomicReference<Map.Entry<InfractionType, String>> modifiedString = new AtomicReference<>();
             for (final CheckProvider<? extends Check> provider : checks) {
                 final Check providedCheck = provider.provide(player);
                 if (providedCheck == null) {
@@ -38,11 +41,15 @@ public final class LazyDetection {
                 }
 
                 if (result instanceof final CheckResult.ReplaceCheckResult replaceCheckResult) {
-                    modifiedString.set(replaceCheckResult.replaced());
+                    modifiedString.set(Map.entry(replaceCheckResult.infractionType(), replaceCheckResult.replaced()));
                 }
             }
-            if (modifiedString.get().equals(string)) {
-                return CheckResult.modified(modifiedString.get());
+            final Map.Entry<InfractionType, String> finalResult = modifiedString.get();
+            if (finalResult == null) {
+                return CheckResult.allowed();
+            }
+            if (!Objects.equals(finalResult.getValue(), string)) {
+                return CheckResult.modified(finalResult.getKey(), finalResult.getValue());
             }
             return CheckResult.allowed();
         });

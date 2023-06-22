@@ -16,7 +16,7 @@ public sealed interface CheckResult {
      * @return the result
      */
     static @NotNull CheckResult denied(final @NotNull InfractionType type) {
-        return new DeniedCheckresult(type);
+        return new DeniedCheckResult(type);
     }
 
     /**
@@ -35,8 +35,8 @@ public sealed interface CheckResult {
      * @param modifier the modified result
      * @return the result
      */
-    static @NotNull CheckResult modified(final @NotNull String modifier) {
-        return new ReplaceCheckResult(requireNonNull(modifier));
+    static @NotNull CheckResult modified( final @NotNull InfractionType infractionType, final @NotNull String modifier) {
+        return new ReplaceCheckResult(requireNonNull(infractionType), requireNonNull(modifier));
     }
 
     /**
@@ -71,13 +71,7 @@ public sealed interface CheckResult {
         }
     }
 
-    final class DeniedCheckresult implements CheckResult {
-        private final InfractionType infractionType;
-
-        private DeniedCheckresult(InfractionType type) {
-            this.infractionType = type;
-        }
-
+    record DeniedCheckResult(InfractionType infractionType) implements CheckResult, DetectedResult {
         @Override
         public boolean isAllowed() {
             return false;
@@ -92,18 +86,9 @@ public sealed interface CheckResult {
         public boolean shouldModify() {
             return false;
         }
-
-        public InfractionType infractionType() {
-            return this.infractionType;
-        }
     }
 
-    final class ReplaceCheckResult implements CheckResult {
-        private final String modified;
-        private ReplaceCheckResult(final String modified) {
-            this.modified = modified;
-        }
-
+    record ReplaceCheckResult(InfractionType infractionType, String modified) implements CheckResult, DetectedResult {
         @Override
         public boolean isAllowed() {
             return false;
@@ -122,5 +107,9 @@ public sealed interface CheckResult {
         public String replaced() {
             return modified;
         }
+    }
+
+    sealed interface DetectedResult {
+        InfractionType infractionType();
     }
 }

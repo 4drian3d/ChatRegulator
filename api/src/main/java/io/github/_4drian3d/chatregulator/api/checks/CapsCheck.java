@@ -44,7 +44,7 @@ public final class CapsCheck implements Check {
 
         if (surpassedLimit) {
             if (controlType == ControlType.REPLACE) {
-                return CheckResult.modified(string.toLowerCase(Locale.ROOT));
+                return CheckResult.modified(type(), string.toLowerCase(Locale.ROOT));
             } else {
                 return CheckResult.denied(type());
             }

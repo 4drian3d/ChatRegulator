@@ -45,7 +45,7 @@ public final class RegexCheck implements Check {
             for (final Pattern pattern : patterns) {
                 replaced = pattern.matcher(replaced).replaceAll(RegexCheck::generateReplacement);
             }
-            return CheckResult.modified(replaced);
+            return CheckResult.modified(type(), replaced);
         } else {
             return CheckResult.allowed();
         }

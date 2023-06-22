@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import static io.github._4drian3d.chatregulator.api.utils.Commands.SPACE;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -42,7 +43,7 @@ public final class UnicodeCheck implements Check {
         return !(c <= 'þ');
     }
 
-    private boolean charTest(char c) {
+    private boolean charTest(final char c) {
         for (final char character : this.chars) {
             if (character == c) {
                 return true;
@@ -70,9 +71,9 @@ public final class UnicodeCheck implements Check {
         } else {
             String replaced = string;
             for (final char character : results) {
-                replaced = replaced.replace(character, ' ');
+                replaced = replaced.replace(character, SPACE);
             }
-            return CheckResult.modified(replaced);
+            return CheckResult.modified(type(), replaced);
         }
     }
 

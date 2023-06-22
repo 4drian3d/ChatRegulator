@@ -42,7 +42,7 @@ public final class FloodCheck implements Check {
             if (controlType == ControlType.BLOCK) {
                 return CheckResult.denied(type());
             } else {
-                return CheckResult.modified(matcher.replaceAll(match -> Character.toString(match.group().charAt(0))));
+                return CheckResult.modified(type(), matcher.replaceAll(match -> Character.toString(match.group().charAt(0))));
             }
         }
         return CheckResult.allowed();

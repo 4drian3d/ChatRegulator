@@ -1,15 +1,15 @@
-package io.github._4drian3d.chatregulator.plugin.utils;
+package io.github._4drian3d.chatregulator.api.utils;
 
 import java.util.Objects;
 
 import org.jetbrains.annotations.NotNull;
 
-import io.github._4drian3d.chatregulator.plugin.config.Configuration;
-
 /**
- * Replacer class
+ * String Replacer Utils
  */
 public final class Replacer {
+    private Replacer() {
+    }
     /**
      * Converts a string with the first character converted to uppercase
      *
@@ -26,11 +26,6 @@ public final class Replacer {
 
         return Character.toUpperCase(firstCharacter) +
                 string.substring(1);
-    }
-
-    public static @NotNull String firstLetterUppercase(@NotNull final String string, Configuration config) {
-        if (!config.getFormatterConfig().setFirstLetterUppercase()) return string;
-        return firstLetterUppercase(string);
     }
 
     /**
@@ -50,15 +45,6 @@ public final class Replacer {
         return string + ".";
     }
 
-    public static String addFinalDot(final String string, Configuration config) {
-        return config.getFormatterConfig().setFinalDot()
-                ? addFinalDot(string)
-                : string;
-    }
-
-    private Replacer() {
-    }
-
     /**
      * Applies a trailing dot and a leading capital letter to the specified string
      *
@@ -67,9 +53,5 @@ public final class Replacer {
      */
     public static @NotNull String applyFormat(final @NotNull String string) {
         return firstLetterUppercase(addFinalDot(string));
-    }
-
-    public static @NotNull String applyFormat(final @NotNull String string, Configuration config) {
-        return firstLetterUppercase(addFinalDot(string, config), config);
     }
 }

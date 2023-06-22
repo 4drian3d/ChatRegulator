@@ -13,13 +13,13 @@ import io.github._4drian3d.chatregulator.plugin.lazy.CheckProvider;
 import io.github._4drian3d.chatregulator.plugin.impl.InfractionPlayerImpl;
 import io.github._4drian3d.chatregulator.plugin.impl.PlayerManagerImpl;
 import io.github._4drian3d.chatregulator.plugin.lazy.LazyDetection;
-import io.github._4drian3d.chatregulator.plugin.utils.Replacer;
+import io.github._4drian3d.chatregulator.api.utils.Replacer;
 import io.github._4drian3d.chatregulator.plugin.config.Configuration;
 import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
 import io.github._4drian3d.chatregulator.plugin.listener.RegulatorExecutor;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
-
 
 public final class ChatListener implements RegulatorExecutor<PlayerChatEvent> {
     @Inject
@@ -67,22 +67,22 @@ public final class ChatListener implements RegulatorExecutor<PlayerChatEvent> {
                     logger.error("An error occurred while checking chat", ex);
                     return CheckResult.allowed();
                 }).thenAccept(checkResult -> {
-                    if (checkResult.isDenied()) {
-                        final CheckResult.DeniedCheckresult deniedResult = (CheckResult.DeniedCheckresult) checkResult;
+                    if (checkResult instanceof final CheckResult.DeniedCheckResult deniedResult) {
                         eventManager.fireAndForget(new ChatInfractionEvent(player, deniedResult.infractionType(), checkResult, event.getMessage()));
-                        player.onDenied(deniedResult, event.getMessage());
+                        player.onDetected(deniedResult, event.getMessage());
                         event.setResult(ChatResult.denied());
-                    } else {
-                        String finalMessage = event.getMessage();
-                        if (checkResult instanceof final CheckResult.ReplaceCheckResult replaceResult) {
-                            finalMessage = replaceResult.replaced();
-                        }
+                    } else if (checkResult instanceof final CheckResult.ReplaceCheckResult replaceResult) {
+                        String finalMessage = replaceResult.replaced();
 
                         final Configuration configuration = configurationContainer.get();
                         if (configuration.getFormatterConfig().enabled()) {
-                            finalMessage = Replacer.applyFormat(finalMessage, configuration);
-                            event.setResult(ChatResult.message(finalMessage));
+                            finalMessage = applyFormat(finalMessage, configuration);
                         }
+                        player.getChain(SourceType.CHAT).executed(event.getMessage());
+                        eventManager.fireAndForget(new ChatInfractionEvent(player, replaceResult.infractionType(), checkResult, event.getMessage()));
+                        player.onDetected(replaceResult, event.getMessage());
+                        event.setResult(ChatResult.message(finalMessage));
+                    } else {
                         player.getChain(SourceType.CHAT).executed(event.getMessage());
                     }
                 }).exceptionally(ex -> {
@@ -100,5 +100,18 @@ public final class ChatListener implements RegulatorExecutor<PlayerChatEvent> {
     @Override
     public PostOrder postOrder() {
         return PostOrder.EARLY;
+    }
+
+    public static @NotNull String applyFormat(final @NotNull String string, Configuration config) {
+        return firstLetterUppercase(addFinalDot(string, config), config);
+    }
+    public static @NotNull String firstLetterUppercase(@NotNull final String string, Configuration config) {
+        if (!config.getFormatterConfig().setFirstLetterUppercase()) return string;
+        return Replacer.firstLetterUppercase(string);
+    }
+    public static String addFinalDot(final String string, Configuration config) {
+        return config.getFormatterConfig().setFinalDot()
+                ? Replacer.addFinalDot(string)
+                : string;
     }
 }
