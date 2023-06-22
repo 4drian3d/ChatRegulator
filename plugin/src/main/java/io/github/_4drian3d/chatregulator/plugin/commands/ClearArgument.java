@@ -8,11 +8,11 @@ import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import io.github._4drian3d.chatregulator.api.enums.Permission;
-import io.github._4drian3d.chatregulator.plugin.utils.Components;
-import io.github._4drian3d.chatregulator.plugin.impl.PlayerManagerImpl;
 import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
 import io.github._4drian3d.chatregulator.plugin.config.Messages;
-import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.IFormatter;
+import io.github._4drian3d.chatregulator.plugin.impl.PlayerManagerImpl;
+import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.Formatter;
+import io.github._4drian3d.chatregulator.api.utils.Components;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
@@ -22,7 +22,7 @@ public class ClearArgument implements Argument {
     @Inject
     private ConfigurationContainer<Messages> messagesContainer;
     @Inject
-    private IFormatter formatter;
+    private Formatter formatter;
     @Inject
     private PlayerManagerImpl playerManager;
     @Override

@@ -19,12 +19,16 @@ public final class RegulatorCommandSource implements CommandSource {
 
     @Override
     @SuppressWarnings("all")
-    public void sendMessage(@NotNull Identity source, @NotNull Component message, @NotNull MessageType type) {
+    public void sendMessage(
+            final @NotNull Identity source,
+            final @NotNull Component message,
+            final @NotNull MessageType type
+    ) {
         this.logger.info(message);
     }
 
     @Override
-    public Tristate getPermissionValue(String permission) {
+    public Tristate getPermissionValue(final String permission) {
         return permissionFunction.getPermissionValue(permission);
     }
 

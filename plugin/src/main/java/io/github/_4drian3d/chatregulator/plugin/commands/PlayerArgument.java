@@ -13,32 +13,31 @@ import io.github._4drian3d.chatregulator.plugin.impl.PlayerManagerImpl;
 import io.github._4drian3d.chatregulator.plugin.config.Configuration;
 import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
 import io.github._4drian3d.chatregulator.plugin.config.Messages;
-import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.IFormatter;
+import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.Formatter;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-
-import java.util.Optional;
 
 public class PlayerArgument implements Argument {
     @Inject
     private ProxyServer proxyServer;
     @Inject
-    private IFormatter formatter;
+    private Formatter formatter;
     @Inject
     private ConfigurationContainer<Messages> messagesContainer;
     @Inject
     private ConfigurationContainer<Configuration> configurationContainer;
     @Inject
     private PlayerManagerImpl playerManager;
+
     @Override
     public CommandNode<CommandSource> node() {
         return literal("player")
                 .requires(Permission.COMMAND_PLAYER)
-                .executes(cmd -> {
-                    cmd.getSource().sendMessage(
+                .executes(ctx -> {
+                    ctx.getSource().sendMessage(
                             formatter.parse(
                                     messagesContainer.get().getGeneralMessages().noArgument(),
-                                    cmd.getSource()
+                                    ctx.getSource()
                             )
                     );
                     return Command.SINGLE_SUCCESS;
@@ -59,29 +58,29 @@ public class PlayerArgument implements Argument {
                                             )));
                             return builder.buildFuture();
                         })
-                        .executes(cmd -> {
-                            String arg = cmd.getArgument("player", String.class);
-                            CommandSource source = cmd.getSource();
+                        .executes(ctx -> {
+                            final String arg = ctx.getArgument("player", String.class);
+                            final CommandSource source = ctx.getSource();
+                            final Messages.General generalMessages = messagesContainer.get().getGeneralMessages();
 
                             proxyServer.getPlayer(arg).ifPresentOrElse(player -> {
                                 final InfractionPlayerImpl infractionPlayer = playerManager.getPlayer(player);
                                 TagResolver placeholders = infractionPlayer.getPlaceholders();
-                                sendLines(source, messagesContainer.get().getGeneralMessages().getPlayerFormat(), placeholders, formatter);
-                            }, () -> {
-                                Optional<InfractionPlayerImpl> opt = playerManager.getPlayers()
-                                        .stream()
-                                        .filter(player -> player.username().equals(arg))
-                                        .findAny();
-                                if (opt.isPresent()) {
-                                    TagResolver placeholders = opt.get().getPlaceholders();
-                                    sendLines(source, messagesContainer.get().getGeneralMessages().getPlayerFormat(), placeholders, formatter);
-                                } else {
-                                    source.sendMessage(formatter.parse(
-                                            messagesContainer.get().getGeneralMessages().playerNotFound(),
-                                            Placeholder.unparsed("player", arg)
+                                sendLines(source, generalMessages.getPlayerFormat(), placeholders, formatter);
+                            }, () -> playerManager.getPlayers()
+                                    .stream()
+                                    .filter(player -> player.username().equals(arg))
+                                    .findAny()
+                                    .ifPresentOrElse(
+                                            player -> {
+                                                TagResolver placeholders = player.getPlaceholders();
+                                                sendLines(source, generalMessages.getPlayerFormat(), placeholders, formatter);
+                                            },
+                                            () -> source.sendMessage(formatter.parse(
+                                                    generalMessages.playerNotFound(),
+                                                    Placeholder.unparsed("player", arg)
+                                            ))
                                     ));
-                                }
-                            });
                             return Command.SINGLE_SUCCESS;
                         })
                 )

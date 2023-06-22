@@ -8,16 +8,14 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
-public final class NormalFormatter implements IFormatter {
+public sealed class Formatter permits MiniPlaceholderFormatter {
 
-    @Override
     public Component parse(
         final @NotNull String string
     ) {
         return MiniMessage.miniMessage().deserialize(string);
     }
 
-    @Override
     public Component parse(
         final @NotNull String string,
         final @Nullable Audience audience
@@ -25,7 +23,6 @@ public final class NormalFormatter implements IFormatter {
         return this.parse(string);
     }
 
-    @Override
     public Component parse(
         final @NotNull String string,
         final @Nullable Audience audience,
@@ -34,7 +31,6 @@ public final class NormalFormatter implements IFormatter {
         return this.parse(string, extraResolver);
     }
 
-    @Override
     public Component parse(
         final @NotNull String string,
         final @NotNull TagResolver extraResolver
@@ -42,12 +38,10 @@ public final class NormalFormatter implements IFormatter {
         return MiniMessage.miniMessage().deserialize(string, extraResolver);
     }
 
-    @Override
     public TagResolver resolver(Audience audience) {
         return TagResolver.empty();
     }
 
-    @Override
     public TagResolver resolver() {
         return TagResolver.empty();
     }

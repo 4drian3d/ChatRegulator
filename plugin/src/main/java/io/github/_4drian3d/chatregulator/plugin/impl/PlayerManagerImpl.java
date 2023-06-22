@@ -21,7 +21,7 @@ public final class PlayerManagerImpl implements PlayerManager {
     private ProxyServer proxyServer;
 
     @Override
-    public @NotNull InfractionPlayerImpl getPlayer(@NotNull UUID uuid) {
+    public @NotNull InfractionPlayerImpl getPlayer(final @NotNull UUID uuid) {
         InfractionPlayerImpl infractionPlayer = infractionPlayers.getIfPresent(uuid);
         if (infractionPlayer != null) {
             return infractionPlayer;
@@ -36,7 +36,7 @@ public final class PlayerManagerImpl implements PlayerManager {
         return infractionPlayers.get(player.getUniqueId(), (id) -> new InfractionPlayerImpl(player, injector));
     }
 
-    public void removePlayer(UUID uuid) {
+    public void removePlayer(final UUID uuid) {
         infractionPlayers.invalidate(uuid);
     }
 

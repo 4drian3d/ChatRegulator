@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public final class RegulatorExpansion {
     private RegulatorExpansion(){}
-    public static Expansion getExpansion(PlayerManager manager) {
+    public static Expansion getExpansion(final PlayerManager manager) {
         return Expansion.builder("chatregulator")
             .filter(Player.class)
             .audiencePlaceholder("infractions_count", (aud, queue, ctx) -> {

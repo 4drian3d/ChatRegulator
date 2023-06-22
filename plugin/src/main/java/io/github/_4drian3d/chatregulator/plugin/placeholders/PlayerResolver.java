@@ -21,7 +21,11 @@ public final class PlayerResolver implements TagResolver {
     }
 
     @Override
-    public @Nullable Tag resolve(@NotNull String name, @NotNull ArgumentQueue arguments, @NotNull Context ctx) throws ParsingException {
+    public @Nullable Tag resolve(
+            final @NotNull String name,
+            final @NotNull ArgumentQueue arguments,
+            final @NotNull Context ctx
+    ) throws ParsingException {
         if (name.equalsIgnoreCase("player") || name.equalsIgnoreCase("name")) {
             return Tag.preProcessParsed(player.username());
         }
@@ -34,7 +38,7 @@ public final class PlayerResolver implements TagResolver {
     }
 
     @Override
-    public boolean has(@NotNull String name) {
+    public boolean has(final @NotNull String name) {
         if (name.equalsIgnoreCase("player") || name.equalsIgnoreCase("name")) {
             return true;
         }

@@ -8,7 +8,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public final class MiniPlaceholderFormatter implements IFormatter {
+public final class MiniPlaceholderFormatter extends Formatter {
 
     @Override
     public Component parse(

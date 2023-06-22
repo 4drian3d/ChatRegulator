@@ -9,9 +9,8 @@ import io.github._4drian3d.chatregulator.api.Statistics;
 import io.github._4drian3d.chatregulator.plugin.impl.PlayerManagerImpl;
 import io.github._4drian3d.chatregulator.plugin.impl.StatisticsImpl;
 import io.github._4drian3d.chatregulator.plugin.placeholders.RegulatorExpansion;
-import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.IFormatter;
 import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.MiniPlaceholderFormatter;
-import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.NormalFormatter;
+import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.Formatter;
 
 public class PluginModule extends AbstractModule {
     private final StatisticsImpl statistics;
@@ -24,7 +23,7 @@ public class PluginModule extends AbstractModule {
 
     @Singleton
     @Provides
-    private IFormatter formatter(
+    private Formatter formatter(
             PluginManager pluginManager,
             PlayerManagerImpl playerManager
     ) {
@@ -32,7 +31,7 @@ public class PluginModule extends AbstractModule {
             RegulatorExpansion.getExpansion(playerManager).register();
             return new MiniPlaceholderFormatter();
         } else {
-            return new NormalFormatter();
+            return new Formatter();
         }
     }
 

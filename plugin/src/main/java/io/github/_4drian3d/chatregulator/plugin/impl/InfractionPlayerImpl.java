@@ -16,7 +16,7 @@ import io.github._4drian3d.chatregulator.plugin.config.Configuration;
 import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
 import io.github._4drian3d.chatregulator.plugin.config.Messages;
 import io.github._4drian3d.chatregulator.plugin.placeholders.PlayerResolver;
-import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.IFormatter;
+import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.Formatter;
 import io.github._4drian3d.chatregulator.plugin.source.RegulatorCommandSource;
 import io.github.miniplaceholders.api.MiniPlaceholders;
 import net.kyori.adventure.audience.Audience;
@@ -47,7 +47,7 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
     @Inject
     private ConfigurationContainer<Messages> messagesContainer;
     @Inject
-    private IFormatter formatter;
+    private Formatter formatter;
     @Inject
     private RegulatorCommandSource regulatorSource;
     @Inject
@@ -172,7 +172,7 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
         }
     }
 
-    private void sendSingleTitle(String title, TagResolver resolver, IFormatter formatter) {
+    private void sendSingleTitle(String title, TagResolver resolver, Formatter formatter) {
         sendTitlePart(TitlePart.SUBTITLE, formatter.parse(title, resolver));
     }
 
@@ -235,7 +235,15 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
         }
     }
 
-    public void onDenied(CheckResult.DeniedCheckresult result, String string) {
+    public void onDetected(CheckResult.DeniedCheckResult result, String string) {
+        this.sendWarningMessage(result, result.infractionType());
+        this.sendAlertMessage(result.infractionType(), result, string);
+        this.getInfractions().addViolation(result.infractionType());
+        this.executeCommands(result.infractionType());
+        this.debug(string, result.infractionType());
+    }
+
+    public void onDetected(CheckResult.ReplaceCheckResult result, String string) {
         this.sendWarningMessage(result, result.infractionType());
         this.sendAlertMessage(result.infractionType(), result, string);
         this.getInfractions().addViolation(result.infractionType());

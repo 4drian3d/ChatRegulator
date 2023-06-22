@@ -3,9 +3,7 @@ package io.github._4drian3d.chatregulator.plugin.commands;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.mojang.brigadier.Command;
-import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.velocitypowered.api.command.BrigadierCommand;
 import com.velocitypowered.api.command.CommandManager;
@@ -15,9 +13,7 @@ import io.github._4drian3d.chatregulator.api.enums.Permission;
 import io.github._4drian3d.chatregulator.plugin.ChatRegulator;
 import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
 import io.github._4drian3d.chatregulator.plugin.config.Messages;
-import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.IFormatter;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.Formatter;
 
 public final class RegulatorCommand {
     @Inject
@@ -27,7 +23,7 @@ public final class RegulatorCommand {
     @Inject
     private Injector injector;
     @Inject
-    private IFormatter formatter;
+    private Formatter formatter;
     @Inject
     private ConfigurationContainer<Messages> messagesContainer;
 

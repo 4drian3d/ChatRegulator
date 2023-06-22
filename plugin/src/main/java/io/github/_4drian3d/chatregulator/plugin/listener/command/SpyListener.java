@@ -12,7 +12,7 @@ import io.github._4drian3d.chatregulator.plugin.config.Configuration;
 import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
 import io.github._4drian3d.chatregulator.plugin.config.Messages;
 import io.github._4drian3d.chatregulator.plugin.listener.RegulatorExecutor;
-import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.IFormatter;
+import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.Formatter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -23,7 +23,7 @@ public final class SpyListener implements RegulatorExecutor<CommandExecuteEvent>
     @Inject
     private ConfigurationContainer<Messages> messagesContainer;
     @Inject
-    private IFormatter formatter;
+    private Formatter formatter;
     @Inject
     private ProxyServer proxyServer;
 

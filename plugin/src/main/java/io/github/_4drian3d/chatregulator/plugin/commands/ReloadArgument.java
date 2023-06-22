@@ -7,16 +7,12 @@ import com.mojang.brigadier.tree.CommandNode;
 import com.spotify.futures.CompletableFutures;
 import com.velocitypowered.api.command.CommandSource;
 import io.github._4drian3d.chatregulator.api.enums.Permission;
-import io.github._4drian3d.chatregulator.plugin.config.Blacklist;
-import io.github._4drian3d.chatregulator.plugin.config.Configuration;
-import io.github._4drian3d.chatregulator.plugin.config.Checks;
-import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
-import io.github._4drian3d.chatregulator.plugin.config.Messages;
-import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.IFormatter;
+import io.github._4drian3d.chatregulator.plugin.config.*;
+import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.Formatter;
 
 public class ReloadArgument implements Argument {
     @Inject
-    private IFormatter formatter;
+    private Formatter formatter;
     @Inject
     private ConfigurationContainer<Configuration> configurationContainer;
     @Inject

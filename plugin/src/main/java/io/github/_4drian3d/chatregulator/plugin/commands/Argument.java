@@ -5,7 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
 import com.velocitypowered.api.command.CommandSource;
-import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.IFormatter;
+import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.Formatter;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
@@ -14,7 +14,7 @@ import java.util.Collection;
 public interface Argument {
     CommandNode<CommandSource> node();
 
-    default void sendLines(Audience sender, Collection<String> lines, TagResolver resolver, IFormatter formatter) {
+    default void sendLines(Audience sender, Collection<String> lines, TagResolver resolver, Formatter formatter) {
         lines.forEach(ln -> sender.sendMessage(formatter.parse(ln, sender, resolver)));
     }
 
