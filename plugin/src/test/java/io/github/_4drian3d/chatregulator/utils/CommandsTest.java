@@ -50,7 +50,7 @@ class CommandsTest {
     }
 
     @Test
-    @DisplayName("Not starting string")
+    @DisplayName("Non starting string")
     void notStartingString() {
         String command = "lpermission";
         String config = "lp";
@@ -58,7 +58,7 @@ class CommandsTest {
     }
 
     @ParameterizedTest(name = "{0}'s last character is '!'")
-    @ValueSource(strings = {"Holaaaaaaa!", "!", "!!!!!!!!!!"})
+    @ValueSource(strings = {"Ho laa aa aa a !", "!", "!!!! !!!!! !"})
     @DisplayName("Last Char")
     void lastChar(String string) {
         final char lastChar = '!';

@@ -1,4 +1,4 @@
-package io.github._4drian3d.chatregulator.plugin.utils;
+package io.github._4drian3d.chatregulator.api.utils;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;

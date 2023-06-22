@@ -7,6 +7,7 @@ import java.util.Locale;
 import static java.util.Objects.requireNonNull;
 
 public final class Commands {
+    public static final char SPACE = ' ';
     /**
      * Get the first argument of a string
      *
@@ -14,7 +15,7 @@ public final class Commands {
      * @return the first argument
      */
     public static @NotNull String getFirstArgument(final @NotNull String string) {
-        final int index = requireNonNull(string).indexOf(" ");
+        final int index = requireNonNull(string).indexOf(SPACE);
         if (index == -1) {
             return string;
         }
@@ -30,16 +31,19 @@ public final class Commands {
      * @param startingString the starting string
      * @return if a string starts with another string
      */
-    public static boolean isStartingString(@NotNull String string, @NotNull String startingString){
-        if (requireNonNull(string).length() < requireNonNull(startingString).length()){
+    public static boolean isStartingString(@NotNull String string, @NotNull String startingString) {
+        final int startingStringLength = requireNonNull(startingString).length();
+        if (requireNonNull(string).length() < startingStringLength) {
             return false;
+        }
+        if (string.equalsIgnoreCase(startingString)) {
+            return true;
         }
         startingString = startingString.toLowerCase(Locale.ROOT);
         string = string.toLowerCase(Locale.ROOT);
-        return string.equals(startingString) ||
-                string.startsWith(
+        return string.startsWith(
                         getLastChar(startingString) == '*'
-                                ? startingString.substring(0, startingString.length()-1)
+                                ? startingString.substring(0, startingStringLength-1)
                                 : startingString.concat(" ")
                 );
     }
@@ -50,8 +54,12 @@ public final class Commands {
      * @param string the string
      * @return the last character
      */
-    public static char getLastChar(final @NotNull String string){
-        return requireNonNull(string).charAt(string.length()-1);
+    public static char getLastChar(final @NotNull String string) {
+        requireNonNull(string);
+        if (string.isEmpty()) {
+            return SPACE;
+        }
+        return string.charAt(string.length()-1);
     }
 
 }
