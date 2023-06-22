@@ -21,7 +21,7 @@ public final class Messages implements Section {
     private CommandBlacklist blacklist = new CommandBlacklist();
 
     @Comment("Configuration of regex violation module messages")
-    private Regex infractions = new Regex();
+    private Regex regex = new Regex();
 
     @Comment("Configuration of flood module messages")
     private Flood flood = new Flood();
@@ -52,7 +52,7 @@ public final class Messages implements Section {
     private General general = new General();
 
     public Regex getRegexMessages(){
-        return this.infractions;
+        return this.regex;
     }
 
     public CommandBlacklist getBlacklistMessages(){
@@ -101,7 +101,7 @@ public final class Messages implements Section {
             Message to be sent to the offender
             Depending on your warning-type section settings, it will be sent as Title, Actionbar or Message
             In case you use the Title mode, put a ; to delimit the title and the subtitle""")
-        private String warning = "<red>Hello, it is not allowed to use blocked commands";
+        private String warning = "<red>You cannot use this command";
 
         @Comment("Message to be sent to staff with chatregulator.notifications permission")
         private String alert = "<red>The player <aqua><player></aqua> <red>has executed blocked commands | String: <string>";
@@ -131,13 +131,13 @@ public final class Messages implements Section {
             Message to be sent to the offender
             Depending on your warning-type section settings, it will be sent as Title, Actionbar or Message
             In case you use the Title mode, put a ; to delimit the title and the subtitle""")
-        private String warning = "<red>Hello, it is not allowed to use dirty words on this server";
+        private String warning = "<red>You can't use this kind of words";
 
         @Comment("Message to be sent to staff with chatregulator.notifications permission")
         private String alert = "<red>The player <aqua><player></aqua> <red>has said forbidden words | String: <string>";
 
         @Comment("Statistics Reset Confirmation Message")
-        private String reset = "<red>The infraction warning count for <player> was reset";
+        private String reset = "<red>The regex infraction count for <player> has been reset";
 
         @Override
         public String getWarningMessage(){
@@ -161,13 +161,13 @@ public final class Messages implements Section {
             Message to be sent to the offender
             Depending on your warning-type section settings, it will be sent as Title, Actionbar or Message
             In case you use the Title mode, put a ; to delimit the title and the subtitle""")
-        private String warning = "<red>Hello, it is not allowed to make flood on this server";
+        private String warning = "<red>You are not allowed to flood the chat";
 
         @Comment("Message to be sent to staff with chatregulator.notifications permission")
         private String alert = "<red>The player <aqua><player></aqua> <red>has make flood | String: <string>";
 
         @Comment("Statistics Reset Confirmation Message")
-        private String reset = "<red>The flood warning count for <player> was reset";
+        private String reset = "<red>The flood infraction count for <player> has been reset";
 
         @Override
         public String getWarningMessage(){
@@ -191,13 +191,13 @@ public final class Messages implements Section {
             Message to be sent to the offender
             Depending on your warning-type section settings, it will be sent as Title, Actionbar or Message
             In case you use the Title mode, put a ; to delimit the title and the subtitle""")
-        private String warning = "<red>Hello, it is not allowed to make spam on this server";
+        private String warning = "<red>You are not allowed to spam messages in the chat.";
 
         @Comment("Message to be sent to staff with chatregulator.notifications permission")
         private String alert = "<red>The player <aqua><player></aqua> <red>was spamming the chat | String: <string>";
 
         @Comment("Statistics Reset Confirmation Message")
-        private String reset = "<red>The spam warning count for <player> was reset";
+        private String reset = "<red>The spam infraction count for <player> has been reset";
 
         @Override
         public String getWarningMessage(){
@@ -221,13 +221,13 @@ public final class Messages implements Section {
             Message to be sent to the offender
             Depending on your warning-type section settings, it will be sent as Title, Actionbar or Message
             In case you use the Title mode, put a ; to delimit the title and the subtitle""")
-        private String warning = "<red>Hello, it is not allowed to make spam on this server";
+        private String warning = "<red>You are not allowed to spam messages in the chat";
 
         @Comment("Message to be sent to staff with chatregulator.notifications permission")
         private String alert = "<red>The player <aqua><player></aqua> <red>writing too fast | String: <string>";
 
         @Comment("Statistics Reset Confirmation Message")
-        private String reset = "<red>The spam warning count for <player> was reset";
+        private String reset = "<red>The cooldown infraction count for <player> has been reset";
 
         @Override
         public String getWarningMessage(){
@@ -251,13 +251,13 @@ public final class Messages implements Section {
             Message to be sent to the offender
             Depending on your warning-type section settings, it will be sent as Title, Actionbar or Message
             In case you use the Title mode, put a ; to delimit the title and the subtitle""")
-        private String warning = "<red>Hello, it is not allowed to use this symbols";
+        private String warning = "<red>You are not allowed to use unknown characters in chat.";
 
         @Comment("Message to be sent to staff with chatregulator.notifications permission")
         private String alert = "<red>The player <aqua><player></aqua> <red>was using unauthorized unicode symbols | String: <string>";
 
         @Comment("Statistics Reset Confirmation Message")
-        private String reset = "<red>The simbols sended count for <player> was reset";
+        private String reset = "<red>The unicode infraction count for <player> has been reset";
 
         @Override
         public String getWarningMessage(){
@@ -281,13 +281,13 @@ public final class Messages implements Section {
             Message to be sent to the offender
             Depending on your warning-type section settings, it will be sent as Title, Actionbar or Message
             In case you use the Title mode, put a ; to delimit the title and the subtitle""")
-        private String warning = "<red>Hello, it is not allowed to use too many caps";
+        private String warning = "<red>You are not allowed to use so many capitalized characters in the chat";
 
         @Comment("Message to be sent to staff with chatregulator.notifications permission")
         private String alert = "<red>The player <aqua><player></aqua> <red>was using many capital letters | String: <string>";
 
         @Comment("Statistics Reset Confirmation Message")
-        private String reset = "<red>The caps violation count for <player> was reset";
+        private String reset = "<red>The caps infraction count for <player> has been reset";
 
         @Override
         public String getWarningMessage(){
@@ -311,7 +311,7 @@ public final class Messages implements Section {
             Message to be sent to the offender
             Depending on your warning-type section settings, it will be sent as Title, Actionbar or Message
             In case you use the Title mode, put a ; to delimit the title and the subtitle""")
-        private String warning = "<red>Hello, it is not allowed to use this type of commands";
+        private String warning = "<red>You are not allowed to use this type of commands";
 
         @Comment("Message to be sent to staff with chatregulator.notifications permission")
         private String alert = "<red>The player <aqua><player></aqua> <red>was using commands with invalid syntax | String: <string>";
@@ -383,13 +383,14 @@ public final class Messages implements Section {
         @Comment("""
             Violation statistics message
             This message will appear when using the "/chatregulator stats" command
-            Available Placeholders: <flood>, <spam>, <regex>, <command>, <unicode>, <caps>. <syntax>""")
+            Available Placeholders: <flood>, <spam>, <cooldown>, <regex>, <command>, <unicode>, <caps>, <syntax>""")
         private List<String> stats = List.of(
             "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------| ",
             "<#3B4371>| <red>General Stats</red>",
-            "<#3B4371>| <aqua>Regular Infractions:</aqua> <white><regex></white>",
+            "<#3B4371>| <aqua>Regex Infractions:</aqua> <white><regex></white>",
             "<#3B4371>| <aqua>Flood Infractions:</aqua> <white><flood></white>",
             "<#3B4371>| <aqua>Spam Infractions:</aqua> <white><spam></white>",
+            "<#3B4371>| <aqua>Cooldown Infractions:</aqua> <white><cooldown></white>",
             "<#3B4371>| <aqua>Caps Infractions:</aqua> <white><caps></white>",
             "<#3B4371>| <aqua>Unicode Infractions:</aqua> <white><unicode></white>",
             "<#3B4371>| <aqua>Command Infractions:</aqua> <white><blocked_command></white>",
@@ -400,13 +401,14 @@ public final class Messages implements Section {
         @Comment("""
             Player statistics message
             This message will appear when using the command "/chatregulator player <someplayer>"
-            Available Placeholders: <player>, <flood>, <spam>, <regex>, <unicode>, <caps>, <syntax>""")
+            Available Placeholders: <player>, <flood>, <spam>, <cooldown>, <regex>, <unicode>, <caps>, <syntax>""")
         private List<String> player = List.of(
             "<#3B4371>|-- <gradient:#67B26F:#4ca2cd>ChatRegulator</gradient> -------| ",
             "<#3B4371>| <gold><player></gold> <red>Stats</red>",
-            "<#3B4371>| <aqua>Regular Infractions:</aqua> <white><regex></white>",
+            "<#3B4371>| <aqua>Regex Infractions:</aqua> <white><regex></white>",
             "<#3B4371>| <aqua>Flood Infractions:</aqua> <white><flood></white>",
             "<#3B4371>| <aqua>Spam Infractions:</aqua> <white><spam></white>",
+            "<#3B4371>| <aqua>Cooldown Infractions:</aqua> <white><spam></white>",
             "<#3B4371>| <aqua>Unicode Infractions:</aqua> <white><unicode></white>",
             "<#3B4371>| <aqua>Caps Infractions:</aqua> <white><caps></white>",
             "<#3B4371>| <aqua>Command Infractions:</aqua> <white><blocked_command></white>",
@@ -483,7 +485,7 @@ public final class Messages implements Section {
         String getAlertMessage();
     }
 
-    private Object getMessages(InfractionType type) {
+    private Object getMessages(final InfractionType type) {
         return switch (type) {
             case REGEX -> getRegexMessages();
             case FLOOD -> getFloodMessages();
@@ -497,19 +499,19 @@ public final class Messages implements Section {
         };
     }
 
-    public Reset getReset(InfractionType type) {
-        Object messages = getMessages(type);
+    public Reset getReset(final InfractionType type) {
+        final Object messages = getMessages(type);
         return (Reset) messages;
     }
 
-    public Warning getWarning(InfractionType type) {
-        Object messages = getMessages(type);
+    public Warning getWarning(final InfractionType type) {
+        final Object messages = getMessages(type);
         return messages == null
                 ?  null : (Warning) messages;
     }
 
-    public Alert getAlert(InfractionType type) {
-        Object messages = getMessages(type);
+    public Alert getAlert(final InfractionType type) {
+        final Object messages = getMessages(type);
         return messages == null
                 ?  null : (Alert) messages;
     }
