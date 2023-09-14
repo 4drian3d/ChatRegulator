@@ -10,7 +10,7 @@ public final class Constants {
     /**
      * ChatRegulator Version
      */
-    public static final String VERSION = "{version}";
+    public static final String VERSION = "{{ version }}";
 
     private Constants() {}
 }

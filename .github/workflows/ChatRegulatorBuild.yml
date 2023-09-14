@@ -26,7 +26,7 @@ jobs:
       with:
         timeout_minutes: 4
         max_attempts: 2
-        command: gradle build
+        command: ./gradlew build
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v3

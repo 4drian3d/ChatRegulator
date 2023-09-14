@@ -2,6 +2,7 @@ plugins {
     java
     alias(libs.plugins.blossom)
     alias(libs.plugins.shadow)
+    alias(libs.plugins.idea.ext)
 }
 
 java {
@@ -28,9 +29,14 @@ dependencies {
     testImplementation(libs.velocity)
 }
 
-blossom {
-    replaceTokenIn("src/main/java/io/github/_4drian3d/chatregulator/plugin/utils/Constants.java")
-    replaceToken("{version}", version)
+sourceSets {
+    main {
+        blossom {
+            javaSources {
+                property("version", project.version.toString())
+            }
+        }
+    }
 }
 
 tasks {
