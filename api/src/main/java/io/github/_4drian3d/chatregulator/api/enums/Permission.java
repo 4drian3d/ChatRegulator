@@ -1,8 +1,8 @@
 package io.github._4drian3d.chatregulator.api.enums;
 
-import java.util.function.Predicate;
-
 import com.velocitypowered.api.command.CommandSource;
+
+import java.util.function.Predicate;
 
 /**
  * ChatRegulator Permissions
@@ -46,7 +46,7 @@ public enum Permission implements Predicate<CommandSource> {
     /**Notifications */
     NOTIFICATIONS("chatregulator.notifications"),
     /**CommandSpy alert */
-    COMMANDSPY_ALERT("chatregulator.notifications.commandspy"),
+    COMMAND_SPY_ALERT("chatregulator.notifications.commandspy"),
 
 
     /**Infractions Check Bypass */

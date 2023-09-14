@@ -16,7 +16,7 @@ import java.util.Locale;
 public final class PlayerResolver implements TagResolver {
     private final InfractionPlayer player;
 
-    public PlayerResolver(InfractionPlayer player) {
+    public PlayerResolver(final InfractionPlayer player) {
         this.player = player;
     }
 

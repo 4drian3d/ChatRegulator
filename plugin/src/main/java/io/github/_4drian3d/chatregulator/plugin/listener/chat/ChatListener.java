@@ -69,7 +69,7 @@ public final class ChatListener implements RegulatorExecutor<PlayerChatEvent> {
                 }).thenAccept(checkResult -> {
                     if (checkResult instanceof final CheckResult.DeniedCheckResult deniedResult) {
                         eventManager.fireAndForget(new ChatInfractionEvent(player, deniedResult.infractionType(), checkResult, event.getMessage()));
-                        player.onDetected(deniedResult, event.getMessage());
+                        player.onDetection(deniedResult, event.getMessage());
                         event.setResult(ChatResult.denied());
                     } else if (checkResult instanceof final CheckResult.ReplaceCheckResult replaceResult) {
                         String finalMessage = replaceResult.replaced();
@@ -80,7 +80,7 @@ public final class ChatListener implements RegulatorExecutor<PlayerChatEvent> {
                         }
                         player.getChain(SourceType.CHAT).executed(event.getMessage());
                         eventManager.fireAndForget(new ChatInfractionEvent(player, replaceResult.infractionType(), checkResult, event.getMessage()));
-                        player.onDetected(replaceResult, event.getMessage());
+                        player.onDetection(replaceResult, event.getMessage());
                         event.setResult(ChatResult.message(finalMessage));
                     } else {
                         player.getChain(SourceType.CHAT).executed(event.getMessage());

@@ -132,18 +132,20 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
                 + "]";
     }
 
-    public boolean isAllowed(InfractionType type) {
+    public boolean isAllowed(final InfractionType type) {
         return checksContainer.get().isEnabled(type) && !type.getBypassPermission().test(getPlayer());
     }
 
-    private void sendWarningMessage(CheckResult result, InfractionType type) {
+    private void sendWarningMessage(final CheckResult.DetectedResult result, final String detected) {
+        final InfractionType type = result.infractionType();
         final String message = requireNonNull(messagesContainer.get().getWarning(type)).getWarningMessage();
+        if (message.isBlank()) {
+            return;
+        }
         final TagResolver.Builder builder = TagResolver.builder();
         builder.resolver(getPlaceholders());
 
-        if (result instanceof CheckResult.ReplaceCheckResult replaceResult) {
-            builder.resolver(Placeholder.unparsed("infraction", replaceResult.replaced()));
-        }
+        builder.resolver(Placeholder.unparsed("infraction", detected));
 
         final TagResolver resolver = builder.build();
         final Checks.Warning configuration = checksContainer.get().getWarning(type);
@@ -176,8 +178,13 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
         sendTitlePart(TitlePart.SUBTITLE, formatter.parse(title, resolver));
     }
 
-    private void sendAlertMessage(final InfractionType type, final CheckResult result, final String original) {
+    private void sendAlertMessage(final CheckResult.DetectedResult result, final String original) {
+        final InfractionType type = result.infractionType();
         final Messages.Alert messages = requireNonNull(messagesContainer.get().getAlert(type));
+        final String alertMessage = messages.getAlertMessage();
+        if (alertMessage.isBlank()) {
+            return;
+        }
 
         final TagResolver.Builder builder = TagResolver.builder();
         builder.resolver(getPlaceholders());
@@ -189,7 +196,7 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
         }
         builder.resolver(Placeholder.unparsed("original", original));
 
-        final Component message = formatter.parse(messages.getAlertMessage(), builder.build());
+        final Component message = formatter.parse(alertMessage, builder.build());
 
         for (final Player player : proxyServer.getAllPlayers()) {
             if (Permission.NOTIFICATIONS.test(player)) {
@@ -235,23 +242,16 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
         }
     }
 
-    public void onDetected(CheckResult.DeniedCheckResult result, String string) {
-        this.sendWarningMessage(result, result.infractionType());
-        this.sendAlertMessage(result.infractionType(), result, string);
+    public void onDetection(final CheckResult.DetectedResult result, final String string) {
+        this.sendWarningMessage(result, string);
+        this.sendAlertMessage(result, string);
         this.getInfractions().addViolation(result.infractionType());
-        this.executeCommands(result.infractionType());
+        this.executeCommands(result);
         this.debug(string, result.infractionType());
     }
 
-    public void onDetected(CheckResult.ReplaceCheckResult result, String string) {
-        this.sendWarningMessage(result, result.infractionType());
-        this.sendAlertMessage(result.infractionType(), result, string);
-        this.getInfractions().addViolation(result.infractionType());
-        this.executeCommands(result.infractionType());
-        this.debug(string, result.infractionType());
-    }
-
-    private void executeCommands(final @NotNull InfractionType type) {
+    private void executeCommands(final @NotNull CheckResult.DetectedResult result) {
+        final InfractionType type = result.infractionType();
         final Player player = getPlayer();
         if (player == null) {
             return;

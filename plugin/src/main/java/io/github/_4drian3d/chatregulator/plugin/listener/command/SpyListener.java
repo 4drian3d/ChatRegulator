@@ -51,7 +51,7 @@ public final class SpyListener implements RegulatorExecutor<CommandExecuteEvent>
                         )
                 );
                 proxyServer.getAllPlayers().forEach(pl -> {
-                    if (Permission.COMMANDSPY_ALERT.test(pl)) {
+                    if (Permission.COMMAND_SPY_ALERT.test(pl)) {
                         pl.sendMessage(message);
                     }
                 });
