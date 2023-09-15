@@ -6,9 +6,11 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
 import com.spotify.futures.CompletableFutures;
 import com.velocitypowered.api.command.CommandSource;
+import com.velocitypowered.api.proxy.ConsoleCommandSource;
 import io.github._4drian3d.chatregulator.api.enums.Permission;
 import io.github._4drian3d.chatregulator.plugin.config.*;
 import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.Formatter;
+import io.github._4drian3d.velocityhexlogger.HexLogger;
 
 public class ReloadArgument implements Argument {
     @Inject
@@ -21,6 +23,8 @@ public class ReloadArgument implements Argument {
     private ConfigurationContainer<Messages> messagesContainer;
     @Inject
     private ConfigurationContainer<Blacklist> blacklistContainer;
+    @Inject
+    private HexLogger logger;
 
     @Override
     public CommandNode<CommandSource> node() {
@@ -35,7 +39,14 @@ public class ReloadArgument implements Argument {
                             blacklistContainer.reload(),
                             (a, b, c, d) -> a && b && c && d
                     ).thenAccept(
-                        result -> cmd.getSource().sendMessage(formatter.parse(messagesContainer.get().getGeneralMessages().getReloadMessage()))
+                        result -> {
+                            final var message = formatter.parse(messagesContainer.get().getGeneralMessages().getReloadMessage());
+                            if (cmd.getSource() instanceof ConsoleCommandSource) {
+                                logger.info(message);
+                            } else {
+                                cmd.getSource().sendMessage(message);
+                            }
+                        }
                     );
                     return Command.SINGLE_SUCCESS;
                 }).build();
