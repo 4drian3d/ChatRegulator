@@ -17,8 +17,8 @@ public class ProviderModule extends AbstractModule {
     @Singleton
     @Provides
     private CheckProvider<RegexCheck> regex(
-            ConfigurationContainer<Checks> configurationContainer,
-            ConfigurationContainer<Blacklist> blacklistContainer
+            final ConfigurationContainer<Checks> configurationContainer,
+            final ConfigurationContainer<Blacklist> blacklistContainer
     ) {
         return player -> {
             InfractionPlayerImpl infractionPlayer = (InfractionPlayerImpl) player;
@@ -38,12 +38,12 @@ public class ProviderModule extends AbstractModule {
     private CheckProvider<CapsCheck> caps(final ConfigurationContainer<Checks> configurationContainer) {
         return player -> {
             final InfractionPlayerImpl infractionPlayer = (InfractionPlayerImpl) player;
-            final Checks configuration = configurationContainer.get();
-            if (infractionPlayer.isAllowed(InfractionType.CAPS) && configuration.isEnabled(InfractionType.CAPS)) {
+            final Checks.Caps configuration = configurationContainer.get().getCapsConfig();
+            if (infractionPlayer.isAllowed(InfractionType.CAPS) && configuration.enabled()) {
                 return CapsCheck.builder()
-                        .limit(configuration.getCapsConfig().limit())
-                        .controlType(configuration.getCapsConfig().getControlType())
-                        .algorithm(configuration.getCapsConfig().getAlgorithm())
+                        .limit(configuration.limit())
+                        .controlType(configuration.getControlType())
+                        .algorithm(configuration.getAlgorithm())
                         .build();
             }
             return null;
@@ -53,8 +53,8 @@ public class ProviderModule extends AbstractModule {
     @Singleton
     @Provides
     private CheckProvider<CommandCheck> command(
-            ConfigurationContainer<Checks> configurationContainer,
-            ConfigurationContainer<Blacklist> blacklistContainer
+            final ConfigurationContainer<Checks> configurationContainer,
+            final ConfigurationContainer<Blacklist> blacklistContainer
     ) {
         return player -> {
             final InfractionPlayerImpl infractionPlayer = (InfractionPlayerImpl) player;
@@ -70,7 +70,7 @@ public class ProviderModule extends AbstractModule {
 
     @Singleton
     @Provides
-    private CheckProvider<FloodCheck> flood(ConfigurationContainer<Checks> configurationContainer) {
+    private CheckProvider<FloodCheck> flood(final ConfigurationContainer<Checks> configurationContainer) {
         return player -> {
             final InfractionPlayerImpl infractionPlayer = (InfractionPlayerImpl) player;
             final Checks configuration = configurationContainer.get();
@@ -87,7 +87,7 @@ public class ProviderModule extends AbstractModule {
     @Singleton
     @Provides
     @Named("command")
-    private CheckProvider<SpamCheck> commandSpam(ConfigurationContainer<Checks> configurationContainer) {
+    private CheckProvider<SpamCheck> commandSpam(final ConfigurationContainer<Checks> configurationContainer) {
         return player -> {
             final InfractionPlayerImpl infractionPlayer = (InfractionPlayerImpl) player;
             final Checks configuration = configurationContainer.get();
@@ -104,7 +104,7 @@ public class ProviderModule extends AbstractModule {
     @Singleton
     @Provides
     @Named("chat")
-    private CheckProvider<SpamCheck> chatSpam(ConfigurationContainer<Checks> configurationContainer) {
+    private CheckProvider<SpamCheck> chatSpam(final ConfigurationContainer<Checks> configurationContainer) {
         return player -> {
             final InfractionPlayerImpl infractionPlayer = (InfractionPlayerImpl) player;
             final Checks configuration = configurationContainer.get();
@@ -120,7 +120,7 @@ public class ProviderModule extends AbstractModule {
 
     @Singleton
     @Provides
-    private CheckProvider<SyntaxCheck> syntax(ConfigurationContainer<Checks> configurationContainer) {
+    private CheckProvider<SyntaxCheck> syntax(final ConfigurationContainer<Checks> configurationContainer) {
         return player -> {
             final InfractionPlayerImpl infractionPlayer = (InfractionPlayerImpl) player;
             final Checks configuration = configurationContainer.get();
@@ -136,7 +136,7 @@ public class ProviderModule extends AbstractModule {
     @Singleton
     @Provides
     @Named("command")
-    private CheckProvider<CooldownCheck> commandCooldown(ConfigurationContainer<Checks> configurationContainer) {
+    private CheckProvider<CooldownCheck> commandCooldown(final ConfigurationContainer<Checks> configurationContainer) {
         return player -> {
             final InfractionPlayerImpl infractionPlayer = (InfractionPlayerImpl) player;
             final Checks.Cooldown config = configurationContainer.get().getCooldownConfig();
@@ -154,7 +154,7 @@ public class ProviderModule extends AbstractModule {
     @Singleton
     @Provides
     @Named("chat")
-    private CheckProvider<CooldownCheck> chatCooldown(ConfigurationContainer<Checks> configurationContainer) {
+    private CheckProvider<CooldownCheck> chatCooldown(final ConfigurationContainer<Checks> configurationContainer) {
         return player -> {
             final InfractionPlayerImpl infractionPlayer = (InfractionPlayerImpl) player;
             final Checks.Cooldown config = configurationContainer.get().getCooldownConfig();
@@ -171,7 +171,7 @@ public class ProviderModule extends AbstractModule {
 
     @Singleton
     @Provides
-    private CheckProvider<UnicodeCheck> unicode(ConfigurationContainer<Checks> configurationContainer) {
+    private CheckProvider<UnicodeCheck> unicode(final ConfigurationContainer<Checks> configurationContainer) {
         return player -> {
             final InfractionPlayerImpl infractionPlayer = (InfractionPlayerImpl) player;
             final Checks.Unicode config = configurationContainer.get().getUnicodeConfig();

@@ -46,7 +46,7 @@ public final class ChatListener implements RegulatorExecutor<PlayerChatEvent> {
     private EventManager eventManager;
 
     @Override
-    public @Nullable EventTask executeAsync(PlayerChatEvent event) {
+    public @Nullable EventTask executeAsync(final PlayerChatEvent event) {
         if (!event.getResult().isAllowed()) {
             return null;
         }
@@ -68,18 +68,18 @@ public final class ChatListener implements RegulatorExecutor<PlayerChatEvent> {
                     return CheckResult.allowed();
                 }).thenAccept(checkResult -> {
                     if (checkResult instanceof final CheckResult.DeniedCheckResult deniedResult) {
-                        eventManager.fireAndForget(new ChatInfractionEvent(player, deniedResult.infractionType(), checkResult, event.getMessage()));
+                        this.eventManager.fireAndForget(new ChatInfractionEvent(player, deniedResult.infractionType(), checkResult, event.getMessage()));
                         player.onDetection(deniedResult, event.getMessage());
                         event.setResult(ChatResult.denied());
                     } else if (checkResult instanceof final CheckResult.ReplaceCheckResult replaceResult) {
                         String finalMessage = replaceResult.replaced();
 
-                        final Configuration configuration = configurationContainer.get();
-                        if (configuration.getFormatterConfig().enabled()) {
+                        final Configuration.Formatter configuration = configurationContainer.get().getFormatterConfig();
+                        if (configuration.enabled()) {
                             finalMessage = applyFormat(finalMessage, configuration);
                         }
                         player.getChain(SourceType.CHAT).executed(event.getMessage());
-                        eventManager.fireAndForget(new ChatInfractionEvent(player, replaceResult.infractionType(), checkResult, event.getMessage()));
+                        this.eventManager.fireAndForget(new ChatInfractionEvent(player, replaceResult.infractionType(), checkResult, event.getMessage()));
                         player.onDetection(replaceResult, event.getMessage());
                         event.setResult(ChatResult.message(finalMessage));
                     } else {
@@ -102,15 +102,15 @@ public final class ChatListener implements RegulatorExecutor<PlayerChatEvent> {
         return PostOrder.EARLY;
     }
 
-    public static @NotNull String applyFormat(final @NotNull String string, Configuration config) {
+    public static @NotNull String applyFormat(final @NotNull String string, Configuration.Formatter config) {
         return firstLetterUppercase(addFinalDot(string, config), config);
     }
-    public static @NotNull String firstLetterUppercase(@NotNull final String string, Configuration config) {
-        if (!config.getFormatterConfig().setFirstLetterUppercase()) return string;
+    public static @NotNull String firstLetterUppercase(@NotNull final String string, Configuration.Formatter config) {
+        if (!config.setFirstLetterUppercase()) return string;
         return Replacer.firstLetterUppercase(string);
     }
-    public static String addFinalDot(final String string, Configuration config) {
-        return config.getFormatterConfig().setFinalDot()
+    public static String addFinalDot(final String string, Configuration.Formatter config) {
+        return config.setFinalDot()
                 ? Replacer.addFinalDot(string)
                 : string;
     }

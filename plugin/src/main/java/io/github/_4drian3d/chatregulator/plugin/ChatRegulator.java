@@ -51,7 +51,7 @@ import static net.kyori.adventure.text.minimessage.MiniMessage.miniMessage;
                 )
         }
 )
-public class ChatRegulator implements ChatRegulatorAPI {
+public final class ChatRegulator implements ChatRegulatorAPI {
     @Inject
     private EventManager eventManager;
     @Inject

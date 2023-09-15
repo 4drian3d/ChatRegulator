@@ -23,7 +23,7 @@ public final class FloodCheck implements Check {
             .maximumSize(3)
             .initialCapacity(1)
             .build(length -> Pattern.compile(
-                    "(\\w)\\1{"+length+",}|(\\w{28,})|([^\\wñ]{20,})|(^.{220,}$)",
+                    "(\\w)\\1{"+length+",}", //(\w{28,})|([^\wñ]{20,})|(^.{220,}$)
                     Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE)
             );
     private final Pattern pattern;
@@ -42,7 +42,7 @@ public final class FloodCheck implements Check {
             if (controlType == ControlType.BLOCK) {
                 return CheckResult.denied(type());
             } else {
-                return CheckResult.modified(type(), matcher.replaceAll(match -> Character.toString(match.group().charAt(0))));
+                return CheckResult.modified(type(), matcher.replaceAll(match -> String.valueOf(match.group().charAt(0))));
             }
         }
         return CheckResult.allowed();
@@ -63,7 +63,7 @@ public final class FloodCheck implements Check {
         return new FloodCheck.Builder();
     }
 
-    /**Flood Check Builder */
+    /** Flood Check Builder */
     public static class Builder implements AbstractBuilder<FloodCheck> {
         private Pattern pattern;
         private ControlType controlType;
@@ -75,7 +75,7 @@ public final class FloodCheck implements Check {
             return this;
         }
 
-        public Builder controlType(ControlType controlType) {
+        public Builder controlType(final @NotNull ControlType controlType) {
             this.controlType = controlType;
             return this;
         }

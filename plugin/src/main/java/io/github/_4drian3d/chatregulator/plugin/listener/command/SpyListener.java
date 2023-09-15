@@ -13,6 +13,7 @@ import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
 import io.github._4drian3d.chatregulator.plugin.config.Messages;
 import io.github._4drian3d.chatregulator.plugin.listener.RegulatorExecutor;
 import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.Formatter;
+import io.github._4drian3d.velocityhexlogger.HexLogger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -26,6 +27,8 @@ public final class SpyListener implements RegulatorExecutor<CommandExecuteEvent>
     private Formatter formatter;
     @Inject
     private ProxyServer proxyServer;
+    @Inject
+    private HexLogger logger;
 
     @Override
     public EventTask executeAsync(final CommandExecuteEvent event) {
@@ -50,12 +53,12 @@ public final class SpyListener implements RegulatorExecutor<CommandExecuteEvent>
                                 Placeholder.unparsed("player", player.getUsername())
                         )
                 );
-                proxyServer.getAllPlayers().forEach(pl -> {
+                for (final Player pl : this.proxyServer.getAllPlayers()) {
                     if (Permission.COMMAND_SPY_ALERT.test(pl)) {
                         pl.sendMessage(message);
                     }
-                });
-                proxyServer.getConsoleCommandSource().sendMessage(message);
+                }
+                logger.info(message);
             }
         });
     }

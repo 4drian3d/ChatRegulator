@@ -103,12 +103,13 @@ public final class CommandListener implements RegulatorExecutor<CommandExecuteEv
                     logger.error("An error occurred while calculating command result", ex);
                 } else {
                     if (result instanceof final CheckResult.DeniedCheckResult deniedResult) {
-                        eventManager.fireAndForget(new CommandInfractionEvent(infractionPlayer, deniedResult.infractionType(), result, event.getCommand()));
+                        this.eventManager.fireAndForget(new CommandInfractionEvent(infractionPlayer, deniedResult.infractionType(), result, event.getCommand()));
                         infractionPlayer.onDetection(deniedResult, event.getCommand());
                         event.setResult(CommandExecuteEvent.CommandResult.denied());
                         return null;
                     }
                     if (result instanceof final CheckResult.ReplaceCheckResult replaceResult) {
+                        this.eventManager.fireAndForget(new CommandInfractionEvent(infractionPlayer, replaceResult.infractionType(), result, event.getCommand()));
                         final String replacedCommand = replaceResult.replaced();
                         infractionPlayer.getChain(SourceType.COMMAND).executed(replacedCommand);
                         infractionPlayer.onDetection(replaceResult, event.getCommand());

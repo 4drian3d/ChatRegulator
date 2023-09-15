@@ -13,7 +13,7 @@ public final class JoinListener implements RegulatorExecutor<PostLoginEvent> {
 
     @Override
     public EventTask executeAsync(PostLoginEvent event) {
-        return EventTask.async(() -> playerManager.getPlayer(event.getPlayer()).isOnline(true));
+        return EventTask.async(() -> this.playerManager.getPlayer(event.getPlayer()).isOnline(true));
     }
 
     @Override

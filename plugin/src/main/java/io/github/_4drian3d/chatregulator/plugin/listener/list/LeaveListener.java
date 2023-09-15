@@ -29,7 +29,7 @@ public final class LeaveListener implements RegulatorExecutor<DisconnectEvent> {
     private ConfigurationContainer<Configuration> configurationContainer;
 
     @Override
-    public @Nullable EventTask executeAsync(DisconnectEvent event) {
+    public @Nullable EventTask executeAsync(final DisconnectEvent event) {
         if (event.getLoginStatus() == DisconnectEvent.LoginStatus.CONFLICTING_LOGIN) {
             return null;
         }

@@ -9,16 +9,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class FloodTest {
     @ParameterizedTest
     @CsvSource({
-        "aa floOoOOOooOod aa, aa flod aa",
-        "helloooooooooooooo, hello"
+        "aa floOoOOOooOod aa",
+        "helloooooooooooooo"
     })
     @DisplayName("Flood Check")
-    void floodCheck(String original, String expected) {
+    void floodCheck(String original) {
         CheckResult result = FloodCheck.builder()
                 .limit(5)
                 .controlType(ControlType.BLOCK)
@@ -29,13 +29,33 @@ class FloodTest {
 
     @Test
     @DisplayName("MultiFlood Replacement")
-    void multiFlood(){
+    void multiFlood() {
         String original = "helloooooo everyoneeeeeee";
         FloodCheck check = FloodCheck.builder()
                 .controlType(ControlType.REPLACE)
                 .limit(5)
                 .build();
 
-        assertTrue(check.check(TestsUtils.dummyPlayer(), original).shouldModify());
+        final var result = check.check(TestsUtils.dummyPlayer(), original);
+        assertTrue(result.shouldModify());
+        final var replaceableResult = assertInstanceOf(CheckResult.ReplaceCheckResult.class, result);
+        assertEquals("hello everyone", replaceableResult.replaced());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "gaaaaaaaa causa, ga causa",
+            "helllllllllllllllllllllllllllllllllllllllllllllo, helo",
+            "holabcdefghijkaaaaaaabc, holabcdefghijkabc"
+    })
+    void testTest(String original, String expected) {
+        final FloodCheck check = FloodCheck.builder()
+                .controlType(ControlType.REPLACE)
+                .limit(5)
+                .build();
+
+        CheckResult.ReplaceCheckResult result = assertInstanceOf(CheckResult.ReplaceCheckResult.class, check.check(TestsUtils.dummyPlayer(), original));
+
+        assertEquals(expected, result.replaced());
     }
 }
