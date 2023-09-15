@@ -88,7 +88,7 @@ public sealed interface CheckResult {
         }
     }
 
-    record ReplaceCheckResult(InfractionType infractionType, String modified) implements CheckResult, DetectedResult {
+    record ReplaceCheckResult(InfractionType infractionType, String replaced) implements CheckResult, DetectedResult {
         @Override
         public boolean isAllowed() {
             return false;
@@ -102,10 +102,6 @@ public sealed interface CheckResult {
         @Override
         public boolean shouldModify() {
             return true;
-        }
-
-        public String replaced() {
-            return modified;
         }
     }
 

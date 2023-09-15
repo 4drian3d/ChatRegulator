@@ -30,7 +30,7 @@ public final class LazyDetection {
                 if (providedCheck == null) {
                     continue;
                 }
-                final CheckResult result = providedCheck.check(player, string);
+                final CheckResult result = providedCheck.check(player, modifiedOrDefault(modifiedString, string));
                 if (result.isAllowed()) {
                     continue;
                 }
@@ -41,7 +41,6 @@ public final class LazyDetection {
 
                 if (result instanceof final CheckResult.ReplaceCheckResult replaceCheckResult) {
                     modifiedString.set(new InfractionDetection(replaceCheckResult.infractionType(), replaceCheckResult.replaced()));
-                    break;
                 }
             }
             final InfractionDetection finalResult = modifiedString.get();
@@ -53,6 +52,14 @@ public final class LazyDetection {
             }
             return CheckResult.allowed();
         });
+    }
+
+    private @NotNull String modifiedOrDefault(final @NotNull AtomicReference<InfractionDetection> reference, final @NotNull String defaultValue) {
+        final InfractionDetection actualDetection = reference.get();
+        if (actualDetection == null) {
+            return defaultValue;
+        }
+        return actualDetection.modified;
     }
 
     private record InfractionDetection(@NotNull InfractionType infractionType, @NotNull String modified) {}

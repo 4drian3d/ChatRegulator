@@ -106,9 +106,7 @@ public final class CommandListener implements RegulatorExecutor<CommandExecuteEv
                         this.eventManager.fireAndForget(new CommandInfractionEvent(infractionPlayer, deniedResult.infractionType(), result, event.getCommand()));
                         infractionPlayer.onDetection(deniedResult, event.getCommand());
                         event.setResult(CommandExecuteEvent.CommandResult.denied());
-                        return null;
-                    }
-                    if (result instanceof final CheckResult.ReplaceCheckResult replaceResult) {
+                    } else if (result instanceof final CheckResult.ReplaceCheckResult replaceResult) {
                         this.eventManager.fireAndForget(new CommandInfractionEvent(infractionPlayer, replaceResult.infractionType(), result, event.getCommand()));
                         final String replacedCommand = replaceResult.replaced();
                         infractionPlayer.getChain(SourceType.COMMAND).executed(replacedCommand);
