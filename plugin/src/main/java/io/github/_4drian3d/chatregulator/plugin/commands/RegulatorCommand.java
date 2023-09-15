@@ -30,7 +30,7 @@ public final class RegulatorCommand {
     public void register() {
         final LiteralCommandNode<CommandSource> node = LiteralArgumentBuilder
                 .<CommandSource>literal("chatregulator")
-                .requires(Permission.COMMAND)
+                .requires(Permission.COMMAND::test)
                 .executes(cmd -> {
                     cmd.getSource().sendMessage(
                             formatter.parse(

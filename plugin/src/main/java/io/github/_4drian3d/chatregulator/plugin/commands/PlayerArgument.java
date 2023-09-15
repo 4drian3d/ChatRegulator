@@ -32,7 +32,7 @@ public class PlayerArgument implements Argument {
     @Override
     public CommandNode<CommandSource> node() {
         return literal("player")
-                .requires(Permission.COMMAND_PLAYER)
+                .requires(Permission.COMMAND_PLAYER::test)
                 .executes(ctx -> {
                     ctx.getSource().sendMessage(
                             formatter.parse(

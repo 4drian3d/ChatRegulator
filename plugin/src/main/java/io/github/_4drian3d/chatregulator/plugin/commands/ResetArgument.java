@@ -30,7 +30,7 @@ public class ResetArgument implements Argument {
     @Override
     public CommandNode<CommandSource> node() {
         return literal("reset")
-                .requires(Permission.COMMAND_RESET)
+                .requires(Permission.COMMAND_RESET::test)
                 .executes(cmd -> {
                     cmd.getSource().sendMessage(
                             formatter.parse(
@@ -77,7 +77,7 @@ public class ResetArgument implements Argument {
 
     private LiteralCommandNode<CommandSource> subReset(String subcommand, InfractionType type, Permission resetPermission) {
         return literal(subcommand)
-                .requires(resetPermission)
+                .requires(resetPermission::test)
                 .executes(cmd -> {
                     String arg = cmd.getArgument("player", String.class);
                     Player player = proxyServer.getPlayer(arg).orElse(null);

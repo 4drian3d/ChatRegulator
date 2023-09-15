@@ -2,6 +2,7 @@ metadata.format.version = "1.1"
 
 [versions]
 
+adventure = "4.14.0"
 velocity = "3.2.0-SNAPSHOT"
 futures = "0.3.5"
 
@@ -10,6 +11,7 @@ assertj = "3.24.2"
 miniplaceholders = "2.2.1"
 hexlogger = "1.0.2"
 bstats = "3.0.2"
+caffeine = "3.1.8"
 
 blossom = "2.0.1"
 shadow = "8.1.1"
@@ -21,6 +23,7 @@ mockito = "5.5.0"
 
 [libraries]
 
+adventure = { group = "net.kyori", name = "adventure-api", version.ref = "adventure" }
 velocity = { group = "com.velocitypowered", name = "velocity-api", version.ref = "velocity" }
 bstats = { module = "org.bstats:bstats-velocity", version.ref = "bstats" }
 configurate = { module = "org.spongepowered:configurate-hocon", version.ref = "configurate" }
@@ -31,6 +34,7 @@ junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junit" }
 mockito = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
 hexlogger = { group = "io.github.4drian3d", name = "velocityhexlogger", version.ref = "hexlogger" }
 futures = { group = "com.spotify", name = "completable-futures", version.ref = "futures" }
+caffeine = { group = "com.github.ben-manes.caffeine", name = "caffeine", version.ref = "caffeine" }
 
 [plugins]
 

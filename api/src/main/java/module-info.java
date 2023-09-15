@@ -6,7 +6,6 @@ module io.github._4drian3d.chatregulator.api {
     requires static org.checkerframework.checker.qual;
     requires net.kyori.adventure;
     requires net.kyori.examination.api;
-    requires com.velocitypowered.api;
     requires com.github.benmanes.caffeine;
 
     exports io.github._4drian3d.chatregulator.api;

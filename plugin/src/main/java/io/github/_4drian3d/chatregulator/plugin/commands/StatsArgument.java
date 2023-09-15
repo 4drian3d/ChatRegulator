@@ -27,7 +27,7 @@ public class StatsArgument implements Argument {
     @Override
     public CommandNode<CommandSource> node() {
         return literal("stats")
-                .requires(Permission.COMMAND_STATS)
+                .requires(Permission.COMMAND_STATS::test)
                 .executes(cmd -> {
                     final TagResolver resolver;
                     if (cmd.getSource() instanceof Player player) {

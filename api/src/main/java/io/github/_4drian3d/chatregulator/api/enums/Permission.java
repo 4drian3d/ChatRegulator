@@ -1,13 +1,14 @@
 package io.github._4drian3d.chatregulator.api.enums;
 
-import com.velocitypowered.api.command.CommandSource;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.permission.PermissionChecker;
 
 import java.util.function.Predicate;
 
 /**
  * ChatRegulator Permissions
  */
-public enum Permission implements Predicate<CommandSource> {
+public enum Permission implements Predicate<Audience> {
     /**General Command */
     COMMAND("chatregulator.command"),
 
@@ -83,7 +84,9 @@ public enum Permission implements Predicate<CommandSource> {
     }
 
     @Override
-    public boolean test(final CommandSource source) {
-        return source.hasPermission(permission);
+    public boolean test(final Audience source) {
+        return source.get(PermissionChecker.POINTER)
+                .filter(checker -> checker.test(this.permission))
+                .isPresent();
     }
 }

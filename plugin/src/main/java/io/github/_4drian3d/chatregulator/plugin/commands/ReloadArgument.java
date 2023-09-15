@@ -30,7 +30,7 @@ public class ReloadArgument implements Argument {
     public CommandNode<CommandSource> node() {
         return LiteralArgumentBuilder
                 .<CommandSource>literal("reload")
-                .requires(Permission.COMMAND_RELOAD)
+                .requires(Permission.COMMAND_RELOAD::test)
                 .executes(cmd -> {
                     CompletableFutures.combine(
                             messagesContainer.reload(),

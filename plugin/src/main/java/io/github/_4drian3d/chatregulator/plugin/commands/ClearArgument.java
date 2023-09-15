@@ -28,7 +28,7 @@ public class ClearArgument implements Argument {
     @Override
     public CommandNode<CommandSource> node() {
         return literal("clear")
-                .requires(Permission.COMMAND_CLEAR)
+                .requires(Permission.COMMAND_CLEAR::test)
                 .executes(cmd -> {
                     proxyServer.sendMessage(Components.SPACES_COMPONENT);
                     cmd.getSource().sendMessage(
@@ -39,7 +39,7 @@ public class ClearArgument implements Argument {
                     return Command.SINGLE_SUCCESS;
                 })
                 .then(literal("server")
-                        .requires(Permission.COMMAND_CLEAR_SERVER)
+                        .requires(Permission.COMMAND_CLEAR_SERVER::test)
                         .executes(cmd -> {
                             if (cmd.getSource() instanceof final Player player) {
                                 player.getCurrentServer().ifPresent(playerServer -> {
@@ -90,7 +90,7 @@ public class ClearArgument implements Argument {
                         )
                 )
                 .then(literal("player")
-                        .requires(Permission.COMMAND_CLEAR_PLAYER)
+                        .requires(Permission.COMMAND_CLEAR_PLAYER::test)
                         .executes(cmd -> {
                             cmd.getSource().sendMessage(
                                     formatter.parse(

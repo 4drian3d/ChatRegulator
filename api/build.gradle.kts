@@ -13,7 +13,8 @@ java {
 }
 
 dependencies {
-    compileOnlyApi(libs.velocity)
+    compileOnlyApi(libs.adventure)
+    compileOnly(libs.caffeine)
 }
 
 tasks {
@@ -25,10 +26,8 @@ tasks {
     javadoc {
         options.encoding = Charsets.UTF_8.name()
         (options as StandardJavadocDocletOptions).links(
-            "https://jd.advntr.dev/api/4.13.1/",
-            "https://jd.advntr.dev/text-minimessage/4.13.1/",
-            "https://jd.papermc.io/velocity/3.0.0/",
-            "https://checkerframework.org/api/",
+            "https://jd.advntr.dev/api/${libs.versions.adventure.get()}/",
+            "https://jd.advntr.dev/text-minimessage/${libs.versions.adventure.get()}/",
             "https://javadoc.io/doc/org.jetbrains/annotations/24.0.1/index.html",
         )
     }
