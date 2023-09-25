@@ -4,7 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
-import io.github._4drian3d.chatregulator.plugin.config.*;
+import io.github._4drian3d.chatregulator.common.configuration.*;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
@@ -15,7 +15,7 @@ public class ConfigurationModule extends AbstractModule {
     @Provides
     private ConfigurationContainer<Configuration> configurationContainer(
             Logger logger,
-            @DataDirectory  Path path
+            @DataDirectory Path path
     ) {
         return ConfigurationContainer.load(
                 logger, path, Configuration.class, "config",

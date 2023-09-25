@@ -8,7 +8,7 @@ import com.spotify.futures.CompletableFutures;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.ConsoleCommandSource;
 import io.github._4drian3d.chatregulator.api.enums.Permission;
-import io.github._4drian3d.chatregulator.plugin.config.*;
+import io.github._4drian3d.chatregulator.common.configuration.*;
 import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.Formatter;
 import io.github._4drian3d.velocityhexlogger.HexLogger;
 

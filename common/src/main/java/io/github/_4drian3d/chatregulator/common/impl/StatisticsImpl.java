@@ -1,6 +1,5 @@
-package io.github._4drian3d.chatregulator.plugin.impl;
+package io.github._4drian3d.chatregulator.common.impl;
 
-import com.google.common.base.Preconditions;
 import io.github._4drian3d.chatregulator.api.Statistics;
 import io.github._4drian3d.chatregulator.api.enums.InfractionType;
 import net.kyori.adventure.text.Component;
@@ -24,7 +23,9 @@ public final class StatisticsImpl implements Statistics, TagResolver {
      * @param type the infraction type
      */
     public void addInfractionCount(@NotNull InfractionType type) {
-        Preconditions.checkArgument(type != InfractionType.GLOBAL);
+        if (type == InfractionType.GLOBAL) {
+            throw new IllegalArgumentException("Invalid InfractionType provided");
+        }
 
         countMap.merge(type, 1, Integer::sum);
     }
@@ -81,6 +82,6 @@ public final class StatisticsImpl implements Statistics, TagResolver {
     public String toString(){
         final StringBuilder builder = new StringBuilder("StatisticsImpl[");
         countMap.forEach(((infractionType, integer) -> builder.append(infractionType).append('=').append(integer)));
-        return builder.append("]").toString();
+        return builder.append(']').toString();
     }
 }

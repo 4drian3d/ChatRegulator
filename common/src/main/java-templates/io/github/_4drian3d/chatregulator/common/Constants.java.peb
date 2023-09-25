@@ -1,11 +1,8 @@
-package io.github._4drian3d.chatregulator.plugin.utils;
-
-import org.jetbrains.annotations.ApiStatus.Internal;
+package io.github._4drian3d.chatregulator.common;
 
 /**
  * Plugin Constants
  */
-@Internal
 public final class Constants {
     /**
      * ChatRegulator Version

@@ -1,8 +1,6 @@
 plugins {
     java
-    alias(libs.plugins.blossom)
     alias(libs.plugins.shadow)
-    alias(libs.plugins.idea.ext)
 }
 
 java {
@@ -12,8 +10,7 @@ java {
 }
 
 dependencies {
-    implementation(libs.configurate)
-    implementation(projects.chatregulatorApi)
+    implementation(projects.chatregulatorCommon)
     implementation(libs.hexlogger)
 
     compileOnly(libs.miniplaceholders)
@@ -27,16 +24,6 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation(libs.mockito)
     testImplementation(libs.velocity)
-}
-
-sourceSets {
-    main {
-        blossom {
-            javaSources {
-                property("version", project.version.toString())
-            }
-        }
-    }
 }
 
 tasks {

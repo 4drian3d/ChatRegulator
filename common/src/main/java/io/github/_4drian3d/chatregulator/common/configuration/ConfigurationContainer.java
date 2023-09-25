@@ -1,4 +1,4 @@
-package io.github._4drian3d.chatregulator.plugin.config;
+package io.github._4drian3d.chatregulator.common.configuration;
 
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -65,7 +65,6 @@ public class ConfigurationContainer<C extends Section> {
                 .defaultOptions(options)
                 .path(path.resolve(file+".conf"))
                 .build();
-
 
         try {
             final CommentedConfigurationNode node = loader.load();

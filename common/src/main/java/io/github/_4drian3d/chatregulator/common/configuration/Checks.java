@@ -1,4 +1,4 @@
-package io.github._4drian3d.chatregulator.plugin.config;
+package io.github._4drian3d.chatregulator.common.configuration;
 
 import io.github._4drian3d.chatregulator.api.enums.*;
 import org.jetbrains.annotations.Nullable;
