@@ -12,8 +12,7 @@ java {
 }
 
 dependencies {
-    implementation(libs.configurate)
-    implementation(projects.chatregulatorApi)
+    implementation(projects.chatregulatorCommon)
     implementation(libs.hexlogger)
 
     compileOnly(libs.miniplaceholders)

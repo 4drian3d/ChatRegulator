@@ -7,10 +7,10 @@ import com.google.inject.name.Named;
 import io.github._4drian3d.chatregulator.api.checks.*;
 import io.github._4drian3d.chatregulator.api.enums.InfractionType;
 import io.github._4drian3d.chatregulator.api.enums.SourceType;
-import io.github._4drian3d.chatregulator.plugin.config.Checks;
+import io.github._4drian3d.chatregulator.common.configuration.Checks;
 import io.github._4drian3d.chatregulator.api.lazy.CheckProvider;
 import io.github._4drian3d.chatregulator.plugin.impl.InfractionPlayerImpl;
-import io.github._4drian3d.chatregulator.plugin.config.Blacklist;
+import io.github._4drian3d.chatregulator.common.configuration.Blacklist;
 import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
 
 public class ProviderModule extends AbstractModule {

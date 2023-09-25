@@ -1,11 +1,11 @@
-package io.github._4drian3d.chatregulator.plugin.config;
+package io.github._4drian3d.chatregulator.common.configuration;
 
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import com.velocitypowered.api.command.CommandSource;
 import io.github._4drian3d.chatregulator.api.enums.*;
 import io.github._4drian3d.chatregulator.api.utils.Commands;
+import net.kyori.adventure.audience.Audience;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
@@ -125,7 +125,7 @@ public final class Configuration implements Section {
             return this.enabled;
         }
 
-        public boolean shouldAnnounce(CommandSource source, String command){
+        public boolean shouldAnnounce(Audience source, String command){
             return ignoredCommands.contains(Commands.getFirstArgument(command))
                     && Permission.BYPASS_COMMAND_SPY.test(source);
         }

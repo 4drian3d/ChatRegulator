@@ -2,7 +2,7 @@ package io.github._4drian3d.chatregulator.plugin.impl;
 
 import com.google.inject.Inject;
 import io.github._4drian3d.chatregulator.api.StringChain;
-import io.github._4drian3d.chatregulator.plugin.config.Checks;
+import io.github._4drian3d.chatregulator.common.configuration.Checks;
 import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
 import org.jetbrains.annotations.NotNull;
 

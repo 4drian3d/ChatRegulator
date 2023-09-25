@@ -3,7 +3,7 @@ package io.github._4drian3d.chatregulator.modules.checks;
 import io.github._4drian3d.chatregulator.api.checks.RegexCheck;
 import io.github._4drian3d.chatregulator.api.enums.ControlType;
 import io.github._4drian3d.chatregulator.api.result.CheckResult;
-import io.github._4drian3d.chatregulator.plugin.config.Blacklist;
+import io.github._4drian3d.chatregulator.common.configuration.Blacklist;
 import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
 import io.github._4drian3d.chatregulator.utils.TestsUtils;
 import org.junit.jupiter.api.DisplayName;

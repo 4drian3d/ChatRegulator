@@ -1,7 +1,7 @@
 package io.github._4drian3d.chatregulator.utils;
 
 import io.github._4drian3d.chatregulator.api.utils.Commands;
-import io.github._4drian3d.chatregulator.plugin.config.Blacklist;
+import io.github._4drian3d.chatregulator.common.configuration.Blacklist;
 import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -2,8 +2,8 @@ package io.github._4drian3d.chatregulator.config;
 
 import java.nio.file.Path;
 
-import io.github._4drian3d.chatregulator.plugin.config.Checks;
-import io.github._4drian3d.chatregulator.plugin.config.Configuration;
+import io.github._4drian3d.chatregulator.common.configuration.Checks;
+import io.github._4drian3d.chatregulator.common.configuration.Configuration;
 import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

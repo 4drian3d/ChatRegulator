@@ -4,6 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
+import io.github._4drian3d.chatregulator.common.configuration.*;
 import io.github._4drian3d.chatregulator.plugin.config.*;
 import org.slf4j.Logger;
 

@@ -1,6 +1,5 @@
-package io.github._4drian3d.chatregulator.plugin.config;
+package io.github._4drian3d.chatregulator.common.configuration;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
