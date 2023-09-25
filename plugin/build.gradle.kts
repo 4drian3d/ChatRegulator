@@ -1,8 +1,6 @@
 plugins {
     java
-    alias(libs.plugins.blossom)
     alias(libs.plugins.shadow)
-    alias(libs.plugins.idea.ext)
 }
 
 java {
@@ -26,16 +24,6 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation(libs.mockito)
     testImplementation(libs.velocity)
-}
-
-sourceSets {
-    main {
-        blossom {
-            javaSources {
-                property("version", project.version.toString())
-            }
-        }
-    }
 }
 
 tasks {

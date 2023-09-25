@@ -11,7 +11,7 @@ import com.velocitypowered.api.command.CommandMeta;
 import com.velocitypowered.api.command.CommandSource;
 import io.github._4drian3d.chatregulator.api.enums.Permission;
 import io.github._4drian3d.chatregulator.plugin.ChatRegulator;
-import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
+import io.github._4drian3d.chatregulator.common.configuration.ConfigurationContainer;
 import io.github._4drian3d.chatregulator.common.configuration.Messages;
 import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.Formatter;
 

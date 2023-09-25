@@ -1,6 +1,5 @@
-package io.github._4drian3d.chatregulator.plugin.config;
+package io.github._4drian3d.chatregulator.common.configuration;
 
-import io.github._4drian3d.chatregulator.common.configuration.Section;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -21,7 +20,6 @@ public class ConfigurationContainer<C extends Section> {
     private final AtomicReference<C> config;
     private final HoconConfigurationLoader loader;
     private final Class<C> clazz;
-    //TODO: Access SLF4J from common module
     private final Logger logger;
 
     private ConfigurationContainer(

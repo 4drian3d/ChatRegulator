@@ -13,7 +13,7 @@ import io.github._4drian3d.chatregulator.api.enums.SourceType;
 import io.github._4drian3d.chatregulator.api.result.CheckResult;
 import io.github._4drian3d.chatregulator.common.configuration.Checks;
 import io.github._4drian3d.chatregulator.common.configuration.Configuration;
-import io.github._4drian3d.chatregulator.plugin.config.ConfigurationContainer;
+import io.github._4drian3d.chatregulator.common.configuration.ConfigurationContainer;
 import io.github._4drian3d.chatregulator.common.configuration.Messages;
 import io.github._4drian3d.chatregulator.plugin.placeholders.PlayerResolver;
 import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.Formatter;

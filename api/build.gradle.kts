@@ -13,7 +13,7 @@ java {
 }
 
 dependencies {
-    compileOnlyApi(libs.adventure)
+    compileOnlyApi(libs.adventure.api)
     compileOnly(libs.caffeine)
 }
 

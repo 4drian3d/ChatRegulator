@@ -23,7 +23,8 @@ mockito = "5.5.0"
 
 [libraries]
 
-adventure = { group = "net.kyori", name = "adventure-api", version.ref = "adventure" }
+adventure-api = { group = "net.kyori", name = "adventure-api", version.ref = "adventure" }
+adventure-minimessage = { group = "net.kyori", name = "adventure-text-minimessage", version.ref = "adventure" }
 velocity = { group = "com.velocitypowered", name = "velocity-api", version.ref = "velocity" }
 bstats = { module = "org.bstats:bstats-velocity", version.ref = "bstats" }
 configurate = { module = "org.spongepowered:configurate-hocon", version.ref = "configurate" }
@@ -35,6 +36,7 @@ mockito = { group = "org.mockito", name = "mockito-core", version.ref = "mockito
 hexlogger = { group = "io.github.4drian3d", name = "velocityhexlogger", version.ref = "hexlogger" }
 futures = { group = "com.spotify", name = "completable-futures", version.ref = "futures" }
 caffeine = { group = "com.github.ben-manes.caffeine", name = "caffeine", version.ref = "caffeine" }
+slf4j = "org.slf4j:slf4j-api:2.0.9"
 
 [plugins]
 
