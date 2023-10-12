@@ -20,7 +20,8 @@ import io.github._4drian3d.chatregulator.plugin.modules.ConfigurationModule;
 import io.github._4drian3d.chatregulator.plugin.modules.PluginModule;
 import io.github._4drian3d.chatregulator.plugin.modules.ProviderModule;
 import io.github._4drian3d.chatregulator.common.Constants;
-import io.github._4drian3d.velocityhexlogger.HexLogger;
+import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
+import org.bstats.velocity.Metrics;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.stream.Stream;
@@ -55,15 +56,18 @@ public final class ChatRegulator implements ChatRegulatorAPI {
     @Inject
     private EventManager eventManager;
     @Inject
-    private HexLogger logger;
+    private ComponentLogger logger;
     @Inject
     private Injector injector;
+    @Inject
+    private Metrics.Factory metricsFactory;
     private final StatisticsImpl statistics = new StatisticsImpl();
     private final PlayerManagerImpl playerManager = new PlayerManagerImpl();
 
     @Subscribe
     public void onProxyInitialization(final ProxyInitializeEvent event) {
         final long start = System.currentTimeMillis();
+        this.metricsFactory.make(this, 19889);
         this.injector = injector.createChildInjector(
                 new ConfigurationModule(),
                 new ProviderModule(),

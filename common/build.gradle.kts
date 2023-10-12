@@ -15,6 +15,7 @@ dependencies {
     api(projects.chatregulatorApi)
     compileOnly(libs.slf4j)
     compileOnly(libs.adventure.minimessage)
+    compileOnly(libs.miniplaceholders)
 }
 
 tasks {

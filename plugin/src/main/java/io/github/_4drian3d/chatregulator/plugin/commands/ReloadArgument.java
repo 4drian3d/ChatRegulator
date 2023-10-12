@@ -10,7 +10,7 @@ import com.velocitypowered.api.proxy.ConsoleCommandSource;
 import io.github._4drian3d.chatregulator.api.enums.Permission;
 import io.github._4drian3d.chatregulator.common.configuration.*;
 import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.Formatter;
-import io.github._4drian3d.velocityhexlogger.HexLogger;
+import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 
 public class ReloadArgument implements Argument {
     @Inject
@@ -24,7 +24,7 @@ public class ReloadArgument implements Argument {
     @Inject
     private ConfigurationContainer<Blacklist> blacklistContainer;
     @Inject
-    private HexLogger logger;
+    private ComponentLogger logger;
 
     @Override
     public CommandNode<CommandSource> node() {

@@ -9,7 +9,6 @@ futures = "0.3.5"
 configurate = "4.1.2"
 assertj = "3.24.2"
 miniplaceholders = "2.2.1"
-hexlogger = "1.0.2"
 bstats = "3.0.2"
 caffeine = "3.1.8"
 
@@ -33,7 +32,6 @@ assetrj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
 
 junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junit" }
 mockito = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
-hexlogger = { group = "io.github.4drian3d", name = "velocityhexlogger", version.ref = "hexlogger" }
 futures = { group = "com.spotify", name = "completable-futures", version.ref = "futures" }
 caffeine = { group = "com.github.ben-manes.caffeine", name = "caffeine", version.ref = "caffeine" }
 slf4j = "org.slf4j:slf4j-api:2.0.9"

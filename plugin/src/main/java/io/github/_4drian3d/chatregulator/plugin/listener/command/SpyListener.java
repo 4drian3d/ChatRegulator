@@ -13,8 +13,8 @@ import io.github._4drian3d.chatregulator.common.configuration.ConfigurationConta
 import io.github._4drian3d.chatregulator.common.configuration.Messages;
 import io.github._4drian3d.chatregulator.plugin.listener.RegulatorExecutor;
 import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.Formatter;
-import io.github._4drian3d.velocityhexlogger.HexLogger;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
@@ -28,7 +28,7 @@ public final class SpyListener implements RegulatorExecutor<CommandExecuteEvent>
     @Inject
     private ProxyServer proxyServer;
     @Inject
-    private HexLogger logger;
+    private ComponentLogger logger;
 
     @Override
     public EventTask executeAsync(final CommandExecuteEvent event) {

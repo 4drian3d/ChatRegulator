@@ -11,7 +11,7 @@ java {
 
 dependencies {
     implementation(projects.chatregulatorCommon)
-    implementation(libs.hexlogger)
+    implementation(libs.bstats)
 
     compileOnly(libs.miniplaceholders)
     compileOnly(libs.futures)
@@ -33,11 +33,10 @@ tasks {
     shadowJar {
         minimize()
         archiveFileName.set("ChatRegulator-${project.version}.jar")
-        relocate("io.github._4drian3d.velocityhexlogger", "io.github._4drian3d.chatregulator.libs.hexlogger")
-        relocate("net.kyori.adventure.text.logger.slf4j", "io.github._4drian3d.chatregulator.libs.component.logger")
         relocate("org.spongepowered.configurate", "io.github._4drian3d.chatregulator.libs.configurate")
         relocate("io.leangen.geantyref", "io.github._4drian3d.chatregulator.libs.geantyref")
         relocate("com.typesafe.config", "io.github._4drian3d.chatregulator.libs.config")
+        relocate("org.bstats", "io.github._4drian3d.chatregulator.libs.bstats")
     }
     test {
         useJUnitPlatform()

@@ -66,7 +66,8 @@ public final class TestPlayer implements Player{
     }
 
     @Override
-    public void clearHeaderAndFooter() {}
+    public void clearPlayerListHeaderAndFooter() {
+    }
 
     @Override
     public ConnectionRequestBuilder createConnectionRequest(RegisteredServer arg0) {
