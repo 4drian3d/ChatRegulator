@@ -33,7 +33,6 @@ tasks {
     shadowJar {
         minimize()
         archiveFileName.set("ChatRegulator-${project.version}.jar")
-        relocate("org.spongepowered.configurate", "io.github._4drian3d.chatregulator.libs.configurate")
         relocate("io.leangen.geantyref", "io.github._4drian3d.chatregulator.libs.geantyref")
         relocate("com.typesafe.config", "io.github._4drian3d.chatregulator.libs.config")
         relocate("org.bstats", "io.github._4drian3d.chatregulator.libs.bstats")

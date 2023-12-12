@@ -16,6 +16,7 @@ public final class StringChainImpl implements StringChain {
     private final AtomicReference<Instant> lastExecuted = new AtomicReference<>(Instant.now());
     @Inject
     private ConfigurationContainer<Checks> checksContainer;
+    @Deprecated
     @Override
     public @NotNull String index(int index) {
         return queue.get(index);
@@ -49,16 +50,38 @@ public final class StringChainImpl implements StringChain {
 
     public void executed(final String string) {
         if (checksContainer != null) {
-            final int similarCount = checksContainer.get().getSpamConfig().getSimilarStringCount();
+            final Checks.Spam spamConfig = checksContainer.get().getSpamConfig();
+            final int similarCount = spamConfig.getSimilarStringCount();
             final int size = queue.size();
+            // If at the moment, the configured limit is negative or non-existent,
+            // it simply deletes the stored information and avoids further checks
+            if (!spamConfig.enabled() || similarCount < 1) {
+                // If there is information in the queue, it is removed to eliminate a possible resource leak
+                if (size != 0) {
+                    queue.clear();
+                }
+                return;
+            }
+            // If there are no elements added to the queue yet, simply add the first one
+            if (size == 0) {
+                addExecution(string);
+                return;
+            }
+            // If the configured limit has changed and there are more elements than configured,
+            // the oldest one is deleted until there are the same number of required elements or less
             if (similarCount < size) {
                 while (similarCount < queue.size() + 1) {
                     queue.removeFirst();
                 }
             } else if (similarCount == size) {
+                // If the configured limit is reached, the oldest element is deleted
                 queue.removeFirst();
             }
         }
+        addExecution(string);
+    }
+
+    private void addExecution(String string) {
         queue.add(string);
         lastExecuted.set(Instant.now());
     }

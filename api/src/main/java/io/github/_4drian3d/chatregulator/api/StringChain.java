@@ -9,6 +9,7 @@ import java.time.Instant;
  * Commands and Messages Execution Chain from a player
  */
 public interface StringChain extends Iterable<@NotNull String> {
+    @Deprecated
     @NotNull String index(final @NonNegative int index);
 
     @NotNull String first();

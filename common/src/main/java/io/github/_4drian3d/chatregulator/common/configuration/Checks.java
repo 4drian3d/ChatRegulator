@@ -209,7 +209,7 @@ public final class Checks implements Section {
         private WarningType warningType = WarningType.MESSAGE;
 
         @Comment("The number of similar commands or chats messages sent by a player to consider as spam")
-        private int similarStringCount = 5;
+        public int similarStringCount = 5;
 
         @Comment("Commands to be executed in the cooldown module")
         private Spam.Commands commands = new Spam.Commands();

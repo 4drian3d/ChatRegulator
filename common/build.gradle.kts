@@ -11,7 +11,7 @@ java {
 }
 
 dependencies {
-    api(libs.configurate)
+    compileOnlyApi(libs.configurate)
     api(projects.chatregulatorApi)
     compileOnly(libs.slf4j)
     compileOnly(libs.adventure.minimessage)
