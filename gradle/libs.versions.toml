@@ -2,7 +2,7 @@ metadata.format.version = "1.1"
 
 [versions]
 
-adventure = "4.14.0"
+adventure = "4.15.0"
 velocity = "3.3.0-SNAPSHOT"
 futures = "0.3.5"
 
