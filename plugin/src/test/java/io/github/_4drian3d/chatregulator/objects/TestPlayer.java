@@ -20,10 +20,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.InetSocketAddress;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public final class TestPlayer implements Player{
     private final boolean op;
@@ -115,6 +112,16 @@ public final class TestPlayer implements Player{
 
     @Override
     public @Nullable ResourcePackInfo getPendingResourcePack() {
+        return null;
+    }
+
+    @Override
+    public Collection<ResourcePackInfo> getAppliedResourcePacks() {
+        return null;
+    }
+
+    @Override
+    public Collection<ResourcePackInfo> getPendingResourcePacks() {
         return null;
     }
 

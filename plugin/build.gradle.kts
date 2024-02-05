@@ -1,6 +1,7 @@
 plugins {
     java
     alias(libs.plugins.shadow)
+    //alias(libs.plugins.runvelocity)
 }
 
 java {
