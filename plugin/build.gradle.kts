@@ -42,6 +42,9 @@ tasks {
             events("passed", "failed")
         }
     }
+    runVelocity {
+        velocityVersion(libs.versions.velocity.get())
+    }
 
     compileJava {
         options.release.set(17)
