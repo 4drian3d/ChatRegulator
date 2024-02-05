@@ -43,10 +43,6 @@ import static net.kyori.adventure.text.minimessage.MiniMessage.miniMessage;
                         optional = true
                 ),
                 @Dependency(
-                        id = "unsignedvelocity",
-                        optional = true
-                ),
-                @Dependency(
                         id = "signedvelocity",
                         optional = true
                 )

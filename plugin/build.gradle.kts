@@ -1,7 +1,7 @@
 plugins {
     java
     alias(libs.plugins.shadow)
-    //alias(libs.plugins.runvelocity)
+    alias(libs.plugins.runvelocity)
 }
 
 java {
@@ -34,8 +34,6 @@ tasks {
     shadowJar {
         minimize()
         archiveFileName.set("ChatRegulator-${project.version}.jar")
-        relocate("io.leangen.geantyref", "io.github._4drian3d.chatregulator.libs.geantyref")
-        relocate("com.typesafe.config", "io.github._4drian3d.chatregulator.libs.config")
         relocate("org.bstats", "io.github._4drian3d.chatregulator.libs.bstats")
     }
     test {
