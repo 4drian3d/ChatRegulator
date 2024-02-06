@@ -34,7 +34,7 @@ junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junit" }
 mockito = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
 futures = { group = "com.spotify", name = "completable-futures", version.ref = "futures" }
 caffeine = { group = "com.github.ben-manes.caffeine", name = "caffeine", version.ref = "caffeine" }
-slf4j = "org.slf4j:slf4j-api:2.0.11"
+slf4j = "org.slf4j:slf4j-api:2.0.12"
 
 [plugins]
 
