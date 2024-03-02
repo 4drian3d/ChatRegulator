@@ -58,4 +58,33 @@ class FloodTest {
 
         assertEquals(expected, result.replaced());
     }
+
+    @ParameterizedTest
+    @CsvSource({
+            "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",
+            " ҉҉҉҉҉҉҉҉҉҉҉҉҉҉҉҉҉҉҉҉҉҉҉҉҉҉҉҉҉҉҉҉҉҉҉҉҉҉҉҉ ҉"
+    })
+    void illegalCharsFloodTest(String str) {
+        final FloodCheck check = FloodCheck.builder()
+                .controlType(ControlType.BLOCK)
+                .limit(3)
+                .build();
+        final CheckResult result = check.check(TestsUtils.dummyPlayer(), str);
+        assertTrue(result.isDenied());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "pls no",
+            "plsnoplsnoplsnoplsnoplsnoplsnoplsnoplsnoplsno",
+            "yeahnosequemásponeraquiparaquenolodetecte"
+    })
+    void shouldNotDetectTest(String string) {
+        final FloodCheck check = FloodCheck.builder()
+                .controlType(ControlType.BLOCK)
+                .limit(3)
+                .build();
+        final CheckResult result = check.check(TestsUtils.dummyPlayer(), string);
+        assertTrue(result.isAllowed());
+    }
 }

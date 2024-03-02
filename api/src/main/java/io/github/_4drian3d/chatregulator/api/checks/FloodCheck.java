@@ -23,7 +23,7 @@ public final class FloodCheck implements Check {
             .maximumSize(3)
             .initialCapacity(1)
             .build(length -> Pattern.compile(
-                    "(\\w)\\1{"+length+",}",
+                    "(.)\\1{"+length+",}",
                     Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE)
             );
     private final Pattern pattern;
