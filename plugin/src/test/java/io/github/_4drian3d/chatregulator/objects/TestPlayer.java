@@ -86,6 +86,18 @@ public final class TestPlayer implements Player{
     }
 
     @Override
+    public void addCustomChatCompletions(@NotNull Collection<String> collection) {
+    }
+
+    @Override
+    public void removeCustomChatCompletions(@NotNull Collection<String> collection) {
+    }
+
+    @Override
+    public void setCustomChatCompletions(@NotNull Collection<String> collection) {
+    }
+
+    @Override
     public Optional<ServerConnection> getCurrentServer() {
         return Optional.empty();
     }

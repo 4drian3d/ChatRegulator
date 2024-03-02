@@ -71,8 +71,7 @@ public final class CommandListener implements RegulatorExecutor<CommandExecuteEv
         return EventTask.resumeWhenComplete(
             LazyDetection.checks(
                     commandProvider,
-                    syntaxProvider,
-                    cooldownProvider
+                    syntaxProvider
             ).detect(infractionPlayer, event.getCommand())
             .exceptionally(ex -> {
                 logger.error("An error occurred while checking initial command checks", ex);
@@ -87,6 +86,7 @@ public final class CommandListener implements RegulatorExecutor<CommandExecuteEv
                 }
 
                 return LazyDetection.checks(
+                        cooldownProvider,
                         unicodeProvider,
                         capsProvider,
                         floodProvider,
