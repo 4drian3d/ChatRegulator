@@ -10,10 +10,13 @@ import java.time.Instant;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public final class StringChainImpl implements StringChain {
     private final LinkedList<String> queue = new LinkedList<>();
     private final AtomicReference<Instant> lastExecuted = new AtomicReference<>(Instant.now());
+    private final Lock lock = new ReentrantLock();
     @Inject
     private ConfigurationContainer<Checks> checksContainer;
     @Deprecated
@@ -49,36 +52,41 @@ public final class StringChainImpl implements StringChain {
     }
 
     public void executed(final String string) {
-        if (checksContainer != null) {
-            final Checks.Spam spamConfig = checksContainer.get().getSpamConfig();
-            final int similarCount = spamConfig.getSimilarStringCount();
-            final int size = queue.size();
-            // If at the moment, the configured limit is negative or non-existent,
-            // it simply deletes the stored information and avoids further checks
-            if (!spamConfig.enabled() || similarCount < 1) {
-                // If there is information in the queue, it is removed to eliminate a possible resource leak
-                if (size != 0) {
-                    queue.clear();
+        lock.lock();
+        try {
+            if (checksContainer != null) {
+                final Checks.Spam spamConfig = checksContainer.get().getSpamConfig();
+                final int similarCount = spamConfig.getSimilarStringCount();
+                final int size = queue.size();
+                // If at the moment, the configured limit is negative or non-existent,
+                // it simply deletes the stored information and avoids further checks
+                if (!spamConfig.enabled() || similarCount < 1) {
+                    // If there is information in the queue, it is removed to eliminate a possible resource leak
+                    if (size != 0) {
+                        queue.clear();
+                    }
+                    return;
                 }
-                return;
-            }
-            // If there are no elements added to the queue yet, simply add the first one
-            if (size == 0) {
-                addExecution(string);
-                return;
-            }
-            // If the configured limit has changed and there are more elements than configured,
-            // the oldest one is deleted until there are the same number of required elements or less
-            if (similarCount < size) {
-                while (similarCount < queue.size() + 1) {
+                // If there are no elements added to the queue yet, simply add the first one
+                if (size == 0) {
+                    addExecution(string);
+                    return;
+                }
+                // If the configured limit has changed and there are more elements than configured,
+                // the oldest one is deleted until there are the same number of required elements or less
+                if (similarCount < size) {
+                    while (similarCount < queue.size() + 1) {
+                        queue.removeFirst();
+                    }
+                } else if (similarCount == size) {
+                    // If the configured limit is reached, the oldest element is deleted
                     queue.removeFirst();
                 }
-            } else if (similarCount == size) {
-                // If the configured limit is reached, the oldest element is deleted
-                queue.removeFirst();
             }
+            addExecution(string);
+        } finally {
+            lock.unlock();
         }
-        addExecution(string);
     }
 
     private void addExecution(String string) {
