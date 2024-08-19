@@ -10,7 +10,9 @@ import net.kyori.adventure.builder.AbstractBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
+import java.text.Normalizer;
 import java.util.Iterator;
+import java.util.Locale;
 
 import static java.util.Objects.requireNonNull;
 
@@ -39,13 +41,13 @@ public final class SpamCheck implements Check {
         String previous = null;
         while(it.hasNext()) {
             actual = it.next();
-            if (previous != null && !actual.equalsIgnoreCase(previous)) {
+            if (previous != null && !actual.equals(previous)) {
                 return CheckResult.allowed();
             }
             previous = actual;
         }
-		
-        if (chain.last().equalsIgnoreCase(string)) {
+
+        if (chain.last().equals(Normalizer.normalize(string.toLowerCase(Locale.ROOT), Normalizer.Form.NFKD))) {
             return CheckResult.denied(type());
         } else {
             return CheckResult.allowed();
