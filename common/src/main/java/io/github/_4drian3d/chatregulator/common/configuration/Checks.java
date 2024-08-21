@@ -162,7 +162,7 @@ public final class Checks implements Section {
         @Setting(value = "control-type")
         private ControlType controlType = ControlType.BLOCK;
 
-        @Comment("Sets the maximum limit of repeated characters for a word not to be considered as Flood")
+        @Comment("Sets the maximum limit of repeated characters or words for a message not to be considered as flood")
         private int limit = 5;
 
         @Comment("Commands to be executed in the flood module")
