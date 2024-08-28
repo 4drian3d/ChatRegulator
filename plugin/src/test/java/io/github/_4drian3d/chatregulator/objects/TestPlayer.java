@@ -1,5 +1,6 @@
 package io.github._4drian3d.chatregulator.objects;
 
+import com.velocitypowered.api.network.ProtocolState;
 import com.velocitypowered.api.network.ProtocolVersion;
 import com.velocitypowered.api.permission.Tristate;
 import com.velocitypowered.api.proxy.ConnectionRequestBuilder;
@@ -7,6 +8,7 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ServerConnection;
 import com.velocitypowered.api.proxy.crypto.IdentifiedKey;
 import com.velocitypowered.api.proxy.messages.ChannelIdentifier;
+import com.velocitypowered.api.proxy.messages.PluginMessageEncoder;
 import com.velocitypowered.api.proxy.player.PlayerSettings;
 import com.velocitypowered.api.proxy.player.ResourcePackInfo;
 import com.velocitypowered.api.proxy.player.TabList;
@@ -14,7 +16,9 @@ import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.util.GameProfile;
 import com.velocitypowered.api.util.GameProfile.Property;
 import com.velocitypowered.api.util.ModInfo;
+import com.velocitypowered.api.util.ServerLink;
 import net.kyori.adventure.identity.Identity;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
@@ -45,6 +49,11 @@ public final class TestPlayer implements Player{
     @Override
     public ProtocolVersion getProtocolVersion() {
         return ProtocolVersion.MINECRAFT_1_18;
+    }
+
+    @Override
+    public ProtocolState getProtocolState() {
+        return null;
     }
 
     @Override
@@ -95,6 +104,26 @@ public final class TestPlayer implements Player{
 
     @Override
     public void setCustomChatCompletions(@NotNull Collection<String> collection) {
+    }
+
+    @Override
+    public void transferToHost(@NotNull InetSocketAddress inetSocketAddress) {
+
+    }
+
+    @Override
+    public void storeCookie(Key key, byte[] bytes) {
+
+    }
+
+    @Override
+    public void requestCookie(Key key) {
+
+    }
+
+    @Override
+    public void setServerLinks(@NotNull List<ServerLink> list) {
+
     }
 
     @Override
@@ -184,6 +213,11 @@ public final class TestPlayer implements Player{
 
     @Override
     public boolean sendPluginMessage(ChannelIdentifier arg0, byte[] arg1) {
+        return false;
+    }
+
+    @Override
+    public boolean sendPluginMessage(@NotNull ChannelIdentifier channelIdentifier, @NotNull PluginMessageEncoder pluginMessageEncoder) {
         return false;
     }
 
