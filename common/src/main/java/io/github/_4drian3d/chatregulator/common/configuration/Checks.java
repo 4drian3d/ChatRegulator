@@ -1,11 +1,13 @@
 package io.github._4drian3d.chatregulator.common.configuration;
 
 import io.github._4drian3d.chatregulator.api.enums.*;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
 
+import java.util.Arrays;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -287,75 +289,164 @@ public final class Checks implements Section {
     }
 
     @ConfigSerializable
-    public static class Unicode implements Toggleable, Warning, Executable, Controllable {
-        @Comment("Enable the Unicode Module")
+    public static class Unicode implements Toggleable, Warning, Executable {
+        @Comment("Enable the unicode module")
         private boolean enabled = true;
 
         @Comment("""
-            Sets the form of warning
-            Available options: TITLE, ACTIONBAR, MESSAGE""")
+                Sets the form of warning
+                Available options: TITLE, ACTIONBAR, MESSAGE""")
         @Setting(value = "warning-type")
         private WarningType warningType = WarningType.MESSAGE;
-
-        @Comment("""
-            Sets the control format
-            Available options: BLOCK, REPLACE""")
-        @Setting(value = "control-type")
-        private ControlType controlType = ControlType.BLOCK;
 
         @Comment("Commands to be executed in the unicode module")
         private Unicode.Commands commands = new Unicode.Commands();
 
-        @Comment("Additional Characters to allow")
+        @Comment("Additional characters to check")
         private Chars additionalChars = new Chars();
 
+        @Comment("Additional unicode blocks to check")
+        private Blocks additionalBlocks = new Blocks();
+
+        @Comment("Additional unicode scripts to check")
+        private Scripts additionalScripts = new Scripts();
+
         @Override
-        public boolean enabled(){
+        public boolean enabled() {
             return this.enabled;
         }
 
         @Override
-        public WarningType getWarningType(){
+        public WarningType getWarningType() {
             return this.warningType;
         }
 
         @Override
-        public CommandsConfig getCommandsConfig(){
+        public CommandsConfig getCommandsConfig() {
             return this.commands;
-        }
-
-        @Override
-        public ControlType getControlType() {
-            return controlType;
         }
 
         public Chars additionalChars() {
             return this.additionalChars;
         }
 
+        public Blocks additionalBlocks() {
+            return this.additionalBlocks;
+        }
+
+        public Scripts additionalScripts() {
+            return this.additionalScripts;
+        }
+
         @ConfigSerializable
         public static class Commands extends CommandsConfig {}
 
         @ConfigSerializable
-        public static class Chars implements Toggleable {
+        public static class Chars implements Toggleable, Controllable {
             @Comment("Enables extra character check")
             private boolean enabled = false;
             @Comment("Sets the additional characters to check")
-            private char[] chars = {'ç'};
+            private String[] chars = {"ç"};
             @Comment("""
-                Sets character checking mode
-                Modes Available:
-                BLACKLIST: If one of the configured characters is detected, the check will be activated as an illegal character
-                WHITELIST: If a character is detected as illegal but is within the configured characters, its detection as an illegal character will be skipped""")
+                    Sets the control format
+                    Available options: BLOCK, REPLACE""")
+            @Setting(value = "control-type")
+            private ControlType controlType = ControlType.BLOCK;
+            @Comment("""
+                    Sets character checking mode
+                    Modes Available:
+                    BLACKLIST: Deny characters that are within the configured characters
+                    WHITELIST: Only allow characters that are within the configured characters""")
             private DetectionMode mode = DetectionMode.BLACKLIST;
 
-            public char[] chars() {
-                return this.chars;
+            public Integer[] chars() {
+                return Arrays.stream(this.chars).map(string -> string.codePointAt(0)).toArray(Integer[]::new);
             }
 
             @Override
             public boolean enabled() {
                 return this.enabled;
+            }
+
+            @Override
+            public ControlType getControlType() {
+                return controlType;
+            }
+
+            public DetectionMode detectionMode() {
+                return this.mode;
+            }
+
+        }
+
+        @ConfigSerializable
+        public static class Blocks implements Toggleable, Controllable {
+            @Comment("Enables extra unicode block check")
+            private boolean enabled = false;
+            @Comment("Sets the additional unicode blocks to check")
+            private @NotNull String[] blocks = {Character.UnicodeBlock.PRIVATE_USE_AREA.toString()};
+            @Comment("""
+                    Sets the control format
+                    Available options: BLOCK, REPLACE""")
+            @Setting(value = "control-type")
+            private ControlType controlType = ControlType.BLOCK;
+            @Comment("""
+                    Sets unicode block checking mode
+                    Modes Available:
+                    BLACKLIST: Deny characters that are within one of the configured unicode blocks
+                    WHITELIST: Only allow characters that are within one of the configured unicode blocks""")
+            private DetectionMode mode = DetectionMode.BLACKLIST;
+
+            public @NotNull Character.UnicodeBlock[] blocks() {
+                return Arrays.stream(this.blocks).map(Character.UnicodeBlock::forName).toArray(Character.UnicodeBlock[]::new);
+            }
+
+            @Override
+            public boolean enabled() {
+                return this.enabled;
+            }
+
+            @Override
+            public ControlType getControlType() {
+                return controlType;
+            }
+
+            public DetectionMode detectionMode() {
+                return this.mode;
+            }
+
+        }
+
+        @ConfigSerializable
+        public static class Scripts implements Toggleable, Controllable {
+            @Comment("Enables extra unicode script check")
+            private boolean enabled = false;
+            @Comment("Sets the additional unicode scripts to check")
+            private @NotNull String[] scripts = {Character.UnicodeScript.UNKNOWN.toString()};
+            @Comment("""
+                    Sets the control format
+                    Available options: BLOCK, REPLACE""")
+            @Setting(value = "control-type")
+            private ControlType controlType = ControlType.BLOCK;
+            @Comment("""
+                    Sets unicode script checking mode
+                    Modes Available:
+                    BLACKLIST: Deny characters that are within one of the configured unicode scripts
+                    WHITELIST: Only allow characters that are within one of the configured unicode scripts""")
+            private DetectionMode mode = DetectionMode.BLACKLIST;
+
+            public @NotNull Character.UnicodeScript[] scripts() {
+                return Arrays.stream(this.scripts).map(Character.UnicodeScript::valueOf).toArray(Character.UnicodeScript[]::new);
+            }
+
+            @Override
+            public boolean enabled() {
+                return this.enabled;
+            }
+
+            @Override
+            public ControlType getControlType() {
+                return controlType;
             }
 
             public DetectionMode detectionMode() {
