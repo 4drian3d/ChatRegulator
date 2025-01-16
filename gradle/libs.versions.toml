@@ -2,22 +2,22 @@ metadata.format.version = "1.1"
 
 [versions]
 
-adventure = "4.15.0"
+adventure = "4.17.0"
 velocity = "3.3.0-SNAPSHOT"
 futures = "0.3.5"
 
 configurate = "4.1.2"
-assertj = "3.25.3"
+assertj = "3.26.3"
 miniplaceholders = "2.2.3"
-bstats = "3.0.2"
+bstats = "3.1.0"
 caffeine = "3.1.8"
 
 blossom = "2.1.0"
 shadow = "8.1.1"
-runvelocity = "2.2.3"
+runvelocity = "2.3.1"
 
-junit = "5.10.2"
-mockito = "5.10.0"
+junit = "5.11.3"
+mockito = "5.14.2"
 
 
 [libraries]
@@ -34,11 +34,11 @@ junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junit" }
 mockito = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
 futures = { group = "com.spotify", name = "completable-futures", version.ref = "futures" }
 caffeine = { group = "com.github.ben-manes.caffeine", name = "caffeine", version.ref = "caffeine" }
-slf4j = "org.slf4j:slf4j-api:2.0.12"
+slf4j = "org.slf4j:slf4j-api:2.0.16"
 
 [plugins]
 
 blossom = { id = "net.kyori.blossom", version.ref = "blossom" }
 shadow = { id = "com.github.johnrengelman.shadow", version.ref = "shadow" }
 runvelocity = { id = "xyz.jpenilla.run-velocity", version.ref = "runvelocity" }
-idea-ext = { id = "org.jetbrains.gradle.plugin.idea-ext", version = "1.1.7" }
+idea-ext = { id = "org.jetbrains.gradle.plugin.idea-ext", version = "1.1.9" }
