@@ -6,7 +6,7 @@ adventure = "4.19.0"
 velocity = "3.3.0-SNAPSHOT"
 futures = "0.3.5"
 
-configurate = "4.1.2"
+configurate = "4.2.0"
 assertj = "3.26.3"
 miniplaceholders = "2.2.3"
 bstats = "3.1.0"
