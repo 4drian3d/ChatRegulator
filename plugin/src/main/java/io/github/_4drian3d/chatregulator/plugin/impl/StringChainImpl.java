@@ -7,23 +7,18 @@ import io.github._4drian3d.chatregulator.common.configuration.ConfigurationConta
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
+import java.util.ArrayDeque;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public final class StringChainImpl implements StringChain {
-    private final LinkedList<String> queue = new LinkedList<>();
+    private final ArrayDeque<String> queue = new ArrayDeque<>();
     private final AtomicReference<Instant> lastExecuted = new AtomicReference<>(Instant.now());
     private final Lock lock = new ReentrantLock();
     @Inject
     private ConfigurationContainer<Checks> checksContainer;
-    @Deprecated
-    @Override
-    public @NotNull String index(int index) {
-        return queue.get(index);
-    }
 
     @Override
     public @NotNull String first() {
