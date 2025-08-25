@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.velocitypowered.api.event.EventTask;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.connection.DisconnectEvent;
+import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import io.github._4drian3d.chatregulator.plugin.ChatRegulator;
 import io.github._4drian3d.chatregulator.plugin.impl.InfractionPlayerImpl;
@@ -14,6 +15,7 @@ import io.github._4drian3d.chatregulator.plugin.listener.RegulatorExecutor;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public final class LeaveListener implements RegulatorExecutor<DisconnectEvent> {
@@ -41,7 +43,8 @@ public final class LeaveListener implements RegulatorExecutor<DisconnectEvent> {
             final Configuration configuration = configurationContainer.get();
 
             proxyServer.getScheduler().buildTask(plugin, () -> {
-                if (proxyServer.getPlayer(uuid).isEmpty()) {
+                final Optional<Player> optPlayer = proxyServer.getPlayer(uuid);
+                if (optPlayer.isEmpty() || !optPlayer.get().isActive()) {
                     logger.debug("The player {} was removed", player.username());
                     playerManager.removePlayer(uuid);
                 }
