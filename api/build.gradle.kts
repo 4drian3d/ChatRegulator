@@ -15,6 +15,7 @@ java {
 dependencies {
     compileOnlyApi(libs.adventure.api)
     compileOnly(libs.caffeine)
+    compileOnlyApi(libs.checkerqual)
 }
 
 tasks {

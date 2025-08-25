@@ -10,13 +10,13 @@ configurate = "4.2.0"
 assertj = "3.27.4"
 miniplaceholders = "3.0.1"
 bstats = "3.1.0"
-caffeine = "3.1.8"
+caffeine = "3.2.2"
 
 blossom = "2.1.0"
 shadow = "9.0.2"
 runvelocity = "2.3.1"
 
-junit = "5.11.3"
+junit = "5.13.4"
 mockito = "5.19.0"
 
 
@@ -35,6 +35,7 @@ mockito = { group = "org.mockito", name = "mockito-core", version.ref = "mockito
 futures = { group = "com.spotify", name = "completable-futures", version.ref = "futures" }
 caffeine = { group = "com.github.ben-manes.caffeine", name = "caffeine", version.ref = "caffeine" }
 slf4j = "org.slf4j:slf4j-api:2.0.17"
+checkerqual = "org.checkerframework:checker-qual:3.49.5"
 
 [plugins]
 
