@@ -218,7 +218,7 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
         builder.resolver(this.resolver);
 
         if (pluginManager.isLoaded("miniplaceholders")) {
-            builder.resolver(MiniPlaceholders.getAudienceGlobalPlaceholders(this));
+            builder.resolver(MiniPlaceholders.audienceGlobalPlaceholders());
         }
 
         return builder.build();

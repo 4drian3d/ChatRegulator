@@ -16,7 +16,7 @@ public final class MiniPlaceholderFormatter extends Formatter {
     ) {
         return MiniMessage.miniMessage().deserialize(
             string,
-            MiniPlaceholders.getGlobalPlaceholders()
+            MiniPlaceholders.globalPlaceholders()
         );
     }
 
@@ -30,7 +30,7 @@ public final class MiniPlaceholderFormatter extends Formatter {
         }
         return MiniMessage.miniMessage().deserialize(
             string,
-            MiniPlaceholders.getAudienceGlobalPlaceholders(audience)
+            MiniPlaceholders.audienceGlobalPlaceholders()
         );
     }
 
@@ -45,7 +45,8 @@ public final class MiniPlaceholderFormatter extends Formatter {
         }
         return MiniMessage.miniMessage().deserialize(
             string,
-            MiniPlaceholders.getAudienceGlobalPlaceholders(audience),
+            audience,
+            MiniPlaceholders.audienceGlobalPlaceholders(),
             extraResolver
         );
     }
@@ -57,18 +58,18 @@ public final class MiniPlaceholderFormatter extends Formatter {
     ) {
         return MiniMessage.miniMessage().deserialize(
             string,
-            MiniPlaceholders.getGlobalPlaceholders(),
+            MiniPlaceholders.globalPlaceholders(),
             extraResolver
         );
     }
 
     @Override
     public TagResolver resolver(Audience audience) {
-        return MiniPlaceholders.getAudienceGlobalPlaceholders(audience);
+        return MiniPlaceholders.audienceGlobalPlaceholders();
     }
 
     @Override
     public TagResolver resolver() {
-        return MiniPlaceholders.getGlobalPlaceholders();
+        return MiniPlaceholders.globalPlaceholders();
     }
 }
