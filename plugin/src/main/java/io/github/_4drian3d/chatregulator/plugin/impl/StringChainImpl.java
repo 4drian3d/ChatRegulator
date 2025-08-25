@@ -6,9 +6,11 @@ import io.github._4drian3d.chatregulator.common.configuration.Checks;
 import io.github._4drian3d.chatregulator.common.configuration.ConfigurationContainer;
 import org.jetbrains.annotations.NotNull;
 
+import java.text.Normalizer;
 import java.time.Instant;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -90,7 +92,7 @@ public final class StringChainImpl implements StringChain {
     }
 
     private void addExecution(String string) {
-        queue.add(string);
+        queue.add(Normalizer.normalize(string.toLowerCase(Locale.ROOT), Normalizer.Form.NFKD));
         lastExecuted.set(Instant.now());
     }
 }
