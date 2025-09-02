@@ -30,6 +30,7 @@ public final class MiniPlaceholderFormatter extends Formatter {
         }
         return MiniMessage.miniMessage().deserialize(
             string,
+            audience,
             MiniPlaceholders.audienceGlobalPlaceholders()
         );
     }
