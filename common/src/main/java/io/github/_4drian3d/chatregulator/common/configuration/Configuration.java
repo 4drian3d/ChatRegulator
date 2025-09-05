@@ -43,7 +43,7 @@ public final class Configuration implements Section {
 
     @Comment("Set the maximum time in which a user's violations will be saved after the user leaves your server")
     @Setting(value = "delete-users-after")
-    private long deleteUsersAfter = 30;
+    private long deleteUsersAfter = 60;
 
     @Comment("""
             Set the time unit of the delete-users-after setting

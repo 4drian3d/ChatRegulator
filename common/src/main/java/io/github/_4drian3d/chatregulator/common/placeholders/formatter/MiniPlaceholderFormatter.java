@@ -73,4 +73,17 @@ public final class MiniPlaceholderFormatter extends Formatter {
     public TagResolver resolver() {
         return MiniPlaceholders.globalPlaceholders();
     }
+
+    public static final boolean MINIPLACEHOLDERS_INSTALLED;
+
+    static {
+        boolean installed;
+        try {
+            Class.forName("io.github.miniplaceholders.api.MiniPlaceholders");
+            installed = true;
+        } catch (Throwable ignored) {
+            installed = false;
+        }
+        MINIPLACEHOLDERS_INSTALLED = installed;
+    }
 }

@@ -9,7 +9,7 @@ import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.ConsoleCommandSource;
 import io.github._4drian3d.chatregulator.api.enums.Permission;
 import io.github._4drian3d.chatregulator.common.configuration.*;
-import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.Formatter;
+import io.github._4drian3d.chatregulator.common.placeholders.formatter.Formatter;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 
 public class ReloadArgument implements Argument {

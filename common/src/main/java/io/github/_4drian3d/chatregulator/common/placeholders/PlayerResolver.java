@@ -1,4 +1,4 @@
-package io.github._4drian3d.chatregulator.plugin.placeholders;
+package io.github._4drian3d.chatregulator.common.placeholders;
 
 import io.github._4drian3d.chatregulator.api.InfractionPlayer;
 import io.github._4drian3d.chatregulator.api.enums.InfractionType;
@@ -13,12 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 
-public final class PlayerResolver implements TagResolver {
-    private final InfractionPlayer player;
-
-    public PlayerResolver(final InfractionPlayer player) {
-        this.player = player;
-    }
+public record PlayerResolver(InfractionPlayer player) implements TagResolver {
 
     @Override
     public @Nullable Tag resolve(

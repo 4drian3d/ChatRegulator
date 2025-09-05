@@ -1,4 +1,4 @@
-package io.github._4drian3d.chatregulator.plugin.placeholders.formatter;
+package io.github._4drian3d.chatregulator.common.placeholders.formatter;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

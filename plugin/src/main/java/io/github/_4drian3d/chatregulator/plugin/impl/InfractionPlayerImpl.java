@@ -17,6 +17,7 @@ import io.github._4drian3d.chatregulator.common.configuration.ConfigurationConta
 import io.github._4drian3d.chatregulator.common.configuration.Messages;
 import io.github._4drian3d.chatregulator.plugin.placeholders.PlayerResolver;
 import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.Formatter;
+import io.github._4drian3d.chatregulator.common.placeholders.formatter.Formatter;
 import io.github._4drian3d.chatregulator.plugin.source.RegulatorCommandSource;
 import io.github.miniplaceholders.api.MiniPlaceholders;
 import net.kyori.adventure.audience.Audience;

@@ -13,7 +13,7 @@ import io.github._4drian3d.chatregulator.plugin.impl.PlayerManagerImpl;
 import io.github._4drian3d.chatregulator.common.configuration.Configuration;
 import io.github._4drian3d.chatregulator.common.configuration.ConfigurationContainer;
 import io.github._4drian3d.chatregulator.common.configuration.Messages;
-import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.Formatter;
+import io.github._4drian3d.chatregulator.common.placeholders.formatter.Formatter;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
