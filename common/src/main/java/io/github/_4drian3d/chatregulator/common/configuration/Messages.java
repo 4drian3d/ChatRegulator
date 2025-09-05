@@ -408,7 +408,7 @@ public final class Messages implements Section {
             "<#3B4371>| <aqua>Regex Infractions:</aqua> <white><regex></white>",
             "<#3B4371>| <aqua>Flood Infractions:</aqua> <white><flood></white>",
             "<#3B4371>| <aqua>Spam Infractions:</aqua> <white><spam></white>",
-            "<#3B4371>| <aqua>Cooldown Infractions:</aqua> <white><spam></white>",
+            "<#3B4371>| <aqua>Cooldown Infractions:</aqua> <white><cooldown></white>",
             "<#3B4371>| <aqua>Unicode Infractions:</aqua> <white><unicode></white>",
             "<#3B4371>| <aqua>Caps Infractions:</aqua> <white><caps></white>",
             "<#3B4371>| <aqua>Command Infractions:</aqua> <white><blocked_command></white>",
