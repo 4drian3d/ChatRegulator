@@ -8,9 +8,8 @@ import io.github._4drian3d.chatregulator.api.PlayerManager;
 import io.github._4drian3d.chatregulator.api.Statistics;
 import io.github._4drian3d.chatregulator.plugin.impl.PlayerManagerImpl;
 import io.github._4drian3d.chatregulator.common.impl.StatisticsImpl;
-import io.github._4drian3d.chatregulator.plugin.placeholders.RegulatorExpansion;
-import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.MiniPlaceholderFormatter;
-import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.Formatter;
+import io.github._4drian3d.chatregulator.common.placeholders.RegulatorExpansion;
+import io.github._4drian3d.chatregulator.common.placeholders.formatter.MiniPlaceholderFormatter;
 import io.github._4drian3d.chatregulator.common.placeholders.formatter.Formatter;
 
 public class PluginModule extends AbstractModule {

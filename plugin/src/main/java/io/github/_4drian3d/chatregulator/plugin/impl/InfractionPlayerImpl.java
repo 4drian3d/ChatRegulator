@@ -1,12 +1,7 @@
 package io.github._4drian3d.chatregulator.plugin.impl;
 
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.velocitypowered.api.plugin.PluginManager;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
-import io.github._4drian3d.chatregulator.api.InfractionCount;
-import io.github._4drian3d.chatregulator.api.InfractionPlayer;
 import io.github._4drian3d.chatregulator.api.enums.InfractionType;
 import io.github._4drian3d.chatregulator.api.enums.Permission;
 import io.github._4drian3d.chatregulator.api.enums.SourceType;
@@ -15,71 +10,52 @@ import io.github._4drian3d.chatregulator.common.configuration.Checks;
 import io.github._4drian3d.chatregulator.common.configuration.Configuration;
 import io.github._4drian3d.chatregulator.common.configuration.ConfigurationContainer;
 import io.github._4drian3d.chatregulator.common.configuration.Messages;
-import io.github._4drian3d.chatregulator.plugin.placeholders.PlayerResolver;
-import io.github._4drian3d.chatregulator.plugin.placeholders.formatter.Formatter;
+import io.github._4drian3d.chatregulator.common.impl.InfractionPlayerBase;
+import io.github._4drian3d.chatregulator.common.impl.StringChainImpl;
 import io.github._4drian3d.chatregulator.common.placeholders.formatter.Formatter;
 import io.github._4drian3d.chatregulator.plugin.source.RegulatorCommandSource;
-import io.github.miniplaceholders.api.MiniPlaceholders;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import net.kyori.adventure.title.Title;
-import net.kyori.adventure.title.TitlePart;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
-import java.util.Objects;
+import java.util.UUID;
+import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
 
-public final class InfractionPlayerImpl implements InfractionPlayer {
-    private final Player player;
-    @Inject
-    private ProxyServer proxyServer;
-    @Inject
-    private PluginManager pluginManager;
-    @Inject
-    private Logger logger;
-    @Inject
-    private ConfigurationContainer<Checks> checksContainer;
-    @Inject
-    private ConfigurationContainer<Configuration> configurationContainer;
-    @Inject
-    private ConfigurationContainer<Messages> messagesContainer;
-    @Inject
-    private Formatter formatter;
-    @Inject
-    private RegulatorCommandSource regulatorSource;
-    @Inject
-    private FileLogger fileLogger;
-    private final StringChainImpl commandChain = new StringChainImpl();
-    private final StringChainImpl chatChain = new StringChainImpl();
-    private final InfractionCount infractionCount = new InfractionCount();
-    private final PlayerResolver resolver = new PlayerResolver(this);
-    private boolean isOnline;
-    private final String username;
+public final class InfractionPlayerImpl extends InfractionPlayerBase {
+    private final ProxyServer proxyServer;
+    private final Logger logger;
+    private final FileLogger fileLogger;
+    private final StringChainImpl commandChain;
+    private final StringChainImpl chatChain;
 
-    public InfractionPlayerImpl(@NotNull Player player, Injector injector) {
-        this.player = requireNonNull(player);
-        if (injector != null) {
-            injector.injectMembers(this);
-            injector.injectMembers(chatChain);
-            injector.injectMembers(commandChain);
-        }
-        this.isOnline = true;
-        this.username = player.getUsername();
+    public InfractionPlayerImpl(
+            @NotNull UUID playerUUID,
+            @NotNull Function<UUID, Audience> playerConverter,
+            ProxyServer proxyServer,
+            ConfigurationContainer<Checks> checksContainer,
+            Logger logger,
+            FileLogger fileLogger
+    ) {
+        super(playerUUID, playerConverter);
+        this.proxyServer = proxyServer;
+        this.logger = logger;
+        this.fileLogger = fileLogger;
+        this.commandChain = new StringChainImpl(checksContainer);
+        this.chatChain = new StringChainImpl(checksContainer);
     }
 
-    @Override
-    public @NotNull String username() {
-        return this.username;
-    }
-
-    @Override
-    public boolean isOnline() {
-        return this.isOnline;
-    }
+//    @VisibleForTesting
+//    public InfractionPlayerImpl(
+//            @NotNull UUID playerUUID,
+//            @NotNull Function<UUID, Audience> playerConverter
+//    ) {
+//        this(playerUUID, null, playerConverter);
+//    }
 
     @Override
     public @NotNull StringChainImpl getChain(final @NotNull SourceType sourceType) {
@@ -89,97 +65,15 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
         };
     }
 
-    public void isOnline(boolean status) {
-        this.isOnline = status;
-    }
-
     @Override
-    public @NotNull InfractionCount getInfractions() {
-        return infractionCount;
-    }
-
-    public Player getPlayer() {
-        return this.player;
-    }
-
-    @Override
-    public @NotNull Audience audience() {
-        return isOnline ? player : Audience.empty();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof final InfractionPlayerImpl other)) {
-            return false;
-        }
-        return Objects.equals(other.username, this.username)
-                && Objects.equals(other.getInfractions(), this.getInfractions());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.player, this.username);
-    }
-
-    @Override
-    public String toString() {
-        return "InfractionPlayerImpl["
-                + "name=" + this.username
-                + ",online=" + this.isOnline
-                + ",infraction-count=" + infractionCount
-                + "]";
-    }
-
-    public boolean isAllowed(final InfractionType type) {
-        return checksContainer.get().isEnabled(type) && !type.getBypassPermission().test(getPlayer());
-    }
-
-    private void sendWarningMessage(final CheckResult.DetectedResult result, final String detected) {
-        final InfractionType type = result.infractionType();
-        final String message = requireNonNull(messagesContainer.get().getWarning(type)).getWarningMessage();
-        if (message.isBlank()) {
-            return;
-        }
-        final TagResolver.Builder builder = TagResolver.builder();
-        builder.resolver(getPlaceholders());
-
-        builder.resolver(Placeholder.unparsed("infraction", detected));
-
-        final TagResolver resolver = builder.build();
-        final Checks.Warning configuration = checksContainer.get().getWarning(type);
-
-        switch (configuration.getWarningType()) {
-            case TITLE -> {
-                final int index = message.indexOf(';');
-                if (index == -1) {
-                    sendSingleTitle(message, resolver, formatter);
-                } else {
-                    final String[] titleParts = message.split(";");
-                    if (titleParts.length == 1) {
-                        sendSingleTitle(titleParts[0], resolver, formatter);
-                        return;
-                    }
-                    showTitle(
-                            Title.title(
-                                    formatter.parse(titleParts[0], this, resolver),
-                                    formatter.parse(titleParts[1], this, resolver)
-                            )
-                    );
-                }
-            }
-            case ACTIONBAR -> sendActionBar(formatter.parse(message, this, resolver));
-            case MESSAGE -> sendMessage(formatter.parse(message, this, resolver));
-        }
-    }
-
-    private void sendSingleTitle(String title, TagResolver resolver, Formatter formatter) {
-        sendTitlePart(TitlePart.SUBTITLE, formatter.parse(title, resolver));
-    }
-
-    private void sendAlertMessage(final CheckResult.DetectedResult result, final String original) {
+    protected void sendAlertMessage(
+            final ConfigurationContainer<Checks> checksContainer,
+            final ConfigurationContainer<Messages> messagesContainer,
+            final ConfigurationContainer<Configuration> configurationContainer,
+            final Formatter formatter,
+            final CheckResult.DetectedResult result,
+            final String original
+    ) {
         final InfractionType type = result.infractionType();
         final Messages.Alert messages = requireNonNull(messagesContainer.get().getAlert(type));
         final String alertMessage = messages.getAlertMessage();
@@ -206,7 +100,7 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
         }
 
         if (configurationContainer.get().getLog().warningLog()) {
-            regulatorSource.sendMessage(message);
+            RegulatorCommandSource.INSTANCE.sendMessage(message);
         }
 
         if (fileLogger != null) {
@@ -214,47 +108,13 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
         }
     }
 
-    public @NotNull TagResolver getPlaceholders() {
-        final TagResolver.Builder builder = TagResolver.builder();
-        builder.resolver(this.resolver);
-
-        if (pluginManager.isLoaded("miniplaceholders")) {
-            builder.resolver(MiniPlaceholders.audienceGlobalPlaceholders());
-        }
-
-        return builder.build();
-    }
-
-    public void sendResetMessage(Audience sender, InfractionType type) {
-        if (sender instanceof InfractionPlayerImpl p && p.isOnline()) {
-            sender = requireNonNull(p.getPlayer());
-        }
-        final TagResolver resolver = getPlaceholders();
-
-        Messages.Reset messages = messagesContainer.get().getReset(type);
-        sender.sendMessage(formatter.parse(messages.getResetMessage(), sender, resolver));
-    }
-
-    public void debug(String string, InfractionType detection) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("User Detected: {}", username());
-            logger.debug("Detection: {}", detection);
-            logger.debug("String: {}", string);
-        }
-    }
-
-    public void onDetection(final CheckResult.DetectedResult result, final String string) {
-        this.sendWarningMessage(result, string);
-        this.sendAlertMessage(result, string);
-        this.getInfractions().addViolation(result.infractionType());
-        this.executeCommands(result);
-        this.debug(string, result.infractionType());
-    }
-
-    private void executeCommands(final @NotNull CheckResult.DetectedResult result) {
+    @Override
+    protected void executeCommands(
+            final ConfigurationContainer<Checks> checksContainer,
+            final CheckResult.@NotNull DetectedResult result
+    ) {
         final InfractionType type = result.infractionType();
-        final Player player = getPlayer();
-        if (player == null) {
+        if (!(playerProvider.getAudience() instanceof final Player player)) {
             return;
         }
 
@@ -268,7 +128,7 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
                 final String commandToExecute = command.replace("<player>", username())
                         .replace("<server>", serverName);
                 proxyServer.getCommandManager()
-                        .executeAsync(regulatorSource, commandToExecute)
+                        .executeAsync(RegulatorCommandSource.INSTANCE, commandToExecute)
                         .handle((status, ex) -> {
                             if (ex != null) {
                                 logger.warn("Error executing command {}", commandToExecute, ex);
@@ -279,5 +139,26 @@ public final class InfractionPlayerImpl implements InfractionPlayer {
                         });
             }
         }
+    }
+
+    public void debug(String string, InfractionType detection) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("User Detected: {}", username());
+            logger.debug("Detection: {}", detection);
+            logger.debug("String: {}", string);
+        }
+    }
+
+    @Override
+    public void onDetection(
+            final ConfigurationContainer<Checks> checksContainer,
+            final ConfigurationContainer<Messages> messagesContainer,
+            final ConfigurationContainer<Configuration> configurationContainer,
+            final Formatter formatter,
+            final CheckResult.DetectedResult result,
+            final String string
+    ) {
+        super.onDetection(checksContainer, messagesContainer, configurationContainer, formatter, result, string);
+        debug(string, result.infractionType());
     }
 }

@@ -23,7 +23,7 @@ public class ProviderModule extends AbstractModule {
         return player -> {
             InfractionPlayerImpl infractionPlayer = (InfractionPlayerImpl) player;
             final Checks configuration = configurationContainer.get();
-            if (infractionPlayer.isAllowed(InfractionType.REGEX) && configuration.isEnabled(InfractionType.REGEX)) {
+            if (infractionPlayer.canBeTestBy(configurationContainer, InfractionType.REGEX)) {
                 return RegexCheck.builder()
                         .blockedPatterns(blacklistContainer.get().getBlockedPatterns())
                         .controlType(configuration.getRegexConfig().getControlType())
@@ -39,7 +39,7 @@ public class ProviderModule extends AbstractModule {
         return player -> {
             final InfractionPlayerImpl infractionPlayer = (InfractionPlayerImpl) player;
             final Checks.Caps configuration = configurationContainer.get().getCapsConfig();
-            if (infractionPlayer.isAllowed(InfractionType.CAPS) && configuration.enabled()) {
+            if (infractionPlayer.canBeTestBy(configurationContainer, InfractionType.CAPS)) {
                 return CapsCheck.builder()
                         .limit(configuration.limit())
                         .controlType(configuration.getControlType())
@@ -58,8 +58,7 @@ public class ProviderModule extends AbstractModule {
     ) {
         return player -> {
             final InfractionPlayerImpl infractionPlayer = (InfractionPlayerImpl) player;
-            final Checks configuration = configurationContainer.get();
-            if (infractionPlayer.isAllowed(InfractionType.BLOCKED_COMMAND) && configuration.isEnabled(InfractionType.BLOCKED_COMMAND)) {
+            if (infractionPlayer.canBeTestBy(configurationContainer, InfractionType.BLOCKED_COMMAND)) {
                 return CommandCheck.builder()
                         .blockedCommands(blacklistContainer.get().getBlockedCommands())
                         .build();
@@ -74,7 +73,7 @@ public class ProviderModule extends AbstractModule {
         return player -> {
             final InfractionPlayerImpl infractionPlayer = (InfractionPlayerImpl) player;
             final Checks configuration = configurationContainer.get();
-            if (infractionPlayer.isAllowed(InfractionType.FLOOD) && configuration.isEnabled(InfractionType.FLOOD)) {
+            if (infractionPlayer.canBeTestBy(configurationContainer, InfractionType.FLOOD)) {
                 return FloodCheck.builder()
                         .limit(configuration.getFloodConfig().getLimit())
                         .controlType(configuration.getFloodConfig().getControlType())
@@ -91,7 +90,7 @@ public class ProviderModule extends AbstractModule {
         return player -> {
             final InfractionPlayerImpl infractionPlayer = (InfractionPlayerImpl) player;
             final Checks configuration = configurationContainer.get();
-            if (infractionPlayer.isAllowed(InfractionType.SPAM) && configuration.isEnabled(InfractionType.SPAM)) {
+            if (infractionPlayer.canBeTestBy(configurationContainer, InfractionType.SPAM)) {
                 return SpamCheck.builder()
                         .source(SourceType.COMMAND)
                         .similarLimit(configuration.getSpamConfig().getSimilarStringCount())
@@ -108,7 +107,7 @@ public class ProviderModule extends AbstractModule {
         return player -> {
             final InfractionPlayerImpl infractionPlayer = (InfractionPlayerImpl) player;
             final Checks configuration = configurationContainer.get();
-            if (infractionPlayer.isAllowed(InfractionType.SPAM) && configuration.isEnabled(InfractionType.SPAM)) {
+            if (infractionPlayer.canBeTestBy(configurationContainer, InfractionType.SPAM)) {
                 return SpamCheck.builder()
                         .source(SourceType.CHAT)
                         .similarLimit(configuration.getSpamConfig().getSimilarStringCount())
@@ -124,7 +123,7 @@ public class ProviderModule extends AbstractModule {
         return player -> {
             final InfractionPlayerImpl infractionPlayer = (InfractionPlayerImpl) player;
             final Checks configuration = configurationContainer.get();
-            if (infractionPlayer.isAllowed(InfractionType.SYNTAX) && configuration.isEnabled(InfractionType.SYNTAX)) {
+            if (infractionPlayer.canBeTestBy(configurationContainer, InfractionType.SYNTAX)) {
                 return SyntaxCheck.builder()
                         .allowedCommands(configuration.getSyntaxConfig().getAllowedCommands())
                         .build();
@@ -140,7 +139,7 @@ public class ProviderModule extends AbstractModule {
         return player -> {
             final InfractionPlayerImpl infractionPlayer = (InfractionPlayerImpl) player;
             final Checks.Cooldown config = configurationContainer.get().getCooldownConfig();
-            if (infractionPlayer.isAllowed(InfractionType.COOLDOWN) && config.enabled()) {
+            if (infractionPlayer.canBeTestBy(configurationContainer, InfractionType.COOLDOWN)) {
                 return CooldownCheck.builder()
                         .limit(config.limit())
                         .timeUnit(config.unit())
@@ -158,7 +157,7 @@ public class ProviderModule extends AbstractModule {
         return player -> {
             final InfractionPlayerImpl infractionPlayer = (InfractionPlayerImpl) player;
             final Checks.Cooldown config = configurationContainer.get().getCooldownConfig();
-            if (infractionPlayer.isAllowed(InfractionType.COOLDOWN) && config.enabled()) {
+            if (infractionPlayer.canBeTestBy(configurationContainer, InfractionType.COOLDOWN)) {
                 return CooldownCheck.builder()
                         .limit(config.limit())
                         .timeUnit(config.unit())
@@ -175,7 +174,7 @@ public class ProviderModule extends AbstractModule {
         return player -> {
             final InfractionPlayerImpl infractionPlayer = (InfractionPlayerImpl) player;
             final Checks.Unicode config = configurationContainer.get().getUnicodeConfig();
-            if (infractionPlayer.isAllowed(InfractionType.UNICODE) && config.enabled()) {
+            if (infractionPlayer.canBeTestBy(configurationContainer, InfractionType.UNICODE)) {
                 if (config.additionalChars().enabled()) {
                     return UnicodeCheck.builder()
                             .characters(config.additionalChars().chars())

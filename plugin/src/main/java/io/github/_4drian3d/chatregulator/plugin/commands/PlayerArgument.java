@@ -64,7 +64,7 @@ public class PlayerArgument implements Argument {
                             final Messages.General generalMessages = messagesContainer.get().getGeneralMessages();
 
                             proxyServer.getPlayer(arg).ifPresentOrElse(player -> {
-                                final InfractionPlayerImpl infractionPlayer = playerManager.getPlayer(player);
+                                final InfractionPlayerImpl infractionPlayer = playerManager.getPlayer(player.getUniqueId());
                                 TagResolver placeholders = infractionPlayer.getPlaceholders();
                                 sendLines(source, generalMessages.getPlayerFormat(), placeholders, formatter);
                             }, () -> playerManager.getPlayers()

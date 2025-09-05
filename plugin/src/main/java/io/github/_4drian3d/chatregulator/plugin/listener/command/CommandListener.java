@@ -11,6 +11,9 @@ import io.github._4drian3d.chatregulator.api.event.CommandInfractionEvent;
 import io.github._4drian3d.chatregulator.api.result.CheckResult;
 import io.github._4drian3d.chatregulator.api.utils.Commands;
 import io.github._4drian3d.chatregulator.api.lazy.CheckProvider;
+import io.github._4drian3d.chatregulator.common.configuration.Checks;
+import io.github._4drian3d.chatregulator.common.configuration.Messages;
+import io.github._4drian3d.chatregulator.common.placeholders.formatter.Formatter;
 import io.github._4drian3d.chatregulator.plugin.impl.InfractionPlayerImpl;
 import io.github._4drian3d.chatregulator.plugin.impl.PlayerManagerImpl;
 import io.github._4drian3d.chatregulator.common.configuration.Configuration;
@@ -25,6 +28,12 @@ import java.util.concurrent.CompletableFuture;
 public final class CommandListener implements RegulatorExecutor<CommandExecuteEvent> {
     @Inject
     private ConfigurationContainer<Configuration> configurationContainer;
+    @Inject
+    private ConfigurationContainer<Checks> checksContainer;
+    @Inject
+    private ConfigurationContainer<Messages> messagesContainer;
+    @Inject
+    private Formatter formatter;
     @Inject
     private PlayerManagerImpl playerManager;
     @Inject
@@ -66,7 +75,7 @@ public final class CommandListener implements RegulatorExecutor<CommandExecuteEv
             return null;
         }
 
-        final InfractionPlayerImpl infractionPlayer = playerManager.getPlayer(player);
+        final InfractionPlayerImpl infractionPlayer = playerManager.getPlayer(player.getUniqueId());
 
         return EventTask.resumeWhenComplete(
             LazyDetection.checks(
@@ -104,13 +113,13 @@ public final class CommandListener implements RegulatorExecutor<CommandExecuteEv
                 } else {
                     if (result instanceof final CheckResult.DeniedCheckResult deniedResult) {
                         this.eventManager.fireAndForget(new CommandInfractionEvent(infractionPlayer, deniedResult.infractionType(), result, event.getCommand()));
-                        infractionPlayer.onDetection(deniedResult, event.getCommand());
+                        infractionPlayer.onDetection(checksContainer, messagesContainer, configurationContainer, formatter, deniedResult, event.getCommand());
                         event.setResult(CommandExecuteEvent.CommandResult.denied());
                     } else if (result instanceof final CheckResult.ReplaceCheckResult replaceResult) {
                         this.eventManager.fireAndForget(new CommandInfractionEvent(infractionPlayer, replaceResult.infractionType(), result, event.getCommand()));
                         final String replacedCommand = replaceResult.replaced();
                         infractionPlayer.getChain(SourceType.COMMAND).executed(replacedCommand);
-                        infractionPlayer.onDetection(replaceResult, event.getCommand());
+                        infractionPlayer.onDetection(checksContainer, messagesContainer, configurationContainer, formatter, replaceResult, event.getCommand());
                         event.setResult(CommandExecuteEvent.CommandResult.command(replacedCommand));
                     } else {
                         infractionPlayer.getChain(SourceType.COMMAND).executed(event.getCommand());

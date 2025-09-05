@@ -57,10 +57,10 @@ public class ResetArgument implements Argument {
                                 );
                                 return Command.SINGLE_SUCCESS;
                             }
-                            final InfractionPlayerImpl p = playerManager.getPlayer(player);
+                            final InfractionPlayerImpl p = playerManager.getPlayer(player.getUniqueId());
 
                             p.getInfractions().resetViolations(InfractionType.GLOBAL);
-                            p.sendResetMessage(cmd.getSource(), InfractionType.GLOBAL);
+                            p.sendResetMessage(messagesContainer, formatter, cmd.getSource(), InfractionType.GLOBAL);
                             return Command.SINGLE_SUCCESS;
                         })
                         .then(subReset("regex", InfractionType.REGEX, Permission.COMMAND_RESET_REGEX))
@@ -91,9 +91,9 @@ public class ResetArgument implements Argument {
                         );
                         return Command.SINGLE_SUCCESS;
                     }
-                    InfractionPlayerImpl p = playerManager.getPlayer(player);
+                    InfractionPlayerImpl p = playerManager.getPlayer(player.getUniqueId());
                     p.getInfractions().resetViolations(type);
-                    p.sendResetMessage(cmd.getSource(), type);
+                    p.sendResetMessage(messagesContainer, formatter, cmd.getSource(), type);
                     return Command.SINGLE_SUCCESS;
                 }).build();
     }

@@ -1,4 +1,4 @@
-package io.github._4drian3d.chatregulator.plugin.placeholders.formatter;
+package io.github._4drian3d.chatregulator.common.placeholders.formatter;
 
 import io.github.miniplaceholders.api.MiniPlaceholders;
 import net.kyori.adventure.audience.Audience;

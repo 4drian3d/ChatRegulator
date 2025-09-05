@@ -3,22 +3,29 @@ package io.github._4drian3d.chatregulator.plugin.impl;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import io.github._4drian3d.chatregulator.api.PlayerManager;
+import io.github._4drian3d.chatregulator.common.configuration.Checks;
+import io.github._4drian3d.chatregulator.common.configuration.ConfigurationContainer;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
 
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.UUID;
 
 public final class PlayerManagerImpl implements PlayerManager {
     private final Cache<UUID, InfractionPlayerImpl> infractionPlayers = Caffeine.newBuilder()
             .weakKeys().build();
     @Inject
-    private Injector injector;
+    private Logger logger;
+    @Inject
+    private FileLogger fileLogger;
     @Inject
     private ProxyServer proxyServer;
+    @Inject
+    private ConfigurationContainer<Checks> checksContainer;
 
     @Override
     public @NotNull InfractionPlayerImpl getPlayer(final @NotNull UUID uuid) {
@@ -26,14 +33,12 @@ public final class PlayerManagerImpl implements PlayerManager {
         if (infractionPlayer != null) {
             return infractionPlayer;
         }
-        final Player player = proxyServer.getPlayer(uuid).orElseThrow();
-        infractionPlayers.put(uuid, infractionPlayer = new InfractionPlayerImpl(player, injector));
+        infractionPlayers.put(uuid, infractionPlayer = new InfractionPlayerImpl(
+                uuid, (playerUUID) -> proxyServer.getPlayer(playerUUID).orElse(null),
+                proxyServer, checksContainer, logger, fileLogger
+        ));
 
         return infractionPlayer;
-    }
-
-    public InfractionPlayerImpl getPlayer(final Player player) {
-        return infractionPlayers.get(player.getUniqueId(), (id) -> new InfractionPlayerImpl(player, injector));
     }
 
     public void removePlayer(final UUID uuid) {
@@ -42,5 +47,9 @@ public final class PlayerManagerImpl implements PlayerManager {
 
     public Collection<InfractionPlayerImpl> getPlayers() {
         return infractionPlayers.asMap().values();
+    }
+
+    public Iterator<Map.Entry<UUID, InfractionPlayerImpl>> iterator() {
+        return infractionPlayers.asMap().entrySet().iterator();
     }
 }

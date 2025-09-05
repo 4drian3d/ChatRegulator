@@ -19,6 +19,8 @@ import com.velocitypowered.api.util.ModInfo;
 import com.velocitypowered.api.util.ServerLink;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.pointer.Pointers;
+import net.kyori.adventure.pointer.PointersSupplier;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
@@ -256,4 +258,12 @@ public final class TestPlayer implements Player{
         return null;
     }
 
+    @Override
+    public @NotNull Pointers pointers() {
+        return POINTER_SUPPLIER.view(this);
+    }
+
+    private static final PointersSupplier<TestPlayer> POINTER_SUPPLIER = PointersSupplier.<TestPlayer>builder()
+            .resolving(Identity.NAME, TestPlayer::getUsername)
+            .build();
 }

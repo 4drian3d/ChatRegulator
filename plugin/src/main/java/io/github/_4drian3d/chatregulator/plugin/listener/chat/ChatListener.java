@@ -10,6 +10,9 @@ import io.github._4drian3d.chatregulator.api.enums.SourceType;
 import io.github._4drian3d.chatregulator.api.event.ChatInfractionEvent;
 import io.github._4drian3d.chatregulator.api.result.CheckResult;
 import io.github._4drian3d.chatregulator.api.lazy.CheckProvider;
+import io.github._4drian3d.chatregulator.common.configuration.Checks;
+import io.github._4drian3d.chatregulator.common.configuration.Messages;
+import io.github._4drian3d.chatregulator.common.placeholders.formatter.Formatter;
 import io.github._4drian3d.chatregulator.plugin.impl.InfractionPlayerImpl;
 import io.github._4drian3d.chatregulator.plugin.impl.PlayerManagerImpl;
 import io.github._4drian3d.chatregulator.api.lazy.LazyDetection;
@@ -24,6 +27,12 @@ import org.slf4j.Logger;
 public final class ChatListener implements RegulatorExecutor<PlayerChatEvent> {
     @Inject
     private ConfigurationContainer<Configuration> configurationContainer;
+    @Inject
+    private ConfigurationContainer<Checks> checksContainer;
+    @Inject
+    private ConfigurationContainer<Messages> messagesContainer;
+    @Inject
+    private Formatter formatter;
     @Inject
     private PlayerManagerImpl playerManager;
     @Inject
@@ -51,7 +60,7 @@ public final class ChatListener implements RegulatorExecutor<PlayerChatEvent> {
             return null;
         }
 
-        final InfractionPlayerImpl player = playerManager.getPlayer(event.getPlayer());
+        final InfractionPlayerImpl player = playerManager.getPlayer(event.getPlayer().getUniqueId());
 
         return EventTask.resumeWhenComplete(
                 LazyDetection.checks(
@@ -69,7 +78,7 @@ public final class ChatListener implements RegulatorExecutor<PlayerChatEvent> {
                 }).thenAccept(checkResult -> {
                     if (checkResult instanceof final CheckResult.DeniedCheckResult deniedResult) {
                         this.eventManager.fireAndForget(new ChatInfractionEvent(player, deniedResult.infractionType(), checkResult, event.getMessage()));
-                        player.onDetection(deniedResult, event.getMessage());
+                        player.onDetection(checksContainer, messagesContainer, configurationContainer, formatter, deniedResult, event.getMessage());
                         event.setResult(ChatResult.denied());
                     } else if (checkResult instanceof final CheckResult.ReplaceCheckResult replaceResult) {
                         String finalMessage = replaceResult.replaced();
@@ -80,7 +89,7 @@ public final class ChatListener implements RegulatorExecutor<PlayerChatEvent> {
                         }
                         player.getChain(SourceType.CHAT).executed(event.getMessage());
                         this.eventManager.fireAndForget(new ChatInfractionEvent(player, replaceResult.infractionType(), checkResult, event.getMessage()));
-                        player.onDetection(replaceResult, event.getMessage());
+                        player.onDetection(checksContainer, messagesContainer, configurationContainer, formatter, replaceResult, event.getMessage());
                         event.setResult(ChatResult.message(finalMessage));
                     } else {
                         player.getChain(SourceType.CHAT).executed(event.getMessage());

@@ -31,7 +31,7 @@ public class StatsArgument implements Argument {
                 .executes(cmd -> {
                     final TagResolver resolver;
                     if (cmd.getSource() instanceof Player player) {
-                        InfractionPlayerImpl infractionPlayer = playerManager.getPlayer(player);
+                        InfractionPlayerImpl infractionPlayer = playerManager.getPlayer(player.getUniqueId());
                         resolver = infractionPlayer.getPlaceholders();
                     } else {
                         resolver = statistics;
