@@ -139,7 +139,7 @@ public final class CommandListener implements RegulatorExecutor<CommandExecuteEv
     }
 
     @Override
-    public PostOrder postOrder() {
-        return PostOrder.EARLY;
+    public short order() {
+        return 1442;
     }
 }

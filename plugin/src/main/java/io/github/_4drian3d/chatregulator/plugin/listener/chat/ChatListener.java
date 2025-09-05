@@ -107,8 +107,8 @@ public final class ChatListener implements RegulatorExecutor<PlayerChatEvent> {
     }
 
     @Override
-    public PostOrder postOrder() {
-        return PostOrder.EARLY;
+    public short order() {
+        return 1442;
     }
 
     public static @NotNull String applyFormat(final @NotNull String string, Configuration.Formatter config) {

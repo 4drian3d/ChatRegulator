@@ -3,7 +3,6 @@ package io.github._4drian3d.chatregulator.plugin.listener.command;
 import com.google.inject.Inject;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.event.EventTask;
-import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.command.CommandExecuteEvent;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
@@ -69,7 +68,7 @@ public final class SpyListener implements RegulatorExecutor<CommandExecuteEvent>
     }
 
     @Override
-    public PostOrder postOrder() {
-        return PostOrder.LAST;
+    public short order() {
+        return -32114;
     }
 }
