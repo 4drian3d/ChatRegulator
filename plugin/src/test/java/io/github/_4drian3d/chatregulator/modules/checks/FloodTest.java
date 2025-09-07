@@ -46,7 +46,8 @@ class FloodTest {
     @CsvSource({
             "gaaaaaaaa causa, ga causa",
             "helllllllllllllllllllllllllllllllllllllllllllllo, helo",
-            "holabcdefghijkaaaaaaabc, holabcdefghijkabc"
+            "holabcdefghijkaaaaaaabc, holabcdefghijkabc",
+            "plsnoplsnoplsnoplsnoplsnoplsnoplsnoplasnoplsno, plsnoplasnoplsno"
     })
     void testTest(String original, String expected) {
         final FloodCheck check = FloodCheck.builder()
@@ -76,7 +77,7 @@ class FloodTest {
     @ParameterizedTest
     @CsvSource({
             "pls no",
-            "plsnoplsnoplsnoplsnoplsnoplsnoplsnoplsnoplsno",
+            "aplsnopblsnoplcsnoplsdnoplsenoplsnfopalsnopblsnoplscno",
             "yeahnosequemásponeraquiparaquenolodetecte"
     })
     void shouldNotDetectTest(String string) {
