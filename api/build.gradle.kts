@@ -36,7 +36,7 @@ tasks {
 mavenPublishing {
     publishToMavenCentral()
     signAllPublications()
-    coordinates(project.group as String, "miniplaceholders-api", project.version as String)
+    coordinates(project.group as String, "chatregulator-api", project.version as String)
 
     pom {
         name.set(project.name)
@@ -45,9 +45,8 @@ mavenPublishing {
         url.set("https://github.com/4drian3d/ChatRegulator")
         licenses {
             license {
-                name.set("The Apache License, Version 2.0")
-                url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
-                distribution.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                name.set("GNU General Public License version 3 or later")
+                url.set("https://opensource.org/licenses/GPL-3.0")
             }
         }
         developers {
