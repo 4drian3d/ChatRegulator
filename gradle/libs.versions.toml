@@ -14,7 +14,7 @@ caffeine = "3.2.2"
 
 blossom = "2.1.0"
 shadow = "9.2.2"
-runvelocity = "3.0.0"
+runvelocity = "3.0.1"
 
 junit = "6.0.0"
 mockito = "5.20.0"
