@@ -35,7 +35,7 @@ mockito = { group = "org.mockito", name = "mockito-core", version.ref = "mockito
 futures = { group = "com.spotify", name = "completable-futures", version.ref = "futures" }
 caffeine = { group = "com.github.ben-manes.caffeine", name = "caffeine", version.ref = "caffeine" }
 slf4j = "org.slf4j:slf4j-api:2.0.17"
-checkerqual = "org.checkerframework:checker-qual:3.52.0"
+checkerqual = "org.checkerframework:checker-qual:3.52.1"
 
 [plugins]
 
