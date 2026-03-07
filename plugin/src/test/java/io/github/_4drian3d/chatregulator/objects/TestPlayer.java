@@ -1,5 +1,6 @@
 package io.github._4drian3d.chatregulator.objects;
 
+import com.velocitypowered.api.network.HandshakeIntent;
 import com.velocitypowered.api.network.ProtocolState;
 import com.velocitypowered.api.network.ProtocolVersion;
 import com.velocitypowered.api.permission.Tristate;
@@ -59,6 +60,11 @@ public final class TestPlayer implements Player{
     }
 
     @Override
+    public HandshakeIntent getHandshakeIntent() {
+        return HandshakeIntent.LOGIN;
+    }
+
+    @Override
     public InetSocketAddress getRemoteAddress() {
         return new InetSocketAddress(404);
     }
@@ -66,6 +72,11 @@ public final class TestPlayer implements Player{
     @Override
     public Optional<InetSocketAddress> getVirtualHost() {
         return Optional.of(new InetSocketAddress(404));
+    }
+
+    @Override
+    public Optional<String> getRawVirtualHost() {
+        return Optional.empty();
     }
 
     @Override

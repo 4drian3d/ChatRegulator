@@ -1,13 +1,13 @@
 package io.github._4drian3d.chatregulator.plugin.impl;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.scheduler.ScheduledTask;
 import io.github._4drian3d.chatregulator.common.configuration.Configuration;
 import io.github._4drian3d.chatregulator.common.configuration.ConfigurationContainer;
 import io.github._4drian3d.chatregulator.plugin.ChatRegulator;
 
-import javax.inject.Singleton;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
