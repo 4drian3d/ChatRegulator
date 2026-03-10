@@ -1,4 +1,4 @@
-package io.github._4drian3d.chatregulator.objects;
+package io.github._4drian3d.chatregulator.object;
 
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.identity.Identity;

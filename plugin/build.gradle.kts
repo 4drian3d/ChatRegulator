@@ -24,11 +24,6 @@ dependencies {
     testImplementation(platform(libs.junit.bom))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testImplementation(libs.mockito)
-    testImplementation(libs.slf4j)
-    testImplementation(libs.adventure.api)
-    testImplementation(libs.adventure.minimessage)
-    testImplementation(libs.velocity)
 }
 
 tasks {
@@ -39,12 +34,6 @@ tasks {
         minimize()
         archiveFileName.set("ChatRegulator-${project.version}.jar")
         relocate("org.bstats", "io.github._4drian3d.chatregulator.libs.bstats")
-    }
-    test {
-        useJUnitPlatform()
-        testLogging {
-            events("passed", "failed")
-        }
     }
     runVelocity {
         velocityVersion(libs.versions.velocity.get())

@@ -1,11 +1,11 @@
 package io.github._4drian3d.chatregulator.modules.checks;
 
+import io.github._4drian3d.chatregulator.api.InfractionPlayer;
 import io.github._4drian3d.chatregulator.api.checks.SpamCheck;
 import io.github._4drian3d.chatregulator.api.enums.SourceType;
 import io.github._4drian3d.chatregulator.common.configuration.Checks;
 import io.github._4drian3d.chatregulator.common.configuration.ConfigurationContainer;
 import io.github._4drian3d.chatregulator.common.impl.StringChainImpl;
-import io.github._4drian3d.chatregulator.plugin.impl.InfractionPlayerImpl;
 import io.github._4drian3d.chatregulator.utils.TestsUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,8 +26,8 @@ class SpamTest {
                 Checks.class,
                 "checks.hocon"
         );
-        InfractionPlayerImpl player = TestsUtils.playerFrom(configContainer);
-        StringChainImpl chatChain = player.getChain(SourceType.CHAT);
+        InfractionPlayer player = TestsUtils.playerFrom(configContainer);
+        StringChainImpl chatChain = (StringChainImpl) player.getChain(SourceType.CHAT);
         final String string = "holaaaaaaaa";
 
         for (int i = 0; i < 5; i++) {

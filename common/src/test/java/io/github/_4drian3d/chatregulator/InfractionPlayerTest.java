@@ -1,7 +1,7 @@
 package io.github._4drian3d.chatregulator;
 
 import io.github._4drian3d.chatregulator.api.InfractionCount;
-import io.github._4drian3d.chatregulator.plugin.impl.InfractionPlayerImpl;
+import io.github._4drian3d.chatregulator.api.InfractionPlayer;
 import io.github._4drian3d.chatregulator.utils.TestsUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ class InfractionPlayerTest {
     @Test
     @DisplayName("Player Violation Count")
     void countTest(){
-        InfractionPlayerImpl player = TestsUtils.dummyPlayer();
+        InfractionPlayer player = TestsUtils.dummyPlayer();
         InfractionCount count = player.getInfractions();
 
         count.addViolation(REGEX);

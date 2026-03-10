@@ -40,7 +40,7 @@ public final class RegexCheck implements Check {
             }
         }
 
-        if (patterns.size() != 0) {
+        if (!patterns.isEmpty()) {
             String replaced = string;
             for (final Pattern pattern : patterns) {
                 replaced = pattern.matcher(replaced).replaceAll(RegexCheck::generateReplacement);
