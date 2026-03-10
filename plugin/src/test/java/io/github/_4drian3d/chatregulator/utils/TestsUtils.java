@@ -2,15 +2,17 @@ package io.github._4drian3d.chatregulator.utils;
 
 import io.github._4drian3d.chatregulator.common.configuration.Checks;
 import io.github._4drian3d.chatregulator.common.configuration.ConfigurationContainer;
-import io.github._4drian3d.chatregulator.objects.TestPlayer;
+import io.github._4drian3d.chatregulator.objects.TestAudience;
 import io.github._4drian3d.chatregulator.plugin.impl.InfractionPlayerImpl;
+
+import java.util.UUID;
 
 public final class TestsUtils {
     public static InfractionPlayerImpl dummyPlayer() {
-        final var player = new TestPlayer("", false);
+        final var player = new TestAudience("");
 
         return new InfractionPlayerImpl(
-                player.getUniqueId(),
+            UUID.randomUUID(),
                 uuid -> player,
                 null,
                 null,
@@ -20,10 +22,10 @@ public final class TestsUtils {
     }
 
     public static InfractionPlayerImpl playerFrom(ConfigurationContainer<Checks> configurationContainer) {
-        final var player = new TestPlayer("", false);
+        final var player = new TestAudience("");
 
         return new InfractionPlayerImpl(
-                player.getUniqueId(),
+            UUID.randomUUID(),
                 uuid -> player,
                 null,
                 configurationContainer,
