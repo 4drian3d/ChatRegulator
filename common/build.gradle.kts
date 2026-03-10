@@ -42,6 +42,11 @@ tasks {
             events("passed", "failed")
         }
     }
+
+    compileTestJava {
+        options.encoding = "UTF-8"
+        options.release.set(21)
+    }
 }
 
 sourceSets {

@@ -19,11 +19,6 @@ dependencies {
 
     compileOnly(libs.velocity)
     annotationProcessor(libs.velocity)
-
-    testImplementation(libs.configurate)
-    testImplementation(platform(libs.junit.bom))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks {
@@ -42,10 +37,5 @@ tasks {
     compileJava {
         options.release.set(21)
         options.encoding = "UTF-8"
-    }
-
-    compileTestJava {
-        options.encoding = "UTF-8"
-        options.release.set(21)
     }
 }
