@@ -14,7 +14,7 @@ class ReplacerTest {
         String expected = "Peruviankkit";
 
         String replaced = Replacer.firstLetterUppercase(original);
-        assertEquals(replaced, expected);
+        assertEquals(expected, replaced);
     }
 
     @Test
@@ -25,7 +25,7 @@ class ReplacerTest {
 
         String replaced = Replacer.addFinalDot(original);
 
-        assertEquals(replaced, expected);
+        assertEquals(expected, replaced);
     }
 
     @Test
@@ -36,6 +36,6 @@ class ReplacerTest {
 
         String replaced = Replacer.applyFormat(original);
 
-        assertEquals(replaced, expected);
+        assertEquals(expected, replaced);
     }
 }

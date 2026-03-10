@@ -9,7 +9,7 @@ import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
 import io.github._4drian3d.chatregulator.api.ChatRegulatorAPI;
 import io.github._4drian3d.chatregulator.plugin.commands.RegulatorCommand;
-import io.github._4drian3d.chatregulator.plugin.impl.DeleteUserTask;
+import io.github._4drian3d.chatregulator.plugin.impl.UserDeletionTaskImpl;
 import io.github._4drian3d.chatregulator.plugin.impl.PlayerManagerImpl;
 import io.github._4drian3d.chatregulator.common.impl.StatisticsImpl;
 import io.github._4drian3d.chatregulator.plugin.listener.chat.ChatListener;
@@ -79,7 +79,7 @@ public final class ChatRegulator implements ChatRegulatorAPI {
         .forEach(executor -> executor.register(this, eventManager));
 
         injector.getInstance(RegulatorCommand.class).register();
-        injector.getInstance(DeleteUserTask.class).start();
+        injector.getInstance(UserDeletionTaskImpl.class).start();
 
         final long end = System.currentTimeMillis();
         logger.info(miniMessage().deserialize("<gradient:#A0E2F8:#D4A0FF>Correctly started in "+(end-start)+"ms"));

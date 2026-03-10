@@ -1,9 +1,6 @@
-package io.github._4drian3d.chatregulator.plugin.impl;
+package io.github._4drian3d.chatregulator.common.impl;
 
 import com.google.common.base.Suppliers;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import io.github._4drian3d.chatregulator.common.configuration.Configuration;
 import io.github._4drian3d.chatregulator.common.configuration.ConfigurationContainer;
 import net.kyori.adventure.text.Component;
@@ -22,16 +19,14 @@ import java.util.function.Supplier;
 
 import static java.nio.file.StandardOpenOption.*;
 
-@Singleton
 public final class FileLogger {
     private final Supplier<Path> file;
     private final Logger logger;
     private final ConfigurationContainer<Configuration> configurationContainer;
 
-    @Inject
     public FileLogger(
             ConfigurationContainer<Configuration> configurationContainer,
-            @DataDirectory Path path,
+            Path path,
             Logger logger
     ) {
         this.logger = logger;

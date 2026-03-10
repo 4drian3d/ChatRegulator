@@ -32,7 +32,7 @@ tasks {
     }
     shadowJar {
         minimize()
-        archiveFileName.set("ChatRegulator-${project.version}.jar")
+        archiveFileName.set("ChatRegulator-Velocity-${project.version}.jar")
         relocate("org.bstats", "io.github._4drian3d.chatregulator.libs.bstats")
     }
     runVelocity {

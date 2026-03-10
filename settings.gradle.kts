@@ -13,7 +13,7 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
-arrayOf("api", "plugin", "common").forEach {
+arrayOf("api", "common", "velocity").forEach {
     include("chatregulator-$it")
     project(":chatregulator-$it").projectDir = file(it)
 }

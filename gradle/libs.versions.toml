@@ -24,6 +24,7 @@ mockito = "5.22.0"
 
 adventure-api = { group = "net.kyori", name = "adventure-api", version.ref = "adventure" }
 adventure-minimessage = { group = "net.kyori", name = "adventure-text-minimessage", version.ref = "adventure" }
+adventure-plain = { group = "net.kyori", name = "adventure-text-serializer-plain", version.ref = "adventure" }
 velocity = { group = "com.velocitypowered", name = "velocity-api", version.ref = "velocity" }
 bstats = { module = "org.bstats:bstats-velocity", version.ref = "bstats" }
 configurate = { module = "org.spongepowered:configurate-hocon", version.ref = "configurate" }
@@ -36,6 +37,7 @@ futures = { group = "com.spotify", name = "completable-futures", version.ref = "
 caffeine = { group = "com.github.ben-manes.caffeine", name = "caffeine", version.ref = "caffeine" }
 slf4j = "org.slf4j:slf4j-api:2.0.17"
 checkerqual = "org.checkerframework:checker-qual:3.54.0"
+guava = "com.google.guava:guava:33.5.0-jre"
 
 [plugins]
 

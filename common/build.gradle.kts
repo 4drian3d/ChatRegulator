@@ -16,6 +16,8 @@ dependencies {
     compileOnly(libs.slf4j)
     compileOnly(libs.adventure.minimessage)
     compileOnly(libs.miniplaceholders)
+    compileOnly(libs.guava)
+    compileOnly(libs.adventure.plain)
 
     testImplementation(libs.configurate)
     testImplementation(platform(libs.junit.bom))

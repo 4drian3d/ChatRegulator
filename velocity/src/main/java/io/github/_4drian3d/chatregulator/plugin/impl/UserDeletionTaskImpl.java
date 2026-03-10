@@ -6,6 +6,7 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.scheduler.ScheduledTask;
 import io.github._4drian3d.chatregulator.common.configuration.Configuration;
 import io.github._4drian3d.chatregulator.common.configuration.ConfigurationContainer;
+import io.github._4drian3d.chatregulator.common.platform.UserDeletionTask;
 import io.github._4drian3d.chatregulator.plugin.ChatRegulator;
 
 import java.util.Iterator;
@@ -14,7 +15,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Singleton
-public class DeleteUserTask {
+public class UserDeletionTaskImpl implements UserDeletionTask {
     @Inject
     private ProxyServer proxyServer;
     @Inject
@@ -25,6 +26,7 @@ public class DeleteUserTask {
     private PlayerManagerImpl playerManager;
     private ScheduledTask task = null;
 
+    @Override
     public void start() {
         final Configuration configuration = configurationContainer.get();
         final long deleteUsersTime = configuration.deleteUsersTime();
@@ -44,6 +46,7 @@ public class DeleteUserTask {
         }).repeat(deleteUsersTime, deleteUsersTimeUnit).schedule();
     }
 
+    @Override
     public void restart() {
         if (task == null) {
             return;

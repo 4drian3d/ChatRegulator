@@ -7,6 +7,7 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import io.github._4drian3d.chatregulator.api.PlayerManager;
 import io.github._4drian3d.chatregulator.common.configuration.Checks;
 import io.github._4drian3d.chatregulator.common.configuration.ConfigurationContainer;
+import io.github._4drian3d.chatregulator.common.impl.FileLogger;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 

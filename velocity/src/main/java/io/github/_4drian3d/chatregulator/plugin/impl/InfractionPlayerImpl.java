@@ -10,6 +10,7 @@ import io.github._4drian3d.chatregulator.common.configuration.Checks;
 import io.github._4drian3d.chatregulator.common.configuration.Configuration;
 import io.github._4drian3d.chatregulator.common.configuration.ConfigurationContainer;
 import io.github._4drian3d.chatregulator.common.configuration.Messages;
+import io.github._4drian3d.chatregulator.common.impl.FileLogger;
 import io.github._4drian3d.chatregulator.common.impl.InfractionPlayerBase;
 import io.github._4drian3d.chatregulator.common.impl.StringChainImpl;
 import io.github._4drian3d.chatregulator.common.placeholders.formatter.Formatter;
