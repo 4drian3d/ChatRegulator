@@ -17,7 +17,7 @@ shadow = "9.3.2"
 runvelocity = "3.0.2"
 
 junit = "6.0.3"
-mockito = "5.22.0"
+mockito = "5.23.0"
 
 
 [libraries]
