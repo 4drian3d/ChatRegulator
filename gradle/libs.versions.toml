@@ -37,7 +37,7 @@ futures = { group = "com.spotify", name = "completable-futures", version.ref = "
 caffeine = { group = "com.github.ben-manes.caffeine", name = "caffeine", version.ref = "caffeine" }
 slf4j = "org.slf4j:slf4j-api:2.0.17"
 checkerqual = "org.checkerframework:checker-qual:4.0.0"
-guava = "com.google.guava:guava:33.5.0-jre"
+guava = "com.google.guava:guava:33.6.0-jre"
 
 [plugins]
 
