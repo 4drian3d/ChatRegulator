@@ -10,7 +10,7 @@ configurate = "4.2.0"
 assertj = "3.27.7"
 miniplaceholders = "3.1.0"
 bstats = "3.2.1"
-caffeine = "3.2.3"
+caffeine = "3.2.4"
 
 blossom = "2.2.0"
 shadow = "9.4.1"
