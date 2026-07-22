@@ -13,7 +13,7 @@ bstats = "3.2.1"
 caffeine = "3.2.4"
 
 blossom = "2.2.0"
-shadow = "9.5.1"
+shadow = "9.6.1"
 runvelocity = "3.0.2"
 
 junit = "6.1.1"
