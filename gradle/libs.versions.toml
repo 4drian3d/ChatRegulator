@@ -16,7 +16,7 @@ blossom = "2.2.0"
 shadow = "9.5.1"
 runvelocity = "3.0.2"
 
-junit = "6.1.1"
+junit = "6.1.2"
 mockito = "5.23.0"
 
 
