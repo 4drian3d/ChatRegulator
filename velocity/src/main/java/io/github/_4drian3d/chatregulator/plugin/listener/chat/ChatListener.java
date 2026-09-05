@@ -80,19 +80,30 @@ public final class ChatListener implements RegulatorExecutor<PlayerChatEvent> {
                         this.eventManager.fireAndForget(new ChatInfractionEvent(player, deniedResult.infractionType(), checkResult, event.getMessage()));
                         player.onDetection(checksContainer, messagesContainer, configurationContainer, formatter, deniedResult, event.getMessage());
                         event.setResult(ChatResult.denied());
-                    } else if (checkResult instanceof final CheckResult.ReplaceCheckResult replaceResult) {
-                        String finalMessage = replaceResult.replaced();
+                    } else {
+                        String finalMessage;
+                        if (checkResult instanceof final CheckResult.ReplaceCheckResult replaceResult) {
+                            finalMessage = replaceResult.replaced();
+
+                            this.eventManager.fireAndForget(new ChatInfractionEvent(player, replaceResult.infractionType(), checkResult, event.getMessage()));
+                            player.onDetection(checksContainer, messagesContainer, configurationContainer, formatter, replaceResult, event.getMessage());
+                        } else {
+                            finalMessage = event.getMessage();
+                        }
 
                         final Configuration.Formatter configuration = configurationContainer.get().getFormatterConfig();
                         if (configuration.enabled()) {
                             finalMessage = applyFormat(finalMessage, configuration);
                         }
-                        player.getChain(SourceType.CHAT).executed(event.getMessage());
-                        this.eventManager.fireAndForget(new ChatInfractionEvent(player, replaceResult.infractionType(), checkResult, event.getMessage()));
-                        player.onDetection(checksContainer, messagesContainer, configurationContainer, formatter, replaceResult, event.getMessage());
-                        event.setResult(ChatResult.message(finalMessage));
-                    } else {
-                        player.getChain(SourceType.CHAT).executed(event.getMessage());
+
+                        if (finalMessage.isEmpty()) {
+                            event.setResult(ChatResult.denied());
+                        } else {
+                            player.getChain(SourceType.CHAT).executed(event.getMessage());
+                            if (!finalMessage.equals(event.getMessage())) {
+                                event.setResult(ChatResult.message(finalMessage));
+                            }
+                        }
                     }
                 }).exceptionally(ex -> {
                     logger.error("An error occurred while setting chat result", ex);
@@ -112,7 +123,7 @@ public final class ChatListener implements RegulatorExecutor<PlayerChatEvent> {
     }
 
     public static @NotNull String applyFormat(final @NotNull String string, Configuration.Formatter config) {
-        return firstLetterUppercase(addFinalDot(string, config), config);
+        return firstLetterUppercase(addFinalDot(unicodeNormalize(string, config), config), config);
     }
     public static @NotNull String firstLetterUppercase(@NotNull final String string, Configuration.Formatter config) {
         if (!config.setFirstLetterUppercase()) return string;
@@ -122,5 +133,9 @@ public final class ChatListener implements RegulatorExecutor<PlayerChatEvent> {
         return config.setFinalDot()
                 ? Replacer.addFinalDot(string)
                 : string;
+    }
+
+    public static @NotNull String unicodeNormalize(@NotNull final String string, Configuration.Formatter config) {
+        return config.setUnicodeNormalize() ? Replacer.unicodeNormalize(string, config.setUnicodeNormalizationForm()) : string;
     }
 }
