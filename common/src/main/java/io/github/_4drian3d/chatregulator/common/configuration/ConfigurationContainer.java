@@ -86,7 +86,7 @@ public class ConfigurationContainer<C extends Section> {
     ) {
         return load(logger, path, clazz, file, opts -> opts
                 .shouldCopyDefaults(true)
-                .header("KickRedirect | by 4drian3d\n"));
+                .header("ChatRegulator | by 4drian3d\n"));
     }
 
     private static boolean checkConfig(final Path path) {
