@@ -1,11 +1,13 @@
 package io.github._4drian3d.chatregulator.common.configuration;
 
+import java.text.Normalizer;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import io.github._4drian3d.chatregulator.api.enums.*;
 import io.github._4drian3d.chatregulator.api.utils.Commands;
 import net.kyori.adventure.audience.Audience;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
@@ -43,7 +45,7 @@ public final class Configuration implements Section {
 
     @Comment("Set the maximum time in which a user's violations will be saved after the user leaves your server")
     @Setting(value = "delete-users-after")
-    private long deleteUsersAfter = 30;
+    private long deleteUsersAfter = 60;
 
     @Comment("""
             Set the time unit of the delete-users-after setting
@@ -96,6 +98,14 @@ public final class Configuration implements Section {
         @Setting(value = "final-dot")
         private boolean finalDot = true;
 
+        @Comment("Apply unicode normalization to each sentence")
+        @Setting(value = "unicode-normalize")
+        private boolean unicodeNormalize = true;
+
+        @Comment("The unicode normalization form to apply")
+        @Setting(value = "unicode-normalization-form")
+        private @NotNull Normalizer.Form unicodeNormalizationForm = Normalizer.Form.NFC;
+
         public boolean enabled(){
             return this.enabled;
         }
@@ -106,6 +116,14 @@ public final class Configuration implements Section {
 
         public boolean setFinalDot(){
             return this.finalDot;
+        }
+
+        public boolean setUnicodeNormalize(){
+            return this.unicodeNormalize;
+        }
+
+            public @NotNull Normalizer.Form setUnicodeNormalizationForm() {
+            return this.unicodeNormalizationForm;
         }
     }
 

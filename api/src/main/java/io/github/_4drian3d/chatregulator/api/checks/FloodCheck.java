@@ -23,7 +23,7 @@ public final class FloodCheck implements Check {
             .maximumSize(3)
             .initialCapacity(1)
             .build(length -> Pattern.compile(
-                    "(.)\\1{"+length+",}",
+                    "(.+?)\\1{" + length + ",}",
                     Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE)
             );
     private final Pattern pattern;
@@ -42,7 +42,7 @@ public final class FloodCheck implements Check {
             if (controlType == ControlType.BLOCK) {
                 return CheckResult.denied(type());
             } else {
-                return CheckResult.modified(type(), matcher.replaceAll(match -> String.valueOf(match.group().charAt(0))));
+                return CheckResult.modified(type(), matcher.replaceAll(match -> match.group(1)));
             }
         }
         return CheckResult.allowed();
