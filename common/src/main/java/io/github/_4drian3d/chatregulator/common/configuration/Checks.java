@@ -7,6 +7,7 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
 
+import java.text.Normalizer;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -216,6 +217,9 @@ public final class Checks implements Section {
         @Comment("Commands to be executed in the cooldown module")
         private Spam.Commands commands = new Spam.Commands();
 
+        @Comment("Normalization configuration for the spam module")
+        private Spam.Normalization normalization = new Spam.Normalization();
+
         @Override
         public boolean enabled(){
             return this.enabled;
@@ -235,9 +239,30 @@ public final class Checks implements Section {
             return this.commands;
         }
 
+        public Spam.Normalization getNormalization() {
+            return normalization;
+        }
 
         @ConfigSerializable
         public static class Commands extends CommandsConfig {}
+
+        @ConfigSerializable
+        public static class Normalization implements Toggleable {
+            @Comment("Enable normalization of the string to check")
+            private boolean enabled = true;
+
+            @Comment("The unicode normalization form to apply")
+            @Setting(value = "unicode-normalization-form")
+            private @NotNull Normalizer.Form unicodeNormalizationForm = Normalizer.Form.NFC;
+
+            public boolean enabled() {
+                return this.enabled;
+            }
+
+            public @NotNull Normalizer.Form getUnicodeNormalizationForm() {
+                return this.unicodeNormalizationForm;
+            }
+        }
     }
 
     @ConfigSerializable

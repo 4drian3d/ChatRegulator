@@ -13,30 +13,55 @@ import org.junit.jupiter.api.io.TempDir;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
+import java.text.Normalizer;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SpamTest {
-    @Test
-    @DisplayName("Spam Test")
-    void chatTest(@TempDir Path path) {
-        var configContainer = ConfigurationContainer.load(
-                LoggerFactory.getLogger(SpamTest.class),
-                path,
-                Checks.class,
-                "checks.hocon"
-        );
-        InfractionPlayer player = TestsUtils.playerFrom(configContainer);
-        StringChainImpl chatChain = (StringChainImpl) player.getChain(SourceType.CHAT);
-        final String string = "holaaaaaaaa";
+  @Test
+  @DisplayName("Spam Test")
+  void chatTest(@TempDir Path path) {
+    var configContainer = ConfigurationContainer.load(
+        LoggerFactory.getLogger(SpamTest.class),
+        path,
+        Checks.class,
+        "checks.hocon"
+    );
+    InfractionPlayer player = TestsUtils.playerFrom(configContainer);
+    StringChainImpl chatChain = (StringChainImpl) player.getChain(SourceType.CHAT);
+    final String string = "holaaaaaaaa";
 
-        for (int i = 0; i < 5; i++) {
-            chatChain.executed(string);
-        }
-
-        SpamCheck.Builder builder = SpamCheck.builder().source(SourceType.CHAT);
-
-        assertTrue(builder.similarLimit(5).build().check(player, string).isDenied());
-        assertTrue(builder.similarLimit(6).build().check(player, string).isAllowed());
+    for (int i = 0; i < 5; i++) {
+      chatChain.executed(string);
     }
+
+    SpamCheck.Builder builder = SpamCheck.builder().source(SourceType.CHAT);
+
+    assertTrue(builder.similarLimit(5).build().check(player, string).isDenied());
+    assertTrue(builder.similarLimit(6).build().check(player, string).isAllowed());
+  }
+
+  @Test
+  void testNormalization(@TempDir Path path) {
+    var configContainer = ConfigurationContainer.load(
+        LoggerFactory.getLogger(SpamTest.class),
+        path,
+        Checks.class,
+        "checks.hocon"
+    );
+    InfractionPlayer player = TestsUtils.playerFrom(configContainer);
+    StringChainImpl chatChain = (StringChainImpl) player.getChain(SourceType.CHAT);
+    final String string1 = "holaaaaáaaa";
+    final String string2 = "hólaaaaaaaa";
+
+    for (int i = 0; i < 5; i++) {
+      chatChain.executed(string1);
+    }
+
+    SpamCheck.Builder builder = SpamCheck.builder()
+        .source(SourceType.CHAT)
+        .normalizationConfig(true, Normalizer.Form.NFD);
+
+    assertTrue(builder.similarLimit(5).build().check(player, string2).isDenied());
+  }
 }

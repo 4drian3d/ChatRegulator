@@ -22,11 +22,15 @@ import static java.util.Objects.requireNonNull;
 public final class SpamCheck implements Check {
     private final SourceType type;
     private final int similarLimit;
+    private final NormalizationConfig normalizationConfig;
 
-    private SpamCheck(final @NotNull SourceType type, int similarLimit) {
+    private SpamCheck(final @NotNull SourceType type, int similarLimit, NormalizationConfig normalizationConfig) {
         this.type = requireNonNull(type);
         this.similarLimit = similarLimit;
+        this.normalizationConfig = requireNonNull(normalizationConfig);
     }
+
+    public record NormalizationConfig(boolean enabled, Normalizer.Form normalization) {}
 
     @Override
     public @NotNull CheckResult check(final @NotNull InfractionPlayer player, final @NotNull String string) {
@@ -39,18 +43,23 @@ public final class SpamCheck implements Check {
         final Iterator<String> it = chain.iterator();
         String actual;
         String previous = null;
-        while(it.hasNext()) {
+        while (it.hasNext()) {
             actual = it.next();
-            if (previous != null && !actual.equals(previous)) {
+            if (previous != null && !this.checkSimilarity(actual, previous)) {
                 return CheckResult.allowed();
             }
             previous = actual;
         }
 
-        if (chain.last().equals(Normalizer.normalize(string.toLowerCase(Locale.ROOT), Normalizer.Form.NFKD))) {
-            return CheckResult.denied(type());
+        return CheckResult.denied(type());
+    }
+
+    private boolean checkSimilarity(final @NotNull String string1, final @NotNull String string2) {
+        if (this.normalizationConfig.enabled()) {
+            return Normalizer.normalize(string1.toLowerCase(Locale.ROOT), this.normalizationConfig.normalization())
+                    .equals(Normalizer.normalize(string2.toLowerCase(Locale.ROOT), this.normalizationConfig.normalization()));
         } else {
-            return CheckResult.allowed();
+            return string1.equalsIgnoreCase(string2);
         }
     }
 
@@ -74,6 +83,7 @@ public final class SpamCheck implements Check {
     public static final class Builder implements AbstractBuilder<SpamCheck> {
         private SourceType source;
         private int similarLimit;
+        private NormalizationConfig normalizationConfig = new NormalizationConfig(false, Normalizer.Form.NFC);
 
         private Builder() {}
 
@@ -89,10 +99,20 @@ public final class SpamCheck implements Check {
             return this;
         }
 
+        public Builder normalizationConfig(final @NotNull NormalizationConfig normalizationConfig) {
+            this.normalizationConfig = requireNonNull(normalizationConfig);
+            return this;
+        }
+
+        public Builder normalizationConfig(final boolean enabled, final @NotNull Normalizer.Form normalization) {
+            this.normalizationConfig = new NormalizationConfig(enabled, requireNonNull(normalization));
+            return this;
+        }
+
         @Override
         public @NotNull SpamCheck build(){
             requireNonNull(source);
-            return new SpamCheck(source, Math.max(2, similarLimit));
+            return new SpamCheck(source, Math.max(2, similarLimit), normalizationConfig);
         }
     }
 }
