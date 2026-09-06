@@ -3,8 +3,6 @@ package io.github._4drian3d.chatregulator.plugin.source;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.permission.PermissionFunction;
 import com.velocitypowered.api.permission.Tristate;
-import net.kyori.adventure.audience.MessageType;
-import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.jetbrains.annotations.NotNull;
@@ -15,12 +13,7 @@ public enum RegulatorCommandSource implements CommandSource {
     private final ComponentLogger logger = ComponentLogger.logger("chatregulator-source");
 
     @Override
-    @SuppressWarnings("all")
-    public void sendMessage(
-            final @NotNull Identity source,
-            final @NotNull Component message,
-            final @NotNull MessageType type
-    ) {
+    public void sendMessage(final @NotNull Component message) {
         this.logger.info(message);
     }
 

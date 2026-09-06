@@ -253,7 +253,7 @@ public final class Checks implements Section {
 
             @Comment("The unicode normalization form to apply")
             @Setting(value = "unicode-normalization-form")
-            private @NotNull Normalizer.Form unicodeNormalizationForm = Normalizer.Form.NFC;
+            private @NotNull Normalizer.Form unicodeNormalizationForm = Normalizer.Form.NFKD;
 
             public boolean enabled() {
                 return this.enabled;
