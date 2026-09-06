@@ -119,66 +119,6 @@ public final class UnicodeCheck implements Check {
     private Builder() {
     }
 
-    /**
-     * Set the blocked characters
-     *
-     * @param chars the characters
-     * @return this
-     */
-    @Deprecated
-    public Builder characters(final char @NonNull ... chars) {
-      if (this.charConfig == null) {
-        this.charConfig = new UnicodeCheckConfigBuilder.CharsConfigBuilder()
-            .elements(chars)
-            .build();
-      } else {
-        this.charConfig = new UnicodeCheckConfigBuilder.CharsConfigBuilder()
-            .elements(chars)
-            .controlType(this.charConfig.controlType())
-            .detectionMode(this.charConfig.detectionMode())
-            .build();
-      }
-      return this;
-    }
-
-    @Deprecated
-    public Builder detectionMode(final @NonNull DetectionMode mode) {
-      if (this.charConfig == null) {
-        this.charConfig = new UnicodeCheckConfigBuilder.CharsConfigBuilder()
-            .detectionMode(mode)
-            .build();
-      } else {
-        this.charConfig = new UnicodeCheckConfigBuilder.CharsConfigBuilder()
-            .elements(this.charConfig.elements().stream().map(i -> (char) ((int) i)).toArray(Character[]::new))
-            .controlType(this.charConfig.controlType())
-            .detectionMode(mode)
-            .build();
-      }
-      return this;
-    }
-
-    /**
-     * Set if the check can replace the infraction
-     *
-     * @param control the control type
-     * @return this
-     */
-    @Deprecated
-    public Builder controlType(final @NonNull ControlType control) {
-      if (this.charConfig == null) {
-        this.charConfig = new UnicodeCheckConfigBuilder.CharsConfigBuilder()
-            .controlType(control)
-            .build();
-      } else {
-        this.charConfig = new UnicodeCheckConfigBuilder.CharsConfigBuilder()
-            .elements(this.charConfig.elements().stream().map(i -> (char) ((int) i)).toArray(Character[]::new))
-            .controlType(control)
-            .detectionMode(this.charConfig.detectionMode())
-            .build();
-      }
-      return this;
-    }
-
     public Builder charConfig(
         final @NonNull Function<UnicodeCheckConfigBuilder<Character, Integer>, UnicodeCheckConfig<@NonNull Integer>> charConfig
     ) {
@@ -194,13 +134,13 @@ public final class UnicodeCheck implements Check {
     }
 
     public Builder scriptsConfig(
-        final @NonNull Function<UnicodeCheckConfigBuilder<Character.UnicodeScript, Character.UnicodeScript>, UnicodeCheckConfig<Character.@NonNull UnicodeScript>> scriptConfig
+        final @NonNull Function<UnicodeCheckConfigBuilder<Character.@NonNull UnicodeScript, Character.@NonNull UnicodeScript>, UnicodeCheckConfig<Character.@NonNull UnicodeScript>> scriptConfig
     ) {
       this.scriptConfig = requireNonNull(scriptConfig.apply(new UnicodeCheckConfigBuilder.ScriptsConfigBuilder()), "Script config cannot be null");
       return this;
     }
 
-    public static abstract class UnicodeCheckConfigBuilder<T, R> {
+    public static sealed abstract class UnicodeCheckConfigBuilder<T, R> {
       protected Collection<T> elements;
       protected ControlType controlType = ControlType.REPLACE;
       protected DetectionMode detectionMode = DetectionMode.BLACKLIST;
@@ -320,6 +260,66 @@ public final class UnicodeCheck implements Check {
       }
 
       public abstract UnicodeCheckConfig<@NonNull R> build();
+    }
+
+    /**
+     * Set the blocked characters
+     *
+     * @param chars the characters
+     * @return this
+     */
+    @Deprecated
+    public Builder characters(final char @NonNull ... chars) {
+      if (this.charConfig == null) {
+        this.charConfig = new UnicodeCheckConfigBuilder.CharsConfigBuilder()
+            .elements(chars)
+            .build();
+      } else {
+        this.charConfig = new UnicodeCheckConfigBuilder.CharsConfigBuilder()
+            .elements(chars)
+            .controlType(this.charConfig.controlType())
+            .detectionMode(this.charConfig.detectionMode())
+            .build();
+      }
+      return this;
+    }
+
+    @Deprecated
+    public Builder detectionMode(final @NonNull DetectionMode mode) {
+      if (this.charConfig == null) {
+        this.charConfig = new UnicodeCheckConfigBuilder.CharsConfigBuilder()
+            .detectionMode(mode)
+            .build();
+      } else {
+        this.charConfig = new UnicodeCheckConfigBuilder.CharsConfigBuilder()
+            .elements(this.charConfig.elements().stream().map(i -> (char) ((int) i)).toArray(Character[]::new))
+            .controlType(this.charConfig.controlType())
+            .detectionMode(mode)
+            .build();
+      }
+      return this;
+    }
+
+    /**
+     * Set if the check can replace the infraction
+     *
+     * @param control the control type
+     * @return this
+     */
+    @Deprecated
+    public Builder controlType(final @NonNull ControlType control) {
+      if (this.charConfig == null) {
+        this.charConfig = new UnicodeCheckConfigBuilder.CharsConfigBuilder()
+            .controlType(control)
+            .build();
+      } else {
+        this.charConfig = new UnicodeCheckConfigBuilder.CharsConfigBuilder()
+            .elements(this.charConfig.elements().stream().map(i -> (char) ((int) i)).toArray(Character[]::new))
+            .controlType(control)
+            .detectionMode(this.charConfig.detectionMode())
+            .build();
+      }
+      return this;
     }
 
     @Override
