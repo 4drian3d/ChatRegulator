@@ -5,234 +5,334 @@ import io.github._4drian3d.chatregulator.api.enums.ControlType;
 import io.github._4drian3d.chatregulator.api.enums.DetectionMode;
 import io.github._4drian3d.chatregulator.api.enums.InfractionType;
 import io.github._4drian3d.chatregulator.api.result.CheckResult;
+import it.unimi.dsi.fastutil.chars.CharArraySet;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntArraySet;
 import net.kyori.adventure.builder.AbstractBuilder;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.NullUnmarked;
 
+import java.util.AbstractCollection;
+import java.util.Collection;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.IntPredicate;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.Objects.requireNonNullElse;
+import static java.util.Objects.requireNonNullElseGet;
 
 /**
  * Check for invalid characters
  */
+@NullMarked
 public final class UnicodeCheck implements Check {
-    private final @NotNull Set<Integer> chars;
-    private final ControlType charControl;
-    private final IntPredicate charPredicate;
+  private final UnicodeCheckConfig<Integer> charConfig;
+  private final UnicodeCheckConfig<Character.UnicodeBlock> blockConfig;
+  private final UnicodeCheckConfig<Character.UnicodeScript> scriptConfig;
 
-    private final @NotNull Set<Character.UnicodeBlock> blocks;
-    private final ControlType blockControl;
-    private final IntPredicate blockPredicate;
+  private UnicodeCheck(
+      final UnicodeCheckConfig<Integer> charConfig,
+      final UnicodeCheckConfig<Character.UnicodeBlock> blockConfig,
+      final UnicodeCheckConfig<Character.UnicodeScript> scriptConfig
+  ) {
+    this.charConfig = requireNonNull(charConfig, "Character config cannot be null");
+    this.blockConfig = requireNonNull(blockConfig, "Block config cannot be null");
+    this.scriptConfig = requireNonNull(scriptConfig, "Script config cannot be null");
+  }
 
-    private final @NotNull Set<Character.UnicodeScript> scripts;
-    private final ControlType scriptControl;
-    private final IntPredicate scriptPredicate;
+  public record UnicodeCheckConfig<T>(
+      Collection<T> elements,
+      ControlType controlType,
+      DetectionMode detectionMode,
+      IntPredicate charPredicate
+  ) {
+  }
 
-    private UnicodeCheck(Integer @NotNull [] chars, ControlType charControl, DetectionMode charMode,
-                         Character.UnicodeBlock @NotNull [] blocks, ControlType blockControl, DetectionMode blockMode,
-                         Character.UnicodeScript @NotNull [] scripts, ControlType scriptControl, DetectionMode scriptMode) {
-        this.chars = Set.of(chars);
-        this.charControl = charControl;
-        this.charPredicate = (charMode == DetectionMode.BLACKLIST) ? this.chars::contains : ((IntPredicate) this.chars::contains).negate();
+  @Override
+  public CheckResult check(InfractionPlayer player, final String string) {
+    final IntArrayList codePointList = IntArrayList.toList(requireNonNull(string).codePoints());
+    boolean replaced = false;
 
-        this.blocks = Set.of(blocks);
-        this.blockControl = blockControl;
-        final IntPredicate blockPredicate = codePoint -> this.blocks.contains(Character.UnicodeBlock.of(codePoint));
-        this.blockPredicate = (blockMode == DetectionMode.BLACKLIST) ? blockPredicate : blockPredicate.negate();
-
-        this.scripts = Set.of(scripts);
-        this.scriptControl = scriptControl;
-        final IntPredicate scriptPredicate = codePoint -> this.scripts.contains(Character.UnicodeScript.of(codePoint));
-        this.scriptPredicate = (scriptMode == DetectionMode.BLACKLIST) ? scriptPredicate : scriptPredicate.negate();
+    if (!this.charConfig.elements.isEmpty()) {
+      if (this.charConfig.controlType == ControlType.BLOCK) {
+        if (codePointList.intStream().anyMatch(this.charConfig.charPredicate)) {
+          return CheckResult.denied(type());
+        }
+      } else {
+        replaced |= codePointList.removeIf(this.charConfig.charPredicate);
+      }
     }
 
-    @Override
-    public @NotNull CheckResult check(@NotNull InfractionPlayer player, final @NotNull String string) {
-        final IntArrayList codePointList = IntArrayList.toList(requireNonNull(string).codePoints());
-        boolean replaced = false;
-
-        if (!chars.isEmpty()) {
-            if (this.charControl == ControlType.BLOCK) {
-                if (codePointList.intStream().anyMatch(this.charPredicate)) {
-                    return CheckResult.denied(type());
-                }
-            } else {
-                replaced |= codePointList.removeIf(this.charPredicate);
-            }
+    if (!this.blockConfig.elements.isEmpty()) {
+      if (this.blockConfig.controlType == ControlType.BLOCK) {
+        if (codePointList.intStream().anyMatch(this.blockConfig.charPredicate)) {
+          return CheckResult.denied(type());
         }
-
-        if (!blocks.isEmpty()) {
-            if (this.blockControl == ControlType.BLOCK) {
-                if (codePointList.intStream().anyMatch(this.blockPredicate)) {
-                    return CheckResult.denied(type());
-                }
-            } else {
-                replaced |= codePointList.removeIf(this.blockPredicate);
-            }
-        }
-
-        if (!scripts.isEmpty()) {
-            if (this.scriptControl == ControlType.BLOCK) {
-                if (codePointList.intStream().anyMatch(this.scriptPredicate)) {
-                    return CheckResult.denied(type());
-                }
-            } else {
-                replaced |= codePointList.removeIf(this.scriptPredicate);
-            }
-        }
-
-        if (replaced) {
-            return CheckResult.modified(type(), codePointList.intStream()
-                    .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-                    .toString());
-        } else {
-            return CheckResult.allowed();
-        }
+      } else {
+        replaced |= codePointList.removeIf(this.blockConfig.charPredicate);
+      }
     }
 
-    @Override
-    public @NotNull InfractionType type() {
-        return InfractionType.UNICODE;
+    if (!this.scriptConfig.elements.isEmpty()) {
+      if (this.scriptConfig.controlType == ControlType.BLOCK) {
+        if (codePointList.intStream().anyMatch(this.scriptConfig.charPredicate)) {
+          return CheckResult.denied(type());
+        }
+      } else {
+        replaced |= codePointList.removeIf(this.scriptConfig.charPredicate);
+      }
+    }
+
+    if (replaced) {
+      return CheckResult.modified(type(), codePointList.intStream()
+          .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+          .toString());
+    } else {
+      return CheckResult.allowed();
+    }
+  }
+
+  @Override
+  public InfractionType type() {
+    return InfractionType.UNICODE;
+  }
+
+  /**
+   * Creates a new Builder
+   *
+   * @return a new UnicodeCheck Builder
+   */
+  public static UnicodeCheck.Builder builder() {
+    return new UnicodeCheck.Builder();
+  }
+
+  /**
+   * Unicode Check Builder
+   */
+  @NullUnmarked
+  public static class Builder implements AbstractBuilder<UnicodeCheck> {
+    private UnicodeCheckConfig<@NonNull Integer> charConfig;
+    private UnicodeCheckConfig<Character.@NonNull UnicodeBlock> blockConfig;
+    private UnicodeCheckConfig<Character.@NonNull UnicodeScript> scriptConfig;
+
+    private Builder() {
     }
 
     /**
-     * Creates a new Builder
+     * Set the blocked characters
      *
-     * @return a new UnicodeCheck Builder
+     * @param chars the characters
+     * @return this
      */
-    public static UnicodeCheck.Builder builder() {
-        return new UnicodeCheck.Builder();
+    @Deprecated
+    public Builder characters(final char @NonNull ... chars) {
+      if (this.charConfig == null) {
+        this.charConfig = new UnicodeCheckConfigBuilder.CharsConfigBuilder()
+            .elements(chars)
+            .build();
+      } else {
+        this.charConfig = new UnicodeCheckConfigBuilder.CharsConfigBuilder()
+            .elements(chars)
+            .controlType(this.charConfig.controlType())
+            .detectionMode(this.charConfig.detectionMode())
+            .build();
+      }
+      return this;
     }
 
-    // TODO: Add chars, blocks and scripts builders
+    @Deprecated
+    public Builder detectionMode(final @NonNull DetectionMode mode) {
+      if (this.charConfig == null) {
+        this.charConfig = new UnicodeCheckConfigBuilder.CharsConfigBuilder()
+            .detectionMode(mode)
+            .build();
+      } else {
+        this.charConfig = new UnicodeCheckConfigBuilder.CharsConfigBuilder()
+            .elements(this.charConfig.elements().stream().map(i -> (char) ((int) i)).toArray(Character[]::new))
+            .controlType(this.charConfig.controlType())
+            .detectionMode(mode)
+            .build();
+      }
+      return this;
+    }
+
     /**
-     * Unicode Check Builder
+     * Set if the check can replace the infraction
+     *
+     * @param control the control type
+     * @return this
      */
-    public static class Builder implements AbstractBuilder<UnicodeCheck> {
-        private Integer @Nullable [] chars;
-        private ControlType charControl = ControlType.REPLACE;
-        private DetectionMode charMode = DetectionMode.BLACKLIST;
+    @Deprecated
+    public Builder controlType(final @NonNull ControlType control) {
+      if (this.charConfig == null) {
+        this.charConfig = new UnicodeCheckConfigBuilder.CharsConfigBuilder()
+            .controlType(control)
+            .build();
+      } else {
+        this.charConfig = new UnicodeCheckConfigBuilder.CharsConfigBuilder()
+            .elements(this.charConfig.elements().stream().map(i -> (char) ((int) i)).toArray(Character[]::new))
+            .controlType(control)
+            .detectionMode(this.charConfig.detectionMode())
+            .build();
+      }
+      return this;
+    }
 
-        private Character.UnicodeBlock @Nullable [] blocks;
-        private ControlType blockControl = ControlType.REPLACE;
-        private DetectionMode blockMode = DetectionMode.BLACKLIST;
+    public Builder charConfig(
+        final @NonNull Function<UnicodeCheckConfigBuilder<Character, Integer>, UnicodeCheckConfig<@NonNull Integer>> charConfig
+    ) {
+      this.charConfig = requireNonNull(charConfig.apply(new UnicodeCheckConfigBuilder.CharsConfigBuilder()), "Character config cannot be null");
+      return this;
+    }
 
-        private Character.UnicodeScript @Nullable [] scripts;
-        private ControlType scriptControl = ControlType.REPLACE;
-        private DetectionMode scriptMode = DetectionMode.BLACKLIST;
+    public Builder blocksConfig(
+        final @NonNull Function<UnicodeCheckConfigBuilder<Character.UnicodeBlock, Character.UnicodeBlock>, UnicodeCheckConfig<Character.@NonNull UnicodeBlock>> blockConfig
+    ) {
+      this.blockConfig = requireNonNull(blockConfig.apply(new UnicodeCheckConfigBuilder.BlocksConfigBuilder()), "Block config cannot be null");
+      return this;
+    }
 
-        private Builder() {
-        }
+    public Builder scriptsConfig(
+        final @NonNull Function<UnicodeCheckConfigBuilder<Character.UnicodeScript, Character.UnicodeScript>, UnicodeCheckConfig<Character.@NonNull UnicodeScript>> scriptConfig
+    ) {
+      this.scriptConfig = requireNonNull(scriptConfig.apply(new UnicodeCheckConfigBuilder.ScriptsConfigBuilder()), "Script config cannot be null");
+      return this;
+    }
 
-        /**
-         * Set the characters to check
-         *
-         * @param chars the characters
-         * @return this
-         */
-        public Builder characters(final @NotNull Integer @NotNull ... chars) {
-            this.chars = chars;
-            return this;
-        }
+    public static abstract class UnicodeCheckConfigBuilder<T, R> {
+      protected Collection<T> elements;
+      protected ControlType controlType = ControlType.REPLACE;
+      protected DetectionMode detectionMode = DetectionMode.BLACKLIST;
 
-        /**
-         * Set if the character check can replace the infraction
-         *
-         * @param control the control type
-         * @return this
-         */
-        public Builder charControlType(final @NotNull ControlType control) {
-            this.charControl = control;
-            return this;
-        }
+      private UnicodeCheckConfigBuilder() {
+      }
 
-        /**
-         * Set only allowing or denying the characters
-         *
-         * @param mode the detection mode
-         * @return this
-         */
-        public Builder charDetectionMode(final @NotNull DetectionMode mode) {
-            this.charMode = mode;
-            return this;
-        }
-
-        /**
-         * Set the unicode blocks to check
-         *
-         * @param blocks the unicode blocks
-         * @return this
-         */
-        public Builder blocks(final @NotNull Character.UnicodeBlock @NotNull ... blocks) {
-            this.blocks = blocks;
-            return this;
-        }
-
-        /**
-         * Set if the unicode block check can replace the infraction
-         *
-         * @param control the control type
-         * @return this
-         */
-        public Builder blockControlType(final @NotNull ControlType control) {
-            this.blockControl = control;
-            return this;
-        }
-
-        /**
-         * Set only allowing or denying the unicode blocks
-         *
-         * @param mode the detection mode
-         * @return this
-         */
-        public Builder blockDetectionMode(final @NotNull DetectionMode mode) {
-            this.blockMode = mode;
-            return this;
-        }
-
-        /**
-         * Set the unicode scripts to check
-         *
-         * @param scripts the unicode scripts
-         * @return this
-         */
-        public Builder scripts(final @NotNull Character.UnicodeScript @NotNull ... scripts) {
-            this.scripts = scripts;
-            return this;
-        }
-
-        /**
-         * Set if the unicode script check can replace the infraction
-         *
-         * @param control the control type
-         * @return this
-         */
-        public Builder scriptControlType(final @NotNull ControlType control) {
-            this.scriptControl = control;
-            return this;
-        }
-
-        /**
-         * Set only allowing or denying the unicode blocks
-         *
-         * @param mode the detection mode
-         * @return this
-         */
-        public Builder scriptDetectionMode(final @NotNull DetectionMode mode) {
-            this.scriptMode = mode;
-            return this;
+      public static final class CharsConfigBuilder extends UnicodeCheckConfigBuilder<Character, Integer> {
+        private CharsConfigBuilder() {
+          super();
         }
 
         @Override
-        public @NotNull UnicodeCheck build() {
-            return new UnicodeCheck(requireNonNullElse(chars, new Integer[]{}), charControl, charMode,
-                    requireNonNullElse(blocks, new Character.UnicodeBlock[]{}), blockControl, blockMode,
-                    requireNonNullElse(scripts, new Character.UnicodeScript[]{}), scriptControl, scriptMode);
+        public UnicodeCheckConfigBuilder<Character, Integer> elements(@NonNull Character @NonNull... elements) {
+          this.elements = new CharArraySet(Set.of(requireNonNull(elements, "Elements cannot be null")));
+          return this;
         }
 
+        public UnicodeCheckConfigBuilder<Character, Integer> elements(char @NonNull ... elements) {
+          this.elements = CharArraySet.of(requireNonNull(elements, "Elements cannot be null"));
+          return this;
+        }
+
+        @Override
+        public UnicodeCheckConfigBuilder<Character, Integer> elements(@NonNull AbstractCollection<Character> elements) {
+          this.elements = new CharArraySet(requireNonNull(elements, "Elements cannot be null"));
+          return this;
+        }
+
+        @Override
+        public UnicodeCheckConfig<@NonNull Integer> build() {
+          requireNonNull(this.elements, "Elements cannot be null");
+          requireNonNull(this.controlType, "Control type cannot be null");
+          requireNonNull(this.detectionMode, "Detection mode cannot be null");
+          final IntArraySet codePoints = this.elements.stream()
+              .mapToInt(c -> c)
+              .collect(IntArraySet::new, IntArraySet::add, IntArraySet::addAll);
+          final IntPredicate charPredicate = (this.detectionMode == DetectionMode.BLACKLIST)
+              ? codePoints::contains
+              : ((IntPredicate) codePoints::contains).negate();
+          return new UnicodeCheckConfig<>(codePoints, controlType, detectionMode, charPredicate);
+        }
+      }
+
+      private static final class BlocksConfigBuilder extends UnicodeCheckConfigBuilder<Character.UnicodeBlock, Character.UnicodeBlock> {
+        private BlocksConfigBuilder() {
+          super();
+        }
+
+        @Override
+        public UnicodeCheckConfigBuilder<Character.UnicodeBlock, Character.UnicodeBlock> elements(Character.UnicodeBlock @NonNull ... elements) {
+          this.elements = Set.of(requireNonNull(elements, "Elements cannot be null"));
+          return this;
+        }
+
+        @Override
+        public UnicodeCheckConfigBuilder<Character.UnicodeBlock, Character.UnicodeBlock> elements(@NonNull AbstractCollection<Character.UnicodeBlock> elements) {
+          this.elements = Set.copyOf(requireNonNull(elements, "Elements cannot be null"));
+          return this;
+        }
+
+        @Override
+        public UnicodeCheckConfig<Character.@NonNull UnicodeBlock> build() {
+          requireNonNull(this.elements, "Elements cannot be null");
+          requireNonNull(this.controlType, "Control type cannot be null");
+          requireNonNull(this.detectionMode, "Detection mode cannot be null");
+          final IntPredicate blockPredicate = codePoint -> this.elements.contains(Character.UnicodeBlock.of(codePoint));
+          final IntPredicate finalPredicate = (this.detectionMode == DetectionMode.BLACKLIST)
+              ? blockPredicate
+              : blockPredicate.negate();
+          return new UnicodeCheckConfig<>(this.elements, controlType, detectionMode, finalPredicate);
+        }
+      }
+
+      private static final class ScriptsConfigBuilder extends UnicodeCheckConfigBuilder<Character.@NonNull UnicodeScript, Character.UnicodeScript> {
+        private ScriptsConfigBuilder() {
+          super();
+        }
+
+        @Override
+        public UnicodeCheckConfigBuilder<Character.UnicodeScript, Character.UnicodeScript> elements(Character.@NonNull UnicodeScript @NonNull ... elements) {
+          this.elements = Set.of(requireNonNull(elements, "Elements cannot be null"));
+          return this;
+        }
+
+        @Override
+        public UnicodeCheckConfigBuilder<Character.UnicodeScript, Character.UnicodeScript> elements(@NonNull AbstractCollection<Character.UnicodeScript> elements) {
+          this.elements = Set.copyOf(requireNonNull(elements, "Elements cannot be null"));
+          return this;
+        }
+
+        @Override
+        public UnicodeCheckConfig<Character.@NonNull UnicodeScript> build() {
+          requireNonNull(this.elements, "Elements cannot be null");
+          requireNonNull(this.controlType, "Control type cannot be null");
+          requireNonNull(this.detectionMode, "Detection mode cannot be null");
+          final IntPredicate scriptPredicate = codePoint -> this.elements.contains(Character.UnicodeScript.of(codePoint));
+          final IntPredicate finalPredicate = (this.detectionMode == DetectionMode.BLACKLIST)
+              ? scriptPredicate
+              : scriptPredicate.negate();
+          return new UnicodeCheckConfig<>(this.elements, controlType, detectionMode, finalPredicate);
+        }
+      }
+
+      public abstract UnicodeCheckConfigBuilder<T, R> elements(final @NonNull T @NonNull... elements);
+
+      public abstract UnicodeCheckConfigBuilder<T, R> elements(final @NonNull AbstractCollection<T> elements);
+
+      public UnicodeCheckConfigBuilder<T, R> controlType(final @NonNull ControlType controlType) {
+        this.controlType = requireNonNull(controlType, "Control type cannot be null");
+        return this;
+      }
+
+      public UnicodeCheckConfigBuilder<T, R> detectionMode(final @NonNull DetectionMode detectionMode) {
+        this.detectionMode = requireNonNull(detectionMode, "Detection mode cannot be null");
+        return this;
+      }
+
+      public abstract UnicodeCheckConfig<@NonNull R> build();
     }
+
+    @Override
+    public UnicodeCheck build() {
+      return new UnicodeCheck(
+          requireNonNullElseGet(charConfig,
+              () -> new UnicodeCheckConfigBuilder.CharsConfigBuilder().elements(new char[0]).build()),
+          requireNonNullElseGet(blockConfig,
+              () -> new UnicodeCheckConfigBuilder.BlocksConfigBuilder().elements(new Character.UnicodeBlock[0]).build()),
+          requireNonNullElseGet(scriptConfig,
+              () -> new UnicodeCheckConfigBuilder.ScriptsConfigBuilder().elements(new Character.UnicodeScript[0]).build())
+      );
+    }
+
+  }
 }

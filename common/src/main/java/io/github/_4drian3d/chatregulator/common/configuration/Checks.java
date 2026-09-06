@@ -346,7 +346,7 @@ public final class Checks implements Section {
             @Comment("Enables extra character check")
             private boolean enabled = false;
             @Comment("Sets the additional characters to check")
-            private String[] chars = {"ç"};
+            private char[] chars = {'ç'};
             @Comment("""
                     Sets the control format
                     Available options: BLOCK, REPLACE""")
@@ -359,8 +359,8 @@ public final class Checks implements Section {
                     WHITELIST: Only allow characters that are within the configured characters""")
             private DetectionMode mode = DetectionMode.BLACKLIST;
 
-            public Integer[] chars() {
-                return Arrays.stream(this.chars).map(string -> string.codePointAt(0)).toArray(Integer[]::new);
+            public char[] chars() {
+                return this.chars;
             }
 
             @Override

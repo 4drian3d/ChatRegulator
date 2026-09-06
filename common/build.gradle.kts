@@ -28,6 +28,7 @@ dependencies {
     testImplementation(libs.adventure.api)
     testImplementation(libs.adventure.minimessage)
     testImplementation(libs.velocity)
+    testImplementation(libs.fastutil)
 }
 
 tasks {
