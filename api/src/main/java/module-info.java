@@ -7,6 +7,7 @@ module io.github._4drian3d.chatregulator.api {
     requires net.kyori.adventure;
     requires net.kyori.examination.api;
     requires com.github.benmanes.caffeine;
+    requires it.unimi.dsi.fastutil;
 
     exports io.github._4drian3d.chatregulator.api;
     exports io.github._4drian3d.chatregulator.api.result;

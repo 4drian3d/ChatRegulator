@@ -5,14 +5,13 @@ import io.github._4drian3d.chatregulator.api.enums.ControlType;
 import io.github._4drian3d.chatregulator.api.enums.DetectionMode;
 import io.github._4drian3d.chatregulator.api.enums.InfractionType;
 import io.github._4drian3d.chatregulator.api.result.CheckResult;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import net.kyori.adventure.builder.AbstractBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
+import java.util.function.IntPredicate;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Objects.requireNonNullElse;
@@ -23,65 +22,71 @@ import static java.util.Objects.requireNonNullElse;
 public final class UnicodeCheck implements Check {
     private final @NotNull Set<Integer> chars;
     private final ControlType charControl;
-    private final Predicate<Integer> charPredicate;
+    private final IntPredicate charPredicate;
 
     private final @NotNull Set<Character.UnicodeBlock> blocks;
     private final ControlType blockControl;
-    private final Predicate<Integer> blockPredicate;
+    private final IntPredicate blockPredicate;
 
     private final @NotNull Set<Character.UnicodeScript> scripts;
     private final ControlType scriptControl;
-    private final Predicate<Integer> scriptPredicate;
+    private final IntPredicate scriptPredicate;
 
     private UnicodeCheck(Integer @NotNull [] chars, ControlType charControl, DetectionMode charMode,
                          Character.UnicodeBlock @NotNull [] blocks, ControlType blockControl, DetectionMode blockMode,
                          Character.UnicodeScript @NotNull [] scripts, ControlType scriptControl, DetectionMode scriptMode) {
         this.chars = Set.of(chars);
         this.charControl = charControl;
-        this.charPredicate = (charMode == DetectionMode.BLACKLIST) ? this.chars::contains : Predicate.not(this.chars::contains);
+        this.charPredicate = (charMode == DetectionMode.BLACKLIST) ? this.chars::contains : ((IntPredicate) this.chars::contains).negate();
 
         this.blocks = Set.of(blocks);
         this.blockControl = blockControl;
-        final Predicate<Integer> blockPredicate = codePoint -> this.blocks.contains(Character.UnicodeBlock.of(codePoint));
+        final IntPredicate blockPredicate = codePoint -> this.blocks.contains(Character.UnicodeBlock.of(codePoint));
         this.blockPredicate = (blockMode == DetectionMode.BLACKLIST) ? blockPredicate : blockPredicate.negate();
 
         this.scripts = Set.of(scripts);
         this.scriptControl = scriptControl;
-        final Predicate<Integer> scriptPredicate = codePoint -> this.scripts.contains(Character.UnicodeScript.of(codePoint));
+        final IntPredicate scriptPredicate = codePoint -> this.scripts.contains(Character.UnicodeScript.of(codePoint));
         this.scriptPredicate = (scriptMode == DetectionMode.BLACKLIST) ? scriptPredicate : scriptPredicate.negate();
     }
 
     @Override
     public @NotNull CheckResult check(@NotNull InfractionPlayer player, final @NotNull String string) {
-        final List<Integer> codePointList = requireNonNull(string).codePoints().boxed().collect(Collectors.toList());
+        final IntArrayList codePointList = IntArrayList.toList(requireNonNull(string).codePoints());
         boolean replaced = false;
 
-        if (this.charControl == ControlType.BLOCK) {
-            if (codePointList.stream().anyMatch(this.charPredicate)) {
-                return CheckResult.denied(type());
+        if (!chars.isEmpty()) {
+            if (this.charControl == ControlType.BLOCK) {
+                if (codePointList.intStream().anyMatch(this.charPredicate)) {
+                    return CheckResult.denied(type());
+                }
+            } else {
+                replaced |= codePointList.removeIf(this.charPredicate);
             }
-        } else {
-            replaced |= codePointList.removeIf(this.charPredicate);
         }
 
-        if (this.blockControl == ControlType.BLOCK) {
-            if (codePointList.stream().anyMatch(this.blockPredicate)) {
-                return CheckResult.denied(type());
+        if (!blocks.isEmpty()) {
+            if (this.blockControl == ControlType.BLOCK) {
+                if (codePointList.intStream().anyMatch(this.blockPredicate)) {
+                    return CheckResult.denied(type());
+                }
+            } else {
+                replaced |= codePointList.removeIf(this.blockPredicate);
             }
-        } else {
-            replaced |= codePointList.removeIf(this.blockPredicate);
         }
 
-        if (this.scriptControl == ControlType.BLOCK) {
-            if (codePointList.stream().anyMatch(this.scriptPredicate)) {
-                return CheckResult.denied(type());
+        if (!scripts.isEmpty()) {
+            if (this.scriptControl == ControlType.BLOCK) {
+                if (codePointList.intStream().anyMatch(this.scriptPredicate)) {
+                    return CheckResult.denied(type());
+                }
+            } else {
+                replaced |= codePointList.removeIf(this.scriptPredicate);
             }
-        } else {
-            replaced |= codePointList.removeIf(this.scriptPredicate);
         }
 
         if (replaced) {
-            return CheckResult.modified(type(), codePointList.stream()
+            return CheckResult.modified(type(), codePointList.intStream()
                     .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                     .toString());
         } else {
@@ -103,6 +108,7 @@ public final class UnicodeCheck implements Check {
         return new UnicodeCheck.Builder();
     }
 
+    // TODO: Add chars, blocks and scripts builders
     /**
      * Unicode Check Builder
      */

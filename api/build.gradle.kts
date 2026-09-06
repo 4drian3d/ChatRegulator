@@ -7,7 +7,7 @@ plugins {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
+        languageVersion.set(JavaLanguageVersion.of(25))
     }
 }
 
@@ -15,6 +15,7 @@ dependencies {
     compileOnlyApi(libs.adventure.api)
     compileOnly(libs.caffeine)
     compileOnlyApi(libs.checkerqual)
+    compileOnly(libs.fastutil)
 }
 
 tasks {

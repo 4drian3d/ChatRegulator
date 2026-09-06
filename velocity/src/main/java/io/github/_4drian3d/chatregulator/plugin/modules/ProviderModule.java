@@ -175,19 +175,19 @@ public class ProviderModule extends AbstractModule {
             final InfractionPlayerImpl infractionPlayer = (InfractionPlayerImpl) player;
             final Checks.Unicode config = configurationContainer.get().getUnicodeConfig();
             if (infractionPlayer.canBeTestBy(configurationContainer, InfractionType.UNICODE)) {
-                UnicodeCheck.Builder builder = UnicodeCheck.builder();
+                final UnicodeCheck.Builder builder = UnicodeCheck.builder();
                 if (config.additionalChars().enabled()) {
-                    builder = builder.characters(config.additionalChars().chars())
+                    builder.characters(config.additionalChars().chars())
                             .charControlType(config.additionalChars().getControlType())
                             .charDetectionMode(config.additionalChars().detectionMode());
                 }
                 if (config.additionalBlocks().enabled()) {
-                    builder = builder.blocks(config.additionalBlocks().blocks())
+                    builder.blocks(config.additionalBlocks().blocks())
                             .blockControlType(config.additionalBlocks().getControlType())
                             .blockDetectionMode(config.additionalBlocks().detectionMode());
                 }
                 if (config.additionalScripts().enabled()) {
-                    builder = builder.scripts(config.additionalScripts().scripts())
+                    builder.scripts(config.additionalScripts().scripts())
                             .scriptControlType(config.additionalScripts().getControlType())
                             .scriptDetectionMode(config.additionalScripts().detectionMode());
                 }

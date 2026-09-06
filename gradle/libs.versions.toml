@@ -11,6 +11,7 @@ assertj = "3.27.7"
 miniplaceholders = "3.1.0"
 bstats = "3.2.1"
 caffeine = "3.2.4"
+fastutil = "8.5.19"
 
 blossom = "2.2.0"
 shadow = "9.6.1"
@@ -38,6 +39,7 @@ caffeine = { group = "com.github.ben-manes.caffeine", name = "caffeine", version
 slf4j = "org.slf4j:slf4j-api:2.0.19"
 checkerqual = "org.checkerframework:checker-qual:4.2.3"
 guava = "com.google.guava:guava:33.7.1-jre"
+fastutil = { group = "it.unimi.dsi", name = "fastutil", version.ref = "fastutil" }
 
 [plugins]
 
