@@ -16,7 +16,14 @@ import java.util.regex.Pattern;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Utilities for the detection of restricted words
+ * Check for detecting and handling restricted words using regex patterns.
+ * <br>
+ * This check matches provided regex patterns against the input string. If matches
+ * are found, it can either deny the message ({@link ControlType#BLOCK}) or replace the matched
+ * parts with asterisks ({@link ControlType#REPLACE}).
+ *
+ * @see ControlType
+ * @see Pattern
  */
 public final class RegexCheck implements Check {
     private final Pattern[] blockedWords;
@@ -51,6 +58,16 @@ public final class RegexCheck implements Check {
         }
     }
 
+    /**
+     * Generates a replacement string for a matched regex pattern.
+     * <br>
+     * The replacement consists of asterisks, with the count being half the length
+     * of the matched text. This provides a visual replacement that obscures the
+     * matched word while maintaining some indication of its original length.
+     *
+     * @param result the match result from the regex matching
+     * @return a string of asterisks representing the replacement
+     */
     public static String generateReplacement(final MatchResult result) {
         final int size = result.group().length() / 2;
         return "*".repeat(size);
@@ -77,6 +94,15 @@ public final class RegexCheck implements Check {
         private Builder() {
         }
 
+        /**
+         * Add regex patterns to the list of blocked patterns.
+         * <br>
+         * Can be called multiple times to accumulate patterns.
+         *
+         * @param patterns the regex patterns to block
+         * @return this builder for chaining
+         * @throws NullPointerException if patterns or any pattern is null
+         */
         public Builder blockedPatterns(final @NotNull Collection<@NotNull Pattern> patterns) {
             requireNonNull(patterns);
             if (this.blockedWords == null) {
@@ -87,6 +113,15 @@ public final class RegexCheck implements Check {
             return this;
         }
 
+        /**
+         * Add regex patterns to the list of blocked patterns.
+         * <br>
+         * Can be called multiple times to accumulate patterns.
+         *
+         * @param patterns the regex patterns to block
+         * @return this builder for chaining
+         * @throws NullPointerException if any pattern is null
+         */
         public Builder blockedPatterns(final @NotNull Pattern @NotNull ... patterns) {
             if (this.blockedWords == null) {
                 this.blockedWords = new ArrayList<>(List.of(patterns));
@@ -96,6 +131,17 @@ public final class RegexCheck implements Check {
             return this;
         }
 
+        /**
+         * Set the control type for this check (BLOCK or REPLACE).
+         * <ul>
+         *  <li>{@link ControlType#BLOCK}: Deny the message if any pattern matches</li>
+         *  <li>{@link ControlType#REPLACE}: Replace matches with asterisks</li>
+         * </ul>
+         *
+         * @param controlType the control type to apply
+         * @return this builder for chaining
+         * @throws NullPointerException if controlType is null
+         */
         @Required
         public Builder controlType(final @NotNull ControlType controlType) {
             this.controlType = requireNonNull(controlType);

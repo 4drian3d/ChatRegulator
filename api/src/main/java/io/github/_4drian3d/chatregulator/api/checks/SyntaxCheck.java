@@ -13,6 +13,9 @@ import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Check that validates command syntax by checking namespace prefixes.
+ */
 public final class SyntaxCheck implements Check {
     private final Collection<String> allowedCommands;
 
@@ -53,6 +56,16 @@ public final class SyntaxCheck implements Check {
 
         private Builder() {}
 
+        /**
+         * Add command namespaces to the list of allowed command prefixes.
+         * <br>
+         * Commands with these namespace prefixes (before the colon) will be allowed
+         * to pass the check. Can be called multiple times to accumulate namespaces.
+         *
+         * @param commands the allowed command namespaces (e.g., "minecraft", "mymod")
+         * @return this builder for chaining
+         * @throws NullPointerException if commands or any command is null
+         */
         public Builder allowedCommands(final @NotNull Collection<@NotNull String> commands){
             this.allowedCommands.addAll(commands);
             return this;

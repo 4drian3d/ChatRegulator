@@ -46,8 +46,18 @@ public sealed interface CheckResult {
      */
     boolean isAllowed();
 
+    /**
+     * Check if a violation was detected and the action is to deny the message/command.
+     *
+     * @return true if the check detected a violation that should be denied
+     */
     boolean isDenied();
 
+    /**
+     * Check if a violation was detected and the content should be modified/replaced.
+     *
+     * @return true if the check detected a violation that should be modified
+     */
     boolean shouldModify();
 
     final class AllowedCheckResult implements CheckResult {
@@ -106,6 +116,11 @@ public sealed interface CheckResult {
     }
 
     sealed interface DetectedResult {
+        /**
+         * Get the type of infraction that was detected.
+         *
+         * @return the infraction type detected
+         */
         InfractionType infractionType();
     }
 }

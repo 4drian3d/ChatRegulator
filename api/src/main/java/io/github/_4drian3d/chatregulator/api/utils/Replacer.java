@@ -18,7 +18,7 @@ public final class Replacer {
      * @return a string with the first character converted to uppercase
      */
     public static @NotNull String firstLetterUppercase(@NotNull final String string) {
-        if (Objects.requireNonNull(string).length() < 1) {
+        if (Objects.requireNonNull(string).isEmpty()) {
             return string;
         }
 
@@ -46,6 +46,16 @@ public final class Replacer {
         return string + ".";
     }
 
+    /**
+     * Normalizes a Unicode string to the specified form, truncating to 256 characters if necessary.
+     * <br>
+     * This method applies Unicode normalization (NFC, NFKC, etc.) to handle variant representations
+     * of the same character. The result is truncated to 256 characters to prevent overflow.
+     *
+     * @param string the input string to normalize
+     * @param form the Unicode normalization form to apply
+     * @return the normalized string, truncated to at most 256 characters
+     */
     public static @NotNull String unicodeNormalize(@NotNull final String string, @NotNull final Normalizer.Form form) {
         Objects.requireNonNull(string);
         final String normalized = Normalizer.normalize(string, form);

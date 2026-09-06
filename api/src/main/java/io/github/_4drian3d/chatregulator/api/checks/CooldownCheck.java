@@ -13,6 +13,9 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Check that enforces a cooldown timeout between messages or commands from a player.
+ */
 public final class CooldownCheck implements Check {
     private final TimeUnit unit;
     private final long limit;
@@ -57,17 +60,37 @@ public final class CooldownCheck implements Check {
 
         private Builder() {}
 
+        /**
+         * Set the time unit for the cooldown duration.
+         * 
+         * @param unit the time unit (SECONDS, MILLISECONDS, etc.)
+         * @return this builder for chaining
+         * @throws NullPointerException if unit is null
+         */
         @Required
         public Builder timeUnit(final @NotNull TimeUnit unit) {
             this.unit = unit;
             return this;
         }
 
+        /**
+         * Set the cooldown limit in the specified time unit.
+         * 
+         * @param limit the cooldown duration (non-negative)
+         * @return this builder for chaining
+         */
         public Builder limit(final @NonNegative long limit) {
             this.limit = limit;
             return this;
         }
 
+        /**
+         * Set whether this cooldown applies to messages or commands.
+         * 
+         * @param source the source type
+         * @return this builder for chaining
+         * @throws NullPointerException if source is null
+         */
         @Required
         public Builder source(final @NotNull SourceType source) {
             this.source = source;
