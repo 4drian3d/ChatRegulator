@@ -94,6 +94,10 @@ public class ProviderModule extends AbstractModule {
         return SpamCheck.builder()
             .source(SourceType.COMMAND)
             .similarLimit(configuration.getSpamConfig().getSimilarStringCount())
+            .normalizationConfig(new SpamCheck.NormalizationConfig(
+                configuration.getSpamConfig().getNormalization().enabled(),
+                configuration.getSpamConfig().getNormalization().getUnicodeNormalizationForm()
+            ))
             .build();
       }
       return null;
@@ -111,6 +115,10 @@ public class ProviderModule extends AbstractModule {
         return SpamCheck.builder()
             .source(SourceType.CHAT)
             .similarLimit(configuration.getSpamConfig().getSimilarStringCount())
+            .normalizationConfig(new SpamCheck.NormalizationConfig(
+                configuration.getSpamConfig().getNormalization().enabled(),
+                configuration.getSpamConfig().getNormalization().getUnicodeNormalizationForm()
+            ))
             .build();
       }
       return null;
