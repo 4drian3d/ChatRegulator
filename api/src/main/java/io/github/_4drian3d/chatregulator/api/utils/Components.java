@@ -11,7 +11,7 @@ public final class Components {
     /**
      * A component containing multiple newlines for clearing the chat.
      * <br>
-     * Used by the <code /chatregulator clear</code> command
+     * Used by the {@code /chatregulator clear} command
      * to visually clear the player's chat.
      */
     public static final Component SPACES_COMPONENT;

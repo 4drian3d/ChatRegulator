@@ -88,4 +88,12 @@ public final class StringChainImpl implements StringChain {
         queue.add(string);
         lastExecuted.set(Instant.now());
     }
+
+    @Override
+    public String toString() {
+        return "StringChainImpl{" +
+                "queue=" + queue +
+                ", lastExecuted=" + lastExecuted +
+                '}';
+    }
 }

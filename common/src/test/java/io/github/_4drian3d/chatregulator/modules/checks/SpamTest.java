@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import java.nio.file.Path;
 import java.text.Normalizer;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class SpamTest {
   @Test
@@ -51,17 +51,23 @@ class SpamTest {
     );
     InfractionPlayer player = TestsUtils.playerFrom(configContainer);
     StringChainImpl chatChain = (StringChainImpl) player.getChain(SourceType.CHAT);
-    final String string1 = "holaaaaáaaa";
-    final String string2 = "hólaaaaaaaa";
+    final String string1 = "holaaáaăaaa";
+    final String string2 = "hólaaaaaaáa";
 
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 6; i++) {
       chatChain.executed(string1);
     }
 
-    SpamCheck.Builder builder = SpamCheck.builder()
+    SpamCheck spamCheck = SpamCheck.builder()
         .source(SourceType.CHAT)
-        .normalizationConfig(true, Normalizer.Form.NFD);
+        .similarLimit(5)
+        .normalizationConfig(true, Normalizer.Form.NFD)
+        .build();
 
-    assertTrue(builder.similarLimit(5).build().check(player, string2).isDenied());
+    assertFalse(Normalizer.isNormalized(string1, Normalizer.Form.NFKD));
+    assertFalse(Normalizer.isNormalized(string2, Normalizer.Form.NFKD));
+    assertTrue(
+        spamCheck.check(player, string2)
+            .isDenied());
   }
 }

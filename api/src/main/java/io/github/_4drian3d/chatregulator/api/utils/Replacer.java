@@ -2,6 +2,7 @@ package io.github._4drian3d.chatregulator.api.utils;
 
 import java.text.Normalizer;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -9,6 +10,8 @@ import org.jetbrains.annotations.NotNull;
  * String Replacer Utils
  */
 public final class Replacer {
+    public static final Pattern NORMALIZATION_PATTERN = Pattern.compile("\\p{M}");
+
     private Replacer() {
     }
     /**
@@ -58,7 +61,7 @@ public final class Replacer {
      */
     public static @NotNull String unicodeNormalize(@NotNull final String string, @NotNull final Normalizer.Form form) {
         Objects.requireNonNull(string);
-        final String normalized = Normalizer.normalize(string, form);
+        final String normalized = NORMALIZATION_PATTERN.matcher(Normalizer.normalize(string, form)).replaceAll("");
         return normalized.length() > 256 ? normalized.substring(0, 256) : normalized;
     }
 
