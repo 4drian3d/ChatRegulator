@@ -29,7 +29,6 @@ tasks {
         (options as StandardJavadocDocletOptions).links(
             "https://jd.advntr.dev/api/${libs.versions.adventure.get()}/",
             "https://jd.advntr.dev/text-minimessage/${libs.versions.adventure.get()}/",
-            "https://javadoc.io/doc/org.jetbrains/annotations/24.0.1/index.html",
         )
     }
 }
