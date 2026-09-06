@@ -8,7 +8,7 @@ jobs:
 
     strategy:
       matrix:
-        java: [24]
+        java: [25]
 
     steps:
     - name: Checkout Repository
